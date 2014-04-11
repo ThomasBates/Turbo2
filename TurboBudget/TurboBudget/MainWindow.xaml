@@ -1,0 +1,8 @@
+﻿<Window x:Class="TurboBudget.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:TurboBudget.Views;assembly=TurboBudget.Views"
+        Title="Bates Budget" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="90" MinWidth="160">
+
+    <v:MainView Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="90" MinWidth="160" />
+</Window>

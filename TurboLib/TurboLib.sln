@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C# Express 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboLib.Presentation", "TurboLib.Presentation\TurboLib.Presentation.csproj", "{B2A55C0E-72EB-4FDD-A01C-E58733149798}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboLib.Presentation.Types", "TurboLib.Presentation.Types\TurboLib.Presentation.Types.csproj", "{0A7C4BAA-E656-4920-860D-9EA6CA507876}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurboLib.Data.SQLite", "TurboLib.Data.SQLite\TurboLib.Data.SQLite.csproj", "{FFAA631D-6412-4B39-8E20-3DC2F0B88354}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2A55C0E-72EB-4FDD-A01C-E58733149798}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2A55C0E-72EB-4FDD-A01C-E58733149798}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2A55C0E-72EB-4FDD-A01C-E58733149798}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2A55C0E-72EB-4FDD-A01C-E58733149798}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A7C4BAA-E656-4920-860D-9EA6CA507876}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A7C4BAA-E656-4920-860D-9EA6CA507876}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A7C4BAA-E656-4920-860D-9EA6CA507876}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A7C4BAA-E656-4920-860D-9EA6CA507876}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFAA631D-6412-4B39-8E20-3DC2F0B88354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFAA631D-6412-4B39-8E20-3DC2F0B88354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFAA631D-6412-4B39-8E20-3DC2F0B88354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFAA631D-6412-4B39-8E20-3DC2F0B88354}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

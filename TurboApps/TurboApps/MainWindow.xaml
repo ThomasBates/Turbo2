@@ -1,0 +1,8 @@
+﻿<Window x:Class="TurboApps.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:TurboApps.Views;assembly=TurboApps.Views"
+        Title="MainWindow" Height="350" Width="525">
+
+    <v:MainView Name="MainView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MinHeight="90" MinWidth="160" />
+</Window>

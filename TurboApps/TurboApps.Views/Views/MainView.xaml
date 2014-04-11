@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="TurboApps.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:bbv="clr-namespace:TurboBudget.Views;assembly=TurboBudget.Views"
+             xmlns:bbp="clr-namespace:TurboBudget.Presentation;assembly=TurboBudget.Presentation"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <!--
+    Height="350" Width="525"
+        http://stackoverflow.com/questions/15426082/handling-navigation-in-mvvm-wpf-application
+    -->
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type bbp:HomeViewModel}">
+            <bbv:HomeView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type bbp:MainViewModel}">
+            <bbv:MainView />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="0,0,0,1" Height="25">
+
+        </Border>
+        <Border DockPanel.Dock="Left" BorderBrush="Black" BorderThickness="0,0,1,0" MinWidth="100">
+            <ItemsControl ItemsSource="{Binding PageViewModels}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Name}"
+                                Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                CommandParameter="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <ContentControl Content="{Binding CurrentPageViewModel}"/>
+    </DockPanel>
+</UserControl>
