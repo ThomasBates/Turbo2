@@ -113,8 +113,8 @@ clean:
 run:
 	@echo run ...
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-#	@C:\Development\devkitpro\emulators\desmume\desmume.exe $(TARGET).nds
-	@C:\\Progra~1\\DeSmuME\\desmume.exe $(TARGET).nds
+	@C:\Development\devkitpro\emulators\desmume\desmume.exe $(TARGET).nds
+#	@C:\\Progra~1\\DeSmuME\\desmume.exe $(TARGET).nds
 	
  
 #---------------------------------------------------------------------------------

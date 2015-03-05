@@ -10,7 +10,7 @@ class SpaceLabyrinthNDS : public ISpaceLabyrinthFactory
 private:
 	ApplicationNDS *_application;
 	int				_texture[6];
-//	Vector4f		_camera;
+	float			_camera[4][4];
 	unsigned int	_ticks;
 	float			_time;
 	float			_deltaTime;
