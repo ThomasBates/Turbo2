@@ -12,6 +12,9 @@ private:
 	IMazeFactory *_mazeFactory;
 
 	IMaze *_maze;
+	int		_pointer;
+	int		_pointerX;
+	int		_pointerY;
 
 public:
 	//  Constructors and Destructors
@@ -20,15 +23,17 @@ public:
 
 	//  IProgram Methods
 	virtual int Initialize();
-	virtual int Update();
+//	virtual int Reset();
 	virtual int Resize(int width, int height);
-	virtual int Reset();
+	virtual int Update();
 	virtual int Finalize();
 
 protected:
 	//  Local Support Methods
-	virtual int DrawMaze(IMaze *maze);
+	virtual int DrawMaze();
 	virtual int DrawRightWall(int w, int h, int d);
 	virtual int DrawBottomWall(int w, int h, int d);
 	virtual int DrawFrontWall(int w, int h, int d);
+
+	virtual int NavigateMaze();
 };

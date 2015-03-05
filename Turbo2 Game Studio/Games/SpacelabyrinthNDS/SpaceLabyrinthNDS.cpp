@@ -12,6 +12,8 @@
 #include "test3_bmp_bin.h"
 #include "test_bmp_bin.h"
 
+#define TIMER_SPEED ((float)TIMER_HZ/(float)1024)
+
 //  ============================================================================
 //              SpaceLabyrinthNDS
 //  ============================================================================
@@ -43,18 +45,9 @@ int SpaceLabyrinthNDS::Initialize()
 	glEnable(GL_ANTIALIAS);
 	
 	// setup the rear plane
-	glClearColor(1,1,1,31); // BG must be opaque for AA to work
+	glClearColor(31,31,31,31); // BG must be opaque for AA to work
 	glClearPolyID(63); // BG must have a unique polygon ID for AA to work
 	glClearDepth(0x7FFF);
-	
-	// Set our viewport to be the same size as the screen
-	glViewport(0,0,255,191);
-	
-	// setup the view
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(70, 256.0 / 192.0, 0.1, 100);
-	
 	
 	//ds specific, several attributes can be set here	
 	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE);
@@ -64,103 +57,51 @@ int SpaceLabyrinthNDS::Initialize()
 		glEnable(GL_TEXTURE_2D);						// Enable Texture Mapping ( NEW )
 	}
 
-/*
-	// initialize gl
-	glInit();
- 
-	// sub sprites hold the bottom image when 3D directed to top
-	InitSubSprites();
- 
-	// sub background holds the top image when 3D directed to bottom
-	bgInitSub(3, BgType_Bmp16, BgSize_B16_256x256, 0, 0);
-	
-	//enable textures
-	glEnable(GL_TEXTURE_2D);
-	
-	// enable antialiasing
-	glEnable(GL_ANTIALIAS);
-	
-	// setup the rear plane
-	glClearColor(0,0,0,31); // BG must be opaque for AA to work
-	glClearPolyID(63); // BG must have a unique polygon ID for AA to work
-	glClearDepth(0x7FFF);
+	timerStart(0, ClockDivider_1024, 0, NULL);
 
-	//this should work the same as the normal gl call
+
+	return TRUE;						// Everything Went OK
+}
+
+/*
+int SpaceLabyrinthNDS::Reset()
+{
+	return Initialize();
+}
+*/
+
+int SpaceLabyrinthNDS::Resize(int width, int height)
+{
+	// Set our viewport to be the same size as the screen
 	glViewport(0,0,255,191);
 	
-	//ds uses a table for shinyness..this generates a half-ass one
-	glMaterialShinyness();
-	
-	// setup other material properties
-	glMaterialf(GL_AMBIENT, RGB15(16,16,16));
-	glMaterialf(GL_DIFFUSE, RGB15(20,20,20));
-	glMaterialf(GL_SPECULAR, BIT(15) | RGB15(8,8,8));
-	glMaterialf(GL_EMISSION, RGB15(5,5,5));
-	
-	
-	// setup the lighting
-	glLight(0, RGB15(31,31,31) , 0, floattov10(-.5), floattov10(-.85));
-
-	InitTextures();
-	
+	// setup the view
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(70, 256.0 / 192.0, 0.1, 40);
 	
-	gluLookAt(	0.0, 0.0, 1.0,		//camera possition 
-				0.0, 0.0,-2.0,		//look at
-				0.0, 1.0, 0.0);		//up
-	
-	//not a real gl function and will likely change
-	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_NONE | POLY_FORMAT_LIGHT0 | POLY_ID(1) ) ;
-	
-	glColor3f(1,1,1);
+	gluPerspective(75, 256.0 / 192.0, 0.1, 100);
 
-	glMatrixMode(GL_MODELVIEW);
-
-
-	//glShadeModel(GL_SMOOTH);						// Enables Smooth Shading
-
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);					// Black Background
-
-	glClearDepth(1.0f);							// Depth Buffer Setup
-	//glEnable(GL_DEPTH_TEST);						// Enables Depth Testing
-	//glDepthFunc(GL_LEQUAL);							// The Type Of Depth Test To Do
-
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);			// Really Nice Perspective Calculations
-
-
-	if (LoadTextures())
-	{
-		glEnable(GL_TEXTURE_2D);						// Enable Texture Mapping ( NEW )
-	}
-*/
-	return TRUE;								// Everything Went OK
+	return TRUE;
 }
 
 int SpaceLabyrinthNDS::BeginUpdate()
 {
-	// Set the current matrix to be the model matrix
-	glMatrixMode(GL_MODELVIEW);
-	
-	glColor3f(1, 1, 1);									// Set the color..not in nehe source...ds gl default will be black
-	
-	//Push our original Matrix onto the stack (save state)
-	glPushMatrix();	
+	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
+	glLoadIdentity();					// Reset The Current Modelview Matrix
 
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear The Screen And The Depth Buffer
-	glLoadIdentity();							// Reset The Current Modelview Matrix
+	unsigned int ticks = timerElapsed(0);
+	_ticks += ticks;
+	
+	_time = (float)_ticks / TIMER_SPEED;
+	_deltaTime = (float)ticks / TIMER_SPEED;
 
 	return TRUE;
 }
 
 int SpaceLabyrinthNDS::EndUpdate()
 {
-	// Pop our Matrix from the stack (restore state)
-	glPopMatrix(1);
-
 	//a handy little built in function to wait for a screen refresh
-	swiWaitForVBlank();
+	//swiWaitForVBlank();
 
 	// flush to screen	
 	glFlush(0);
@@ -168,88 +109,148 @@ int SpaceLabyrinthNDS::EndUpdate()
 	return TRUE;
 }
 
-int SpaceLabyrinthNDS::Resize(int width, int height)
-{
-	return TRUE;
-}
-
-int SpaceLabyrinthNDS::Reset()
-{
-	return Initialize();
-}
-
 int SpaceLabyrinthNDS::Finalize()
 {
+	timerStop(0);
+
 	return TRUE;
 }
 
-float		xrot;								// X Rotation ( NEW )
-float		yrot;								// Y Rotation ( NEW )
-float		zrot;								// Z Rotation ( NEW )
-
-int			texture[6];							// Storage For One Texture ( NEW )
-
-int SpaceLabyrinthNDS::DrawWall(double left, double top, double back, double right, double bottom, double front)
+int SpaceLabyrinthNDS::DrawWall(float left, float top, float back, float right, float bottom, float front)
 {
-	glTranslatef(0.0f,0.0f,-5.0f);						// Move Into The Screen 5 Units
+	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
+	//Push our original Matrix onto the stack (save state)
+	glPushMatrix();	
 
-	glRotatef(xrot,1.0f,0.0f,0.0f);						// Rotate On The X Axis
-	glRotatef(yrot,0.0f,1.0f,0.0f);						// Rotate On The Y Axis
-	glRotatef(zrot,0.0f,0.0f,1.0f);						// Rotate On The Z Axis
-
-	glBindTexture(GL_TEXTURE_2D, texture[0]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[0]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Front Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    back );	// Top Left Of The Texture and Quad
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, texture[1]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[1]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Back Face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, top,    front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, front);	// Bottom Left Of The Texture and Quad
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, texture[2]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Top Face
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  top,    back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, top,    back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    front);	// Top Right Of The Texture and Quad
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, texture[3]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[3]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Bottom Face
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  bottom, front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, bottom, front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Right Of The Texture and Quad
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, texture[4]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[4]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Right face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, bottom, front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, top,    back );	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Left Of The Texture and Quad
 	glEnd();
-	glBindTexture(GL_TEXTURE_2D, texture[5]);				// Select Our Texture
+	glBindTexture(GL_TEXTURE_2D, _texture[5]);				// Select Our Texture
 	glBegin(GL_QUADS);
 		// Left Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  bottom, front);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  top,    back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Left Of The Texture and Quad
 	glEnd();
 
-	xrot+=0.3f;								// X Axis Rotation
-	yrot+=0.2f;								// Y Axis Rotation
-	zrot+=0.4f;								// Z Axis Rotation
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix(1);
+
 	return true;								// Keep Going
+}
+
+/*
+from #include <nds\input.h>
+//! enum values for the keypad buttons.
+typedef enum KEYPAD_BITS {
+  KEY_A      = BIT(0),  //!< Keypad A button.
+  KEY_B      = BIT(1),  //!< Keypad B button.
+  KEY_SELECT = BIT(2),  //!< Keypad SELECT button.
+  KEY_START  = BIT(3),  //!< Keypad START button.
+  KEY_RIGHT  = BIT(4),  //!< Keypad RIGHT button.
+  KEY_LEFT   = BIT(5),  //!< Keypad LEFT button.
+  KEY_UP     = BIT(6),  //!< Keypad UP button.
+  KEY_DOWN   = BIT(7),  //!< Keypad DOWN button.
+  KEY_R      = BIT(8),  //!< Right shoulder button.
+  KEY_L      = BIT(9),  //!< Left shoulder button.
+  KEY_X      = BIT(10), //!< Keypad X button.
+  KEY_Y      = BIT(11), //!< Keypad Y button.
+  KEY_TOUCH  = BIT(12), //!< Touchscreen pendown.
+  KEY_LID    = BIT(13)  //!< Lid state.
+} KEYPAD_BITS;
+*/
+
+int SpaceLabyrinthNDS::GetNavigationInfo(NavInfo *navInfo)
+{
+	if (navInfo)
+	{
+		scanKeys();
+		int keys = keysHeld();
+
+		touchPosition touch;
+		touchRead(&touch);
+
+//		int keys = keysDown();
+//		if (keys)
+//			KeysDown(keys);
+
+		navInfo->Pointer	= (keys & KEY_TOUCH);
+		navInfo->PointerX	= touch.px;
+		navInfo->PointerY	= touch.py;
+
+		int ctrl = keys & (KEY_L|KEY_R);
+		
+		navInfo->MoveLeft	= ctrl && (keys & KEY_LEFT);
+		navInfo->MoveRight	= ctrl && (keys & KEY_RIGHT);
+		navInfo->MoveDown	= ctrl && (keys & KEY_UP);
+		navInfo->MoveUp		= ctrl && (keys & KEY_DOWN);
+		navInfo->MoveFore	= ctrl && (keys & KEY_X);
+		navInfo->MoveBack	= ctrl && (keys & KEY_B);
+
+		navInfo->PitchFore	=!ctrl && (keys & KEY_UP);
+		navInfo->PitchBack	=!ctrl && (keys & KEY_DOWN);
+		navInfo->YawRight	=!ctrl && (keys & KEY_RIGHT);
+		navInfo->YawLeft	=!ctrl && (keys & KEY_LEFT);
+		navInfo->RollLeft	=!ctrl && (keys & KEY_Y);
+		navInfo->RollRight	=!ctrl && (keys & KEY_A);
+
+		return 1;
+	}
+	return 0;
+}
+
+int SpaceLabyrinthNDS::MoveCamera(float x, float y, float z)
+{
+	glMatrixMode(GL_PROJECTION);
+	glTranslatef(x, y, z);
+	return 1;
+}
+
+int SpaceLabyrinthNDS::RotateCamera(float x, float y, float z)
+{
+	glMatrixMode(GL_PROJECTION);
+	glRotatef(x,1.0f,0.0f,0.0f);						// Rotate On The X Axis
+	glRotatef(y,0.0f,1.0f,0.0f);						// Rotate On The Y Axis
+	glRotatef(z,0.0f,0.0f,1.0f);						// Rotate On The Z Axis
+	return 1;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -294,14 +295,14 @@ int SpaceLabyrinthNDS::LoadTextures()
 
 	vramSetBankA(VRAM_A_TEXTURE);
 
-	glGenTextures(6, texture);					// Create The Texture
+	glGenTextures(6, _texture);					// Create The Texture
 
 	LoadTexture(0, test_bmp_bin);
 	LoadTexture(1, test1_bmp_bin);
-	LoadTexture(2, BIGHEAD_BMP_bin);
-	LoadTexture(3, POKEBALL_BMP_bin);
-	LoadTexture(4, test2_bmp_bin);
-	LoadTexture(5, MandelbrotEye_bmp_bin);
+	LoadTexture(2, test2_bmp_bin);
+	LoadTexture(3, MandelbrotEye_bmp_bin);
+	LoadTexture(4, BIGHEAD_BMP_bin);
+	LoadTexture(5, POKEBALL_BMP_bin);
 
 	return status;								// Return The Status
 }
@@ -317,11 +318,12 @@ int SpaceLabyrinthNDS::LoadTexture(int id, const u8 *imageData)					// Loads A B
 		Status=TRUE;							// Set The Status To TRUE
 
 		// Typical Texture Generation Using Data From The Bitmap
-		glBindTexture(GL_TEXTURE_2D, texture[id]);
+		glBindTexture(GL_TEXTURE_2D, _texture[id]);
 
 		// Generate The Texture
 		void *data = textureImage->GetCanvas()->GetData();
-		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, data);
+		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_64, TEXTURE_SIZE_64, 0, TEXGEN_TEXCOORD, data);
+//		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, 0, TEXGEN_OFF, data);
 	}
 
 	delete textureImage;						// Free The Image Structure
@@ -333,7 +335,7 @@ IImage *SpaceLabyrinthNDS::LoadImage(const u8 *imageData)					// Loads A Bitmap 
 {
 	IImage *image = new Bitmap(new CanvasRGB15(0,0));
 	image->SetData((void*)imageData);
-	image->Draw(128,128,IMG_ZOOM);
+	image->Draw(64,64,IMG_ZOOM);
 	return image;
 }
 

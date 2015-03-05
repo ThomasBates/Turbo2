@@ -42,10 +42,10 @@ int ApplicationNDS::Run(IProgram *program)
 
 	_program = program;
 
-	if (!program->Resize(256,192))
+	if (!program->Initialize())
 		return 0;
 
-	if (!program->Initialize())
+	if (!program->Resize(256,192))
 		return 0;
 
 	while(!_done)								// Loop That Runs Until done=0

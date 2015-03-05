@@ -19,6 +19,11 @@ private:
 	int	_width;
 	int	_height;
 
+	GLuint _texture[6];
+	unsigned int	_ticks;
+	float			_time;
+	float			_deltaTime;
+
 public:
 	//  Constructors and Destructors
 	SpaceLabyrinthWin32(ApplicationWin32 *application);
@@ -26,13 +31,18 @@ public:
 
 	//  ISpaceLabyrinthFactory Methods
 	virtual int Initialize();
+//	virtual int Reset();
+	virtual int Resize(int width, int height);
 	virtual int BeginUpdate();
 	virtual int EndUpdate();
-	virtual int Resize(int width, int height);
-	virtual int Reset();
 	virtual int Finalize();
 
-	virtual int DrawWall(double left, double top, double back, double right, double bottom, double front);
+	virtual BOOL DrawWall(float left, float top, float back, float right, float bottom, float front);
+	virtual BOOL GetNavigationInfo(NavInfo *navInfo);
+	virtual float GetTime() { return _time; }
+	virtual float GetDeltaTime() { return _deltaTime; }
+	virtual int MoveCamera(float x, float y, float z);
+	virtual int RotateCamera(float x, float y, float z);
 
 protected:
 	//  Local Support Methods

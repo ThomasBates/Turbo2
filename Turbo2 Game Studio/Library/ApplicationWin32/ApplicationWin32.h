@@ -25,6 +25,9 @@ private:
 	BOOL		_done;			// Bool Variable To Exit Loop
 
 	BOOL		_keys[256];		// Array Used For The Keyboard Routine
+	int			_pointerX;
+	int			_pointerY;
+	int			_pointerStatus;
 
 	BOOL		_ready;
 	IProgram*	_program;
@@ -49,7 +52,9 @@ public:
 
 	//  Public Access Methods
 	virtual void ProcessMessages();
-	virtual void Resize(int width, int height);
+	virtual BOOL Resize(int width, int height);
+	virtual void SetPointer(int x, int y, int status);
+	virtual void GetPointer(int *x, int *y, int *status);
 
 protected:
 	//  Local Support Methods
@@ -61,3 +66,6 @@ protected:
 
 extern ApplicationWin32* Win32Application;
 
+
+#define FULLSCREEN_WIDTH  800
+#define FULLSCREEN_HEIGHT 600

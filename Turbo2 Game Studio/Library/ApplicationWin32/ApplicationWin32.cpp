@@ -54,6 +54,12 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 			return 0;						// Jump Back
 		}
 
+		case WM_MOUSEMOVE:
+		{
+			Win32Application->SetPointer(LOWORD(lParam), HIWORD(lParam), wParam);
+			return 0;
+		}
+
 		case WM_SIZE:							// Resize The OpenGL Window
 		{
 			Win32Application->Resize(LOWORD(lParam), HIWORD(lParam));		// LoWord=Width, HiWord=Height
@@ -87,13 +93,17 @@ ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 	memset(_keys, 0, sizeof(_keys));
 
 	// Create Our OpenGL Window
-	_ready		= CreateAppWindow(640, 480, 16);
+//	_ready		= CreateAppWindow(640, 480, 16);
+	_ready		= CreateAppWindow(256, 192, 16);
 }
 
 ApplicationWin32::~ApplicationWin32()
 {
 	KillAppWindow();								// Kill The Window
 }
+
+#pragma endregion
+#pragma region Property Accessor Methods
 
 #pragma endregion
 #pragma region IApplication Methods
@@ -108,10 +118,10 @@ BOOL ApplicationWin32::Run(IProgram *program)
 
 	_program = program;
 
-	if (!program->Resize(_width, _height))
+	if (!program->Initialize())
 		return FALSE;
 
-	if (!program->Initialize())
+	if (!Resize(_width, _height))
 		return FALSE;
 
 	while(!_done)								// Loop That Runs Until done=TRUE
@@ -129,10 +139,10 @@ BOOL ApplicationWin32::Run(IProgram *program)
 			KillAppWindow();					// Kill Our Current Window
 			_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
 
-			if (!CreateAppWindow(640,480,16))		// Recreate Our OpenGL Window
+			if (!CreateAppWindow(_width, _height, 16))		// Recreate Our OpenGL Window
 				break;				// Quit If Window Was Not Created
 
-			if (!program->Reset())
+			if (!Resize(_width, _height))
 				break;
 		}
 	}
@@ -163,14 +173,35 @@ void ApplicationWin32::ProcessMessages()
 	}
 }
 
-void ApplicationWin32::Resize(int width, int height)				// Resize And Initialize The GL Window
+BOOL ApplicationWin32::Resize(int width, int height)				// Resize And Initialize The GL Window
 {
 	_width = width;
 	_height = height;
 
+	if (_fullscreen)
+	{
+		width = FULLSCREEN_WIDTH;
+		height = FULLSCREEN_HEIGHT;
+	}
+
 	if (_program)
-		if (!_program->Resize(_width, _height))
+		if (!_program->Resize(width, height))
 			_done = TRUE;
+	return !_done;
+}
+
+void ApplicationWin32::SetPointer(int x, int y, int status)
+{
+	_pointerX		= x;
+	_pointerY		= y;
+	_pointerStatus	= status;
+}
+
+void ApplicationWin32::GetPointer(int *x, int *y, int *status)
+{
+	if (x)		*x		= _pointerX;
+	if (y)		*y		= _pointerY;
+	if (status)	*status	= _pointerStatus;
 }
 
 #pragma endregion
@@ -212,8 +243,8 @@ BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 		DEVMODE dmScreenSettings;					// Device Mode
 		memset(&dmScreenSettings,0,sizeof(dmScreenSettings));		// Makes Sure Memory's Cleared
 		dmScreenSettings.dmSize=sizeof(dmScreenSettings);		// Size Of The Devmode Structure
-		dmScreenSettings.dmPelsWidth	= width;			// Selected Screen Width
-		dmScreenSettings.dmPelsHeight	= height;			// Selected Screen Height
+		dmScreenSettings.dmPelsWidth	= FULLSCREEN_WIDTH;			// Selected Screen Width
+		dmScreenSettings.dmPelsHeight	= FULLSCREEN_HEIGHT;			// Selected Screen Height
 		dmScreenSettings.dmBitsPerPel	= bits;				// Selected Bits Per Pixel
 		dmScreenSettings.dmFields=DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
 
