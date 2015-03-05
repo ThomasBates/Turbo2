@@ -5,8 +5,8 @@
 
 #pragma region Classless Functions
 
-IApplication		*Application;
-ApplicationWin32	*Win32Application;
+//	IApplication		*Application;
+//	ApplicationWin32	*Win32Application;
 
 LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 							UINT	uMsg,					// Message For This Window
@@ -21,8 +21,8 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 
 ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 {
-	Application			= this;
-	Win32Application	= this;
+	//	Application			= this;
+	//	Win32Application	= this;
 
 	_appTitle	= appTitle;				// Application Title
 
@@ -40,14 +40,14 @@ ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 	memset(_keys, 0, sizeof(_keys));
 
 	// Create Our OpenGL Window
-	_ready		= CreateAppWindow(800, 600, 16);
-//	_ready		= CreateAppWindow(640, 480, 16);
-//	_ready		= CreateAppWindow(256, 192, 16);
+//	_ready		= CreateApplicationWindow(800, 600, 16);
+	_ready		= CreateApplicationWindow(640, 480, 16);
+//	_ready		= CreateApplicationWindow(256, 192, 16);
 }
 
 ApplicationWin32::~ApplicationWin32()
 {
-	KillAppWindow();								// Kill The Window
+	KillApplicationWindow();								// Kill The Window
 }
 
 #pragma endregion
@@ -131,10 +131,10 @@ BOOL ApplicationWin32::Run()
 		//{
 		//	_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
 
-		//	KillAppWindow();					// Kill Our Current Window
+		//	KillApplicationWindow();					// Kill Our Current Window
 		//	_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
 
-		//	if (!CreateAppWindow(_width, _height, 16))		// Recreate Our OpenGL Window
+		//	if (!CreateApplicationWindow(_width, _height, 16))		// Recreate Our OpenGL Window
 		//		break;				// Quit If Window Was Not Created
 
 		//	if (!Resize(_width, _height))
@@ -268,7 +268,7 @@ void ApplicationWin32::GetPointer(int *x, int *y, int *status)
 #pragma endregion
 #pragma region Local Support Methods
 
-BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
+BOOL ApplicationWin32::CreateApplicationWindow(int width, int height, int bits)
 {
 	int			PixelFormat;						// Holds The Results After Searching For A Match
 	WNDCLASS	wc;							// Windows Class Structure
@@ -354,7 +354,7 @@ BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 					_hInstance,				// Instance
 					NULL)))					// Don't Pass Anything To WM_CREATE
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Window Creation Error."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
@@ -383,35 +383,35 @@ BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 
 	if (!(_hDC=GetDC(_hWnd)))							// Did We Get A Device Context?
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Can't Create A GL Device Context."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
 
 	if (!(PixelFormat=ChoosePixelFormat(_hDC,&pfd)))				// Did Windows Find A Matching Pixel Format?
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Can't Find A Suitable PixelFormat."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
 
 	if(!SetPixelFormat(_hDC,PixelFormat,&pfd))				// Are We Able To Set The Pixel Format?
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Can't Set The PixelFormat."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
 
 	if (!(_hRC=wglCreateContext(_hDC)))					// Are We Able To Get A Rendering Context?
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Can't Create A GL Rendering Context."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
 
 	if(!wglMakeCurrent(_hDC, _hRC))						// Try To Activate The Rendering Context
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Can't Activate The GL Rendering Context."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
@@ -425,7 +425,7 @@ BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 	/*
 	if (!InitGL())								// Initialize Our Newly Created GL Window
 	{
-		KillAppWindow();							// Reset The Display
+		KillApplicationWindow();							// Reset The Display
 		MessageBox(NULL,TEXT("Initialization Failed."),TEXT("ERROR"),MB_OK|MB_ICONEXCLAMATION);
 		return FALSE;							// Return FALSE
 	}
@@ -434,7 +434,7 @@ BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 	return TRUE;								// Success
 }
 
-void ApplicationWin32::KillAppWindow()							// Properly Kill The Window
+void ApplicationWin32::KillApplicationWindow()							// Properly Kill The Window
 {
 	if (_fullscreen)								// Are We In Fullscreen Mode?
 	{

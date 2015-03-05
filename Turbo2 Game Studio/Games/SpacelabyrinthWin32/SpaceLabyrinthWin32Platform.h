@@ -8,7 +8,7 @@
 #include <gl\gl.h>						// Header File For The OpenGL32 Library
 #include <gl\glu.h>						// Header File For The GLu32 Library
 
-class SpaceLabyrinthWin32 : public ISpaceLabyrinthPlatform
+class SpaceLabyrinthWin32Platform : public ISpaceLabyrinthPlatform
 {
 private:
 //	ApplicationWin32 *_application;
@@ -20,6 +20,7 @@ private:
 	int				_height;
 
 	GLuint			_texture[6];
+	Camera		   *_camera;
 
 	LARGE_INTEGER	_frequency;
 	LARGE_INTEGER	_startCount;
@@ -29,15 +30,15 @@ private:
 
 public:
 	//  Constructors and Destructors
-	SpaceLabyrinthWin32();
-	~SpaceLabyrinthWin32();
+	SpaceLabyrinthWin32Platform();
+	~SpaceLabyrinthWin32Platform();
 
 	//  ISpaceLabyrinthPlatform Methods
-	virtual BOOL Initialize();
+	virtual BOOL Initialize(Camera *camera);
 	virtual BOOL Resize(int width, int height);
 	virtual BOOL BeginUpdate();
 	virtual BOOL EndUpdate();
-	virtual BOOL BeginDraw(const Camera &camera);
+	virtual BOOL BeginDraw();
 	virtual BOOL EndDraw();
 	virtual BOOL Finalize();
 

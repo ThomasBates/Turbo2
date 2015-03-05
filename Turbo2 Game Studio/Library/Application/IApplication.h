@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "IComponent.h"
 #include "IWindow.h"
 
 class IApplication
@@ -12,4 +13,4 @@ public:
 	virtual int Run() = 0;
 };
 
-extern IApplication *Application;
+//extern IApplication *Application;

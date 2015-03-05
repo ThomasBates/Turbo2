@@ -34,6 +34,12 @@
     <Filter Include="Resource Files\Data">
       <UniqueIdentifier>{ae8837a1-22c2-430d-851b-2cf4fdb9334a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Classes">
+      <UniqueIdentifier>{bce596b1-e81d-4bac-ad0c-8d026ea7d12b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{8ca66f24-68fe-47da-a950-3d677197177f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\Application\IApplication.h">
@@ -47,9 +53,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h">
       <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceLabyrinthWin32.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h">
       <Filter>Header Files\SpaceLabyrinth</Filter>
@@ -87,6 +90,39 @@
     <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthPlatform.h">
       <Filter>Header Files\SpaceLabyrinth</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\IFont.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceLabyrinthWin32Platform.h">
+      <Filter>Header Files\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\Window.h">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="ISpaceLabyrinthMainWindow.h">
+      <Filter>Header Files\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceLabyrinthMainWindow.h">
+      <Filter>Header Files\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IComponent.h">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\Component.h">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Classes\IList.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Classes\List.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Classes\ComponentStateSet.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Classes\ComponentStyleSet.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp">
@@ -97,9 +133,6 @@
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpaceLabyrinthWin32.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
     </ClCompile>
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp">
       <Filter>Source Files\SpaceLabyrinth</Filter>
@@ -118,6 +151,27 @@
     </ClCompile>
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceLabyrinthWin32Platform.cpp">
+      <Filter>Source Files\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Application\Window.cpp">
+      <Filter>Source Files\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceLabyrinthMainWindow.cpp">
+      <Filter>Source Files\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Application\Component.cpp">
+      <Filter>Source Files\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Classes\List.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Classes\ComponentStateSet.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Classes\ComponentStyleSet.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

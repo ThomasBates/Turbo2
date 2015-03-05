@@ -40,7 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
+    <IncludePath>..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -78,6 +78,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp" />
+    <ClCompile Include="..\..\Library\Application\Component.cpp" />
+    <ClCompile Include="..\..\Library\Application\Window.cpp" />
+    <ClCompile Include="..\..\Library\Classes\ComponentStateSet.cpp" />
+    <ClCompile Include="..\..\Library\Classes\ComponentStyleSet.cpp" />
+    <ClCompile Include="..\..\Library\Classes\List.cpp" />
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp" />
@@ -85,18 +90,27 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
-    <ClCompile Include="SpaceLabyrinthWin32.cpp" />
+    <ClCompile Include="SpaceLabyrinthMainWindow.cpp" />
+    <ClCompile Include="SpaceLabyrinthWin32Platform.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h" />
+    <ClInclude Include="..\..\Library\Application\Component.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
+    <ClInclude Include="..\..\Library\Application\IComponent.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
     <ClInclude Include="..\..\Library\Application\IWindow.h" />
+    <ClInclude Include="..\..\Library\Application\Window.h" />
+    <ClInclude Include="..\..\Library\Classes\ComponentStateSet.h" />
+    <ClInclude Include="..\..\Library\Classes\ComponentStyleSet.h" />
+    <ClInclude Include="..\..\Library\Classes\IList.h" />
+    <ClInclude Include="..\..\Library\Classes\List.h" />
     <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
     <ClInclude Include="..\..\Library\Graphics\Camera.h" />
     <ClInclude Include="..\..\Library\Graphics\ICanvas.h" />
+    <ClInclude Include="..\..\Library\Graphics\IFont.h" />
     <ClInclude Include="..\..\Library\Graphics\IImage.h" />
     <ClInclude Include="..\..\Library\Graphics\Vector.h" />
     <ClInclude Include="..\Spacelabyrinth\IMaze.h" />
@@ -105,7 +119,9 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h" />
-    <ClInclude Include="SpaceLabyrinthWin32.h" />
+    <ClInclude Include="ISpaceLabyrinthMainWindow.h" />
+    <ClInclude Include="SpaceLabyrinthMainWindow.h" />
+    <ClInclude Include="SpaceLabyrinthWin32Platform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\BIGHEAD.BMP" />

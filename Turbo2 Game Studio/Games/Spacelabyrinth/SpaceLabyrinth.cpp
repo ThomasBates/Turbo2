@@ -10,13 +10,12 @@
 
 //============  Constructors and Destructors  --------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthPlatform *factory)
+SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthPlatform *platform)
 {
-	_factory = factory;
+	_platform = platform;
 	
 	_mazeFactory = new OriginalMazeFactory;	
 	_maze = 0;
-//	_maze = _mazeFactory->MakeMaze(3,3,3);
 }
 
 SpaceLabyrinth::~SpaceLabyrinth()
@@ -31,7 +30,7 @@ SpaceLabyrinth::~SpaceLabyrinth()
 
 int SpaceLabyrinth::Initialize()
 {
-	int result = _factory->Initialize();
+	int result = _platform->Initialize(&_camera);
 	
 //	_camera.Move(2,-2,-2);
 
@@ -40,34 +39,34 @@ int SpaceLabyrinth::Initialize()
 
 int SpaceLabyrinth::Resize(int width, int height)
 {
-	return _factory->Resize(width, height);
+	return _platform->Resize(width, height);
 }
 
 int SpaceLabyrinth::Update()
 {
-	_factory->BeginUpdate();
+	_platform->BeginUpdate();
 
 	NavigateMaze();
 
-	_factory->EndUpdate();
+	_platform->EndUpdate();
 
 	return 1;
 }
 
 int SpaceLabyrinth::Draw()
 {
-	_factory->BeginDraw(_camera);
+	_platform->BeginDraw();
 
 	DrawMaze();
 
-	_factory->EndDraw();
+	_platform->EndDraw();
 
 	return 1;
 }
 
 int SpaceLabyrinth::Finalize()
 {
-	return _factory->Finalize();
+	return _platform->Finalize();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -77,7 +76,7 @@ int SpaceLabyrinth::NavigateMaze()
 {
 	NavInfo navInfo;
 
-	_factory->GetNavigationInfo(&navInfo);
+	_platform->GetNavigationInfo(&navInfo);
 
 	if (navInfo.Restart || _maze == 0)
 	{
@@ -89,8 +88,8 @@ int SpaceLabyrinth::NavigateMaze()
 		return 1;
 	}
 
-	float deltaTime = _factory->GetDeltaTime();
-	float time      = _factory->GetTime();
+	float deltaTime = _platform->GetDeltaTime();
+	float time      = _platform->GetTime();
 
 	float moveAccelleration = 1.0;
 	float moveSpeed = moveAccelleration * deltaTime;
@@ -230,7 +229,7 @@ int SpaceLabyrinth::DrawMaze()
 	{
 		MazeObject *corner = &(corners[i]);
 		if (corner->Active)
-			_factory->DrawCorner(corner);
+			_platform->DrawCorner(corner);
 	}
 
 	MazeObject *edges = _maze->GetEdges();
@@ -238,7 +237,7 @@ int SpaceLabyrinth::DrawMaze()
 	{
 		MazeObject *edge = &(edges[i]);
 		if (edge->Active)
-			_factory->DrawEdge(edge);
+			_platform->DrawEdge(edge);
 	}
 
 	MazeObject *walls = _maze->GetWalls();
@@ -246,7 +245,7 @@ int SpaceLabyrinth::DrawMaze()
 	{
 		MazeObject *wall = &(walls[i]);
 		if (wall->Active)
-			_factory->DrawWall(wall);
+			_platform->DrawWall(wall);
 	}
 
 	return 1;							// Everything Went OK

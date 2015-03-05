@@ -1,11 +1,11 @@
 //  ========================================================================  //
-//  SpaceLabyrinthWin32.cpp
+//  WinMain.cpp
 //  ========================================================================  //
 
 #include <windows.h>							// Header File For Windows
 
 #include "ApplicationWin32.h"
-#include "SpaceLabyrinthWin32.h"
+#include "SpaceLabyrinthWin32Platform.h"
 #include "SpaceLabyrinth.h"
 
 int WINAPI WinMain(	HINSTANCE	hInstance,		// Instance
@@ -13,10 +13,11 @@ int WINAPI WinMain(	HINSTANCE	hInstance,		// Instance
 					LPSTR		lpCmdLine,		// Command Line Parameters
 					int			nCmdShow)		// Window Show State
 {
-	new ApplicationWin32(TEXT("Space Labyrinth"));
-	new SpaceLabyrinthWin32();
-	new SpaceLabyrinthProgram();
+	IApplication *application = new ApplicationWin32(TEXT("Space Labyrinth"));
+	ISpaceLabyrinthPlatform *platform = new SpaceLabyrinthWin32Platform(application);
 
-	return Application->Run();
+	application->RegisterWindow(new SpaceLabyrinthMainWindow(platform));
+
+	return application->Run();
 }
 

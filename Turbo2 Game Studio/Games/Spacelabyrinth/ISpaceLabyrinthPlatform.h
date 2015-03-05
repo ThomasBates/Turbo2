@@ -26,11 +26,11 @@ typedef struct {
 class ISpaceLabyrinthPlatform
 {
 public:
-	virtual int		Initialize() = 0;
+	virtual int		Initialize(Camera *camera) = 0;
 	virtual int		Resize(int width, int height) = 0;
 	virtual int		BeginUpdate() = 0;
 	virtual int		EndUpdate() = 0;
-	virtual int		BeginDraw(const Camera &camera) = 0;
+	virtual int		BeginDraw() = 0;
 	virtual int		EndDraw() = 0;
 	virtual int		Finalize() = 0;
 

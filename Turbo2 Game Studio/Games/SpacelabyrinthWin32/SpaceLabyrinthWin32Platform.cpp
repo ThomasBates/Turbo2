@@ -4,28 +4,30 @@
 #include <math.h>
 
 #include "ApplicationWin32.h"
-#include "SpaceLabyrinthWin32.h"
+#include "SpaceLabyrinthWin32Platform.h"
 
 #include "Bitmap.h"
 #include "CanvasRGB.h"
 
-#pragma region SpaceLabyrinthWin32
+#pragma region SpaceLabyrinthWin32Platform
 
 #pragma region Constructors and Destructors
 
-SpaceLabyrinthWin32::SpaceLabyrinthWin32()
+SpaceLabyrinthWin32Platform::SpaceLabyrinthWin32Platform()
 {
 }
 
-SpaceLabyrinthWin32::~SpaceLabyrinthWin32()
+SpaceLabyrinthWin32Platform::~SpaceLabyrinthWin32Platform()
 {
 }
 
 #pragma endregion
 #pragma region ISpaceLabyrinthPlatform Methods
 
-BOOL SpaceLabyrinthWin32::Initialize()
-{			
+BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
+{
+	_camera = camera;
+
 	glShadeModel(GL_SMOOTH);						// Enables Smooth Shading
 
 	glClearColor(0.5f, 1.0f, 1.0f, 1.0f);					// White Background
@@ -41,6 +43,19 @@ BOOL SpaceLabyrinthWin32::Initialize()
 		glEnable(GL_TEXTURE_2D);						// Enable Texture Mapping ( NEW )
 	}
 
+	GLfloat LightAmbient[]= { 10.0f, 10.0f, 10.0f, 1.0f };	
+	GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };	
+	GLfloat LightPosition[]= { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	glEnable(GL_LIGHTING);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+	glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 0);
+	glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 2);
+	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 2);
+	glEnable(GL_LIGHT1);
+
 	_hRC = Win32Application->GetRenderingContext();
 	_hDC = Win32Application->GetDeviceContext();
 
@@ -51,7 +66,7 @@ BOOL SpaceLabyrinthWin32::Initialize()
 	return TRUE;								// Everything Went OK
 }
 
-BOOL SpaceLabyrinthWin32::Resize(int width, int height)
+BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
 {
 	if (width == 0)
 		width = 1;
@@ -71,7 +86,7 @@ BOOL SpaceLabyrinthWin32::Resize(int width, int height)
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::BeginUpdate()
+BOOL SpaceLabyrinthWin32Platform::BeginUpdate()
 {
 	LARGE_INTEGER count;
 	QueryPerformanceCounter(&count);
@@ -83,12 +98,12 @@ BOOL SpaceLabyrinthWin32::BeginUpdate()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::EndUpdate()
+BOOL SpaceLabyrinthWin32Platform::EndUpdate()
 {
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::BeginDraw(const Camera &camera)
+BOOL SpaceLabyrinthWin32Platform::BeginDraw()
 {
 	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear The Screen And The Depth Buffer
@@ -96,14 +111,14 @@ BOOL SpaceLabyrinthWin32::BeginDraw(const Camera &camera)
 
 	glPushMatrix();
 
-	gluLookAt(camera.Position.X, camera.Position.Y, camera.Position.Z,
-			  camera.Target.X, camera.Target.Y, camera.Target.Z,
-			  camera.Up.X, camera.Up.Y, camera.Up.Z);
+	gluLookAt(_camera->Position.X, _camera->Position.Y, _camera->Position.Z,
+			  _camera->Target.X,   _camera->Target.Y,   _camera->Target.Z,
+			  _camera->Up.X,       _camera->Up.Y,       _camera->Up.Z);
 
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::EndDraw()
+BOOL SpaceLabyrinthWin32Platform::EndDraw()
 {
 	glPopMatrix();
 
@@ -112,12 +127,12 @@ BOOL SpaceLabyrinthWin32::EndDraw()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::Finalize()
+BOOL SpaceLabyrinthWin32Platform::Finalize()
 {
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32::DrawCorner(MazeObject *corner)
+BOOL SpaceLabyrinthWin32Platform::DrawCorner(MazeObject *corner)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();	
@@ -125,31 +140,37 @@ BOOL SpaceLabyrinthWin32::DrawCorner(MazeObject *corner)
 	SetCornerTexture();
 	glBegin(GL_QUADS);
 		// Front Face
+		glNormal3f(0,0,1);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
 		// Back Face
+		glNormal3f(0,0,-1);
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
 		// Top Face
+		glNormal3f(0,1,0);
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
 		// Bottom Face
+		glNormal3f(0,-1,0);
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
 		// Right face
+		glNormal3f(1,0,0);
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
 		// Left Face
+		glNormal3f(-1,0,0);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
@@ -162,7 +183,7 @@ BOOL SpaceLabyrinthWin32::DrawCorner(MazeObject *corner)
 	return TRUE;								// Keep Going
 }
 
-BOOL SpaceLabyrinthWin32::DrawEdge(MazeObject *edge)
+BOOL SpaceLabyrinthWin32Platform::DrawEdge(MazeObject *edge)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();	
@@ -170,31 +191,37 @@ BOOL SpaceLabyrinthWin32::DrawEdge(MazeObject *edge)
 	SetEdgeTexture();
 	glBegin(GL_QUADS);
 		// Front Face
+		glNormal3f(0,0,1);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
 		// Back Face
+		glNormal3f(0,0,-1);
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
 		// Top Face
+		glNormal3f(0,1,0);
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
 		// Bottom Face
+		glNormal3f(0,-1,0);
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
 		// Right face
+		glNormal3f(1,0,0);
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
 		// Left Face
+		glNormal3f(-1,0,0);
 		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
 		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
 		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
@@ -207,7 +234,7 @@ BOOL SpaceLabyrinthWin32::DrawEdge(MazeObject *edge)
 	return TRUE;								// Keep Going
 }
 
-BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
+BOOL SpaceLabyrinthWin32Platform::DrawWall(MazeObject *wall)
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();	
@@ -217,11 +244,13 @@ BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
 		SetWallTexture();
 		glBegin(GL_QUADS);
 			// Front Face
+			glNormal3f(0,0,1);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
 			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
 			// Back Face
+			glNormal3f(0,0,-1);
 			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
@@ -234,6 +263,7 @@ BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
 		SetFloorTexture();
 		glBegin(GL_QUADS);
 			// Top Face
+			glNormal3f(0,1,0);
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Bottom Left Of The Texture and Quad
 			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Bottom Right Of The Texture and Quad
@@ -242,6 +272,7 @@ BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
 		SetCeilingTexture();
 		glBegin(GL_QUADS);
 			// Bottom Face
+			glNormal3f(0,-1,0);
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Top Right Of The Texture and Quad
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Top Left Of The Texture and Quad
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
@@ -254,11 +285,13 @@ BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
 		SetWallTexture();
 		glBegin(GL_QUADS);
 			// Right face
+			glNormal3f(1,0,0);
 			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
 			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
 			// Left Face
+			glNormal3f(-1,0,0);
 			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
 			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
 			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
@@ -272,7 +305,7 @@ BOOL SpaceLabyrinthWin32::DrawWall(MazeObject *wall)
 	return TRUE;								// Keep Going
 }
 
-int SpaceLabyrinthWin32::GetNavigationInfo(NavInfo *navInfo)
+int SpaceLabyrinthWin32Platform::GetNavigationInfo(NavInfo *navInfo)
 {
 	if (navInfo != NULL)
 	{
@@ -325,7 +358,7 @@ int SpaceLabyrinthWin32::GetNavigationInfo(NavInfo *navInfo)
 #pragma endregion
 #pragma region Local Support Methods
 
-int SpaceLabyrinthWin32::LoadTextures()
+int SpaceLabyrinthWin32Platform::LoadTextures()
 {
 	int status=TRUE;							// Status Indicator
 
@@ -351,7 +384,7 @@ int SpaceLabyrinthWin32::LoadTextures()
 	return status;								// Return The Status
 }
 
-int SpaceLabyrinthWin32::LoadTexture(int id, const char *fileName)					// Loads A Bitmap Image
+int SpaceLabyrinthWin32Platform::LoadTexture(int id, const char *fileName)					// Loads A Bitmap Image
 {
 	int Status=FALSE;							// Status Indicator
 
@@ -377,7 +410,7 @@ int SpaceLabyrinthWin32::LoadTexture(int id, const char *fileName)					// Loads 
 	return Status;								// Return The Status
 }
 
-IImage *SpaceLabyrinthWin32::LoadImage(const char *fileName)					// Loads A Bitmap Image
+IImage *SpaceLabyrinthWin32Platform::LoadImage(const char *fileName)					// Loads A Bitmap Image
 {
 	IImage *image = new Bitmap(new CanvasRGB(0,0));
 	image->LoadFromFile(fileName);
@@ -385,31 +418,31 @@ IImage *SpaceLabyrinthWin32::LoadImage(const char *fileName)					// Loads A Bitm
 	return image;
 }
 
-void SpaceLabyrinthWin32::SetCornerTexture()
+void SpaceLabyrinthWin32Platform::SetCornerTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[3]);				// Select Our Texture
 //	glColor3f(0,0,0);
 }
 
-void SpaceLabyrinthWin32::SetEdgeTexture()
+void SpaceLabyrinthWin32Platform::SetEdgeTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[4]);				// Select Our Texture
 //	glColor3f(0.1,0.1,0.1);
 }
 
-void SpaceLabyrinthWin32::SetWallTexture()
+void SpaceLabyrinthWin32Platform::SetWallTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[1]);				// Select Our Texture
 //	glColor3f(0.25,0.25,0.25);
 }
 
-void SpaceLabyrinthWin32::SetCeilingTexture()
+void SpaceLabyrinthWin32Platform::SetCeilingTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[0]);				// Select Our Texture
 //	glColor3f(0,0,0.5);
 }
 
-void SpaceLabyrinthWin32::SetFloorTexture()
+void SpaceLabyrinthWin32Platform::SetFloorTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
 //	glColor3f(0,0.5,0);

@@ -9,7 +9,7 @@
 class SpaceLabyrinth: public IProgram
 {
 private:
-	ISpaceLabyrinthPlatform *_factory;
+	ISpaceLabyrinthPlatform *_platform;
 	IMazeFactory *_mazeFactory;
 
 	IMaze *_maze;

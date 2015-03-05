@@ -10,11 +10,7 @@ class SpaceLabyrinthNDS : public ISpaceLabyrinthFactory
 private:
 	ApplicationNDS *_application;
 	int				_texture[6];
-	Vector			_right;
-	Vector			_up;
-	Vector			_back;
-	Vector			_position;
-//	Matrix3			_camera;
+	Camera		   *_camera;
 	unsigned int	_ticks;
 	float			_time;
 	float			_deltaTime;
@@ -25,11 +21,11 @@ public:
 	~SpaceLabyrinthNDS();
 
 	//  ISpaceLabyrinthFactory Methods
-	virtual int Initialize();
+	virtual int Initialize(Camera *camera);
 	virtual int Resize(int width, int height);
 	virtual int BeginUpdate();
 	virtual int EndUpdate();
-	virtual int BeginDraw(const Camera &camera);
+	virtual int BeginDraw();
 	virtual int EndDraw();
 	virtual int Finalize();
 
@@ -51,4 +47,5 @@ protected:
 	virtual void SetWallTexture();
 	virtual void SetCeilingTexture();
 	virtual void SetFloorTexture();
+	virtual void SetVertex(float x, float y, float z, float u, float v);
 };

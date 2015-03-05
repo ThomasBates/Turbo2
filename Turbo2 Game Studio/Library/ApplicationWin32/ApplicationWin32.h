@@ -77,8 +77,8 @@ public:
 
 protected:
 	//  Local Support Methods
-	virtual BOOL CreateAppWindow(int width, int height, int bits);
-	virtual void KillAppWindow();
+	virtual BOOL CreateApplicationWindow(int width, int height, int bits);
+	virtual void KillApplicationWindow();
 	virtual BOOL ProcessMessage(MSG *msg);
 };
 

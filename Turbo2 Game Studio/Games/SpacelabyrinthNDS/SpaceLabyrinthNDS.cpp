@@ -15,6 +15,7 @@
 
 #define TIMER_SPEED ((float)TIMER_HZ/(float)1024)
 
+int colors = 1;
 
 
 //  ============================================================================
@@ -36,8 +37,9 @@ SpaceLabyrinthNDS::~SpaceLabyrinthNDS()
 //----------------------------------------------------------------------------------------------------------------------
 //============  ISpaceLabyrinthFactory Methods  ------------------------------------------------------------------------
 
-int SpaceLabyrinthNDS::Initialize()
+int SpaceLabyrinthNDS::Initialize(Camera *camera)
 {
+	_camera = camera;
 		
 	// Setup the Main screen for 3D 
 	videoSetMode(MODE_0_3D);
@@ -100,16 +102,16 @@ int SpaceLabyrinthNDS::EndUpdate()
 	return TRUE;
 }
 
-int SpaceLabyrinthNDS::BeginDraw(const Camera &camera)
+int SpaceLabyrinthNDS::BeginDraw()
 {
 	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
 	glLoadIdentity();					// Reset The Current Modelview Matrix
 
 	glPushMatrix();
 
-	gluLookAt(camera.Position.X, camera.Position.Y, camera.Position.Z,
-			  camera.Target.X, camera.Target.Y, camera.Target.Z,
-			  camera.Up.X, camera.Up.Y, camera.Up.Z);
+	gluLookAt(_camera->Position.X, _camera->Position.Y, _camera->Position.Z,
+			  _camera->Target.X,   _camera->Target.Y,   _camera->Target.Z,
+			  _camera->Up.X,       _camera->Up.Y,       _camera->Up.Z);
 
 	return TRUE;
 }
@@ -139,36 +141,36 @@ int SpaceLabyrinthNDS::DrawCorner(MazeObject *corner)
 	SetCornerTexture();
 	glBegin(GL_QUADS);
 		// Front Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Bottom, corner->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
 		// Back Face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Bottom, corner->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
 		// Top Face
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
 		// Bottom Face
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Bottom, corner->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Bottom, corner->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
 		// Right face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(corner->Right, corner->Top,    corner->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(corner->Right, corner->Bottom, corner->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
 		// Left Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-	glEnd();
+		SetVertex(corner->Left,  corner->Bottom, corner->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Bottom, corner->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(corner->Left,  corner->Top,    corner->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+	glEnd();                                                
 
 	// Pop our Matrix from the stack (restore state)
 	glPopMatrix(1);
@@ -184,36 +186,36 @@ int SpaceLabyrinthNDS::DrawEdge(MazeObject *edge)
 	SetEdgeTexture();
 	glBegin(GL_QUADS);
 		// Front Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Bottom, edge->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
 		// Back Face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Bottom, edge->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
 		// Top Face
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
 		// Bottom Face
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Bottom, edge->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Bottom, edge->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
 		// Right face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(edge->Right, edge->Top,    edge->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		SetVertex(edge->Right, edge->Bottom, edge->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
 		// Left Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-	glEnd();
+		SetVertex(edge->Left,  edge->Bottom, edge->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Bottom, edge->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		SetVertex(edge->Left,  edge->Top,    edge->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+	glEnd();                                          
 
 	// Pop our Matrix from the stack (restore state)
 	glPopMatrix(1);
@@ -231,16 +233,16 @@ int SpaceLabyrinthNDS::DrawWall(MazeObject *wall)
 		SetWallTexture();
 		glBegin(GL_QUADS);
 			// Front Face
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Bottom, wall->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Top,    wall->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
 			// Back Face
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
-		glEnd();
+			SetVertex(wall->Left,  wall->Bottom, wall->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Top,    wall->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+		glEnd();                                          
 	}
 
 	if (wall->Top - wall->Bottom < wall->Right - wall->Left)
@@ -248,19 +250,19 @@ int SpaceLabyrinthNDS::DrawWall(MazeObject *wall)
 		SetFloorTexture();
 		glBegin(GL_QUADS);
 			// Top Face
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-		glEnd();
+			SetVertex(wall->Left,  wall->Top,    wall->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Top,    wall->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+		glEnd();                                          
 		SetCeilingTexture();
 		glBegin(GL_QUADS);
 			// Bottom Face
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-		glEnd();
+			SetVertex(wall->Left,  wall->Bottom, wall->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Bottom, wall->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+		glEnd();                                          
 	}
 
 	if (wall->Right - wall->Left < wall->Back - wall->Front)
@@ -268,16 +270,16 @@ int SpaceLabyrinthNDS::DrawWall(MazeObject *wall)
 		SetWallTexture();
 		glBegin(GL_QUADS);
 			// Right face
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Front, 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Front, 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+			SetVertex(wall->Right, wall->Top,    wall->Back , 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+			SetVertex(wall->Right, wall->Bottom, wall->Back , 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
 			// Left Face
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-		glEnd();
+			SetVertex(wall->Left,  wall->Bottom, wall->Front, 0.0f, 0.0f); 	// Bottom Left Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Bottom, wall->Back , 1.0f, 0.0f); 	// Bottom Right Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Top,    wall->Back , 1.0f, 1.0f); 	// Top Right Of The Texture and Quad
+			SetVertex(wall->Left,  wall->Top,    wall->Front, 0.0f, 1.0f); 	// Top Left Of The Texture and Quad
+		glEnd();                                          
 	}
 
 	// Pop our Matrix from the stack (restore state)
@@ -459,8 +461,6 @@ IImage *SpaceLabyrinthNDS::LoadImage(const u8 *imageData)					// Loads A Bitmap 
 	return image;
 }
 
-int colors = 1;
-
 void SpaceLabyrinthNDS::SetCornerTexture()
 {
 	if (colors)
@@ -501,5 +501,23 @@ void SpaceLabyrinthNDS::SetFloorTexture()
 		glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
 }
 
+void SpaceLabyrinthNDS::SetVertex(float x, float y, float z, float u, float v)
+{
+	glTexCoord2f(u, v);
+	
+//	float distance = (_camera->Position - Vector(x,y,z)).Length();
+/*
+	float distance = abs(_camera->Position.X - x)
+	               + abs(_camera->Position.Y - y)
+				   + abs(_camera->Position.Z - z);
+*/
+/*
+	float shade = 2/distance;
+	if (shade < 0.0) shade = 0.0;
+	if (shade > 1.0) shade = 1.0;
+	glColor3f(shade, shade, shade);
+*/
+	glVertex3f(x, y, z);
+}
 
 //----------------------------------------------------------------------------------------------------------------------
