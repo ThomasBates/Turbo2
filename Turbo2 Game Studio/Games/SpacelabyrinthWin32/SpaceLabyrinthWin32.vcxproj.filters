@@ -31,6 +31,9 @@
     <Filter Include="Header Files\Graphics">
       <UniqueIdentifier>{1f5b89fc-17d2-4661-a312-101c83319461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Data">
+      <UniqueIdentifier>{ae8837a1-22c2-430d-851b-2cf4fdb9334a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\Application\IApplication.h">
@@ -98,5 +101,31 @@
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\BIGHEAD.BMP">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\BIGHEAD2.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\Mandelbrot%27s Eye.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\POKEBALL.BMP">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\test.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\test1.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\test2.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
+    <None Include="Data\test3.bmp">
+      <Filter>Resource Files\Data</Filter>
+    </None>
   </ItemGroup>
 </Project>

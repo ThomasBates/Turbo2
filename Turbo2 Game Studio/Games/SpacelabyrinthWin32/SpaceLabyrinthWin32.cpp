@@ -1,4 +1,6 @@
 
+//  Adapted from Jeff Molofee's tutorials at http://nehe.gamedev.net/
+
 #include "Bitmap.h"
 #include "CanvasRGB.h"
 #include "SpaceLabyrinthWin32.h"
@@ -21,8 +23,8 @@ int SpaceLabyrinthWin32::Initialize()
 {
 	glShadeModel(GL_SMOOTH);						// Enables Smooth Shading
 
-//	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);					// Black Background
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);					// Black Background
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);					// Black Background
+//	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);					// White Background
 
 	glClearDepth(1.0f);							// Depth Buffer Setup
 	glEnable(GL_DEPTH_TEST);						// Enables Depth Testing
@@ -165,12 +167,14 @@ int SpaceLabyrinthWin32::LoadTextures()
 {
 	int status=TRUE;							// Status Indicator
 
-	LoadTexture(0, "C:\\Development\\Turbo2\\test.bmp");
-	LoadTexture(1, "C:\\Development\\Turbo2\\test1.bmp");
-	LoadTexture(2, "C:\\Development\\Turbo2\\test2.bmp");
-	LoadTexture(3, "C:\\Development\\Turbo2\\Mandelbrot's Eye.bmp");
-	LoadTexture(4, "C:\\Development\\Turbo2\\BigHead.bmp");
-	LoadTexture(5, "C:\\Development\\Turbo2\\PokeBall.bmp");
+	glGenTextures(6, texture);					// Create The Texture
+
+	LoadTexture(0, "Data\\test.bmp");
+	LoadTexture(1, "Data\\test1.bmp");
+	LoadTexture(2, "Data\\test2.bmp");
+	LoadTexture(3, "Data\\Mandelbrot's Eye.bmp");
+	LoadTexture(4, "Data\\BigHead.bmp");
+	LoadTexture(5, "Data\\PokeBall.bmp");
 
 	return status;								// Return The Status
 }
@@ -179,23 +183,18 @@ int SpaceLabyrinthWin32::LoadTexture(int id, const char *fileName)					// Loads 
 {
 	int Status=FALSE;							// Status Indicator
 
-	IImage *textureImage = 0;					// Create Storage Space For The Texture
-
 	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-	if (textureImage = LoadImage(fileName))
+	IImage *textureImage = LoadImage(fileName);
+	if (textureImage)
 	{
 		Status=TRUE;							// Set The Status To TRUE
-
-		glGenTextures(1, &texture[id]);					// Create The Texture
 
 		// Typical Texture Generation Using Data From The Bitmap
 		glBindTexture(GL_TEXTURE_2D, texture[id]);
 
 		// Generate The Texture
-		int sizeX = textureImage->GetCanvas()->GetWidth();
-		int sizeY = textureImage->GetCanvas()->GetHeight();
 		void *data = textureImage->GetCanvas()->GetData();
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, sizeX, sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	// Linear Filtering
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	// Linear Filtering
@@ -209,12 +208,7 @@ int SpaceLabyrinthWin32::LoadTexture(int id, const char *fileName)					// Loads 
 IImage *SpaceLabyrinthWin32::LoadImage(const char *fileName)					// Loads A Bitmap Image
 {
 	IImage *image = new Bitmap(new CanvasRGB(0,0));
-	if (!image->LoadFromFile(fileName))
-	{
-		delete image;
-		return NULL;
-	}
-
+	image->LoadFromFile(fileName);
 	image->Draw(256,256,IMG_ZOOM);
 	return image;
 }

@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "OriginalMazeFactory.h"
 #include "OriginalMaze.h"
@@ -26,11 +27,11 @@
 /*                                                                          */
 /*                             000010      100000                           */
 /*                                       D                                  */
-/*                                    ^ ¿                                   */
+/*                                    ^ >                                   */
 /*                                    |/                                    */
 /*                        000001   <--*--> W 001000                         */
 /*                                   /|                                     */
-/*                                  À v                                     */
+/*                                  < v                                     */
 /*                                                                          */
 /*                          000100    H 010000                              */
 /*                                                                          */
@@ -58,6 +59,9 @@ IMaze *OriginalMazeFactory::MakeMaze(int width, int height, int depth)
 	location	size = { width, height, depth };
 	location	in = { width/2, height/2, 0 };
 	location	out = { width/2, height/2, depth };
+
+	time_t now;	/*  used with "time" to randomize seed for "rand"  */
+	srand( time( &now ) % 0xFFFF );
 	
 	AllocateMaze( &maze, size );
 

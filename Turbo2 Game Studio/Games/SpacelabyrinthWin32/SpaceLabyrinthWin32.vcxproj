@@ -101,6 +101,16 @@
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h" />
     <ClInclude Include="SpaceLabyrinthWin32.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\BIGHEAD.BMP" />
+    <None Include="Data\BIGHEAD2.bmp" />
+    <None Include="Data\Mandelbrot%27s Eye.bmp" />
+    <None Include="Data\POKEBALL.BMP" />
+    <None Include="Data\test.bmp" />
+    <None Include="Data\test1.bmp" />
+    <None Include="Data\test2.bmp" />
+    <None Include="Data\test3.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

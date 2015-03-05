@@ -8,11 +8,13 @@ endif
 
 include $(DEVKITARM)/ds_rules
 
-PROJECTSOURCES	:=	../../Library/Application \
-					../../Library/ApplicationNDS \
-					../../Library/Graphics \
-					../../Library/GraphicsNDS \
-					../SpaceLabyrinth
+#TURBO2			:=	/Development/Turbo2
+TURBO2			:=	../..
+PROJECTSOURCES	:=	$(TURBO2)/Library/Application \
+					$(TURBO2)/Library/ApplicationNDS \
+					$(TURBO2)/Library/Graphics \
+					$(TURBO2)/Library/GraphicsNDS \
+					$(TURBO2)/Games/SpaceLabyrinth
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -111,8 +113,8 @@ clean:
 run:
 	@echo run ...
 	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
-#	@C:\Development\devkitpro\emulators\desmume\desmume.exe $(TARGET).nds
-	@C:\\Progra~1\\DeSmuME\\desmume.exe $(TARGET).nds
+	@C:\Development\devkitpro\emulators\desmume\desmume.exe $(TARGET).nds
+#	@C:\\Progra~1\\DeSmuME\\desmume.exe $(TARGET).nds
 	
  
 #---------------------------------------------------------------------------------

@@ -35,15 +35,15 @@ public:
 	virtual int Run(IProgram *program);
 
 	//  Public Access Methods
+	virtual void ProcessMessages();
 	virtual void Resize(int width, int height);
 
 protected:
 	//  Local Support Methods
-	virtual int CreateGLWindow(int width, int height, int bits);
-	virtual void InitSubSprites();
-	virtual int InitGL();
-	virtual int DrawGLScene();
-	virtual void KillGLWindow();
+	virtual int CreateAppWindow(int width, int height, int bits);
+	//virtual int InitGL();
+	//virtual int DrawGLScene();
+	virtual void KillAppWindow();
 };
 
 extern ApplicationNDS* NDSApplication;

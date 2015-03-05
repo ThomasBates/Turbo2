@@ -3,9 +3,6 @@
 
 #include <stdio.h>						// Header File For Standard Input/Output ( NEW )
 #include <windows.h>					// Header File For Windows
-#include <gl\gl.h>						// Header File For The OpenGL32 Library
-#include <gl\glu.h>						// Header File For The GLu32 Library
-//nclude <gl\glaux.h>					// Header File For The GLaux Library
 
 #include "IApplication.h"
 
@@ -48,7 +45,7 @@ public:
 	void SetKey(int keyIndex, BOOL keyDown) { _keys[keyIndex] = keyDown; }
 
 	//  IApplication Methods
-	virtual int Run(IProgram *program);
+	virtual BOOL Run(IProgram *program);
 
 	//  Public Access Methods
 	virtual void ProcessMessages();

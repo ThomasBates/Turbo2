@@ -1,12 +1,13 @@
-//  ============================================================================
+//  ====================================================================================================================
 //  SpaceLabyrinth.cpp
-//  ============================================================================
+//  ====================================================================================================================
+
 #include <stdlib.h>
 
 #include "SpaceLabyrinth.h"
 #include "OriginalMazeFactory.h"
 
-//  Constructors and Destructors  ==============================================
+//  Constructors and Destructors  ======================================================================================
 
 SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthFactory *factory)
 {
@@ -24,7 +25,7 @@ SpaceLabyrinth::~SpaceLabyrinth()
 	delete _mazeFactory;
 }
 
-//  IProgram Methods  ==========================================================
+//  IProgram Methods  ==================================================================================================
 
 int SpaceLabyrinth::Initialize()
 {
@@ -33,19 +34,6 @@ int SpaceLabyrinth::Initialize()
 
 int SpaceLabyrinth::Update()
 {
-/*
-	// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()
-	if (_active)						// Program Active?
-	{
-
-		if (!_program->Update())		// Draw The Scene
-		{
-			_done = TRUE;
-			return FALSE;
-		}
-
-	}
-*/
 	_factory->BeginUpdate();
 
 	DrawMaze(_maze);
@@ -70,7 +58,7 @@ int SpaceLabyrinth::Finalize()
 	return _factory->Finalize();
 }
 
-//  Local Support Methods  =====================================================
+//  Local Support Methods  =============================================================================================
 
 int SpaceLabyrinth::DrawMaze(IMaze *maze)
 {

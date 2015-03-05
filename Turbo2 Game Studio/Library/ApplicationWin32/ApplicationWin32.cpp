@@ -98,21 +98,21 @@ ApplicationWin32::~ApplicationWin32()
 #pragma endregion
 #pragma region IApplication Methods
 
-int ApplicationWin32::Run(IProgram *program)
+BOOL ApplicationWin32::Run(IProgram *program)
 {
 	if (!_ready)
-		return 0;
+		return FALSE;
 
 	if (!program)
-		return 0;
+		return FALSE;
 
 	_program = program;
 
 	if (!program->Resize(_width, _height))
-		return 0;
+		return FALSE;
 
 	if (!program->Initialize())
-		return 0;
+		return FALSE;
 
 	while(!_done)								// Loop That Runs Until done=TRUE
 	{
@@ -122,9 +122,9 @@ int ApplicationWin32::Run(IProgram *program)
 		if (!program->Update())		// Draw The Scene
 			break;
 
-		if (_keys[VK_F1])					// Is F1 Being Pressed?
+		if (_keys[VK_CONTROL] && _keys[VK_RETURN])					// Is Ctrl-Enter Being Pressed?
 		{
-			_keys[VK_F1]=FALSE;				// If So Make Key FALSE
+			_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
 
 			KillAppWindow();					// Kill Our Current Window
 			_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
@@ -178,7 +178,7 @@ void ApplicationWin32::Resize(int width, int height)				// Resize And Initialize
 
 BOOL ApplicationWin32::CreateAppWindow(int width, int height, int bits)
 {
-	GLuint		PixelFormat;						// Holds The Results After Searching For A Match
+	int			PixelFormat;						// Holds The Results After Searching For A Match
 	WNDCLASS	wc;							// Windows Class Structure
 	DWORD		dwExStyle;						// Window Extended Style
 	DWORD		dwStyle;						// Window Style
