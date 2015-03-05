@@ -8,9 +8,9 @@
 
 int main()
 {
-	ApplicationNDS *application = new ApplicationNDS();
-
-	ISpaceLabyrinthFactory *factory = new SpaceLabyrinthNDS(application);
+	new ApplicationNDS();
+	new SpaceLabyrinthNDS();
+	
 	IProgram *program = new SpaceLabyrinth(factory);
 
 	int result = application->Run(program);

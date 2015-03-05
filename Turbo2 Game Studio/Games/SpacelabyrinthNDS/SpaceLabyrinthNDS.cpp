@@ -1,22 +1,26 @@
 
+#include <math.h>
+
 #include "Bitmap.h"
 #include "CanvasRGB15.h"
 #include "SpaceLabyrinthNDS.h"
 
-#include "BIGHEAD_BMP_BIN.h"
-#include "BIGHEAD2_BMP_BIN.h"
-#include "MandelbrotEye_bmp_bin.h"
-#include "POKEBALL_BMP_bin.h"
-#include "test1_bmp_bin.h"
-#include "test2_bmp_bin.h"
-#include "test3_bmp_bin.h"
-#include "test_bmp_bin.h"
+#include "stonefloor1_bmp_bin.h"
+#include "stonefloor2_bmp_bin.h"
+#include "stonefloor3_bmp_bin.h"
+#include "stonefloor4_bmp_bin.h"
+#include "stonefloor5_bmp_bin.h"
+#include "stonewall1_bmp_bin.h"
+#include "stonewall2_bmp_bin.h"
 
 #define TIMER_SPEED ((float)TIMER_HZ/(float)1024)
+
+
 
 //  ============================================================================
 //              SpaceLabyrinthNDS
 //  ============================================================================
+
 
 //============  Constructors and Destructors  --------------------------------------------------------------------------
 
@@ -37,7 +41,9 @@ int SpaceLabyrinthNDS::Initialize()
 		
 	// Setup the Main screen for 3D 
 	videoSetMode(MODE_0_3D);
-		
+
+	lcdMainOnBottom();
+
 	// initialize the geometry engine
 	glInit();
 	
@@ -45,7 +51,7 @@ int SpaceLabyrinthNDS::Initialize()
 	glEnable(GL_ANTIALIAS);
 	
 	// setup the rear plane
-	glClearColor(31,31,31,31); // BG must be opaque for AA to work
+	glClearColor(16,31,31,31); // BG must be opaque for AA to work
 	glClearPolyID(63); // BG must have a unique polygon ID for AA to work
 	glClearDepth(0x7FFF);
 	
@@ -58,17 +64,11 @@ int SpaceLabyrinthNDS::Initialize()
 	}
 
 	timerStart(0, ClockDivider_1024, 0, NULL);
-
+	
+	_ticks		= timerElapsed(0);
 
 	return TRUE;						// Everything Went OK
 }
-
-/*
-int SpaceLabyrinthNDS::Reset()
-{
-	return Initialize();
-}
-*/
 
 int SpaceLabyrinthNDS::Resize(int width, int height)
 {
@@ -86,9 +86,6 @@ int SpaceLabyrinthNDS::Resize(int width, int height)
 
 int SpaceLabyrinthNDS::BeginUpdate()
 {
-	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
-	glLoadIdentity();					// Reset The Current Modelview Matrix
-
 	unsigned int ticks = timerElapsed(0);
 	_ticks += ticks;
 	
@@ -100,8 +97,26 @@ int SpaceLabyrinthNDS::BeginUpdate()
 
 int SpaceLabyrinthNDS::EndUpdate()
 {
-	//a handy little built in function to wait for a screen refresh
-	//swiWaitForVBlank();
+	return TRUE;
+}
+
+int SpaceLabyrinthNDS::BeginDraw(const Camera &camera)
+{
+	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
+	glLoadIdentity();					// Reset The Current Modelview Matrix
+
+	glPushMatrix();
+
+	gluLookAt(camera.Position.X, camera.Position.Y, camera.Position.Z,
+			  camera.Target.X, camera.Target.Y, camera.Target.Z,
+			  camera.Up.X, camera.Up.Y, camera.Up.Z);
+
+	return TRUE;
+}
+
+int SpaceLabyrinthNDS::EndDraw()
+{
+	glPopMatrix(1);
 
 	// flush to screen	
 	glFlush(0);
@@ -116,65 +131,159 @@ int SpaceLabyrinthNDS::Finalize()
 	return TRUE;
 }
 
-int SpaceLabyrinthNDS::DrawWall(float left, float top, float back, float right, float bottom, float front)
+int SpaceLabyrinthNDS::DrawCorner(MazeObject *corner)
 {
-	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
-	//Push our original Matrix onto the stack (save state)
+	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();	
 
-	glBindTexture(GL_TEXTURE_2D, _texture[0]);				// Select Our Texture
+	SetCornerTexture();
 	glBegin(GL_QUADS);
 		// Front Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    back );	// Top Left Of The Texture and Quad
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _texture[1]);				// Select Our Texture
-	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
 		// Back Face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, top,    front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, front);	// Bottom Left Of The Texture and Quad
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
-	glBegin(GL_QUADS);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
 		// Top Face
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  top,    back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, top,    back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    front);	// Top Right Of The Texture and Quad
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _texture[3]);				// Select Our Texture
-	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
 		// Bottom Face
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  bottom, front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, bottom, front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Right Of The Texture and Quad
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _texture[4]);				// Select Our Texture
-	glBegin(GL_QUADS);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
 		// Right face
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(right, bottom, front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(right, top,    front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(right, top,    back );	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(right, bottom, back );	// Bottom Left Of The Texture and Quad
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, _texture[5]);				// Select Our Texture
-	glBegin(GL_QUADS);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
 		// Left Face
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(left,  bottom, front);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(left,  bottom, back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(left,  top,    back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(left,  top,    front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
 	glEnd();
 
 	// Pop our Matrix from the stack (restore state)
 	glPopMatrix(1);
 
-	return true;								// Keep Going
+	return TRUE;								// Keep Going
+}
+
+int SpaceLabyrinthNDS::DrawEdge(MazeObject *edge)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();	
+
+	SetEdgeTexture();
+	glBegin(GL_QUADS);
+		// Front Face
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
+		// Back Face
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
+		// Top Face
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
+		// Bottom Face
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
+		// Right face
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
+		// Left Face
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
+	glEnd();
+
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix(1);
+
+	return TRUE;								// Keep Going
+}
+
+int SpaceLabyrinthNDS::DrawWall(MazeObject *wall)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();	
+
+	if (wall->Back - wall->Front < wall->Top - wall->Bottom)
+	{
+		SetWallTexture();
+		glBegin(GL_QUADS);
+			// Front Face
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
+			// Back Face
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
+		glEnd();
+	}
+
+	if (wall->Top - wall->Bottom < wall->Right - wall->Left)
+	{
+		SetFloorTexture();
+		glBegin(GL_QUADS);
+			// Top Face
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Bottom Left Of The Texture and Quad
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Bottom Right Of The Texture and Quad
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
+		glEnd();
+		SetCeilingTexture();
+		glBegin(GL_QUADS);
+			// Bottom Face
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Top Right Of The Texture and Quad
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Top Left Of The Texture and Quad
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
+		glEnd();
+	}
+
+	if (wall->Right - wall->Left < wall->Back - wall->Front)
+	{
+		SetWallTexture();
+		glBegin(GL_QUADS);
+			// Right face
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
+			// Left Face
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
+			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
+			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
+		glEnd();
+	}
+
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix(1);
+
+	return TRUE;								// Keep Going
 }
 
 /*
@@ -216,41 +325,42 @@ int SpaceLabyrinthNDS::GetNavigationInfo(NavInfo *navInfo)
 		navInfo->PointerX	= touch.px;
 		navInfo->PointerY	= touch.py;
 
+		/*
 		int ctrl = keys & (KEY_L|KEY_R);
-		
-		navInfo->MoveLeft	= ctrl && (keys & KEY_LEFT);
-		navInfo->MoveRight	= ctrl && (keys & KEY_RIGHT);
-		navInfo->MoveDown	= ctrl && (keys & KEY_UP);
-		navInfo->MoveUp		= ctrl && (keys & KEY_DOWN);
-		navInfo->MoveFore	= ctrl && (keys & KEY_X);
-		navInfo->MoveBack	= ctrl && (keys & KEY_B);
+		navInfo->MoveLeft	= !ctrl && (keys & KEY_LEFT);
+		navInfo->MoveRight	= !ctrl && (keys & KEY_RIGHT);
+		navInfo->MoveDown	= !ctrl && (keys & KEY_DOWN);
+		navInfo->MoveUp		= !ctrl && (keys & KEY_UP);
+		navInfo->MoveFore	= !ctrl && (keys & KEY_X);
+		navInfo->MoveBack	= !ctrl && (keys & KEY_B);
 
-		navInfo->PitchFore	=!ctrl && (keys & KEY_UP);
-		navInfo->PitchBack	=!ctrl && (keys & KEY_DOWN);
-		navInfo->YawRight	=!ctrl && (keys & KEY_RIGHT);
-		navInfo->YawLeft	=!ctrl && (keys & KEY_LEFT);
-		navInfo->RollLeft	=!ctrl && (keys & KEY_Y);
-		navInfo->RollRight	=!ctrl && (keys & KEY_A);
+		navInfo->PitchFore	=  ctrl && (keys & KEY_UP);
+		navInfo->PitchBack	=  ctrl && (keys & KEY_DOWN);
+		navInfo->YawRight	=  ctrl && (keys & KEY_RIGHT);
+		navInfo->YawLeft	=  ctrl && (keys & KEY_LEFT);
+		navInfo->RollLeft	=  ctrl && (keys & KEY_Y);
+		navInfo->RollRight	=  ctrl && (keys & KEY_A);
+		*/
+
+		navInfo->MoveLeft	= 0;
+		navInfo->MoveRight	= 0;
+		navInfo->MoveDown	= 0;
+		navInfo->MoveUp		= 0;
+		navInfo->MoveFore	= (keys & KEY_L) || (keys & KEY_R); // keys & (KEY_L|KEY_R);
+		navInfo->MoveBack	= keys & KEY_SELECT;
+
+		navInfo->PitchFore	= keys & (KEY_UP    | KEY_X);
+		navInfo->PitchBack	= keys & (KEY_DOWN  | KEY_B);
+		navInfo->YawRight	= keys & (KEY_RIGHT | KEY_A);
+		navInfo->YawLeft	= keys & (KEY_LEFT  | KEY_Y);
+		navInfo->RollLeft	= 0;
+		navInfo->RollRight	= 0;
+		
+		navInfo->Restart	= keys & KEY_START;
 
 		return 1;
 	}
 	return 0;
-}
-
-int SpaceLabyrinthNDS::MoveCamera(float x, float y, float z)
-{
-	glMatrixMode(GL_PROJECTION);
-	glTranslatef(x, y, z);
-	return 1;
-}
-
-int SpaceLabyrinthNDS::RotateCamera(float x, float y, float z)
-{
-	glMatrixMode(GL_PROJECTION);
-	glRotatef(x,1.0f,0.0f,0.0f);						// Rotate On The X Axis
-	glRotatef(y,0.0f,1.0f,0.0f);						// Rotate On The Y Axis
-	glRotatef(z,0.0f,0.0f,1.0f);						// Rotate On The Z Axis
-	return 1;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -297,12 +407,22 @@ int SpaceLabyrinthNDS::LoadTextures()
 
 	glGenTextures(6, _texture);					// Create The Texture
 
-	LoadTexture(0, test_bmp_bin);
-	LoadTexture(1, test1_bmp_bin);
-	LoadTexture(2, test2_bmp_bin);
-	LoadTexture(3, MandelbrotEye_bmp_bin);
-	LoadTexture(4, BIGHEAD_BMP_bin);
-	LoadTexture(5, POKEBALL_BMP_bin);
+/*
+#include "stonefloor1_bmp_bin.h"
+#include "stonefloor2_bmp_bin.h"
+#include "stonefloor3_bmp_bin.h"
+#include "stonefloor4_bmp_bin.h"
+#include "stonefloor5_bmp_bin.h"
+#include "stonewall1_bmp_bin.h"
+#include "stonewall2_bmp_bin.h"
+*/
+
+	LoadTexture(0, stonefloor1_bmp_bin);
+	LoadTexture(1, stonewall1_bmp_bin);
+	LoadTexture(2, stonefloor3_bmp_bin);	//	Floor
+	LoadTexture(3, stonefloor3_bmp_bin);	//	Ceiling
+	LoadTexture(4, stonefloor4_bmp_bin);
+	LoadTexture(5, stonefloor2_bmp_bin);
 
 	return status;								// Return The Status
 }
@@ -323,7 +443,7 @@ int SpaceLabyrinthNDS::LoadTexture(int id, const u8 *imageData)					// Loads A B
 		// Generate The Texture
 		void *data = textureImage->GetCanvas()->GetData();
 		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_64, TEXTURE_SIZE_64, 0, TEXGEN_TEXCOORD, data);
-//		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, 0, TEXGEN_OFF, data);
+//		glTexImage2D(0, 0, GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, 0, TEXGEN_TEXCOORD, data);
 	}
 
 	delete textureImage;						// Free The Image Structure
@@ -338,5 +458,48 @@ IImage *SpaceLabyrinthNDS::LoadImage(const u8 *imageData)					// Loads A Bitmap 
 	image->Draw(64,64,IMG_ZOOM);
 	return image;
 }
+
+int colors = 1;
+
+void SpaceLabyrinthNDS::SetCornerTexture()
+{
+	if (colors)
+		glColor3f(0,0,0);
+	else
+		glBindTexture(GL_TEXTURE_2D, _texture[3]);				// Select Our Texture
+}
+
+void SpaceLabyrinthNDS::SetEdgeTexture()
+{
+	if (colors)
+		glColor3f(0.3,0.3,0.3);
+	else
+		glBindTexture(GL_TEXTURE_2D, _texture[4]);				// Select Our Texture
+}
+
+void SpaceLabyrinthNDS::SetWallTexture()
+{
+	if (colors)
+		glColor3f(0.35,0.35,0.35);
+	else
+		glBindTexture(GL_TEXTURE_2D, _texture[1]);				// Select Our Texture
+}
+
+void SpaceLabyrinthNDS::SetCeilingTexture()
+{
+	if (colors)
+		glColor3f(0,0,0.35);
+	else
+		glBindTexture(GL_TEXTURE_2D, _texture[0]);				// Select Our Texture
+}
+
+void SpaceLabyrinthNDS::SetFloorTexture()
+{
+	if (colors)
+		glColor3f(0,0.35,0);
+	else
+		glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
+}
+
 
 //----------------------------------------------------------------------------------------------------------------------

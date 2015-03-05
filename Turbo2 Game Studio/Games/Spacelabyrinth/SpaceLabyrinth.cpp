@@ -2,6 +2,7 @@
 //  SpaceLabyrinth.cpp
 //  ============================================================================
 
+#include <math.h>
 #include <stdlib.h>
 
 #include "SpaceLabyrinth.h"
@@ -9,13 +10,13 @@
 
 //============  Constructors and Destructors  --------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthFactory *factory)
+SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthPlatform *factory)
 {
 	_factory = factory;
 	
 	_mazeFactory = new OriginalMazeFactory;	
-	
-	_maze = _mazeFactory->MakeMaze(3,3,3);
+	_maze = 0;
+//	_maze = _mazeFactory->MakeMaze(3,3,3);
 }
 
 SpaceLabyrinth::~SpaceLabyrinth()
@@ -30,15 +31,12 @@ SpaceLabyrinth::~SpaceLabyrinth()
 
 int SpaceLabyrinth::Initialize()
 {
-	return _factory->Initialize();
-}
+	int result = _factory->Initialize();
+	
+//	_camera.Move(2,-2,-2);
 
-/*
-int SpaceLabyrinth::Reset()
-{
-	return _factory->Reset();
+	return result;
 }
-*/
 
 int SpaceLabyrinth::Resize(int width, int height)
 {
@@ -49,11 +47,20 @@ int SpaceLabyrinth::Update()
 {
 	_factory->BeginUpdate();
 
-	DrawMaze();
-
 	NavigateMaze();
 
 	_factory->EndUpdate();
+
+	return 1;
+}
+
+int SpaceLabyrinth::Draw()
+{
+	_factory->BeginDraw(_camera);
+
+	DrawMaze();
+
+	_factory->EndDraw();
 
 	return 1;
 }
@@ -66,109 +73,218 @@ int SpaceLabyrinth::Finalize()
 //----------------------------------------------------------------------------------------------------------------------
 //============  Local Support Methods  ---------------------------------------------------------------------------------
 
-int SpaceLabyrinth::DrawMaze()
-{
-	location size = _maze->GetSize();
-	Array3D data = _maze->GetMaze();
-	
-	for (int i=0; i<=size.w; i++ )
-	for (int j=0; j<=size.h; j++ )
-	for (int k=0; k<=size.d; k++ )
-	{
-		char walls = data[i][j][k];
-		
-		if (GETBIT(walls, RIGHTBIT ) > 0)
-			DrawRightWall(i,j,k);
-		if (GETBIT(walls, BOTTOMBIT) > 0)
-			DrawBottomWall(i,j,k);
-		if (GETBIT(walls, FRONTBIT ) > 0)
-			DrawFrontWall(i,j,k);
-	}
-
-	return 1;							// Everything Went OK
-}
-
-#define CELLSIZE 2.0
-#define OFFSET   0.0
-#define CELLHALF 1.0
-#define WALLHALF 0.1
-
-int SpaceLabyrinth::DrawRightWall(int w, int h, int d)
-{
-	_factory->DrawWall(	w* CELLSIZE-OFFSET+(CELLHALF-WALLHALF),	//	left
-						h*-CELLSIZE+OFFSET+(CELLHALF+WALLHALF),	//	top
-						d*-CELLSIZE+OFFSET+(CELLHALF+WALLHALF),	//	back
-						w* CELLSIZE-OFFSET+(CELLHALF+WALLHALF),	//	right
-						h*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF),	//	bottom
-						d*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF));	//	front
-	return 1;							// Everything Went OK
-}
-
-int SpaceLabyrinth::DrawBottomWall(int w, int h, int d)
-{
-	_factory->DrawWall(	w* CELLSIZE-OFFSET-(CELLHALF+WALLHALF),	//	left
-						h*-CELLSIZE+OFFSET-(CELLHALF-WALLHALF),	//	top
-						d*-CELLSIZE+OFFSET+(CELLHALF+WALLHALF),	//	back
-						w* CELLSIZE-OFFSET+(CELLHALF+WALLHALF),	//	right
-						h*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF),	//	bottom
-						d*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF));	//	front
-	return 1;							// Everything Went OK
-}
-
-int SpaceLabyrinth::DrawFrontWall(int w, int h, int d)
-{
-	_factory->DrawWall(	w* CELLSIZE-OFFSET-(CELLHALF+WALLHALF),	//	left
-						h*-CELLSIZE+OFFSET+(CELLHALF+WALLHALF),	//	top
-						d*-CELLSIZE+OFFSET-(CELLHALF-WALLHALF),	//	back
-						w* CELLSIZE-OFFSET+(CELLHALF+WALLHALF),	//	right
-						h*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF),	//	bottom
-						d*-CELLSIZE+OFFSET-(CELLHALF+WALLHALF));	//	front
-	return 1;							// Everything Went OK
-}
-
-
 int SpaceLabyrinth::NavigateMaze()
 {
 	NavInfo navInfo;
 
 	_factory->GetNavigationInfo(&navInfo);
 
-	if (navInfo.Pointer)
+	if (navInfo.Restart || _maze == 0)
 	{
-		if (_pointer)
-		{
-			int dx	= navInfo.PointerX - _pointerX;
-			int dy	= navInfo.PointerY - _pointerY;
-			
-			_factory->RotateCamera(dy, dx, 0);
-		}
-	
-		_pointer	= navInfo.Pointer;
-		_pointerX	= navInfo.PointerX;
-		_pointerY	= navInfo.PointerY;
+		_maze = _mazeFactory->MakeMaze(3,3,3);
+		_camera.Reset();
+		_camera.Move(2,-2,-2);
+		
+		navInfo.Restart = 0;
+		return 1;
 	}
 
 	float deltaTime = _factory->GetDeltaTime();
-	float moveSpeed = 10.0;
-	float moveDistance = moveSpeed * deltaTime;
-	float rotateSpeed = 10.0;
-	float rotateAngle = rotateSpeed * deltaTime;
+	float time      = _factory->GetTime();
 
-	if (navInfo.MoveLeft)	{ _factory->MoveCamera(-moveDistance, 0, 0); }
-	if (navInfo.MoveRight)	{ _factory->MoveCamera( moveDistance, 0, 0); }
-	if (navInfo.MoveDown)	{ _factory->MoveCamera(0, -moveDistance, 0); }
-	if (navInfo.MoveUp)		{ _factory->MoveCamera(0,  moveDistance, 0); }
-	if (navInfo.MoveFore)	{ _factory->MoveCamera(0, 0, -moveDistance); }
-	if (navInfo.MoveBack)	{ _factory->MoveCamera(0, 0,  moveDistance); }
+	float moveAccelleration = 1.0;
+	float moveSpeed = moveAccelleration * deltaTime;
+
+	if (!(navInfo.MoveLeft  ||
+		  navInfo.MoveRight ||
+		  navInfo.MoveDown  ||
+		  navInfo.MoveUp    ||
+		  navInfo.MoveFore  ||
+		  navInfo.MoveBack))
+	{
+		//  air friction decay
+		_camera.Velocity -= _camera.Velocity * 1.0 * deltaTime;
+		
+		//  hover
+		_camera.Velocity += _camera.Up * cos(time*2) * 0.05 * deltaTime;
+
+		//  gravity
+		//_camera.Velocity.Y -= deltaTime;
+	}
+
 	
-	if (navInfo.PitchFore)	{ _factory->RotateCamera(-rotateAngle, 0, 0); }
-	if (navInfo.PitchBack)	{ _factory->RotateCamera( rotateAngle, 0, 0); }
-	if (navInfo.YawRight)	{ _factory->RotateCamera(0, -rotateAngle, 0); }
-	if (navInfo.YawLeft)	{ _factory->RotateCamera(0,  rotateAngle, 0); }
-	if (navInfo.RollLeft)	{ _factory->RotateCamera(0, 0, -rotateAngle); }
-	if (navInfo.RollRight)	{ _factory->RotateCamera(0, 0,  rotateAngle); }
+	if (navInfo.MoveLeft)	_camera.Velocity -= _camera.Right * moveSpeed;
+	if (navInfo.MoveRight)	_camera.Velocity += _camera.Right * moveSpeed;
+	if (navInfo.MoveDown)	_camera.Velocity -= _camera.Up    * moveSpeed;
+	if (navInfo.MoveUp)		_camera.Velocity += _camera.Up    * moveSpeed;
+	if (navInfo.MoveFore)	_camera.Velocity -= _camera.Back  * moveSpeed;
+	if (navInfo.MoveBack)	_camera.Velocity += _camera.Back  * moveSpeed;
+	/*
+	if (navInfo.MoveLeft)	_camera.Velocity = -_camera.Right * moveAccelleration;
+	if (navInfo.MoveRight)	_camera.Velocity =  _camera.Right * moveAccelleration;
+	if (navInfo.MoveDown)	_camera.Velocity = -_camera.Up    * moveAccelleration;
+	if (navInfo.MoveUp)		_camera.Velocity =  _camera.Up    * moveAccelleration;
+	if (navInfo.MoveFore)	_camera.Velocity = -_camera.Back  * moveAccelleration;
+	if (navInfo.MoveBack)	_camera.Velocity =  _camera.Back  * moveAccelleration;
+	*/
 
+	float rotateAccelleration = 45.0;
+	float rotateSpeed = rotateAccelleration * deltaTime;
+
+	if (!(navInfo.Pointer   ||
+		  navInfo.PitchFore ||
+		  navInfo.PitchBack ||
+		  navInfo.YawRight  ||
+		  navInfo.YawLeft   ||
+		  navInfo.RollLeft  ||
+		  navInfo.RollRight))
+	{
+		_camera.AngularVelocity -= _camera.AngularVelocity * 1.0 * deltaTime;
+
+		//  self-righting
+		//_camera.AngularVelocity.Z -= _camera.Right.Y * 30 * deltaTime;
+		//_camera.AngularVelocity.X -= _camera.Back.Y * 30 * deltaTime;
+	}
+
+	if (navInfo.Pointer && _pointer)
+	{
+		int dx	= navInfo.PointerX - _pointerX;
+		int dy	= navInfo.PointerY - _pointerY;
+		
+		_camera.AngularVelocity.X = dy / deltaTime;
+		_camera.AngularVelocity.Y =-dx / deltaTime;
+	}
+	
+	_pointer	= navInfo.Pointer;
+	_pointerX	= navInfo.PointerX;
+	_pointerY	= navInfo.PointerY;
+
+	
+	if (navInfo.PitchFore)	_camera.AngularVelocity.X -= rotateSpeed;
+	if (navInfo.PitchBack)	_camera.AngularVelocity.X += rotateSpeed;
+	if (navInfo.YawRight)	_camera.AngularVelocity.Y -= rotateSpeed;
+	if (navInfo.YawLeft)	_camera.AngularVelocity.Y += rotateSpeed;
+	if (navInfo.RollLeft)	_camera.AngularVelocity.Z -= rotateSpeed;
+	if (navInfo.RollRight)	_camera.AngularVelocity.Z += rotateSpeed;
+	/*
+	if (navInfo.PitchFore)	_camera.AngularVelocity.X = -rotateAccelleration;
+	if (navInfo.PitchBack)	_camera.AngularVelocity.X =  rotateAccelleration;
+	if (navInfo.YawRight)	_camera.AngularVelocity.Y = -rotateAccelleration;
+	if (navInfo.YawLeft)	_camera.AngularVelocity.Y =  rotateAccelleration;
+	if (navInfo.RollLeft)	_camera.AngularVelocity.Z = -rotateAccelleration;
+	if (navInfo.RollRight)	_camera.AngularVelocity.Z =  rotateAccelleration;
+	*/
+	//  Check for collisions and change velocity accordingly.
+
+	Vector newPosition = _camera.Position + _camera.Velocity * deltaTime;
+
+	location size = _maze->GetSize();
+	int numCells = (size.w+1) * (size.h+1) * (size.d+1);
+
+	MazeObject *corners = _maze->GetCorners();
+	for (int i=0; i<numCells; i++)
+	{
+		MazeObject *corner = &(corners[i]);
+		if (corner->Active)
+		{
+			if (CheckForBounce(newPosition, corner))
+				newPosition = _camera.Position + _camera.Velocity * deltaTime;
+		}
+	}
+
+	MazeObject *edges = _maze->GetEdges();
+	for (int i=0; i<numCells*3; i++)
+	{
+		MazeObject *edge = &(edges[i]);
+		if (edge->Active)
+		{
+			if (CheckForBounce(newPosition, edge))
+				newPosition = _camera.Position + _camera.Velocity * deltaTime;
+		}
+	}
+
+	MazeObject *walls = _maze->GetWalls();
+	for (int i=0; i<numCells*3; i++)
+	{
+		MazeObject *wall = &(walls[i]);
+		if (wall->Active)
+		{
+			if (CheckForBounce(newPosition, wall))
+				newPosition = _camera.Position + _camera.Velocity * deltaTime;
+		}
+	}
+
+	_camera.Move(_camera.Velocity * deltaTime);
+	_camera.Rotate(_camera.AngularVelocity * deltaTime);
+	
 	return 1;
+}
+
+int SpaceLabyrinth::DrawMaze()
+{
+	location size = _maze->GetSize();
+	int numCells = (size.w+1) * (size.h+1) * (size.d+1);
+
+	MazeObject *corners = _maze->GetCorners();
+	for (int i=0; i<numCells; i++)
+	{
+		MazeObject *corner = &(corners[i]);
+		if (corner->Active)
+			_factory->DrawCorner(corner);
+	}
+
+	MazeObject *edges = _maze->GetEdges();
+	for (int i=0; i<numCells*3; i++)
+	{
+		MazeObject *edge = &(edges[i]);
+		if (edge->Active)
+			_factory->DrawEdge(edge);
+	}
+
+	MazeObject *walls = _maze->GetWalls();
+	for (int i=0; i<numCells*3; i++)
+	{
+		MazeObject *wall = &(walls[i]);
+		if (wall->Active)
+			_factory->DrawWall(wall);
+	}
+
+	return 1;							// Everything Went OK
+}
+
+int SpaceLabyrinth::CheckForBounce(Vector newPosition, const MazeObject *mazeObject)
+{
+	const float buffer = 0.25;
+	const float bounciness = 0.25;
+
+	if (newPosition.X >= mazeObject->Left - buffer &&
+		newPosition.X <= mazeObject->Right + buffer &&
+		newPosition.Y >= mazeObject->Bottom - buffer &&
+		newPosition.Y <= mazeObject->Top + buffer &&
+		newPosition.Z >= mazeObject->Front - buffer &&
+		newPosition.Z <= mazeObject->Back + buffer)
+	{
+		if (_camera.Position.X <= mazeObject->Left - buffer)
+			_camera.Velocity.X = -_camera.Velocity.X * bounciness;
+
+		if (_camera.Position.X >= mazeObject->Right + buffer)
+			_camera.Velocity.X = -_camera.Velocity.X * bounciness;
+
+		if (_camera.Position.Y <= mazeObject->Bottom - buffer)
+			_camera.Velocity.Y = -_camera.Velocity.Y * bounciness;
+
+		if (_camera.Position.Y >= mazeObject->Top + buffer)
+			_camera.Velocity.Y = -_camera.Velocity.Y * bounciness;
+
+		if (_camera.Position.Z <= mazeObject->Front - buffer)
+			_camera.Velocity.Z = -_camera.Velocity.Z * bounciness;
+
+		if (_camera.Position.Z >= mazeObject->Back + buffer)
+			_camera.Velocity.Z = -_camera.Velocity.Z * bounciness;
+
+		return 1;
+	}
+	return 0;
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -57,11 +57,13 @@ IMaze *OriginalMazeFactory::MakeMaze(int width, int height, int depth)
 	
 	Array3D		maze = NULL;
 	location	size = { width, height, depth };
-	location	in = { width/2, height/2, 0 };
-	location	out = { width/2, height/2, depth };
+	location	in   = { width/2+1, height/2+1, 1 };
+	location	out  = { width, height, depth+1 };
+//	location	out  = { width/2+1, height/2+1, depth+2 };
 
-	time_t now;	/*  used with "time" to randomize seed for "rand"  */
-	srand( time( &now ) % 0xFFFF );
+	//time_t now;	/*  used with "time" to randomize seed for "rand"  */
+	//time(&now);
+	srand(time(0) % 0xFFFF );
 	
 	AllocateMaze( &maze, size );
 
@@ -128,6 +130,8 @@ IMaze *OriginalMazeFactory::MakeMaze(int width, int height, int depth)
 		RESETBIT( maze[out.w][0][out.d], BOTTOMBIT );
 	else if ( out.h == size.h+1 )
 		RESETBIT( maze[out.w][size.h][out.d], BOTTOMBIT );
+
+	originalMaze->BuildWalls();
 
 	return originalMaze;
 }

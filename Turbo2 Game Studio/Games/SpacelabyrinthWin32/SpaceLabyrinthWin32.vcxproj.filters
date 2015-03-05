@@ -42,9 +42,6 @@
     <ClInclude Include="..\..\Library\Application\IProgram.h">
       <Filter>Header Files\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthFactory.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
-    </ClInclude>
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h">
       <Filter>Header Files\SpaceLabyrinth</Filter>
     </ClInclude>
@@ -78,6 +75,18 @@
     <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Vector.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Camera.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IWindow.h">
+      <Filter>Header Files\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthPlatform.h">
+      <Filter>Header Files\SpaceLabyrinth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp">
@@ -99,6 +108,15 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp">
+      <Filter>Source Files\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Vector.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>

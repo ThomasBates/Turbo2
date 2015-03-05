@@ -10,7 +10,11 @@ class SpaceLabyrinthNDS : public ISpaceLabyrinthFactory
 private:
 	ApplicationNDS *_application;
 	int				_texture[6];
-	float			_camera[4][4];
+	Vector			_right;
+	Vector			_up;
+	Vector			_back;
+	Vector			_position;
+//	Matrix3			_camera;
 	unsigned int	_ticks;
 	float			_time;
 	float			_deltaTime;
@@ -22,18 +26,19 @@ public:
 
 	//  ISpaceLabyrinthFactory Methods
 	virtual int Initialize();
-//	virtual int Reset();
 	virtual int Resize(int width, int height);
 	virtual int BeginUpdate();
 	virtual int EndUpdate();
+	virtual int BeginDraw(const Camera &camera);
+	virtual int EndDraw();
 	virtual int Finalize();
 
-	virtual int DrawWall(float left, float top, float back, float right, float bottom, float front);
-	virtual int GetNavigationInfo(NavInfo *navInfo);
-	virtual float GetTime() { return _time; }
-	virtual float GetDeltaTime() { return _deltaTime; }
-	virtual int MoveCamera(float x, float y, float z);
-	virtual int RotateCamera(float x, float y, float z);
+	virtual	int		DrawCorner(MazeObject *corner);
+	virtual	int		DrawEdge(MazeObject *edge);
+	virtual	int		DrawWall(MazeObject *wall);
+	virtual int		GetNavigationInfo(NavInfo *navInfo);
+	virtual float	GetTime() { return _time; }
+	virtual float	GetDeltaTime() { return _deltaTime; }
 
 protected:
 	//  Local Support Methods
@@ -41,4 +46,9 @@ protected:
 	virtual int LoadTextures();
 	virtual int LoadTexture(int id, const u8 *imageData);
 	virtual IImage *LoadImage(const u8 *imageData);
+	virtual void SetCornerTexture();
+	virtual void SetEdgeTexture();
+	virtual void SetWallTexture();
+	virtual void SetCeilingTexture();
+	virtual void SetFloorTexture();
 };

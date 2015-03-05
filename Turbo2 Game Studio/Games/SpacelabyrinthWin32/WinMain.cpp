@@ -13,17 +13,10 @@ int WINAPI WinMain(	HINSTANCE	hInstance,		// Instance
 					LPSTR		lpCmdLine,		// Command Line Parameters
 					int			nCmdShow)		// Window Show State
 {
-	ApplicationWin32 *application = new ApplicationWin32(TEXT("Space Labyrinth"));
+	new ApplicationWin32(TEXT("Space Labyrinth"));
+	new SpaceLabyrinthWin32();
+	new SpaceLabyrinthProgram();
 
-	ISpaceLabyrinthFactory *factory = new SpaceLabyrinthWin32(application);
-	IProgram *program = new SpaceLabyrinth(factory);
-
-	int result = application->Run(program);
-
-	delete program;
-	delete factory;
-	delete application;
-
-	return result;
+	return Application->Run();
 }
 

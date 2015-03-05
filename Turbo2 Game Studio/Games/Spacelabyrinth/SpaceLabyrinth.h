@@ -2,13 +2,14 @@
 #pragma once
 
 #include "IProgram.h"
-#include "ISpaceLabyrinthFactory.h"
+#include "ISpaceLabyrinthPlatform.h"
 #include "IMazeFactory.h"
+#include "Camera.h"
 
 class SpaceLabyrinth: public IProgram
 {
 private:
-	ISpaceLabyrinthFactory *_factory;
+	ISpaceLabyrinthPlatform *_factory;
 	IMazeFactory *_mazeFactory;
 
 	IMaze *_maze;
@@ -16,24 +17,24 @@ private:
 	int		_pointerX;
 	int		_pointerY;
 
+	Camera	_camera;
+
 public:
 	//  Constructors and Destructors
-	SpaceLabyrinth(ISpaceLabyrinthFactory *factory);
+	SpaceLabyrinth(ISpaceLabyrinthPlatform *factory);
 	~SpaceLabyrinth();
 
 	//  IProgram Methods
 	virtual int Initialize();
-//	virtual int Reset();
 	virtual int Resize(int width, int height);
 	virtual int Update();
+	virtual int	Draw();
 	virtual int Finalize();
 
 protected:
 	//  Local Support Methods
-	virtual int DrawMaze();
-	virtual int DrawRightWall(int w, int h, int d);
-	virtual int DrawBottomWall(int w, int h, int d);
-	virtual int DrawFrontWall(int w, int h, int d);
-
 	virtual int NavigateMaze();
+	virtual int CheckForBounce(Vector newPosition, const MazeObject *mazeObject);
+	virtual int DrawMaze();
 };
+

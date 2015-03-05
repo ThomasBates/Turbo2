@@ -28,6 +28,13 @@ typedef	struct llist
 	struct llist	*next;
 }	loclist;
 
+typedef struct
+{
+	int		Active;
+	float	Left, Right;
+	float	Top, Bottom;
+	float	Back, Front;
+}	MazeObject;
 
 class IMaze
 {
@@ -47,5 +54,12 @@ public:
 	
 	virtual loclist GetSolution() = 0;
 	virtual void SetSolution(loclist solution) = 0;
+
+	virtual MazeObject *GetCorners() = 0;
+	virtual MazeObject *GetEdges() = 0;
+	virtual MazeObject *GetWalls() = 0;
+
+	//  Public Methods
+	virtual void BuildWalls() = 0;
 };
 

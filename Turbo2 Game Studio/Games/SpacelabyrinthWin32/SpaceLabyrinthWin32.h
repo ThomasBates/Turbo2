@@ -3,50 +3,59 @@
 
 #include "ApplicationWin32.h"
 #include "IImage.h"
-#include "ISpaceLabyrinthFactory.h"
+#include "ISpaceLabyrinthPlatform.h"
 
 #include <gl\gl.h>						// Header File For The OpenGL32 Library
 #include <gl\glu.h>						// Header File For The GLu32 Library
 
-class SpaceLabyrinthWin32 : public ISpaceLabyrinthFactory
+class SpaceLabyrinthWin32 : public ISpaceLabyrinthPlatform
 {
 private:
-	ApplicationWin32 *_application;
+//	ApplicationWin32 *_application;
 
-	HGLRC		_hRC;			// Permanent Rendering Context
-	HDC			_hDC;			// Private GDI Device Context
+	HGLRC			_hRC;			// Permanent Rendering Context
+	HDC				_hDC;			// Private GDI Device Context
 
-	int	_width;
-	int	_height;
+	int				_width;
+	int				_height;
 
-	GLuint _texture[6];
-	unsigned int	_ticks;
+	GLuint			_texture[6];
+
+	LARGE_INTEGER	_frequency;
+	LARGE_INTEGER	_startCount;
+	LARGE_INTEGER	_lastCount;
 	float			_time;
 	float			_deltaTime;
 
 public:
 	//  Constructors and Destructors
-	SpaceLabyrinthWin32(ApplicationWin32 *application);
+	SpaceLabyrinthWin32();
 	~SpaceLabyrinthWin32();
 
-	//  ISpaceLabyrinthFactory Methods
-	virtual int Initialize();
-//	virtual int Reset();
-	virtual int Resize(int width, int height);
-	virtual int BeginUpdate();
-	virtual int EndUpdate();
-	virtual int Finalize();
+	//  ISpaceLabyrinthPlatform Methods
+	virtual BOOL Initialize();
+	virtual BOOL Resize(int width, int height);
+	virtual BOOL BeginUpdate();
+	virtual BOOL EndUpdate();
+	virtual BOOL BeginDraw(const Camera &camera);
+	virtual BOOL EndDraw();
+	virtual BOOL Finalize();
 
-	virtual BOOL DrawWall(float left, float top, float back, float right, float bottom, float front);
-	virtual BOOL GetNavigationInfo(NavInfo *navInfo);
-	virtual float GetTime() { return _time; }
-	virtual float GetDeltaTime() { return _deltaTime; }
-	virtual int MoveCamera(float x, float y, float z);
-	virtual int RotateCamera(float x, float y, float z);
+	virtual BOOL	DrawCorner(MazeObject *corner);
+	virtual BOOL	DrawEdge(MazeObject *edge);
+	virtual BOOL	DrawWall(MazeObject *wall);
+	virtual BOOL	GetNavigationInfo(NavInfo *navInfo);
+	virtual float	GetTime() { return _time; }
+	virtual float	GetDeltaTime() { return _deltaTime; }
 
 protected:
 	//  Local Support Methods
 	virtual int LoadTextures();
 	virtual int LoadTexture(int id, const char *fileName);
 	virtual IImage *LoadImage(const char *fileName);
+	virtual void SetCornerTexture();
+	virtual void SetEdgeTexture();
+	virtual void SetWallTexture();
+	virtual void SetCeilingTexture();
+	virtual void SetFloorTexture();
 };

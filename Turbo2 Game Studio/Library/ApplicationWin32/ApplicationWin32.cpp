@@ -5,70 +5,15 @@
 
 #pragma region Classless Functions
 
-ApplicationWin32* Win32Application;
+IApplication		*Application;
+ApplicationWin32	*Win32Application;
 
 LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 							UINT	uMsg,					// Message For This Window
 							WPARAM	wParam,					// Additional Message Information
 							LPARAM	lParam)					// Additional Message Information
 {
-
-	switch (uMsg)								// Check For Windows Messages
-	{
-		case WM_ACTIVATE:						// Watch For Window Activate Message
-		{
-			if (!HIWORD(wParam))					// Check Minimization State
-				Win32Application->SetActive(TRUE);	// Program Is Active
-			else
-				Win32Application->SetActive(FALSE);	// Program Is No Longer Active
-
-			return 0;						// Return To The Message Loop
-		}
-
-		case WM_SYSCOMMAND:						// Intercept System Commands
-		{
-			switch (wParam)						// Check System Calls
-			{
-				case SC_SCREENSAVE:				// Screensaver Trying To Start?
-				case SC_MONITORPOWER:				// Monitor Trying To Enter Powersave?
-				return 0;					// Prevent From Happening
-			}
-			break;							// Exit
-		}
-
-		case WM_CLOSE:							// Did We Receive A Close Message?
-		{
-			PostQuitMessage(0);					// Send A Quit Message
-			return 0;						// Jump Back
-		}
-
-		case WM_KEYDOWN:						// Is A Key Being Held Down?
-		{
-			Win32Application->SetKey(wParam, TRUE);	// If So, Mark It As TRUE
-			return 0;						// Jump Back
-		}
-
-		case WM_KEYUP:							// Has A Key Been Released?
-		{
-			Win32Application->SetKey(wParam, FALSE);	// If So, Mark It As FALSE
-			return 0;						// Jump Back
-		}
-
-		case WM_MOUSEMOVE:
-		{
-			Win32Application->SetPointer(LOWORD(lParam), HIWORD(lParam), wParam);
-			return 0;
-		}
-
-		case WM_SIZE:							// Resize The OpenGL Window
-		{
-			Win32Application->Resize(LOWORD(lParam), HIWORD(lParam));		// LoWord=Width, HiWord=Height
-			return 0;						// Jump Back
-		}
-	}
-
-	// Pass All Unhandled Messages To DefWindowProc
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	return Win32Application->WndProc(hWnd, uMsg, wParam, lParam);
 }
 
 #pragma endregion
@@ -76,6 +21,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 
 ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 {
+	Application			= this;
 	Win32Application	= this;
 
 	_appTitle	= appTitle;				// Application Title
@@ -85,16 +31,18 @@ ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 	_hWnd		= NULL;					// Holds Our Window Handle
 	_fullscreen	= FALSE;
 
-	_active		= TRUE;					// Window Active Flag Set To TRUE By Default
+	_active		= FALSE;				// Window Active Flag Set To TRUE By Default
 	_done		= FALSE;
 
-	_program	= NULL;
+	_windowCount = 0;
+	//_program	= NULL;
 
 	memset(_keys, 0, sizeof(_keys));
 
 	// Create Our OpenGL Window
+	_ready		= CreateAppWindow(800, 600, 16);
 //	_ready		= CreateAppWindow(640, 480, 16);
-	_ready		= CreateAppWindow(256, 192, 16);
+//	_ready		= CreateAppWindow(256, 192, 16);
 }
 
 ApplicationWin32::~ApplicationWin32()
@@ -108,69 +56,181 @@ ApplicationWin32::~ApplicationWin32()
 #pragma endregion
 #pragma region IApplication Methods
 
-BOOL ApplicationWin32::Run(IProgram *program)
+BOOL ApplicationWin32::RegisterWindow(IWindow *window)
+{
+	if (_windowCount < MAXWINDOWS-1)
+	{
+		_windows[_windowCount] = window;
+		_windowCount++;
+	}
+}
+
+BOOL ApplicationWin32::UnregisterWindow(IWindow *window)
+{
+	for (int i=0; i<_windowCount; i++)
+	{
+		if (_windows[i] = window)
+		{
+			for (int j=i+1; j<_windowCount; j++)
+				_windows[j-1] = _windows[j];
+			_windowCount--;
+			break;
+		}
+	}
+}
+
+BOOL ApplicationWin32::Run()
 {
 	if (!_ready)
 		return FALSE;
 
-	if (!program)
+	if (_windowCount < 1)
 		return FALSE;
 
-	_program = program;
+	//if (!program->Initialize())
+	//	return FALSE;
 
-	if (!program->Initialize())
-		return FALSE;
+	//if (!Resize(_width, _height))
+	//	return FALSE;
 
-	if (!Resize(_width, _height))
-		return FALSE;
+	//QueryPerformanceFrequency(&_frequency);
+	//QueryPerformanceCounter(&_startCount);
+	//_lastCount	= _startCount;
+
+	_running = TRUE;
 
 	while(!_done)								// Loop That Runs Until done=TRUE
 	{
-		ProcessMessages();
+		//LARGE_INTEGER count;
+		//QueryPerformanceCounter(&count);
+	
+		//_time		= (float)((count.QuadPart - _startCount.QuadPart) / (double)_frequency.QuadPart);
+		//_deltaTime	= (float)((count.QuadPart - _lastCount.QuadPart ) / (double)_frequency.QuadPart);
+		//if (_deltaTime * 60 > 1) // [60 fps]
+		//{
+		//	_timeToDraw = TRUE;
+		//	_lastCount	= count;
+		//}
 
-		// Draw The Scene.
-		if (!program->Update())		// Draw The Scene
-			break;
+		//ProcessMessages();
+		HandleMessage();
 
-		if (_keys[VK_CONTROL] && _keys[VK_RETURN])					// Is Ctrl-Enter Being Pressed?
-		{
-			_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
+		////  Update the Scene
+		//if (!program->Update())		// Draw The Scene
+		//	break;
 
-			KillAppWindow();					// Kill Our Current Window
-			_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
+		//// Draw The Scene.
+		//if (_timeToDraw)
+		//{
+		//	if (!program->Draw())		// Draw The Scene
+		//		break;
+		//	_timeToDraw = FALSE;
+		//}
 
-			if (!CreateAppWindow(_width, _height, 16))		// Recreate Our OpenGL Window
-				break;				// Quit If Window Was Not Created
+		//if (_keys[VK_CONTROL] && _keys[VK_RETURN])					// Is Ctrl-Enter Being Pressed?
+		//{
+		//	_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
 
-			if (!Resize(_width, _height))
-				break;
-		}
+		//	KillAppWindow();					// Kill Our Current Window
+		//	_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
+
+		//	if (!CreateAppWindow(_width, _height, 16))		// Recreate Our OpenGL Window
+		//		break;				// Quit If Window Was Not Created
+
+		//	if (!Resize(_width, _height))
+		//		break;
+		//}
 	}
 
-	program->Finalize();
+	_running = FALSE;
+
+	//program->Finalize();
 
 	// Shutdown
-	return (_msg.wParam);							// Exit The Program
+	//return (0);							// Exit The Program
 }
+
+void ApplicationWin32::ProcessMessages()
+{
+	MSG msg;
+	while (ProcessMessage(&msg));
+}
+
+void ApplicationWin32::HandleMessage()
+{
+	MSG msg;
+	if (!ProcessMessage(&msg));
+		//Idle(msg);
+}
+
 
 #pragma endregion
 #pragma region Public Access Methods
 
-void ApplicationWin32::ProcessMessages()
+LRESULT ApplicationWin32::WndProc(	HWND	hWnd,					// Handle For This Window
+									UINT	uMsg,					// Message For This Window
+									WPARAM	wParam,					// Additional Message Information
+									LPARAM	lParam)					// Additional Message Information
 {
-	while (PeekMessage(&_msg,NULL,0,0,PM_REMOVE))			// Is There A Message Waiting?
+	switch (uMsg)								// Check For Windows Messages
 	{
-		if (_msg.message==WM_QUIT)				// Have We Received A Quit Message?
+		case WM_ACTIVATE:						// Watch For Window Activate Message
 		{
-			_done=TRUE;					// If So done=TRUE
-			break;
+			if (!HIWORD(wParam))				// Check Minimization State
+				SetActive(TRUE);				// Program Is Active
+			else
+				SetActive(FALSE);				// Program Is No Longer Active
+
+			return 0;							// Return To The Message Loop
 		}
-		else							// If Not, Deal With Window Messages
+
+		case WM_SYSCOMMAND:						// Intercept System Commands
 		{
-			TranslateMessage(&_msg);				// Translate The Message
-			DispatchMessage(&_msg);				// Dispatch The Message
+			switch (wParam)						// Check System Calls
+			{
+				case SC_SCREENSAVE:				// Screensaver Trying To Start?
+				case SC_MONITORPOWER:			// Monitor Trying To Enter Powersave?
+				return 0;						// Prevent From Happening
+			}
+			break;								// Pass to DefWindowProc
+		}
+
+		case WM_CLOSE:							// Did We Receive A Close Message?
+		{
+			PostQuitMessage(0);					// Send A Quit Message
+			return 0;							// Jump Back
+		}
+
+		case WM_KEYDOWN:						// Is A Key Being Held Down?
+		{
+			SetKey(wParam, TRUE);				// If So, Mark It As TRUE
+			return 0;							// Jump Back
+		}
+
+		case WM_KEYUP:							// Has A Key Been Released?
+		{
+			SetKey(wParam, FALSE);				// If So, Mark It As FALSE
+			return 0;							// Jump Back
+		}
+
+		case WM_MOUSEMOVE:						// Has the mouse state changed?
+		{
+			SetPointer(	LOWORD(lParam),			// LoWord = x,
+						HIWORD(lParam),			// HiWord = y,
+						wParam);				// wParam = status
+			return 0;							// Jump Back
+		}
+
+		case WM_SIZE:							// Resize The OpenGL Window
+		{
+			Resize(	LOWORD(lParam),				// LoWord = Width,
+					HIWORD(lParam));			// HiWord = Height
+			return 0;							// Jump Back
 		}
 	}
+
+	// Pass All Unhandled Messages To DefWindowProc
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 BOOL ApplicationWin32::Resize(int width, int height)				// Resize And Initialize The GL Window
@@ -184,9 +244,10 @@ BOOL ApplicationWin32::Resize(int width, int height)				// Resize And Initialize
 		height = FULLSCREEN_HEIGHT;
 	}
 
-	if (_program)
-		if (!_program->Resize(width, height))
-			_done = TRUE;
+	//if (_program)
+	//	if (!_program->Resize(width, height))
+	//		_done = TRUE;
+
 	return !_done;
 }
 
@@ -414,5 +475,26 @@ void ApplicationWin32::KillAppWindow()							// Properly Kill The Window
 	}
 }
 
+BOOL ApplicationWin32::ProcessMessage(MSG *msg)
+{
+	if (PeekMessage(msg, NULL, 0, 0, PM_REMOVE))
+	{
+		if (msg->message != WM_QUIT)
+		{
+			//BOOL handled = FALSE;
+			//if (_onMessage != NULL) then _onMessage(msg, handled);
+			//if (!IsHintMsg(msg) && !handled && !IsMDIMsg(msg) &&
+			//	!IsKeyMsg(msg) && !IsDlgMsg(msg))
+			{
+				TranslateMessage(msg);
+				DispatchMessage(msg);
+			}
+		}
+		else
+			_done = TRUE;
+		return TRUE;
+	}
+	return FALSE;
+}
 
 #pragma endregion

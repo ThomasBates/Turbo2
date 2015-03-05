@@ -5,6 +5,13 @@
 
 ApplicationNDS* NDSApplication;
 
+
+void HandleVBlank()
+{
+	NDSApplication->ProcessVBlank();
+}
+
+
 //  ============================================================================
 //              ApplicationNDS
 //  ============================================================================
@@ -48,13 +55,23 @@ int ApplicationNDS::Run(IProgram *program)
 	if (!program->Resize(256,192))
 		return 0;
 
+	irqSet(IRQ_VBLANK, HandleVBlank);
+
 	while(!_done)								// Loop That Runs Until done=0
 	{
 		ProcessMessages();
 	
-		// Draw The Scene.
-		if (!program->Update())		// Draw The Scene
+		//  Update the Scene
+		if (!program->Update())
 			break;
+	
+		// Draw The Scene.
+		if (_vBlank)
+		{
+			if (!program->Draw())		// Draw The Scene
+				break;
+			_vBlank = 0;
+		}
 	}
 
 	// Shutdown
@@ -63,6 +80,11 @@ int ApplicationNDS::Run(IProgram *program)
 
 //----------------------------------------------------------------------------------------------------------------------
 //============  Public Access Methods  ---------------------------------------------------------------------------------
+
+void ApplicationNDS::ProcessVBlank()
+{
+	_vBlank = 1;
+}
 
 void ApplicationNDS::ProcessMessages()
 {

@@ -6,6 +6,8 @@
 
 #include "IApplication.h"
 
+#define MAXWINDOWS 100
+
 class ApplicationWin32 : public IApplication
 {
 private:
@@ -15,13 +17,16 @@ private:
 	HDC			_hDC;			// Private GDI Device Context
 	HWND		_hWnd;			// Holds Our Window Handle
 	HINSTANCE	_hInstance;		// Holds The Instance Of The Application
-	MSG			_msg;			// Windows Message Structure
 	BOOL		_fullscreen;	// Fullscreen Flag Set To Fullscreen Mode By Default
+
+	IWindow	   *_windows[MAXWINDOWS];
+	int			_windowCount;
 
 	int			_width;
 	int			_height;
 
 	BOOL		_active;		// Window Active Flag Set To TRUE By Default
+	BOOL		_running;		// Application is running
 	BOOL		_done;			// Bool Variable To Exit Loop
 
 	BOOL		_keys[256];		// Array Used For The Keyboard Routine
@@ -30,7 +35,14 @@ private:
 	int			_pointerStatus;
 
 	BOOL		_ready;
-	IProgram*	_program;
+	//IProgram*	_program;
+
+	LARGE_INTEGER	_frequency;
+	LARGE_INTEGER	_startCount;
+	LARGE_INTEGER	_lastCount;
+	float			_time;
+	float			_deltaTime;
+	BOOL			_timeToDraw;
 
 public:
 	//  Constructors and Destructors
@@ -48,10 +60,17 @@ public:
 	void SetKey(int keyIndex, BOOL keyDown) { _keys[keyIndex] = keyDown; }
 
 	//  IApplication Methods
-	virtual BOOL Run(IProgram *program);
+	virtual BOOL RegisterWindow(IWindow *window);
+	virtual BOOL UnregisterWindow(IWindow *window);
+	virtual BOOL Run();
+	virtual void HandleMessage();
+	virtual void ProcessMessages();
 
 	//  Public Access Methods
-	virtual void ProcessMessages();
+	virtual LRESULT WndProc(HWND	hWnd,					// Handle For This Window
+							UINT	uMsg,					// Message For This Window
+							WPARAM	wParam,					// Additional Message Information
+							LPARAM	lParam);				// Additional Message Information
 	virtual BOOL Resize(int width, int height);
 	virtual void SetPointer(int x, int y, int status);
 	virtual void GetPointer(int *x, int *y, int *status);
@@ -59,9 +78,8 @@ public:
 protected:
 	//  Local Support Methods
 	virtual BOOL CreateAppWindow(int width, int height, int bits);
-	//virtual BOOL InitGL();
-	//virtual BOOL DrawGLScene();
 	virtual void KillAppWindow();
+	virtual BOOL ProcessMessage(MSG *msg);
 };
 
 extern ApplicationWin32* Win32Application;

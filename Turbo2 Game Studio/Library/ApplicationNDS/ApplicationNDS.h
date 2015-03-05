@@ -18,6 +18,8 @@ private:
 
 	int			_ready;
 	IProgram*	_program;
+	
+	int			_vBlank;
 
 public:
 	//  Constructors and Destructors
@@ -35,6 +37,7 @@ public:
 	virtual int Run(IProgram *program);
 
 	//  Public Access Methods
+	virtual void ProcessVBlank();
 	virtual void ProcessMessages();
 	virtual void Resize(int width, int height);
 
