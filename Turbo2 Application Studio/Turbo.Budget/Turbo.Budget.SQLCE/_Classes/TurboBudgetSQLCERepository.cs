@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 
@@ -11,7 +12,18 @@ namespace Turbo.Budget.SQLCE
     {
         #region Private Members
 
-        TurboBudgetSQLCEContext _context = new TurboBudgetSQLCEContext();
+        TurboBudgetEntities _entities = new TurboBudgetEntities();
+
+        #endregion
+        #region Constructors
+
+        public TurboBudgetSQLCERepository()
+        {
+            Database.SetInitializer<TurboBudgetEntities>(new SampleData());
+            //AreaRegistration.RegisterAllAreas();
+            //RegisterGlobalFilters(GlobalFilters.Filters);
+            //RegisterRoutes(RouteTable.Routes);
+        }
 
         #endregion
         #region ITurboBudgetRepository Properties
@@ -20,8 +32,7 @@ namespace Turbo.Budget.SQLCE
         {
             get
             {
-                return _context.BudgetAccounts
-                               .Select<BudgetAccount, ITurboBudgetAccount>(a => new TurboBudgetSQLCEAccountAdapter(a));
+                return _entities.Accounts;
             }
         }
 
@@ -29,8 +40,7 @@ namespace Turbo.Budget.SQLCE
         {
             get
             {
-                return _context.BudgetTransactions
-                               .Select<BudgetTransaction, ITurboBudgetTransaction>(t => new TurboBudgetSQLCETransactionAdapter(t));
+                return _entities.Transactions;
             }
         }
 
@@ -39,27 +49,27 @@ namespace Turbo.Budget.SQLCE
 
         ITurboBudgetAccount ITurboBudgetRepository.CreateAccount()
         {
-            return new TurboBudgetSQLCEAccountAdapter(new BudgetAccount());
+            return new TurboBudgetAccount();
         }
 
         ITurboBudgetTransaction ITurboBudgetRepository.CreateTransaction()
         {
-            return new TurboBudgetSQLCETransactionAdapter(new BudgetTransaction());
+            return new TurboBudgetTransaction();
         }
 
         void ITurboBudgetRepository.AddAccount(ITurboBudgetAccount account)
         {
-            if (account is ITurboBudgetSQLCEAccountAdapter)
+            if (account != null)
             {
-                _context.AddToBudgetAccounts(((ITurboBudgetSQLCEAccountAdapter)account).BudgetAccount);
+                _entities.Accounts.Add(account);
             }
         }
 
         void ITurboBudgetRepository.AddTransaction(ITurboBudgetTransaction transaction)
         {
-            if (transaction is ITurboBudgetSQLCETransactionAdapter)
+            if (transaction != null)
             {
-                _context.AddToBudgetTransactions(((ITurboBudgetSQLCETransactionAdapter)transaction).BudgetTransaction);
+                _entities.Transactions.Add(transaction);
             }
         }
 

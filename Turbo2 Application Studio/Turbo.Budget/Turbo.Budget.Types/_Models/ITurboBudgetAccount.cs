@@ -7,12 +7,10 @@ namespace Turbo.Budget.Types
 {
     public interface ITurboBudgetAccount
     {
-        int ID { get; set; }
-
+        int AccountId { get; set; }
         string Name { get; set; }
-
         string Caption { get; set; }
-
         string Description { get; set; }
+        List<ITurboBudgetTransaction> Transactions { get; }
     }
 }

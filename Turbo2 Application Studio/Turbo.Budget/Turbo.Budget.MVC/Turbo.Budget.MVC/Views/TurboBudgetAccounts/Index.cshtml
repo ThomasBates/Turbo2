@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Turbo.Budget.Types.ITurboBudgetAccount>
+
+@{
+    ViewBag.Title = "Budget Accounts";
+}
+
+<h3>Budget Accounts</h3>
+
+<p>Select from @Model.Count() Accounts:</p>
+
+<ul>
+    @foreach (var account in Model)
+    {
+        <li>@Html.ActionLink(account.Caption, "Account", new { id = account.ID })</li>
+       
+    }
+</ul>
+
