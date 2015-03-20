@@ -8,21 +8,22 @@ using Turbo.Budget.Types;
 
 namespace Turbo.Budget.SQLCE
 {
-    public class SampleData : DropCreateDatabaseIfModelChanges<TurboBudgetEntities>
+    public class SampleData : DropCreateDatabaseIfModelChanges<TurboBudgetDbContext>
     {
-        protected override void Seed(TurboBudgetEntities context)
+        protected override void Seed(TurboBudgetDbContext context)
         {
-            var accounts = new List<ITurboBudgetAccount>
+            var accounts = new List<BudgetAccount>
             {
-                new TurboBudgetAccount() { AccountId = 1, Name = "DEPOSIT", Caption = "Deposit", Description = "Main Deposit Account"},
-                new TurboBudgetAccount() { AccountId = 2, Name = "AUTOMATIC", Caption = "Automatic", Description = "Automatic Debits and Cheques"},
-                new TurboBudgetAccount() { AccountId = 3, Name = "PAYCHEQUE", Caption = "Paycheque", Description = "Paycheque from Dynamic Risk"},
+                new BudgetAccount() { ID = "DEPOSIT", Caption = "Deposit", Description = "Main Deposit Account"},
+                new BudgetAccount() { ID = "AUTOMATIC", Caption = "Automatic", Description = "Automatic Debits and Cheques"},
+                new BudgetAccount() { ID = "PAYCHEQUE", Caption = "Paycheque", Description = "Paycheque from Dynamic Risk"},
             };
+            accounts.ForEach(a => context.Accounts.Add(a));
 
-            new List<ITurboBudgetTransaction>
+            new List<BudgetTransaction>
             {
-                new TurboBudgetTransaction() { TransactionId = 1, TimeStamp = new DateTime(2015, 3, 6), FromAccount = accounts.Single(a => a.Name == "PAYCHEQUE"), ToAccount = accounts.Single(a => a.Name == "DEPOSIT"), Amount = 2500, Description = "Paycheque"},
-                new TurboBudgetTransaction() { TransactionId = 2, TimeStamp = new DateTime(2015, 3, 15), FromAccount = accounts.Single(a => a.Name == "DEPOSIT"), ToAccount = accounts.Single(a => a.Name == "AUTOMATIC"), Amount = 1304, Description = "Transfer to Automatic Account"},
+                new BudgetTransaction() { TransactionId = 1, TimeStamp = new DateTime(2015, 3, 6), FromAccount = accounts.Single(a => a.ID == "PAYCHEQUE"), ToAccount = accounts.Single(a => a.ID == "DEPOSIT"), Amount = 2500, Description = "Paycheque"},
+                new BudgetTransaction() { TransactionId = 2, TimeStamp = new DateTime(2015, 3, 15), FromAccount = accounts.Single(a => a.ID == "DEPOSIT"), ToAccount = accounts.Single(a => a.ID == "AUTOMATIC"), Amount = 1304, Description = "Transfer to Automatic Account"},
             }.ForEach(t => context.Transactions.Add(t));
         }
     }

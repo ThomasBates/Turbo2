@@ -12,14 +12,14 @@ namespace Turbo.Budget.SQLCE
     {
         #region Private Members
 
-        TurboBudgetEntities _entities = new TurboBudgetEntities();
+        TurboBudgetDbContext _dbContext = new TurboBudgetDbContext();
 
         #endregion
         #region Constructors
 
         public TurboBudgetSQLCERepository()
         {
-            Database.SetInitializer<TurboBudgetEntities>(new SampleData());
+            Database.SetInitializer<TurboBudgetDbContext>(new SampleData());
             //AreaRegistration.RegisterAllAreas();
             //RegisterGlobalFilters(GlobalFilters.Filters);
             //RegisterRoutes(RouteTable.Routes);
@@ -32,7 +32,7 @@ namespace Turbo.Budget.SQLCE
         {
             get
             {
-                return _entities.Accounts;
+                return _dbContext.Accounts;
             }
         }
 
@@ -40,36 +40,60 @@ namespace Turbo.Budget.SQLCE
         {
             get
             {
-                return _entities.Transactions;
+                return _dbContext.Transactions;
             }
         }
 
         #endregion
         #region ITurboBudgetRepository Methods
 
-        ITurboBudgetAccount ITurboBudgetRepository.CreateAccount()
+        ITurboBudgetAccount ITurboBudgetRepository.CreateAccount(
+            string name, 
+            string caption, 
+            string description)
         {
-            return new TurboBudgetAccount();
+            return new BudgetAccount()
+            {
+                ID = name,
+                Caption = caption,
+                Description = description
+            };
         }
 
-        ITurboBudgetTransaction ITurboBudgetRepository.CreateTransaction()
+        ITurboBudgetTransaction ITurboBudgetRepository.CreateTransaction(
+            DateTime timeStamp, 
+            ITurboBudgetAccount fromAccount, 
+            ITurboBudgetAccount toAccount, 
+            decimal amount, 
+            string description)
         {
-            return new TurboBudgetTransaction();
+            return new BudgetTransaction()
+            {
+                TimeStamp = timeStamp,
+                FromAccountId = fromAccount.AccountId,
+                FromAccount = fromAccount,
+                ToAccountId = toAccount.AccountId,
+                ToAccount = toAccount,
+                Amount = amount,
+                Description = description
+            };
         }
 
         void ITurboBudgetRepository.AddAccount(ITurboBudgetAccount account)
         {
-            if (account != null)
+            if (account is BudgetAccount)
             {
-                _entities.Accounts.Add(account);
+                _dbContext.Accounts.Add(account as BudgetAccount);
+                _dbContext.SaveChanges();
             }
         }
 
         void ITurboBudgetRepository.AddTransaction(ITurboBudgetTransaction transaction)
         {
-            if (transaction != null)
+            if (transaction is BudgetTransaction)
             {
-                _entities.Transactions.Add(transaction);
+                _dbContext.Transactions.Add(transaction as BudgetTransaction);
+                _dbContext.SaveChanges();
             }
         }
 

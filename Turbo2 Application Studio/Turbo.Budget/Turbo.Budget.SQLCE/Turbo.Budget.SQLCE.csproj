@@ -51,6 +51,7 @@
       <HintPath>..\Turbo.Budget.MVC\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
@@ -66,19 +67,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="_Classes\SampleData.cs" />
-    <Compile Include="_Models\TurboBudgetEntities.cs" />
-    <Compile Include="_Models\TurboBudgetAccount.cs" />
-    <Compile Include="_Models\TurboBudgetTransaction.cs" />
+    <Compile Include="_Models\TurboBudgetDbContext.cs" />
+    <Compile Include="_Models\BudgetAccount.cs" />
+    <Compile Include="_Models\BudgetTransaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="_Classes\TurboBudgetSQLCERepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Turbo.Budget.SQLCE.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
