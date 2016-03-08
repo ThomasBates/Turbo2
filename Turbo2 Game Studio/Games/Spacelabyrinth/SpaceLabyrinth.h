@@ -21,14 +21,14 @@ private:
 
 public:
 	//  Constructors and Destructors
-	SpaceLabyrinth(ISpaceLabyrinthPlatform *factory);
+	SpaceLabyrinth(ISpaceLabyrinthPlatform *platform);
 	~SpaceLabyrinth();
 
 	//  IProgram Methods
 	virtual int Initialize();
-	virtual int Resize(int width, int height);
+//	virtual int Resize(int width, int height);
 	virtual int Update();
-	virtual int	Draw();
+	virtual int	Render();
 	virtual int Finalize();
 
 protected:

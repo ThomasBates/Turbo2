@@ -3,17 +3,20 @@
 
 #include "ApplicationWin32.h"
 
+#include <gl\gl.h>						// Header File For The OpenGL32 Library
+#include <gl\glu.h>						// Header File For The GLu32 Library
+
 #pragma region Classless Functions
 
 //	IApplication		*Application;
-//	ApplicationWin32	*Win32Application;
+ApplicationWin32	*Win32Application;
 
 LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 							UINT	uMsg,					// Message For This Window
 							WPARAM	wParam,					// Additional Message Information
 							LPARAM	lParam)					// Additional Message Information
 {
-	return Win32Application->WndProc(hWnd, uMsg, wParam, lParam);
+	return Win32Application->WindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 #pragma endregion
@@ -22,7 +25,7 @@ LRESULT CALLBACK WndProc(	HWND	hWnd,					// Handle For This Window
 ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 {
 	//	Application			= this;
-	//	Win32Application	= this;
+	Win32Application	= this;
 
 	_appTitle	= appTitle;				// Application Title
 
@@ -34,14 +37,14 @@ ApplicationWin32::ApplicationWin32(LPCWSTR appTitle)
 	_active		= FALSE;				// Window Active Flag Set To TRUE By Default
 	_done		= FALSE;
 
-	_windowCount = 0;
-	//_program	= NULL;
+	//_windowCount = 0;
+	_program	= NULL;
 
 	memset(_keys, 0, sizeof(_keys));
 
 	// Create Our OpenGL Window
-//	_ready		= CreateApplicationWindow(800, 600, 16);
-	_ready		= CreateApplicationWindow(640, 480, 16);
+	_ready		= CreateApplicationWindow(800, 600, 16);
+//	_ready		= CreateApplicationWindow(640, 480, 16);
 //	_ready		= CreateApplicationWindow(256, 192, 16);
 }
 
@@ -56,98 +59,72 @@ ApplicationWin32::~ApplicationWin32()
 #pragma endregion
 #pragma region IApplication Methods
 
-BOOL ApplicationWin32::RegisterWindow(IWindow *window)
-{
-	if (_windowCount < MAXWINDOWS-1)
-	{
-		_windows[_windowCount] = window;
-		_windowCount++;
-	}
-}
-
-BOOL ApplicationWin32::UnregisterWindow(IWindow *window)
-{
-	for (int i=0; i<_windowCount; i++)
-	{
-		if (_windows[i] = window)
-		{
-			for (int j=i+1; j<_windowCount; j++)
-				_windows[j-1] = _windows[j];
-			_windowCount--;
-			break;
-		}
-	}
-}
-
-BOOL ApplicationWin32::Run()
+BOOL ApplicationWin32::Run(IProgram *program)
 {
 	if (!_ready)
 		return FALSE;
 
-	if (_windowCount < 1)
+	if (!program->Initialize())
 		return FALSE;
 
-	//if (!program->Initialize())
-	//	return FALSE;
+	if (!Resize(_width, _height))
+		return FALSE;
 
-	//if (!Resize(_width, _height))
-	//	return FALSE;
-
-	//QueryPerformanceFrequency(&_frequency);
-	//QueryPerformanceCounter(&_startCount);
-	//_lastCount	= _startCount;
+	QueryPerformanceFrequency(&_frequency);
+	QueryPerformanceCounter(&_startCount);
+	_lastCount	= _startCount;
 
 	_running = TRUE;
 
 	while(!_done)								// Loop That Runs Until done=TRUE
 	{
-		//LARGE_INTEGER count;
-		//QueryPerformanceCounter(&count);
+		LARGE_INTEGER count;
+		QueryPerformanceCounter(&count);
 	
-		//_time		= (float)((count.QuadPart - _startCount.QuadPart) / (double)_frequency.QuadPart);
-		//_deltaTime	= (float)((count.QuadPart - _lastCount.QuadPart ) / (double)_frequency.QuadPart);
-		//if (_deltaTime * 60 > 1) // [60 fps]
-		//{
-		//	_timeToDraw = TRUE;
-		//	_lastCount	= count;
-		//}
+		_time		= (float)((count.QuadPart - _startCount.QuadPart) / (double)_frequency.QuadPart);
+		_deltaTime	= (float)((count.QuadPart - _lastCount.QuadPart ) / (double)_frequency.QuadPart);
+		if (_deltaTime * 60 > 1) // [60 fps]
+		{
+			_timeToDraw = TRUE;
+			_lastCount	= count;
+		}
 
-		//ProcessMessages();
+		ProcessMessages();
 		HandleMessage();
 
-		////  Update the Scene
-		//if (!program->Update())		// Draw The Scene
-		//	break;
+		//  Update the Scene
+		if (!program->Update())		// Draw The Scene
+			break;
 
-		//// Draw The Scene.
-		//if (_timeToDraw)
-		//{
-		//	if (!program->Draw())		// Draw The Scene
-		//		break;
-		//	_timeToDraw = FALSE;
-		//}
+		// Draw The Scene.
+		if (_timeToDraw)
+		{
+			if (!program->Render())		// Draw The Scene
+				break;
+			_timeToDraw = FALSE;
+		}
 
-		//if (_keys[VK_CONTROL] && _keys[VK_RETURN])					// Is Ctrl-Enter Being Pressed?
-		//{
-		//	_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
+		if (_keys[VK_CONTROL] && _keys[VK_RETURN])					// Is Ctrl-Enter Being Pressed?
+		{
+			_keys[VK_RETURN]=FALSE;				// If So Make Key FALSE
 
-		//	KillApplicationWindow();					// Kill Our Current Window
-		//	_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
+			KillApplicationWindow();					// Kill Our Current Window
+			_fullscreen = !_fullscreen;				// Toggle Fullscreen / Windowed Mode
 
-		//	if (!CreateApplicationWindow(_width, _height, 16))		// Recreate Our OpenGL Window
-		//		break;				// Quit If Window Was Not Created
+			if (!CreateApplicationWindow(_width, _height, 16))		// Recreate Our OpenGL Window
+				break;				// Quit If Window Was Not Created
 
-		//	if (!Resize(_width, _height))
-		//		break;
-		//}
+			if (!Resize(_width, _height))
+				break;
+		}
 	}
 
 	_running = FALSE;
 
-	//program->Finalize();
+	program->Finalize();
 
 	// Shutdown
-	//return (0);							// Exit The Program
+	return (0);							// Exit The Program
 }
 
 void ApplicationWin32::ProcessMessages()
@@ -167,10 +144,10 @@ void ApplicationWin32::HandleMessage()
 #pragma endregion
 #pragma region Public Access Methods
 
-LRESULT ApplicationWin32::WndProc(	HWND	hWnd,					// Handle For This Window
-									UINT	uMsg,					// Message For This Window
-									WPARAM	wParam,					// Additional Message Information
-									LPARAM	lParam)					// Additional Message Information
+LRESULT ApplicationWin32::WindowProc(	HWND	hWnd,					// Handle For This Window
+										UINT	uMsg,					// Message For This Window
+										WPARAM	wParam,					// Additional Message Information
+										LPARAM	lParam)					// Additional Message Information
 {
 	switch (uMsg)								// Check For Windows Messages
 	{
@@ -235,8 +212,8 @@ LRESULT ApplicationWin32::WndProc(	HWND	hWnd,					// Handle For This Window
 
 BOOL ApplicationWin32::Resize(int width, int height)				// Resize And Initialize The GL Window
 {
-	_width = width;
-	_height = height;
+//	_width = width;
+//	_height = height;
 
 	if (_fullscreen)
 	{
@@ -247,6 +224,21 @@ BOOL ApplicationWin32::Resize(int width, int height)				// Resize And Initialize
 	//if (_program)
 	//	if (!_program->Resize(width, height))
 	//		_done = TRUE;
+
+	if (width == 0)
+		width = 1;
+	if (height == 0)								// Prevent A Divide By Zero By
+		height = 1;							// Making Height Equal One
+	_width = width;
+	_height = height;
+
+	glViewport(0, 0, width - 1, height - 1);					// Reset The Current Viewport
+
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glLoadIdentity();							// Reset The Projection Matrix
+
+												// Calculate The Aspect Ratio Of The Window
+	gluPerspective(75.0f, (double)width / (double)height, 0.1f, 10000.0f);
 
 	return !_done;
 }

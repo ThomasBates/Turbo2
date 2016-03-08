@@ -2,8 +2,7 @@
 //  SpaceLabyrinth.cpp
 //  ============================================================================
 
-#include <math.h>
-#include <stdlib.h>
+#include "pch.h"
 
 #include "SpaceLabyrinth.h"
 #include "OriginalMazeFactory.h"
@@ -37,10 +36,10 @@ int SpaceLabyrinth::Initialize()
 	return result;
 }
 
-int SpaceLabyrinth::Resize(int width, int height)
-{
-	return _platform->Resize(width, height);
-}
+//int SpaceLabyrinth::Resize(int width, int height)
+//{
+//	return _platform->Resize(width, height);
+//}
 
 int SpaceLabyrinth::Update()
 {
@@ -53,7 +52,7 @@ int SpaceLabyrinth::Update()
 	return 1;
 }
 
-int SpaceLabyrinth::Draw()
+int SpaceLabyrinth::Render()
 {
 	_platform->BeginDraw();
 
@@ -102,10 +101,10 @@ int SpaceLabyrinth::NavigateMaze()
 		  navInfo.MoveBack))
 	{
 		//  air friction decay
-		_camera.Velocity -= _camera.Velocity * 1.0 * deltaTime;
+		_camera.Velocity -= _camera.Velocity * 1.0f * deltaTime;
 		
 		//  hover
-		_camera.Velocity += _camera.Up * cos(time*2) * 0.05 * deltaTime;
+		_camera.Velocity += _camera.Up * cos(time*2) * 0.05f * deltaTime;
 
 		//  gravity
 		//_camera.Velocity.Y -= deltaTime;

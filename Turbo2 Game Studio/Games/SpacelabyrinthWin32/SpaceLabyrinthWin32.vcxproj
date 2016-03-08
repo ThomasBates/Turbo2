@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,12 +21,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -40,7 +42,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -78,11 +80,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp" />
-    <ClCompile Include="..\..\Library\Application\Component.cpp" />
-    <ClCompile Include="..\..\Library\Application\Window.cpp" />
-    <ClCompile Include="..\..\Library\Classes\ComponentStateSet.cpp" />
-    <ClCompile Include="..\..\Library\Classes\ComponentStyleSet.cpp" />
-    <ClCompile Include="..\..\Library\Classes\List.cpp" />
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp" />
@@ -90,22 +87,14 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
-    <ClCompile Include="SpaceLabyrinthMainWindow.cpp" />
     <ClCompile Include="SpaceLabyrinthWin32Platform.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h" />
-    <ClInclude Include="..\..\Library\Application\Component.h" />
+    <ClInclude Include="..\..\Library\ApplicationWin32\IApplicationWin32.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
-    <ClInclude Include="..\..\Library\Application\IComponent.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
-    <ClInclude Include="..\..\Library\Application\IWindow.h" />
-    <ClInclude Include="..\..\Library\Application\Window.h" />
-    <ClInclude Include="..\..\Library\Classes\ComponentStateSet.h" />
-    <ClInclude Include="..\..\Library\Classes\ComponentStyleSet.h" />
-    <ClInclude Include="..\..\Library\Classes\IList.h" />
-    <ClInclude Include="..\..\Library\Classes\List.h" />
     <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
     <ClInclude Include="..\..\Library\Graphics\Camera.h" />
@@ -119,8 +108,7 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h" />
-    <ClInclude Include="ISpaceLabyrinthMainWindow.h" />
-    <ClInclude Include="SpaceLabyrinthMainWindow.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="SpaceLabyrinthWin32Platform.h" />
   </ItemGroup>
   <ItemGroup>

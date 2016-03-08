@@ -1,6 +1,6 @@
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "pch.h"
+
 #include <time.h>
 
 #include "OriginalMazeFactory.h"

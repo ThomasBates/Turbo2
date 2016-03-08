@@ -1,7 +1,7 @@
 
 //  Adapted from Jeff Molofee's tutorials at http://nehe.gamedev.net/
 
-#include <math.h>
+#include "pch.h"
 
 #include "ApplicationWin32.h"
 #include "SpaceLabyrinthWin32Platform.h"
@@ -13,8 +13,9 @@
 
 #pragma region Constructors and Destructors
 
-SpaceLabyrinthWin32Platform::SpaceLabyrinthWin32Platform()
+SpaceLabyrinthWin32Platform::SpaceLabyrinthWin32Platform(IApplication *application)
 {
+	_applicationWin32 = dynamic_cast<IApplicationWin32*>(application);
 }
 
 SpaceLabyrinthWin32Platform::~SpaceLabyrinthWin32Platform()
@@ -43,7 +44,7 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 		glEnable(GL_TEXTURE_2D);						// Enable Texture Mapping ( NEW )
 	}
 
-	GLfloat LightAmbient[]= { 10.0f, 10.0f, 10.0f, 1.0f };	
+	GLfloat LightAmbient[]= { 50.0f, 50.0f, 50.0f, 1.0f };	
 	GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };	
 	GLfloat LightPosition[]= { 0.0f, 0.0f, 0.0f, 1.0f };
 
@@ -56,8 +57,8 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 2);
 	glEnable(GL_LIGHT1);
 
-	_hRC = Win32Application->GetRenderingContext();
-	_hDC = Win32Application->GetDeviceContext();
+	_hRC = _applicationWin32->GetRenderingContext();
+	_hDC = _applicationWin32->GetDeviceContext();
 
 	QueryPerformanceFrequency(&_frequency);
 	QueryPerformanceCounter(&_startCount);
@@ -66,25 +67,25 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	return TRUE;								// Everything Went OK
 }
 
-BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
-{
-	if (width == 0)
-		width = 1;
-	if (height == 0)								// Prevent A Divide By Zero By
-		height = 1;							// Making Height Equal One
-	_width = width;
-	_height = height;
-
-	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
-
-	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-	glLoadIdentity();							// Reset The Projection Matrix
-
-	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(75.0f,(double)width/(double)height,0.1f,10000.0f);
-
-	return TRUE;
-}
+//BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
+//{
+//	if (width == 0)
+//		width = 1;
+//	if (height == 0)								// Prevent A Divide By Zero By
+//		height = 1;							// Making Height Equal One
+//	_width = width;
+//	_height = height;
+//
+//	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
+//
+//	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+//	glLoadIdentity();							// Reset The Projection Matrix
+//
+//	// Calculate The Aspect Ratio Of The Window
+//	gluPerspective(75.0f,(double)width/(double)height,0.1f,10000.0f);
+//
+//	return TRUE;
+//}
 
 BOOL SpaceLabyrinthWin32Platform::BeginUpdate()
 {
@@ -311,7 +312,7 @@ int SpaceLabyrinthWin32Platform::GetNavigationInfo(NavInfo *navInfo)
 	{
 		int x, y, status;
 
-		Win32Application->GetPointer(&x, &y, &status);
+		_applicationWin32->GetPointer(&x, &y, &status);
 
 		navInfo->Pointer	= status & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON);
 		navInfo->PointerX	= x;
@@ -337,17 +338,20 @@ int SpaceLabyrinthWin32Platform::GetNavigationInfo(NavInfo *navInfo)
 		navInfo->MoveRight	= 0;
 		navInfo->MoveDown	= 0;
 		navInfo->MoveUp		= 0;
-		navInfo->MoveFore	= Win32Application->GetKey(VK_INSERT)	|| Win32Application->GetKey(VK_SPACE);
-		navInfo->MoveBack	= Win32Application->GetKey(VK_DELETE)	|| Win32Application->GetKey('X');
+		navInfo->MoveFore	= _applicationWin32->GetKey(VK_INSERT)	|| _applicationWin32->GetKey(VK_SPACE);
+		navInfo->MoveBack	= _applicationWin32->GetKey(VK_DELETE)	|| _applicationWin32->GetKey('X');
 
-		navInfo->PitchFore	= Win32Application->GetKey(VK_UP)		|| Win32Application->GetKey('W');
-		navInfo->PitchBack	= Win32Application->GetKey(VK_DOWN)		|| Win32Application->GetKey('S');
-		navInfo->YawRight	= Win32Application->GetKey(VK_RIGHT)		|| Win32Application->GetKey('D');
-		navInfo->YawLeft	= Win32Application->GetKey(VK_LEFT)		|| Win32Application->GetKey('A');
+		navInfo->PitchFore	= _applicationWin32->GetKey(VK_UP)		|| _applicationWin32->GetKey('W');
+		navInfo->PitchBack	= _applicationWin32->GetKey(VK_DOWN)	|| _applicationWin32->GetKey('S');
+		navInfo->YawRight	= _applicationWin32->GetKey(VK_RIGHT)	|| _applicationWin32->GetKey('D');
+		navInfo->YawLeft	= _applicationWin32->GetKey(VK_LEFT)	|| _applicationWin32->GetKey('A');
 		navInfo->RollLeft	= 0;
 		navInfo->RollRight	= 0;
 
-		navInfo->Restart		= Win32Application->GetKey(VK_F5); Win32Application->SetKey(VK_F5, FALSE);
+		navInfo->Restart	= _applicationWin32->GetKey(VK_F5); _applicationWin32->SetKey(VK_F5, FALSE);
+
+		if (navInfo->MoveFore)
+			navInfo->MoveFore = navInfo->MoveFore;
 
 		return TRUE;
 	}

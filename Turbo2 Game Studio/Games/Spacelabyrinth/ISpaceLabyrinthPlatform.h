@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "IApplication.h"
+
 #include "IMaze.h"
 #include "Camera.h"
 
@@ -26,8 +28,9 @@ typedef struct {
 class ISpaceLabyrinthPlatform
 {
 public:
+	//  ISpaceLabyrinthPlatform Methods
 	virtual int		Initialize(Camera *camera) = 0;
-	virtual int		Resize(int width, int height) = 0;
+//	virtual int		Resize(int width, int height) = 0;
 	virtual int		BeginUpdate() = 0;
 	virtual int		EndUpdate() = 0;
 	virtual int		BeginDraw() = 0;

@@ -1,9 +1,10 @@
 
-#include <stdio.h>
-#include <stdlib.h>
+//#define _CRT_SECURE_NO_WARNINGS 1
+//#pragma warning(disable:4996)
+
+#include "pch.h"
 
 #include "Bitmap.h"
-
 
 //  ============================================================================
 //  DSBitmap
@@ -48,7 +49,8 @@ int	Bitmap::LoadFromFile(const char *fileName)
 	delete [] _data;
 
 	//Open file
-	file = fopen(fileName, "rb");
+	//file = fopen(fileName, "rb");
+	fopen_s(&file, fileName, "rb");
 	if (!file)
 	{
 		//fprintf(stderr, "Unable to open file %s", fileName);

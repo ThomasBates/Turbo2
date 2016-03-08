@@ -2,15 +2,12 @@
 
 #pragma once
 
-#include "IComponent.h"
-#include "IWindow.h"
+#include "IProgram.h"
 
 class IApplication
 {
 public:
-	virtual int RegisterWindow(IWindow *window) = 0;
-	virtual int UnregisterWindow(IWindow *window) = 0;
-	virtual int Run() = 0;
+	virtual int Run(IProgram *program) = 0;
 };
 
 //extern IApplication *Application;

@@ -1,5 +1,6 @@
 
-#include <math.h>
+#include "pch.h"
+//#include <math.h>
 #include "Camera.h"
 
 Camera::Camera()

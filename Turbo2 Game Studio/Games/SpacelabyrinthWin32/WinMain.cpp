@@ -15,9 +15,10 @@ int WINAPI WinMain(	HINSTANCE	hInstance,		// Instance
 {
 	IApplication *application = new ApplicationWin32(TEXT("Space Labyrinth"));
 	ISpaceLabyrinthPlatform *platform = new SpaceLabyrinthWin32Platform(application);
+	IProgram *program = new SpaceLabyrinth(platform);
 
-	application->RegisterWindow(new SpaceLabyrinthMainWindow(platform));
+	application->Run(program);
 
-	return application->Run();
+	return 0;
 }
 
