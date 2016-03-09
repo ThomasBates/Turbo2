@@ -106,8 +106,6 @@
     <ClCompile Include="..\..\Library\GraphicsDX12\CanvasRGB.cpp">
       <Filter>Library\GraphicsDX12</Filter>
     </ClCompile>
-    <ClCompile Include="SpaceLabyrinthDX12FrameworkView.cpp" />
-    <ClCompile Include="SpaceLabyrinthDX12FrameworkViewSource.cpp" />
     <ClCompile Include="SpaceLabyrinthDX12Platform.cpp">
       <Filter>Games\SpaceLabyrinthDX12</Filter>
     </ClCompile>
@@ -119,6 +117,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Library\Graphics\Vector.cpp">
       <Filter>Library\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,8 +167,6 @@
     <ClInclude Include="..\..\Library\GraphicsDX12\CanvasRGB.h">
       <Filter>Library\GraphicsDX12</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceLabyrinthDX12FrameworkView.h" />
-    <ClInclude Include="SpaceLabyrinthDX12FrameworkViewSource.h" />
     <ClInclude Include="SpaceLabyrinthDX12Platform.h">
       <Filter>Games\SpaceLabyrinthDX12</Filter>
     </ClInclude>
@@ -175,6 +177,12 @@
       <Filter>Library\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
   </ItemGroup>

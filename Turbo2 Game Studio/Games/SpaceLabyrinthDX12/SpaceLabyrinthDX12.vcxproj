@@ -104,7 +104,10 @@
     <PackageCertificateKeyFile>SpaceLabyrinthDX12_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Development\Turbo2\Turbo2 Game Studio\Library\GraphicsDX12;C:\Development\Turbo2\Turbo2 Game Studio\Library\Graphics;C:\Development\Turbo2\Turbo2 Game Studio\Library\ApplicationDX12;C:\Development\Turbo2\Turbo2 Game Studio\Library\Application;C:\Development\Turbo2\Turbo2 Game Studio\Games\Spacelabyrinth;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationDX12;..\..\Library\Graphics;..\..\Library\GraphicsDX12;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationDX12;..\..\Library\Graphics;..\..\Library\GraphicsDX12;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
@@ -201,6 +204,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12.h" />
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.h" />
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h" />
     <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
@@ -216,10 +221,8 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
-    <ClInclude Include="SpaceLabyrinthDX12FrameworkView.h" />
     <ClInclude Include="Common\d3dx12.h" />
     <ClInclude Include="Common\DeviceResources.h" />
-    <ClInclude Include="SpaceLabyrinthDX12FrameworkViewSource.h" />
     <ClInclude Include="SpaceLabyrinthDX12Main.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
@@ -230,6 +233,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12.cpp" />
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.cpp" />
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.cpp" />
     <ClCompile Include="..\..\Library\GraphicsDX12\CanvasRGB.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp" />
@@ -237,10 +242,8 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
-    <ClCompile Include="SpaceLabyrinthDX12FrameworkView.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SpaceLabyrinthDX12FrameworkViewSource.cpp" />
     <ClCompile Include="SpaceLabyrinthDX12Main.cpp" />
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />
     <ClCompile Include="pch.cpp">

@@ -7,10 +7,13 @@
 namespace SpaceLabyrinthDX12
 {
 	// Main entry point for our app. Connects the app with the Windows shell and handles application lifecycle events.
-	ref class SpaceLabyrinthDX12FrameworkView sealed : public Windows::ApplicationModel::Core::IFrameworkView
+	ref class ApplicationDX12FrameworkView sealed : public Windows::ApplicationModel::Core::IFrameworkView
 	{
+	internal:
+		ApplicationDX12FrameworkView(IProgram *program);
+
 	public:
-		SpaceLabyrinthDX12FrameworkView();
+		ApplicationDX12FrameworkView();
 
 		// IFrameworkView methods.
 		virtual void Initialize(Windows::ApplicationModel::Core::CoreApplicationView^ applicationView);

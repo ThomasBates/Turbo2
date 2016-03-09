@@ -2,7 +2,7 @@
 
 #include "IProgram.h"
 
-#include "SpaceLabyrinthDX12FrameworkView.h"
+#include "ApplicationDX12FrameworkView.h"
 #include "ApplicationDX12.h"
 
 #include <ppltasks.h>
@@ -21,57 +21,60 @@ using namespace Windows::Graphics::Display;
 
 // The DirectX 12 Application template is documented at http://go.microsoft.com/fwlink/?LinkID=613670&clcid=0x409
 
-SpaceLabyrinthDX12FrameworkView::SpaceLabyrinthDX12FrameworkView() :
+ApplicationDX12FrameworkView::ApplicationDX12FrameworkView() :
 	m_windowClosed(false),
 	m_windowVisible(true)
 {
-	//  This is a little hack using a global "Application" because IFrameworkViewSource and IFrameworkView
-	//	are both sealed so I couldn't inject IProgram through the constructor, and I couldn't figure out 
-	//	another way to pass IProgram from IApplication to here.
-	//_program = Application->GetProgram();
+}
+
+ApplicationDX12FrameworkView::ApplicationDX12FrameworkView(IProgram *program) :
+	m_windowClosed(false),
+	m_windowVisible(true),
+	_program(program)
+{
 }
 
 // The first method called when the IFrameworkView is being created.
-void SpaceLabyrinthDX12FrameworkView::Initialize(CoreApplicationView^ applicationView)
+void ApplicationDX12FrameworkView::Initialize(CoreApplicationView^ applicationView)
 {
 	// Register event handlers for app lifecycle. This example includes Activated, so that we
 	// can make the CoreWindow active and start rendering on the window.
 	applicationView->Activated +=
-		ref new TypedEventHandler<CoreApplicationView^, IActivatedEventArgs^>(this, &SpaceLabyrinthDX12FrameworkView::OnActivated);
+		ref new TypedEventHandler<CoreApplicationView^, IActivatedEventArgs^>(this, &ApplicationDX12FrameworkView::OnActivated);
 
 	CoreApplication::Suspending +=
-		ref new EventHandler<SuspendingEventArgs^>(this, &SpaceLabyrinthDX12FrameworkView::OnSuspending);
+		ref new EventHandler<SuspendingEventArgs^>(this, &ApplicationDX12FrameworkView::OnSuspending);
 
 	CoreApplication::Resuming +=
-		ref new EventHandler<Platform::Object^>(this, &SpaceLabyrinthDX12FrameworkView::OnResuming);
+		ref new EventHandler<Platform::Object^>(this, &ApplicationDX12FrameworkView::OnResuming);
 }
 
 // Called when the CoreWindow object is created (or re-created).
-void SpaceLabyrinthDX12FrameworkView::SetWindow(CoreWindow^ window)
+void ApplicationDX12FrameworkView::SetWindow(CoreWindow^ window)
 {
 	window->SizeChanged += 
-		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &SpaceLabyrinthDX12FrameworkView::OnWindowSizeChanged);
+		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &ApplicationDX12FrameworkView::OnWindowSizeChanged);
 
 	window->VisibilityChanged +=
-		ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &SpaceLabyrinthDX12FrameworkView::OnVisibilityChanged);
+		ref new TypedEventHandler<CoreWindow^, VisibilityChangedEventArgs^>(this, &ApplicationDX12FrameworkView::OnVisibilityChanged);
 
 	window->Closed += 
-		ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &SpaceLabyrinthDX12FrameworkView::OnWindowClosed);
+		ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &ApplicationDX12FrameworkView::OnWindowClosed);
 
 	DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 
 	currentDisplayInformation->DpiChanged +=
-		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &SpaceLabyrinthDX12FrameworkView::OnDpiChanged);
+		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &ApplicationDX12FrameworkView::OnDpiChanged);
 
 	currentDisplayInformation->OrientationChanged +=
-		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &SpaceLabyrinthDX12FrameworkView::OnOrientationChanged);
+		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &ApplicationDX12FrameworkView::OnOrientationChanged);
 
 	DisplayInformation::DisplayContentsInvalidated +=
-		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &SpaceLabyrinthDX12FrameworkView::OnDisplayContentsInvalidated);
+		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &ApplicationDX12FrameworkView::OnDisplayContentsInvalidated);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
-void SpaceLabyrinthDX12FrameworkView::Load(Platform::String^ entryPoint)
+void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 {
 	if (m_main == nullptr)
 	{
@@ -80,7 +83,7 @@ void SpaceLabyrinthDX12FrameworkView::Load(Platform::String^ entryPoint)
 }
 
 // This method is called after the window becomes active.
-void SpaceLabyrinthDX12FrameworkView::Run()
+void ApplicationDX12FrameworkView::Run()
 {
 	while (!m_windowClosed)
 	{
@@ -114,19 +117,19 @@ void SpaceLabyrinthDX12FrameworkView::Run()
 // Required for IFrameworkView.
 // Terminate events do not cause Uninitialize to be called. It will be called if your IFrameworkView
 // class is torn down while the app is in the foreground.
-void SpaceLabyrinthDX12FrameworkView::Uninitialize()
+void ApplicationDX12FrameworkView::Uninitialize()
 {
 }
 
 // Application lifecycle event handlers.
 
-void SpaceLabyrinthDX12FrameworkView::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
+void ApplicationDX12FrameworkView::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
 {
 	// Run() won't start until the CoreWindow is activated.
 	CoreWindow::GetForCurrentThread()->Activate();
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
+void ApplicationDX12FrameworkView::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 {
 	// Save app state asynchronously after requesting a deferral. Holding a deferral
 	// indicates that the application is busy performing suspending operations. Be
@@ -143,7 +146,7 @@ void SpaceLabyrinthDX12FrameworkView::OnSuspending(Platform::Object^ sender, Sus
 	});
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform::Object^ args)
+void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform::Object^ args)
 {
 	// Restore any data or state that was unloaded on suspend. By default, data
 	// and state are persisted when resuming from suspend. Note that this event
@@ -155,25 +158,25 @@ void SpaceLabyrinthDX12FrameworkView::OnResuming(Platform::Object^ sender, Platf
 
 // Window event handlers.
 
-void SpaceLabyrinthDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
+void ApplicationDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	GetDeviceResources()->SetLogicalSize(Size(sender->Bounds.Width, sender->Bounds.Height));
 	m_main->OnWindowSizeChanged();
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
+void ApplicationDX12FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
 {
 	m_windowVisible = args->Visible;
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
+void ApplicationDX12FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
 {
 	m_windowClosed = true;
 }
 
 // DisplayInformation event handlers.
 
-void SpaceLabyrinthDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, Object^ args)
+void ApplicationDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, Object^ args)
 {
 	// Note: The value for LogicalDpi retrieved here may not match the effective DPI of the app
 	// if it is being scaled for high resolution devices. Once the DPI is set on DeviceResources,
@@ -183,18 +186,18 @@ void SpaceLabyrinthDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, O
 	m_main->OnWindowSizeChanged();
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
+void ApplicationDX12FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
 {
 	GetDeviceResources()->SetCurrentOrientation(sender->CurrentOrientation);
 	m_main->OnWindowSizeChanged();
 }
 
-void SpaceLabyrinthDX12FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
+void ApplicationDX12FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
 {
 	GetDeviceResources()->ValidateDevice();
 }
 
-std::shared_ptr<DX::DeviceResources> SpaceLabyrinthDX12FrameworkView::GetDeviceResources()
+std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceResources()
 {
 	if (m_deviceResources != nullptr && m_deviceResources->IsDeviceRemoved())
 	{

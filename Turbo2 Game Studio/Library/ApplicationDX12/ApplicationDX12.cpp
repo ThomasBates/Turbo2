@@ -2,7 +2,7 @@
 
 #include "ApplicationDX12.h"
 
-#include "SpaceLabyrinthDX12FrameworkViewSource.h"
+#include "ApplicationDX12FrameworkViewSource.h"
 
 using namespace Windows::ApplicationModel::Core;
 
@@ -28,7 +28,7 @@ BOOL ApplicationDX12::Run(IProgram *program)
 {
 	_program = program;
 
-	auto viewSource = ref new SpaceLabyrinthDX12FrameworkViewSource();
+	IFrameworkViewSource^ viewSource = ref new ApplicationDX12FrameworkViewSource(program);
 	CoreApplication::Run(viewSource);
 	return 0;
 }
