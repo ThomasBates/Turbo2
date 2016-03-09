@@ -378,12 +378,12 @@ int SpaceLabyrinthWin32Platform::LoadTextures()
 #include "stonewall2_bmp_bin.h"
 */
 
-	LoadTexture(0, "Data\\stonefloor1.bmp");
-	LoadTexture(1, "Data\\stonewall1.bmp");
-	LoadTexture(2, "Data\\stonefloor3.bmp");	//	Floor
-	LoadTexture(3, "Data\\stonefloor4.bmp");	//	Ceiling
-	LoadTexture(4, "Data\\stonefloor5.bmp");
-	LoadTexture(5, "Data\\stonefloor2.bmp");
+	LoadTexture(0, "Resources\\stonefloor1.bmp");
+	LoadTexture(1, "Resources\\stonewall1.bmp");
+	LoadTexture(2, "Resources\\stonefloor3.bmp");	//	Floor
+	LoadTexture(3, "Resources\\stonefloor4.bmp");	//	Ceiling
+	LoadTexture(4, "Resources\\stonefloor5.bmp");
+	LoadTexture(5, "Resources\\stonefloor2.bmp");
 
 	return status;								// Return The Status
 }

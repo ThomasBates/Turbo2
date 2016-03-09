@@ -1,13 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Resource Files\Data">
-      <UniqueIdentifier>{ae8837a1-22c2-430d-851b-2cf4fdb9334a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Games">
       <UniqueIdentifier>{159b4277-0d84-4554-a349-9638940361cd}</UniqueIdentifier>
     </Filter>
@@ -31,6 +24,10 @@
     </Filter>
     <Filter Include="Library\GraphicsWin32">
       <UniqueIdentifier>{f886de2f-6b3a-4341-ad9c-bcbd1c0730cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,29 +118,26 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\BIGHEAD.BMP">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\BIGHEAD2.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\Mandelbrot%27s Eye.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\POKEBALL.BMP">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test1.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test2.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test3.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
+    <Image Include="Resources\stonefloor1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonefloor2.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonefloor3.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonefloor4.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonefloor5.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonewall1.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="Resources\stonewall2.bmp">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
 </Project>
