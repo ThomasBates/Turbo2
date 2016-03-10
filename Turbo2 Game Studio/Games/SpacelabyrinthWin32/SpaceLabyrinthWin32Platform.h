@@ -18,9 +18,6 @@ private:
 	HGLRC			_hRC;			// Permanent Rendering Context
 	HDC				_hDC;			// Private GDI Device Context
 
-	int				_width;
-	int				_height;
-
 	GLuint			_texture[6];
 	Camera			*_camera;
 
@@ -37,7 +34,7 @@ public:
 
 	//  ISpaceLabyrinthPlatform Methods
 	virtual BOOL	Initialize(Camera *camera);
-//	virtual BOOL	Resize(int width, int height);
+	virtual BOOL	Resize(int width, int height);
 	virtual BOOL	BeginUpdate();
 	virtual BOOL	EndUpdate();
 	virtual BOOL	BeginDraw();

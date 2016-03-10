@@ -31,7 +31,7 @@ public:
 	//  ISpaceLabyrinthFactory Methods
 	virtual int		Initialize(Camera *camera);
 //	virtual int		Reset();
-//	virtual int		Resize(int width, int height);
+	virtual int		Resize(int width, int height);
 	virtual int		BeginUpdate();
 	virtual int		EndUpdate();
 	virtual int		BeginDraw();

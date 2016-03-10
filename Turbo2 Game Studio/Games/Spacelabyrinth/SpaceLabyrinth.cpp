@@ -36,10 +36,10 @@ int SpaceLabyrinth::Initialize()
 	return result;
 }
 
-//int SpaceLabyrinth::Resize(int width, int height)
-//{
-//	return _platform->Resize(width, height);
-//}
+int SpaceLabyrinth::Resize(int width, int height)
+{
+	return _platform->Resize(width, height);
+}
 
 int SpaceLabyrinth::Update()
 {
@@ -60,6 +60,12 @@ int SpaceLabyrinth::Render()
 
 	_platform->EndDraw();
 
+	return 1;
+}
+
+int SpaceLabyrinth::SaveState()
+{
+	//_platform->SaveState(_state);
 	return 1;
 }
 

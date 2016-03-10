@@ -7,11 +7,11 @@
 #include "IApplication.h"
 #include "IApplicationDX12.h"
 
-class ApplicationDX12 : public IApplication, public IApplicationDX12
+class ApplicationDX12 : public IApplication //, public IApplicationDX12
 {
 private:
 	LPCWSTR		_appTitle;		// Application Title
-	IProgram*	_program;
+//	IProgram*	_program;
 
 public:
 	//  Constructors and Destructors
@@ -22,7 +22,7 @@ public:
 	virtual BOOL Run(IProgram *program);
 
 	//  IApplicationDX12 Methods
-	virtual IProgram *GetProgram() { return _program; }
+//	virtual IProgram *GetProgram() { return _program; }
 };
 
 extern IApplication *Application;

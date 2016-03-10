@@ -34,11 +34,17 @@ private:
 	IProgram*	_program;
 
 	LARGE_INTEGER	_frequency;
-	LARGE_INTEGER	_startCount;
 	LARGE_INTEGER	_lastCount;
-	float			_time;
-	float			_deltaTime;
-	BOOL			_timeToDraw;
+
+	//  Local Support Methods
+	BOOL CreateApplicationWindow(int width, int height, int bits);
+	void KillApplicationWindow();
+	BOOL Resize(int width, int height);
+	void ProcessMessages();
+	void HandleMessage();
+	BOOL ProcessMessage(MSG *msg);
+	BOOL TimeToRender();
+	BOOL CheckFullScreenToggle();
 
 public:
 	//  Constructors and Destructors
@@ -62,24 +68,11 @@ public:
 	void SetKey(int keyIndex, BOOL keyDown) { _keys[keyIndex] = keyDown; }
 
 	//  Public Access Methods
-	virtual void HandleMessage();
-	virtual void ProcessMessages();
-
 	virtual LRESULT WindowProc(	HWND	hWnd,					// Handle For This Window
 								UINT	uMsg,					// Message For This Window
 								WPARAM	wParam,					// Additional Message Information
 								LPARAM	lParam);				// Additional Message Information
-	virtual BOOL Resize(int width, int height);
-
-protected:
-	//  Local Support Methods
-	virtual BOOL CreateApplicationWindow(int width, int height, int bits);
-	virtual void KillApplicationWindow();
-	virtual BOOL ProcessMessage(MSG *msg);
 };
-
-//extern ApplicationWin32* Win32Application;
-
 
 #define FULLSCREEN_WIDTH  800
 #define FULLSCREEN_HEIGHT 600

@@ -66,26 +66,6 @@ void SpaceLabyrinthDX12Main::OnWindowSizeChanged()
 	m_sceneRenderer->CreateWindowSizeDependentResources();
 }
 
-// Notifies the app that it is being suspended.
-void SpaceLabyrinthDX12Main::OnSuspending()
-{
-	// TODO: Replace this with your app's suspending logic.
-
-	// Process lifetime management may terminate suspended apps at any time, so it is
-	// good practice to save any state that will allow the app to restart where it left off.
-
-	m_sceneRenderer->SaveState();
-
-	// If your application uses video memory allocations that are easy to re-create,
-	// consider releasing that memory to make it available to other applications.
-}
-
-// Notifes the app that it is no longer suspended.
-void SpaceLabyrinthDX12Main::OnResuming()
-{
-	// TODO: Replace this with your app's resuming logic.
-}
-
 // Notifies renderers that device resources need to be released.
 void SpaceLabyrinthDX12Main::OnDeviceRemoved()
 {

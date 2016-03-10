@@ -129,6 +129,7 @@ void ApplicationDX12FrameworkView::OnActivated(CoreApplicationView^ applicationV
 	CoreWindow::GetForCurrentThread()->Activate();
 }
 
+// Notifies the app that it is being suspended.
 void ApplicationDX12FrameworkView::OnSuspending(Platform::Object^ sender, SuspendingEventArgs^ args)
 {
 	// Save app state asynchronously after requesting a deferral. Holding a deferral
@@ -139,13 +140,22 @@ void ApplicationDX12FrameworkView::OnSuspending(Platform::Object^ sender, Suspen
 
 	create_task([this, deferral]()
 	{
-		// TODO: Insert your code here.
-		m_main->OnSuspending();
+		// TODO: Replace this with your app's suspending logic.
+
+		// Process lifetime management may terminate suspended apps at any time, so it is
+		// good practice to save any state that will allow the app to restart where it left off.
+
+		_program->SaveState();
+		// _program->Suspend()    ???
+
+		// If your application uses video memory allocations that are easy to re-create,
+		// consider releasing that memory to make it available to other applications.
 
 		deferral->Complete();
 	});
 }
 
+// Notifes the app that it is no longer suspended.
 void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform::Object^ args)
 {
 	// Restore any data or state that was unloaded on suspend. By default, data
@@ -153,7 +163,10 @@ void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform
 	// does not occur if the app was previously terminated.
 
 	// TODO: Insert your code here.
-	m_main->OnResuming();
+	// TODO: Replace this with your app's resuming logic.
+	
+	// _program->LoadState() ???
+	// _program->Resume()    ???
 }
 
 // Window event handlers.
@@ -161,6 +174,7 @@ void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform
 void ApplicationDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	GetDeviceResources()->SetLogicalSize(Size(sender->Bounds.Width, sender->Bounds.Height));
+	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	m_main->OnWindowSizeChanged();
 }
 
@@ -183,12 +197,14 @@ void ApplicationDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, Obje
 	// you should always retrieve it using the GetDpi method.
 	// See DeviceResources.cpp for more details.
 	GetDeviceResources()->SetDpi(sender->LogicalDpi);
+	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	m_main->OnWindowSizeChanged();
 }
 
 void ApplicationDX12FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
 {
 	GetDeviceResources()->SetCurrentOrientation(sender->CurrentOrientation);
+	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	m_main->OnWindowSizeChanged();
 }
 

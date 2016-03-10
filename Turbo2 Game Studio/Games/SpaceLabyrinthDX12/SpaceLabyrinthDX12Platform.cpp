@@ -27,6 +27,11 @@ int SpaceLabyrinthDX12Platform::Initialize(Camera *camera)
 	return TRUE;								// Everything Went OK
 }
 
+int SpaceLabyrinthDX12Platform::Resize(int width, int height)
+{
+	return TRUE;
+}
+
 int SpaceLabyrinthDX12Platform::BeginUpdate()
 {
 	return TRUE;

@@ -67,25 +67,18 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	return TRUE;								// Everything Went OK
 }
 
-//BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
-//{
-//	if (width == 0)
-//		width = 1;
-//	if (height == 0)								// Prevent A Divide By Zero By
-//		height = 1;							// Making Height Equal One
-//	_width = width;
-//	_height = height;
-//
-//	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
-//
-//	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
-//	glLoadIdentity();							// Reset The Projection Matrix
-//
-//	// Calculate The Aspect Ratio Of The Window
-//	gluPerspective(75.0f,(double)width/(double)height,0.1f,10000.0f);
-//
-//	return TRUE;
-//}
+BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
+{
+	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
+
+	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
+	glLoadIdentity();							// Reset The Projection Matrix
+
+	// Calculate The Aspect Ratio Of The Window
+	gluPerspective(75.0f, (double)width/(double)height, 0.1f, 10000.0f);
+
+	return TRUE;
+}
 
 BOOL SpaceLabyrinthWin32Platform::BeginUpdate()
 {

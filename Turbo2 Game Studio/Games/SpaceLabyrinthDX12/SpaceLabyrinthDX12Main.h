@@ -16,8 +16,6 @@ namespace SpaceLabyrinthDX12
 		bool Render();
 
 		void OnWindowSizeChanged();
-		void OnSuspending();
-		void OnResuming();
 		void OnDeviceRemoved();
 
 	private:

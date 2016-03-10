@@ -26,7 +26,7 @@ ApplicationDX12::~ApplicationDX12()
 
 BOOL ApplicationDX12::Run(IProgram *program)
 {
-	_program = program;
+//	_program = program;
 
 	IFrameworkViewSource^ viewSource = ref new ApplicationDX12FrameworkViewSource(program);
 	CoreApplication::Run(viewSource);

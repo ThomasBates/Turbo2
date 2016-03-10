@@ -26,9 +26,10 @@ public:
 
 	//  IProgram Methods
 	virtual int Initialize();
-//	virtual int Resize(int width, int height);
+	virtual int Resize(int width, int height);
 	virtual int Update();
 	virtual int	Render();
+	virtual int SaveState();
 	virtual int Finalize();
 
 protected:
