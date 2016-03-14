@@ -2,9 +2,15 @@
 #include "pch.h"
 
 #include "IApplication.h"
+#include "IApplicationDX12.h"
+#include "IApplicationDX12DeviceResources.h"
+
 #include "Bitmap.h"
 #include "CanvasRGB.h"
 #include "SpaceLabyrinthDX12Platform.h"
+
+using namespace Application_DX12;
+using namespace SpaceLabyrinthDX12;
 
 #pragma region Constructors and Destructors
 
@@ -21,19 +27,44 @@ SpaceLabyrinthDX12Platform::~SpaceLabyrinthDX12Platform()
 #pragma region ISpaceLabyrinthFactory Methods
 
 int SpaceLabyrinthDX12Platform::Initialize(Camera *camera)
-{			
+{
 	_camera = camera;
 
 	return TRUE;								// Everything Went OK
 }
 
+
+void SpaceLabyrinthDX12Platform::SetDeviceResources(IDeviceResources *deviceResources)
+{
+	if (deviceResources == nullptr)
+	{
+		m_sceneRenderer = nullptr;
+	}
+	else
+	{
+		IApplicationDX12DeviceResources *carrier = dynamic_cast<IApplicationDX12DeviceResources*>(deviceResources);
+		m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(carrier->GetDeviceResources()));
+		Resize(0, 0);
+	}
+}
+
 int SpaceLabyrinthDX12Platform::Resize(int width, int height)
 {
+	// TODO: Replace this with the size-dependent initialization of your app's content.
+	m_sceneRenderer->CreateWindowSizeDependentResources();
+
 	return TRUE;
 }
 
 int SpaceLabyrinthDX12Platform::BeginUpdate()
 {
+	// Update scene objects.
+	m_timer.Tick([&]()
+	{
+		// TODO: Replace this with your app's content update functions.
+		m_sceneRenderer->Update(m_timer);
+	});
+
 	return TRUE;
 }
 
@@ -42,13 +73,23 @@ int SpaceLabyrinthDX12Platform::EndUpdate()
 	return TRUE;
 }
 
-int SpaceLabyrinthDX12Platform::BeginDraw()
+int SpaceLabyrinthDX12Platform::BeginRender()
 {
 	return TRUE;
 }
 
-int SpaceLabyrinthDX12Platform::EndDraw()
+int SpaceLabyrinthDX12Platform::EndRender()
 {
+	// Don't try to render anything before the first Update.
+	if (m_timer.GetFrameCount() == 0)
+	{
+		return FALSE;
+	}
+
+	// Render the scene objects.
+	// TODO: Replace this with your app's content rendering functions.
+	return m_sceneRenderer->Render();
+
 	return TRUE;
 }
 

@@ -80,7 +80,7 @@ int	Bitmap::LoadFromFile(const char *fileName)
 
 void Bitmap::Draw(int width, int height, int style)
 {
-	if (_canvas)
+	if (_canvas && _bmpFile)
 	{
 		int actualWidth;
 		if (width > 0)

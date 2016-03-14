@@ -2,12 +2,14 @@
 
 #include "pch.h"
 
-
 #include "IProgram.h"
 
-class IApplicationDX12
+namespace Application_DX12
 {
-public:
-	virtual IProgram *GetProgram() = 0;
+	class IApplicationDX12
+	{
+	public:
+		virtual IProgram *GetProgram() = 0;
 
-};
+	};
+}

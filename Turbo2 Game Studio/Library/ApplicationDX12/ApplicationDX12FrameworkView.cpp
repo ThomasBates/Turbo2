@@ -2,12 +2,13 @@
 
 #include "IProgram.h"
 
-#include "ApplicationDX12FrameworkView.h"
 #include "ApplicationDX12.h"
+#include "ApplicationDX12DeviceResources.h"
+#include "ApplicationDX12FrameworkView.h"
 
 #include <ppltasks.h>
 
-using namespace SpaceLabyrinthDX12;
+using namespace Application_DX12;
 
 using namespace concurrency;
 using namespace Windows::ApplicationModel;
@@ -76,10 +77,6 @@ void ApplicationDX12FrameworkView::SetWindow(CoreWindow^ window)
 // Initializes scene resources, or loads a previously saved app state.
 void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 {
-	if (m_main == nullptr)
-	{
-		m_main = std::unique_ptr<SpaceLabyrinthDX12Main>(new SpaceLabyrinthDX12Main(_program));
-	}
 }
 
 // This method is called after the window becomes active.
@@ -94,13 +91,13 @@ void ApplicationDX12FrameworkView::Run()
 			auto commandQueue = GetDeviceResources()->GetCommandQueue();
 			PIXBeginEvent(commandQueue, 0, L"Update");
 			{
-				m_main->Update();
+				_program->Update();
 			}
 			PIXEndEvent(commandQueue);
 
 			PIXBeginEvent(commandQueue, 0, L"Render");
 			{
-				if (m_main->Render())
+				if (_program->Render())
 				{
 					GetDeviceResources()->Present();
 				}
@@ -175,7 +172,6 @@ void ApplicationDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, Windo
 {
 	GetDeviceResources()->SetLogicalSize(Size(sender->Bounds.Width, sender->Bounds.Height));
 	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
-	m_main->OnWindowSizeChanged();
 }
 
 void ApplicationDX12FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
@@ -198,14 +194,12 @@ void ApplicationDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, Obje
 	// See DeviceResources.cpp for more details.
 	GetDeviceResources()->SetDpi(sender->LogicalDpi);
 	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
-	m_main->OnWindowSizeChanged();
 }
 
 void ApplicationDX12FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
 {
 	GetDeviceResources()->SetCurrentOrientation(sender->CurrentOrientation);
 	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
-	m_main->OnWindowSizeChanged();
 }
 
 void ApplicationDX12FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
@@ -221,14 +215,20 @@ std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceReso
 		// can be created.
 
 		m_deviceResources = nullptr;
-		m_main->OnDeviceRemoved();
+		_program->SaveState();
+		_program->SetDeviceResources(nullptr);
 	}
 
 	if (m_deviceResources == nullptr)
 	{
 		m_deviceResources = std::make_shared<DX::DeviceResources>();
 		m_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
-		m_main->CreateRenderers(m_deviceResources);
+		
+		IDeviceResources *deviceResourcesCarrier = new ApplicationDX12DeviceResources(m_deviceResources);
+		_program->SetDeviceResources(deviceResourcesCarrier);
+		_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	}
+
 	return m_deviceResources;
 }
+

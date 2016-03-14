@@ -34,11 +34,12 @@ public:
 
 	//  ISpaceLabyrinthPlatform Methods
 	virtual BOOL	Initialize(Camera *camera);
+	virtual void	SetDeviceResources(IDeviceResources *deviceResources);
 	virtual BOOL	Resize(int width, int height);
 	virtual BOOL	BeginUpdate();
 	virtual BOOL	EndUpdate();
-	virtual BOOL	BeginDraw();
-	virtual BOOL	EndDraw();
+	virtual BOOL	BeginRender();
+	virtual BOOL	EndRender();
 	virtual BOOL	Finalize();
 
 	virtual BOOL	GetNavigationInfo(NavInfo *navInfo);

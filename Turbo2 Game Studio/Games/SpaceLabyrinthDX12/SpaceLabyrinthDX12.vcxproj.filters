@@ -88,7 +88,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SpaceLabyrinthDX12Main.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp">
@@ -126,15 +125,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SpaceLabyrinthDX12Main.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Spacelabyrinth\IMaze.h">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\IMazeFactory.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\ISpaceLabyrinthFactory.h">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h">
@@ -176,13 +171,22 @@
     <ClInclude Include="..\..\Library\Graphics\Vector.h">
       <Filter>Library\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12.h">
-      <Filter>Library\ApplicationDX12</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IDeviceResources.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\ISpaceLabyrinthPlatform.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12DeviceResources.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12DeviceResources.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
   </ItemGroup>

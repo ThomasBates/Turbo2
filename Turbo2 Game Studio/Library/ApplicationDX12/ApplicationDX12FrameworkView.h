@@ -1,10 +1,10 @@
 ﻿#pragma once
 
 #include "pch.h"
-#include "Common\DeviceResources.h"
-#include "SpaceLabyrinthDX12Main.h"
 
-namespace SpaceLabyrinthDX12
+#include "Common\DeviceResources.h"
+
+namespace Application_DX12
 {
 	// Main entry point for our app. Connects the app with the Windows shell and handles application lifecycle events.
 	ref class ApplicationDX12FrameworkView sealed : public Windows::ApplicationModel::Core::IFrameworkView
@@ -43,9 +43,8 @@ namespace SpaceLabyrinthDX12
 
 		// Private accessor for m_deviceResources, protects against device removed errors.
 		std::shared_ptr<DX::DeviceResources> GetDeviceResources();
-
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
-		std::unique_ptr<SpaceLabyrinthDX12Main> m_main;
+
 		bool m_windowClosed;
 		bool m_windowVisible;
 	};

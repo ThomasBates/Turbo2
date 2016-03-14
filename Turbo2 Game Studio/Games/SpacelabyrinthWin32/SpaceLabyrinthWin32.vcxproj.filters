@@ -29,6 +29,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{f203d464-53a2-487a-8a30-527be2c97da8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\Application\IApplication.h">
@@ -118,26 +121,26 @@
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\stonefloor1.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonefloor1.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonefloor2.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonefloor2.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonefloor3.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonefloor5.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonefloor4.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonewall1.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonefloor5.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonewall2.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonewall1.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonefloor3.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="Resources\stonewall2.bmp">
-      <Filter>Resources</Filter>
+    <Image Include="..\..\Resources\Textures\stonefloor4.bmp">
+      <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
 </Project>

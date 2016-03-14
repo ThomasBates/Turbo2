@@ -67,6 +67,11 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	return TRUE;								// Everything Went OK
 }
 
+void SpaceLabyrinthWin32Platform::SetDeviceResources(IDeviceResources *deviceResources)
+{
+
+}
+
 BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
 {
 	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
@@ -97,7 +102,7 @@ BOOL SpaceLabyrinthWin32Platform::EndUpdate()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32Platform::BeginDraw()
+BOOL SpaceLabyrinthWin32Platform::BeginRender()
 {
 	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear The Screen And The Depth Buffer
@@ -112,7 +117,7 @@ BOOL SpaceLabyrinthWin32Platform::BeginDraw()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32Platform::EndDraw()
+BOOL SpaceLabyrinthWin32Platform::EndRender()
 {
 	glPopMatrix();
 
@@ -371,12 +376,12 @@ int SpaceLabyrinthWin32Platform::LoadTextures()
 #include "stonewall2_bmp_bin.h"
 */
 
-	LoadTexture(0, "Resources\\stonefloor1.bmp");
-	LoadTexture(1, "Resources\\stonewall1.bmp");
-	LoadTexture(2, "Resources\\stonefloor3.bmp");	//	Floor
-	LoadTexture(3, "Resources\\stonefloor4.bmp");	//	Ceiling
-	LoadTexture(4, "Resources\\stonefloor5.bmp");
-	LoadTexture(5, "Resources\\stonefloor2.bmp");
+	LoadTexture(0, "..\\..\\Resources\\Textures\\stonefloor1.bmp");
+	LoadTexture(1, "..\\..\\Resources\\Textures\\stonewall1.bmp");
+	LoadTexture(2, "..\\..\\Resources\\Textures\\stonefloor3.bmp");	//	Floor
+	LoadTexture(3, "..\\..\\Resources\\Textures\\stonefloor4.bmp");	//	Ceiling
+	LoadTexture(4, "..\\..\\Resources\\Textures\\stonefloor5.bmp");
+	LoadTexture(5, "..\\..\\Resources\\Textures\\stonefloor2.bmp");
 
 	return status;								// Return The Status
 }

@@ -36,8 +36,16 @@ int SpaceLabyrinth::Initialize()
 	return result;
 }
 
+void SpaceLabyrinth::SetDeviceResources(IDeviceResources *deviceResources)
+{
+	//  Just pass through.
+	_platform->SetDeviceResources(deviceResources);
+}
+
+
 int SpaceLabyrinth::Resize(int width, int height)
 {
+	//  Just pass through.
 	return _platform->Resize(width, height);
 }
 
@@ -54,11 +62,11 @@ int SpaceLabyrinth::Update()
 
 int SpaceLabyrinth::Render()
 {
-	_platform->BeginDraw();
+	_platform->BeginRender();
 
 	DrawMaze();
 
-	_platform->EndDraw();
+	_platform->EndRender();
 
 	return 1;
 }

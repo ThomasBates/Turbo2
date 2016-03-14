@@ -181,25 +181,25 @@
     <ClInclude Include="SpaceLabyrinthWin32Platform.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\stonefloor1.bmp">
+    <Image Include="..\..\Resources\Textures\stonefloor1.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonefloor2.bmp">
+    <Image Include="..\..\Resources\Textures\stonefloor2.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonefloor3.bmp">
+    <Image Include="..\..\Resources\Textures\stonefloor3.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonefloor4.bmp">
+    <Image Include="..\..\Resources\Textures\stonefloor4.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonefloor5.bmp">
+    <Image Include="..\..\Resources\Textures\stonefloor5.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonewall1.bmp">
+    <Image Include="..\..\Resources\Textures\stonewall1.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
-    <Image Include="Resources\stonewall2.bmp">
+    <Image Include="..\..\Resources\Textures\stonewall2.bmp">
       <DeploymentContent>true</DeploymentContent>
     </Image>
   </ItemGroup>

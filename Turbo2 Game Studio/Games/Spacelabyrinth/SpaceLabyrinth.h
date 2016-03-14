@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "pch.h"
+
 #include "IProgram.h"
 #include "ISpaceLabyrinthPlatform.h"
 #include "IMazeFactory.h"
@@ -25,12 +27,14 @@ public:
 	~SpaceLabyrinth();
 
 	//  IProgram Methods
-	virtual int Initialize();
-	virtual int Resize(int width, int height);
-	virtual int Update();
-	virtual int	Render();
-	virtual int SaveState();
-	virtual int Finalize();
+	virtual LPCWSTR GetTitle() { return TEXT("Space Labyrinth"); }
+	virtual int		Initialize();
+	virtual void	SetDeviceResources(IDeviceResources *deviceResources);
+	virtual int		Resize(int width, int height);
+	virtual int		Update();
+	virtual int		Render();
+	virtual int		SaveState();
+	virtual int		Finalize();
 
 protected:
 	//  Local Support Methods

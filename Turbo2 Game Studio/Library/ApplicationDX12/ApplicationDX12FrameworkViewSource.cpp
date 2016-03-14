@@ -4,7 +4,7 @@
 #include "ApplicationDX12FrameworkView.h"
 #include "ApplicationDX12FrameworkViewSource.h"
 
-using namespace SpaceLabyrinthDX12;
+using namespace Application_DX12;
 
 using namespace Windows::ApplicationModel::Core;
 
