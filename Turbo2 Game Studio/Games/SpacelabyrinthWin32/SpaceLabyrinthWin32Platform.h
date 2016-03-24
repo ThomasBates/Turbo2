@@ -27,6 +27,27 @@ private:
 	float			_time;
 	float			_deltaTime;
 
+	int				_cornerCount;
+	int				_edgeCount;
+	int				_wallCount;
+	MazeObject		*_corners[200];
+	MazeObject		*_edges[200];
+	MazeObject		*_walls[200];
+
+	//  Local Support Methods
+	virtual int LoadTextures();
+	virtual int LoadTexture(int id, const char *fileName);
+	virtual IImage *LoadImage(const char *fileName);
+	virtual void SetCornerTexture();
+	virtual void SetEdgeTexture();
+	virtual void SetWallTexture();
+	virtual void SetCeilingTexture();
+	virtual void SetFloorTexture();
+
+	virtual BOOL	RedrawCorner(MazeObject *corner);
+	virtual BOOL	RedrawEdge(MazeObject *edge);
+	virtual BOOL	RedrawWall(MazeObject *wall);
+
 public:
 	//  Constructors and Destructors
 	SpaceLabyrinthWin32Platform(IApplication *application);
@@ -34,8 +55,10 @@ public:
 
 	//  ISpaceLabyrinthPlatform Methods
 	virtual BOOL	Initialize(Camera *camera);
-	virtual void	SetDeviceResources(IDeviceResources *deviceResources);
+	virtual void	SetPlatformResources(IPlatformResources *platformResources);
 	virtual BOOL	Resize(int width, int height);
+	virtual BOOL	BeginDraw(int numCorners, int numEdges, int numWalls);
+	virtual BOOL	EndDraw();
 	virtual BOOL	BeginUpdate();
 	virtual BOOL	EndUpdate();
 	virtual BOOL	BeginRender();
@@ -49,15 +72,4 @@ public:
 	virtual BOOL	DrawCorner(MazeObject *corner);
 	virtual BOOL	DrawEdge(MazeObject *edge);
 	virtual BOOL	DrawWall(MazeObject *wall);
-
-protected:
-	//  Local Support Methods
-	virtual int LoadTextures();
-	virtual int LoadTexture(int id, const char *fileName);
-	virtual IImage *LoadImage(const char *fileName);
-	virtual void SetCornerTexture();
-	virtual void SetEdgeTexture();
-	virtual void SetWallTexture();
-	virtual void SetCeilingTexture();
-	virtual void SetFloorTexture();
 };

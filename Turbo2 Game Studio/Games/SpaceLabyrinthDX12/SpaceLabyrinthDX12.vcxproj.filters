@@ -123,6 +123,9 @@
     <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.cpp">
       <Filter>Library\ApplicationDX12</Filter>
     </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -177,17 +180,23 @@
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Application\IDeviceResources.h">
-      <Filter>Library\Application</Filter>
-    </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\ISpaceLabyrinthPlatform.h">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12DeviceResources.h">
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12PlatformResources.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12DeviceResources.h">
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12PlatformResources.h">
       <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h">
+      <Filter>Library\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

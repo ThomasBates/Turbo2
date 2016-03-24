@@ -2,7 +2,7 @@
 #pragma once
 
 #include "IApplication.h"
-#include "IDeviceResources.h"
+#include "IPlatformResources.h"
 
 #include "IMaze.h"
 #include "Camera.h"
@@ -31,8 +31,10 @@ class ISpaceLabyrinthPlatform
 public:
 	//  ISpaceLabyrinthPlatform Methods
 	virtual int		Initialize(Camera *camera) = 0;
-	virtual void	SetDeviceResources(IDeviceResources *deviceResources) = 0;
+	virtual void	SetPlatformResources(IPlatformResources *platformResources) = 0;
 	virtual int		Resize(int width, int height) = 0;
+	virtual int		BeginDraw() = 0;
+	virtual int		EndDraw() = 0;
 	virtual int		BeginUpdate() = 0;
 	virtual int		EndUpdate() = 0;
 	virtual int		BeginRender() = 0;

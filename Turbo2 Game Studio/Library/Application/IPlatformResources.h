@@ -1,7 +1,7 @@
 
 #pragma once
 
-class IDeviceResources
+class IPlatformResources
 {
 	virtual void MakePolymorphic() = 0;
 };

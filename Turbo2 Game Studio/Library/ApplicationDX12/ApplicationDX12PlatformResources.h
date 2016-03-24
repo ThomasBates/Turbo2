@@ -1,23 +1,23 @@
 #pragma once
 
-#include "IDeviceResources.h"
-#include "IApplicationDX12DeviceResources.h"
+#include "IPlatformResources.h"
+#include "IApplicationDX12PlatformResources.h"
 
 namespace Application_DX12
 {
-	class ApplicationDX12DeviceResources : public IDeviceResources, public IApplicationDX12DeviceResources
+	class ApplicationDX12PlatformResources : public IPlatformResources, public IApplicationDX12PlatformResources
 	{
 	private:
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
 
 	public:
 		//  Constructors and Destructors
-		ApplicationDX12DeviceResources(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
+		ApplicationDX12PlatformResources(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 			m_deviceResources(deviceResources)
 		{
 		};
 
-		//  IDeviceResources Methods
+		//  IPlatformResources Methods
 		virtual void MakePolymorphic() {}
 
 		//  IApplicationDX12DeviceResources Methods

@@ -89,6 +89,15 @@
     <ClInclude Include="..\..\Library\ApplicationWin32\IApplicationWin32.h">
       <Filter>Library\ApplicationWin32</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp">
@@ -119,6 +128,9 @@
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Resources\Textures\stonefloor1.bmp">

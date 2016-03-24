@@ -156,13 +156,16 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp" />
     <ClCompile Include="SpaceLabyrinthWin32Platform.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h" />
     <ClInclude Include="..\..\Library\ApplicationWin32\IApplicationWin32.h" />
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
     <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h" />
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SpaceLabyrinthWin32Platform.h" />
   </ItemGroup>

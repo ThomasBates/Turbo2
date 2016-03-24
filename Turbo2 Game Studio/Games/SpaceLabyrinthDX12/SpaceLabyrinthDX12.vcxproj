@@ -204,11 +204,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12.h" />
-    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12DeviceResources.h" />
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12PlatformResources.h" />
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.h" />
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h" />
-    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12DeviceResources.h" />
+    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12PlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h" />
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
     <ClInclude Include="..\..\Library\GraphicsDX12\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
@@ -222,9 +224,9 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h" />
     <ClInclude Include="Common\d3dx12.h" />
     <ClInclude Include="Common\DeviceResources.h" />
-    <ClInclude Include="..\..\Library\Application\IDeviceResources.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="Content\Sample3DSceneRenderer.h" />
@@ -243,6 +245,7 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />

@@ -41,9 +41,11 @@ namespace SpaceLabyrinthDX12
 
 		//  ISpaceLabyrinthFactory Methods
 		virtual int		Initialize(Camera *camera);
-		virtual void	SetDeviceResources(IDeviceResources *deviceResources);
+		virtual void	SetPlatformResources(IPlatformResources *platformResources);
 		//	virtual int		Reset();
 		virtual int		Resize(int width, int height);
+		virtual int		BeginDraw();
+		virtual int		EndDraw();
 		virtual int		BeginUpdate();
 		virtual int		EndUpdate();
 		virtual int		BeginRender();

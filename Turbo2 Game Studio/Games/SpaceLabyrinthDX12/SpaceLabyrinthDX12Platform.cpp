@@ -3,7 +3,7 @@
 
 #include "IApplication.h"
 #include "IApplicationDX12.h"
-#include "IApplicationDX12DeviceResources.h"
+#include "IApplicationDX12PlatformResources.h"
 
 #include "Bitmap.h"
 #include "CanvasRGB.h"
@@ -34,15 +34,15 @@ int SpaceLabyrinthDX12Platform::Initialize(Camera *camera)
 }
 
 
-void SpaceLabyrinthDX12Platform::SetDeviceResources(IDeviceResources *deviceResources)
+void SpaceLabyrinthDX12Platform::SetPlatformResources(IPlatformResources *platformResources)
 {
-	if (deviceResources == nullptr)
+	if (platformResources == nullptr)
 	{
 		m_sceneRenderer = nullptr;
 	}
 	else
 	{
-		IApplicationDX12DeviceResources *carrier = dynamic_cast<IApplicationDX12DeviceResources*>(deviceResources);
+		IApplicationDX12PlatformResources *carrier = dynamic_cast<IApplicationDX12PlatformResources*>(platformResources);
 		m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(carrier->GetDeviceResources()));
 		Resize(0, 0);
 	}
@@ -53,6 +53,16 @@ int SpaceLabyrinthDX12Platform::Resize(int width, int height)
 	// TODO: Replace this with the size-dependent initialization of your app's content.
 	m_sceneRenderer->CreateWindowSizeDependentResources();
 
+	return TRUE;
+}
+
+int SpaceLabyrinthDX12Platform::BeginDraw()
+{
+	return TRUE;
+}
+
+int SpaceLabyrinthDX12Platform::EndDraw()
+{
 	return TRUE;
 }
 
@@ -100,6 +110,53 @@ int SpaceLabyrinthDX12Platform::Finalize()
 
 int SpaceLabyrinthDX12Platform::GetNavigationInfo(NavInfo *navInfo)
 {
+	if (navInfo != NULL)
+	{
+		//int x, y, status;
+
+		//_applicationDX12->GetPointer(&x, &y, &status);
+
+		navInfo->Pointer = 0; // status & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON);
+		navInfo->PointerX = 0; // x;
+		navInfo->PointerY = 0; // y;
+
+		/*
+		navInfo->MoveLeft	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
+		navInfo->MoveRight	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
+		navInfo->MoveDown	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
+		navInfo->MoveUp		=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
+		navInfo->MoveFore	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_INSERT);
+		navInfo->MoveBack	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DELETE);
+
+		navInfo->PitchFore	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
+		navInfo->PitchBack	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
+		navInfo->YawRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
+		navInfo->YawLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
+		navInfo->RollLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD7);
+		navInfo->RollRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD9);
+		*/
+
+		navInfo->MoveLeft = 0;
+		navInfo->MoveRight = 0;
+		navInfo->MoveDown = 0;
+		navInfo->MoveUp = 0;
+		navInfo->MoveFore = 0; // _applicationWin32->GetKey(VK_INSERT) || _applicationWin32->GetKey(VK_SPACE);
+		navInfo->MoveBack = 0; // _applicationWin32->GetKey(VK_DELETE) || _applicationWin32->GetKey('X');
+
+		navInfo->PitchFore = 0; // _applicationWin32->GetKey(VK_UP) || _applicationWin32->GetKey('W');
+		navInfo->PitchBack = 0; // _applicationWin32->GetKey(VK_DOWN) || _applicationWin32->GetKey('S');
+		navInfo->YawRight = 0; // _applicationWin32->GetKey(VK_RIGHT) || _applicationWin32->GetKey('D');
+		navInfo->YawLeft = 0; // _applicationWin32->GetKey(VK_LEFT) || _applicationWin32->GetKey('A');
+		navInfo->RollLeft = 0;
+		navInfo->RollRight = 0;
+
+		navInfo->Restart = 0; // _applicationWin32->GetKey(VK_F5); _applicationWin32->SetKey(VK_F5, FALSE);
+
+		if (navInfo->MoveFore)
+			navInfo->MoveFore = navInfo->MoveFore;
+
+		return TRUE;
+	}
 	return FALSE;
 }
 

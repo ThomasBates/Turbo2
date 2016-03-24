@@ -3,7 +3,7 @@
 #include "IProgram.h"
 
 #include "ApplicationDX12.h"
-#include "ApplicationDX12DeviceResources.h"
+#include "ApplicationDX12PlatformResources.h"
 #include "ApplicationDX12FrameworkView.h"
 
 #include <ppltasks.h>
@@ -82,6 +82,12 @@ void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 // This method is called after the window becomes active.
 void ApplicationDX12FrameworkView::Run()
 {
+	if (_program == nullptr)
+		return;
+
+	if (!_program->Initialize())
+		return;
+
 	while (!m_windowClosed)
 	{
 		if (m_windowVisible)
@@ -216,7 +222,7 @@ std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceReso
 
 		m_deviceResources = nullptr;
 		_program->SaveState();
-		_program->SetDeviceResources(nullptr);
+		_program->SetPlatformResources(nullptr);
 	}
 
 	if (m_deviceResources == nullptr)
@@ -224,8 +230,8 @@ std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceReso
 		m_deviceResources = std::make_shared<DX::DeviceResources>();
 		m_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
 		
-		IDeviceResources *deviceResourcesCarrier = new ApplicationDX12DeviceResources(m_deviceResources);
-		_program->SetDeviceResources(deviceResourcesCarrier);
+		IPlatformResources *platformResources = new ApplicationDX12PlatformResources(m_deviceResources);
+		_program->SetPlatformResources(platformResources);
 		_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	}
 
