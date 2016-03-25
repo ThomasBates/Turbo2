@@ -8,6 +8,7 @@
 #include "Bitmap.h"
 #include "CanvasRGB.h"
 #include "SpaceLabyrinthDX12Platform.h"
+#include "ISpaceLabyrinthRenderer.h"
 
 using namespace Application_DX12;
 using namespace SpaceLabyrinthDX12;
@@ -38,12 +39,13 @@ void SpaceLabyrinthDX12Platform::SetPlatformResources(IPlatformResources *platfo
 {
 	if (platformResources == nullptr)
 	{
-		m_sceneRenderer = nullptr;
+		_sceneRenderer = nullptr;
 	}
 	else
 	{
 		IApplicationDX12PlatformResources *carrier = dynamic_cast<IApplicationDX12PlatformResources*>(platformResources);
-		m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(carrier->GetDeviceResources()));
+		//_sceneRenderer = std::unique_ptr<ISpaceLabyrinthRenderer>(new Sample3DSceneRenderer(carrier->GetDeviceResources()));
+		_sceneRenderer = std::unique_ptr<ISpaceLabyrinthRenderer>(new SpaceLabyrinthDX12OriginalRenderer(carrier->GetDeviceResources()));
 		Resize(0, 0);
 	}
 }
@@ -51,18 +53,20 @@ void SpaceLabyrinthDX12Platform::SetPlatformResources(IPlatformResources *platfo
 int SpaceLabyrinthDX12Platform::Resize(int width, int height)
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
-	m_sceneRenderer->CreateWindowSizeDependentResources();
+	_sceneRenderer->Resize();
 
 	return TRUE;
 }
 
 int SpaceLabyrinthDX12Platform::BeginDraw()
 {
+	_sceneRenderer->BeginDraw();
 	return TRUE;
 }
 
 int SpaceLabyrinthDX12Platform::EndDraw()
 {
+	_sceneRenderer->EndDraw();
 	return TRUE;
 }
 
@@ -72,7 +76,7 @@ int SpaceLabyrinthDX12Platform::BeginUpdate()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-		m_sceneRenderer->Update(m_timer);
+		_sceneRenderer->Update(m_timer.GetElapsedSeconds());
 	});
 
 	return TRUE;
@@ -98,7 +102,7 @@ int SpaceLabyrinthDX12Platform::EndRender()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return m_sceneRenderer->Render();
+	return _sceneRenderer->Render();
 
 	return TRUE;
 }
@@ -162,17 +166,20 @@ int SpaceLabyrinthDX12Platform::GetNavigationInfo(NavInfo *navInfo)
 
 int SpaceLabyrinthDX12Platform::DrawCorner(MazeObject *corner)
 {
-	return FALSE;
+	_sceneRenderer->DrawCorner(corner);
+	return 1;
 }
 
 int SpaceLabyrinthDX12Platform::DrawEdge(MazeObject *edge)
 {
-	return FALSE;
+	_sceneRenderer->DrawEdge(edge);
+	return 1;
 }
 
 int SpaceLabyrinthDX12Platform::DrawWall(MazeObject *wall)
 {
-	return FALSE;
+	_sceneRenderer->DrawWall(wall);
+	return 1;
 }
 
 

@@ -4,7 +4,10 @@
 #include "IApplicationDX12.h"
 #include "IImage.h"
 #include "ISpaceLabyrinthPlatform.h"
+#include "ISpaceLabyrinthRenderer.h"
+
 #include "Content\Sample3DSceneRenderer.h"
+#include "Content\SpaceLabyrinthDX12OriginalRenderer.h"
 
 using namespace Application_DX12;
 
@@ -16,7 +19,7 @@ namespace SpaceLabyrinthDX12
 		IApplicationDX12 *_applicationDX12;
 
 		// TODO: Replace with your own content renderers.
-		std::unique_ptr<Sample3DSceneRenderer> m_sceneRenderer;
+		std::unique_ptr<ISpaceLabyrinthRenderer> _sceneRenderer;
 
 		// Rendering loop timer.
 		DX::StepTimer m_timer;

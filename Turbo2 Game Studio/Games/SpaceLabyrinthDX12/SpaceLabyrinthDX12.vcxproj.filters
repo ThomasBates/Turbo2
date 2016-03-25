@@ -126,6 +126,9 @@
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
+    <ClCompile Include="Content\SpaceLabyrinthDX12OriginalRenderer.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -197,6 +200,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Library\Application\IGameLevel.h">
       <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthRenderer.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\SpaceLabyrinthDX12OriginalRenderer.h">
+      <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

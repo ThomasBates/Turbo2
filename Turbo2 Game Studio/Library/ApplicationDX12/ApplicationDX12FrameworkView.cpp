@@ -85,6 +85,8 @@ void ApplicationDX12FrameworkView::Run()
 	if (_program == nullptr)
 		return;
 
+	GetDeviceResources();
+
 	if (!_program->Initialize())
 		return;
 

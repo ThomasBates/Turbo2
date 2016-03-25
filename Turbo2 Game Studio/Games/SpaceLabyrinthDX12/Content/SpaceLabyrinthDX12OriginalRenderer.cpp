@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Sample3DSceneRenderer.h"
+#include "SpaceLabyrinthDX12OriginalRenderer.h"
 
 #include "..\Common\DirectXHelper.h"
 #include <ppltasks.h>
@@ -14,11 +14,11 @@ using namespace Windows::Foundation;
 using namespace Windows::Storage;
 
 // Indices into the application state map.
-Platform::String^ AngleKey = "Angle";
-Platform::String^ TrackingKey = "Tracking";
+//Platform::String^ AngleKey = "Angle";
+//Platform::String^ TrackingKey = "Tracking";
 
 // Loads vertex and pixel shaders from files and instantiates the cube geometry.
-Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
+SpaceLabyrinthDX12OriginalRenderer::SpaceLabyrinthDX12OriginalRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 	m_loadingComplete(false),
 	m_radiansPerSecond(XM_PIDIV4),	// rotate 45 degrees per second
 	m_angle(0),
@@ -34,17 +34,75 @@ Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceRes
 	Resize();
 }
 
-Sample3DSceneRenderer::~Sample3DSceneRenderer()
+SpaceLabyrinthDX12OriginalRenderer::~SpaceLabyrinthDX12OriginalRenderer()
 {
 	m_constantBuffer->Unmap(0, nullptr);
 	m_mappedConstantBuffer = nullptr;
 }
 
-void Sample3DSceneRenderer::BeginDraw()
+void SpaceLabyrinthDX12OriginalRenderer::BeginDraw()
 {
+	VertexPositionColor cubeVertices[] =
+	{ //  Position:  X32,   Y32,   Z32   Color:    R32,  G32,  B32
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+		{ XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
+		{ XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+	};
+
+	for (int i = 0; i < sizeof(cubeVertices) / sizeof(*cubeVertices); i++)
+	{
+		m_cubeVertices.push_back(cubeVertices[i]);
+	}
+
+
+	//posColor.pos = XMFLOAT3(-0.5f, -0.5f, -0.5f); posColor.color = XMFLOAT3(0.0f, 0.0f, 0.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3(-0.5f, -0.5f,  0.5f); posColor.color = XMFLOAT3(0.0f, 0.0f, 1.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3(-0.5f,  0.5f, -0.5f); posColor.color = XMFLOAT3(0.0f, 1.0f, 0.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3(-0.5f,  0.5f,  0.5f); posColor.color = XMFLOAT3(0.0f, 1.0f, 1.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3( 0.5f, -0.5f, -0.5f); posColor.color = XMFLOAT3(1.0f, 0.0f, 0.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3( 0.5f, -0.5f,  0.5f); posColor.color = XMFLOAT3(1.0f, 0.0f, 1.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3( 0.5f,  0.5f, -0.5f); posColor.color = XMFLOAT3(1.0f, 1.0f, 0.0f);	m_cubeVertices.push_back(posColor);
+	//posColor.pos = XMFLOAT3( 0.5f,  0.5f,  0.5f); posColor.color = XMFLOAT3(1.0f, 1.0f, 1.0f);	m_cubeVertices.push_back(posColor);
+
+
+	// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
+	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
+	// first triangle of this mesh.
+	unsigned short cubeIndices[] =
+	{
+		0, 2, 1, // -x
+		1, 2, 3,
+
+		4, 5, 6, // +x
+		5, 7, 6,
+
+		0, 1, 5, // -y
+		0, 5, 4,
+
+		2, 6, 7, // +y
+		2, 7, 3,
+
+		0, 4, 6, // -z
+		0, 6, 2,
+
+		1, 3, 7, // +z
+		1, 7, 5,
+	};
+
+	for (int i = 0; i < sizeof(cubeIndices) / sizeof(*cubeIndices); i++)
+	{
+		m_cubeIndices.push_back(cubeIndices[i]);
+	}
+
+
 }
 
-void Sample3DSceneRenderer::EndDraw()
+void SpaceLabyrinthDX12OriginalRenderer::EndDraw()
 {
 	auto d3dDevice = m_deviceResources->GetD3DDevice();
 
@@ -120,19 +178,21 @@ void Sample3DSceneRenderer::EndDraw()
 		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_deviceResources->GetCommandAllocator(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandList)));
 
 		// Cube vertices. Each vertex has a position and a color.
-		VertexPositionColor cubeVertices[] =
-		{ //  Position:  X32,   Y32,   Z32   Color:    R32,  G32,  B32
-			{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-			{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-			{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-			{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-			{ XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
-		};
 
-		const UINT vertexBufferSize = sizeof(cubeVertices);
+		//VertexPositionColor cubeVertices[] =
+		//{ //  Position:  X32,   Y32,   Z32   Color:    R32,  G32,  B32
+		//	{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		//	{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
+		//	{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
+		//	{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
+		//	{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
+		//	{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
+		//	{ XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
+		//	{ XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+		//};
+
+		//const UINT vertexBufferSize = sizeof(cubeVertices);
+		UINT vertexBufferSize = m_cubeVertices.size() * sizeof(VertexPositionColor);
 
 		// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 		// The upload resource must not be released until after the GPU has finished using it.
@@ -163,7 +223,7 @@ void Sample3DSceneRenderer::EndDraw()
 		// Upload the vertex buffer to the GPU.
 		{
 			D3D12_SUBRESOURCE_DATA vertexData = {};
-			vertexData.pData = reinterpret_cast<BYTE*>(cubeVertices);
+			vertexData.pData = reinterpret_cast<BYTE*>(m_cubeVertices.data());
 			vertexData.RowPitch = vertexBufferSize;
 			vertexData.SlicePitch = vertexData.RowPitch;
 
@@ -177,28 +237,30 @@ void Sample3DSceneRenderer::EndDraw()
 		// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
 		// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
 		// first triangle of this mesh.
-		unsigned short cubeIndices[] =
-		{
-			0, 2, 1, // -x
-			1, 2, 3,
 
-			4, 5, 6, // +x
-			5, 7, 6,
+		//unsigned short cubeIndices[] =
+		//{
+		//	0, 2, 1, // -x
+		//	1, 2, 3,
 
-			0, 1, 5, // -y
-			0, 5, 4,
+		//	4, 5, 6, // +x
+		//	5, 7, 6,
 
-			2, 6, 7, // +y
-			2, 7, 3,
+		//	0, 1, 5, // -y
+		//	0, 5, 4,
 
-			0, 4, 6, // -z
-			0, 6, 2,
+		//	2, 6, 7, // +y
+		//	2, 7, 3,
 
-			1, 3, 7, // +z
-			1, 7, 5,
-		};
+		//	0, 4, 6, // -z
+		//	0, 6, 2,
 
-		const UINT indexBufferSize = sizeof(cubeIndices);
+		//	1, 3, 7, // +z
+		//	1, 7, 5,
+		//};
+
+		//const UINT indexBufferSize = sizeof(cubeIndices);
+		UINT indexBufferSize = m_cubeIndices.size() * sizeof(unsigned short);
 
 		// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 		// The upload resource must not be released until after the GPU has finished using it.
@@ -227,7 +289,7 @@ void Sample3DSceneRenderer::EndDraw()
 		// Upload the index buffer to the GPU.
 		{
 			D3D12_SUBRESOURCE_DATA indexData = {};
-			indexData.pData = reinterpret_cast<BYTE*>(cubeIndices);
+			indexData.pData = reinterpret_cast<BYTE*>(m_cubeIndices.data());
 			indexData.RowPitch = indexBufferSize;
 			indexData.SlicePitch = indexData.RowPitch;
 
@@ -290,10 +352,10 @@ void Sample3DSceneRenderer::EndDraw()
 		// Create vertex/index buffer views.
 		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
 		m_vertexBufferView.StrideInBytes = sizeof(VertexPositionColor);
-		m_vertexBufferView.SizeInBytes = sizeof(cubeVertices);
+		m_vertexBufferView.SizeInBytes = vertexBufferSize;
 
 		m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.SizeInBytes = sizeof(cubeIndices);
+		m_indexBufferView.SizeInBytes = indexBufferSize;
 		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
 
 		// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
@@ -305,12 +367,12 @@ void Sample3DSceneRenderer::EndDraw()
 	});
 }
 
-void SpaceLabyrinthDX12::Sample3DSceneRenderer::Initialize()
+void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::Initialize()
 {
 }
 
 // Initializes view parameters when the window size changes.
-void Sample3DSceneRenderer::Resize()
+void SpaceLabyrinthDX12OriginalRenderer::Resize()
 {
 	Size outputSize = m_deviceResources->GetOutputSize();
 	float aspectRatio = outputSize.Width / outputSize.Height;
@@ -357,7 +419,7 @@ void Sample3DSceneRenderer::Resize()
 }
 
 // Called once per frame, rotates the cube and calculates the model and view matrices.
-void Sample3DSceneRenderer::Update(double elapsedSeconds)
+void SpaceLabyrinthDX12OriginalRenderer::Update(double elapsedSeconds)
 {
 	if (m_loadingComplete)
 	{
@@ -376,53 +438,53 @@ void Sample3DSceneRenderer::Update(double elapsedSeconds)
 }
 
 // Saves the current state of the renderer.
-void Sample3DSceneRenderer::SaveState()
+void SpaceLabyrinthDX12OriginalRenderer::SaveState()
 {
-	auto state = ApplicationData::Current->LocalSettings->Values;
+	//auto state = ApplicationData::Current->LocalSettings->Values;
 
-	if (state->HasKey(AngleKey))
-	{
-		state->Remove(AngleKey);
-	}
-	if (state->HasKey(TrackingKey))
-	{
-		state->Remove(TrackingKey);
-	}
+	//if (state->HasKey(AngleKey))
+	//{
+	//	state->Remove(AngleKey);
+	//}
+	//if (state->HasKey(TrackingKey))
+	//{
+	//	state->Remove(TrackingKey);
+	//}
 
-	state->Insert(AngleKey, PropertyValue::CreateSingle(m_angle));
-	state->Insert(TrackingKey, PropertyValue::CreateBoolean(m_tracking));
+	//state->Insert(AngleKey, PropertyValue::CreateSingle(m_angle));
+	//state->Insert(TrackingKey, PropertyValue::CreateBoolean(m_tracking));
 }
 
 // Restores the previous state of the renderer.
-void Sample3DSceneRenderer::LoadState()
+void SpaceLabyrinthDX12OriginalRenderer::LoadState()
 {
-	auto state = ApplicationData::Current->LocalSettings->Values;
-	if (state->HasKey(AngleKey))
-	{
-		m_angle = safe_cast<IPropertyValue^>(state->Lookup(AngleKey))->GetSingle();
-		state->Remove(AngleKey);
-	}
-	if (state->HasKey(TrackingKey))
-	{
-		m_tracking = safe_cast<IPropertyValue^>(state->Lookup(TrackingKey))->GetBoolean();
-		state->Remove(TrackingKey);
-	}
+	//auto state = ApplicationData::Current->LocalSettings->Values;
+	//if (state->HasKey(AngleKey))
+	//{
+	//	m_angle = safe_cast<IPropertyValue^>(state->Lookup(AngleKey))->GetSingle();
+	//	state->Remove(AngleKey);
+	//}
+	//if (state->HasKey(TrackingKey))
+	//{
+	//	m_tracking = safe_cast<IPropertyValue^>(state->Lookup(TrackingKey))->GetBoolean();
+	//	state->Remove(TrackingKey);
+	//}
 }
 
 // Rotate the 3D cube model a set amount of radians.
-void Sample3DSceneRenderer::Rotate(float radians)
+void SpaceLabyrinthDX12OriginalRenderer::Rotate(float radians)
 {
 	// Prepare to pass the updated model matrix to the shader.
 	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(radians)));
 }
 
-void Sample3DSceneRenderer::StartTracking()
+void SpaceLabyrinthDX12OriginalRenderer::StartTracking()
 {
 	m_tracking = true;
 }
 
 // When tracking, the 3D cube can be rotated around its Y axis by tracking pointer position relative to the output screen width.
-void Sample3DSceneRenderer::TrackingUpdate(float positionX)
+void SpaceLabyrinthDX12OriginalRenderer::TrackingUpdate(float positionX)
 {
 	if (m_tracking)
 	{
@@ -431,13 +493,13 @@ void Sample3DSceneRenderer::TrackingUpdate(float positionX)
 	}
 }
 
-void Sample3DSceneRenderer::StopTracking()
+void SpaceLabyrinthDX12OriginalRenderer::StopTracking()
 {
 	m_tracking = false;
 }
 
 // Renders one frame using the vertex and pixel shaders.
-bool Sample3DSceneRenderer::Render()
+bool SpaceLabyrinthDX12OriginalRenderer::Render()
 {
 	// Loading is asynchronous. Only draw geometry after it's loaded.
 	if (!m_loadingComplete)
@@ -500,18 +562,18 @@ bool Sample3DSceneRenderer::Render()
 	return true;
 }
 
-void SpaceLabyrinthDX12::Sample3DSceneRenderer::Finalize()
+void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::Finalize()
 {
 }
 
-void SpaceLabyrinthDX12::Sample3DSceneRenderer::DrawCorner(MazeObject * corner)
+void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawCorner(MazeObject * corner)
 {
 }
 
-void SpaceLabyrinthDX12::Sample3DSceneRenderer::DrawEdge(MazeObject * edge)
+void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawEdge(MazeObject * edge)
 {
 }
 
-void SpaceLabyrinthDX12::Sample3DSceneRenderer::DrawWall(MazeObject * wall)
+void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawWall(MazeObject * wall)
 {
 }

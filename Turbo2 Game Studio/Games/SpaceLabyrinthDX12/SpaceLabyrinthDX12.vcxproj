@@ -221,6 +221,7 @@
     <ClInclude Include="..\Spacelabyrinth\IMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\IMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\ISpaceLabyrinthPlatform.h" />
+    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthRenderer.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="Content\Sample3DSceneRenderer.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
+    <ClInclude Include="Content\SpaceLabyrinthDX12OriginalRenderer.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SpaceLabyrinthDX12Platform.h" />
   </ItemGroup>
@@ -247,6 +249,7 @@
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
+    <ClCompile Include="Content\SpaceLabyrinthDX12OriginalRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />
     <ClCompile Include="pch.cpp">

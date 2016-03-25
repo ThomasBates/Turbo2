@@ -9,11 +9,11 @@
 namespace SpaceLabyrinthDX12
 {
 	// This sample renderer instantiates a basic rendering pipeline.
-	class Sample3DSceneRenderer : public ISpaceLabyrinthRenderer
+	class SpaceLabyrinthDX12OriginalRenderer : public ISpaceLabyrinthRenderer
 	{
 	public:
-		Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
-		~Sample3DSceneRenderer();
+		SpaceLabyrinthDX12OriginalRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+		~SpaceLabyrinthDX12OriginalRenderer();
 
 		void Initialize();
 		void Resize();
@@ -44,6 +44,9 @@ namespace SpaceLabyrinthDX12
 
 		// Cached pointer to device resources.
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
+
+		std::vector<VertexPositionColor>	m_cubeVertices;
+		std::vector<unsigned short>			m_cubeIndices;
 
 		// Direct3D resources for cube geometry.
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
