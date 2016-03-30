@@ -42,64 +42,8 @@ SpaceLabyrinthDX12OriginalRenderer::~SpaceLabyrinthDX12OriginalRenderer()
 
 void SpaceLabyrinthDX12OriginalRenderer::BeginDraw()
 {
-	VertexPositionColor cubeVertices[] =
-	{ //  Position:  X32,   Y32,   Z32   Color:    R32,  G32,  B32
-		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
-	};
-
-	for (int i = 0; i < sizeof(cubeVertices) / sizeof(*cubeVertices); i++)
-	{
-		m_cubeVertices.push_back(cubeVertices[i]);
-	}
-
-
-	//posColor.pos = XMFLOAT3(-0.5f, -0.5f, -0.5f); posColor.color = XMFLOAT3(0.0f, 0.0f, 0.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3(-0.5f, -0.5f,  0.5f); posColor.color = XMFLOAT3(0.0f, 0.0f, 1.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3(-0.5f,  0.5f, -0.5f); posColor.color = XMFLOAT3(0.0f, 1.0f, 0.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3(-0.5f,  0.5f,  0.5f); posColor.color = XMFLOAT3(0.0f, 1.0f, 1.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3( 0.5f, -0.5f, -0.5f); posColor.color = XMFLOAT3(1.0f, 0.0f, 0.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3( 0.5f, -0.5f,  0.5f); posColor.color = XMFLOAT3(1.0f, 0.0f, 1.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3( 0.5f,  0.5f, -0.5f); posColor.color = XMFLOAT3(1.0f, 1.0f, 0.0f);	m_cubeVertices.push_back(posColor);
-	//posColor.pos = XMFLOAT3( 0.5f,  0.5f,  0.5f); posColor.color = XMFLOAT3(1.0f, 1.0f, 1.0f);	m_cubeVertices.push_back(posColor);
-
-
-	// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
-	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
-	// first triangle of this mesh.
-	unsigned short cubeIndices[] =
-	{
-		0, 2, 1, // -x
-		1, 2, 3,
-
-		4, 5, 6, // +x
-		5, 7, 6,
-
-		0, 1, 5, // -y
-		0, 5, 4,
-
-		2, 6, 7, // +y
-		2, 7, 3,
-
-		0, 4, 6, // -z
-		0, 6, 2,
-
-		1, 3, 7, // +z
-		1, 7, 5,
-	};
-
-	for (int i = 0; i < sizeof(cubeIndices) / sizeof(*cubeIndices); i++)
-	{
-		m_cubeIndices.push_back(cubeIndices[i]);
-	}
-
-
+	m_cubeVertices.clear();
+	m_cubeIndices.clear();
 }
 
 void SpaceLabyrinthDX12OriginalRenderer::EndDraw()
@@ -410,26 +354,34 @@ void SpaceLabyrinthDX12OriginalRenderer::Resize()
 		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
 		);
 
-	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
-	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
-
-	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	// Prepare to pass the updated model matrix to the shader.
+	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());
 }
 
 // Called once per frame, rotates the cube and calculates the model and view matrices.
-void SpaceLabyrinthDX12OriginalRenderer::Update(double elapsedSeconds)
+void SpaceLabyrinthDX12OriginalRenderer::Update(Camera *camera, double elapsedSeconds)
 {
 	if (m_loadingComplete)
 	{
-		if (!m_tracking)
-		{
-			// Rotate the cube a small amount.
-			m_angle += static_cast<float>(elapsedSeconds) * m_radiansPerSecond;
+		//if (!m_tracking)
+		//{
+		//	// Rotate the cube a small amount.
+		//	m_angle += static_cast<float>(elapsedSeconds) * m_radiansPerSecond;
 
-			Rotate(m_angle);
-		}
+		//	Rotate(m_angle);
+		//}
+
+		XMVECTORF32 eye = { camera->Position.X, camera->Position.Y, camera->Position.Z, 0.0f };
+		XMVECTORF32 at = { camera->Target.X, camera->Target.Y, camera->Target.Z, 0.0f };
+		XMVECTORF32 up = { camera->Up.X, camera->Up.Y, camera->Up.Z, 0.0f };
+
+		//eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+		//at = { 0.0f, -0.1f, 0.0f, 0.0f };
+		//up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+
+		XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+
 
 		// Update the constant buffer resource.
 		UINT8* destination = m_mappedConstantBuffer + (m_deviceResources->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
@@ -544,7 +496,7 @@ bool SpaceLabyrinthDX12OriginalRenderer::Render()
 		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		m_commandList->IASetIndexBuffer(&m_indexBufferView);
-		m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+		m_commandList->DrawIndexedInstanced(m_cubeIndices.size(), 1, 0, 0, 0);
 
 		// Indicate that the render target will now be used to present when the command list is done executing.
 		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
@@ -568,12 +520,129 @@ void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::Finalize()
 
 void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawCorner(MazeObject * corner)
 {
+	int baseIndex = m_cubeVertices.size();
+
+	VertexPositionColor vertex;
+	vertex.color = XMFLOAT3(0.1f, 0.1f, 0.1f);
+
+	vertex.pos = XMFLOAT3(corner->Right, corner->Bottom, corner->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Right, corner->Bottom, corner->Front);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Right, corner->Top, corner->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Right, corner->Top, corner->Front);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Left, corner->Bottom, corner->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Left, corner->Bottom, corner->Front);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Left, corner->Top, corner->Back);			m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(corner->Left, corner->Top, corner->Front);		m_cubeVertices.push_back(vertex);
+
+	unsigned short indexOffsets[] =
+	{
+		0, 2, 1, // -x
+		1, 2, 3,
+
+		4, 5, 6, // +x
+		5, 7, 6,
+		
+		0, 1, 5, // -y
+		0, 5, 4,
+
+		2, 6, 7, // +y
+		2, 7, 3,
+		
+		0, 4, 6, // -z
+		0, 6, 2,
+
+		1, 3, 7, // +z
+		1, 7, 5,
+	};
+
+	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
+	{
+		m_cubeIndices.push_back(baseIndex + indexOffsets[i]);
+	}
 }
 
 void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawEdge(MazeObject * edge)
 {
+	int baseIndex = m_cubeVertices.size();
+
+	VertexPositionColor vertex;
+	vertex.color = XMFLOAT3(0.2f, 0.2f, 0.2f);
+
+	vertex.pos = XMFLOAT3(edge->Right, edge->Bottom, edge->Back);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Right, edge->Bottom, edge->Front);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Right, edge->Top, edge->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Right, edge->Top, edge->Front);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Left, edge->Bottom, edge->Back);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Left, edge->Bottom, edge->Front);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Left, edge->Top, edge->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(edge->Left, edge->Top, edge->Front);		m_cubeVertices.push_back(vertex);
+
+	unsigned short indexOffsets[] =
+	{
+		0, 2, 1, // -x
+		1, 2, 3,
+
+		4, 5, 6, // +x
+		5, 7, 6,
+
+		0, 1, 5, // -y
+		0, 5, 4,
+
+		2, 6, 7, // +y
+		2, 7, 3,
+
+		0, 4, 6, // -z
+		0, 6, 2,
+
+		1, 3, 7, // +z
+		1, 7, 5,
+	};
+
+	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
+	{
+		m_cubeIndices.push_back(baseIndex + indexOffsets[i]);
+	}
 }
 
 void SpaceLabyrinthDX12::SpaceLabyrinthDX12OriginalRenderer::DrawWall(MazeObject * wall)
 {
+	int baseIndex = m_cubeVertices.size();
+
+	VertexPositionColor vertex;
+	vertex.color = XMFLOAT3(0.5f, 0.5f, 0.5f);
+
+	vertex.pos = XMFLOAT3(wall->Right, wall->Bottom, wall->Back);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Right, wall->Bottom, wall->Front);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Right, wall->Top, wall->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Right, wall->Top, wall->Front);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Left, wall->Bottom, wall->Back);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Left, wall->Bottom, wall->Front);	m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Left, wall->Top, wall->Back);		m_cubeVertices.push_back(vertex);
+	vertex.pos = XMFLOAT3(wall->Left, wall->Top, wall->Front);		m_cubeVertices.push_back(vertex);
+
+	unsigned short indexOffsets[] =
+	{
+		0, 2, 1, // -x
+		1, 2, 3,
+
+		4, 5, 6, // +x
+		5, 7, 6,
+
+		0, 1, 5, // -y
+		0, 5, 4,
+
+		2, 6, 7, // +y
+		2, 7, 3,
+
+		0, 4, 6, // -z
+		0, 6, 2,
+
+		1, 3, 7, // +z
+		1, 7, 5,
+	};
+
+	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
+	{
+		m_cubeIndices.push_back(baseIndex + indexOffsets[i]);
+	}
 }

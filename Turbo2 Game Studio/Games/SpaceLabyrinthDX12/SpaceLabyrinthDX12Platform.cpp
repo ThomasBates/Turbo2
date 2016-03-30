@@ -43,9 +43,9 @@ void SpaceLabyrinthDX12Platform::SetPlatformResources(IPlatformResources *platfo
 	}
 	else
 	{
-		IApplicationDX12PlatformResources *carrier = dynamic_cast<IApplicationDX12PlatformResources*>(platformResources);
+		IApplicationDX12PlatformResources *dx12Resources = dynamic_cast<IApplicationDX12PlatformResources*>(platformResources);
 		//_sceneRenderer = std::unique_ptr<ISpaceLabyrinthRenderer>(new Sample3DSceneRenderer(carrier->GetDeviceResources()));
-		_sceneRenderer = std::unique_ptr<ISpaceLabyrinthRenderer>(new SpaceLabyrinthDX12OriginalRenderer(carrier->GetDeviceResources()));
+		_sceneRenderer = std::unique_ptr<ISpaceLabyrinthRenderer>(new SpaceLabyrinthDX12OriginalRenderer(dx12Resources->GetDeviceResources()));
 		Resize(0, 0);
 	}
 }
@@ -76,7 +76,7 @@ int SpaceLabyrinthDX12Platform::BeginUpdate()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-		_sceneRenderer->Update(m_timer.GetElapsedSeconds());
+		_deltaTime = m_timer.GetElapsedSeconds();
 	});
 
 	return TRUE;
@@ -84,6 +84,7 @@ int SpaceLabyrinthDX12Platform::BeginUpdate()
 
 int SpaceLabyrinthDX12Platform::EndUpdate()
 {
+	_sceneRenderer->Update(_camera, _deltaTime);
 	return TRUE;
 }
 

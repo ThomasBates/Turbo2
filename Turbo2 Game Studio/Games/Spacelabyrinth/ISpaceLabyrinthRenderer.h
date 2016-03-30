@@ -3,6 +3,7 @@
 
 //#include "IPlatformResources.h"
 #include "IMaze.h"
+#include "Camera.h"
 
 //typedef struct {
 //	int		Pointer;
@@ -33,7 +34,7 @@ public:
 	virtual void	Resize() = 0;
 	virtual void	BeginDraw() = 0;
 	virtual void	EndDraw() = 0;
-	virtual void	Update(double elapsedSeconds) = 0;
+	virtual void	Update(Camera *camera, double elapsedSeconds) = 0;
 	virtual bool	Render() = 0;
 	virtual void	Finalize() = 0;
 

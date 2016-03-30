@@ -122,6 +122,15 @@ void Sample3DSceneRenderer::EndDraw()
 		// Cube vertices. Each vertex has a position and a color.
 		VertexPositionColor cubeVertices[] =
 		{ //  Position:  X32,   Y32,   Z32   Color:    R32,  G32,  B32
+			{ XMFLOAT3( 1.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+			{ XMFLOAT3( 1.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 0.5f) },
+			{ XMFLOAT3( 1.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 0.5f, 0.0f) },
+			{ XMFLOAT3( 1.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 0.5f, 0.5f) },
+			{ XMFLOAT3( 2.5f, -0.5f, -0.5f), XMFLOAT3(0.5f, 0.0f, 0.0f) },
+			{ XMFLOAT3( 2.5f, -0.5f,  0.5f), XMFLOAT3(0.5f, 0.0f, 0.5f) },
+			{ XMFLOAT3( 2.5f,  0.5f, -0.5f), XMFLOAT3(0.5f, 0.5f, 0.0f) },
+			{ XMFLOAT3( 2.5f,  0.5f,  0.5f), XMFLOAT3(0.5f, 0.5f, 0.5f) },
+
 			{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
 			{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
 			{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
@@ -130,6 +139,7 @@ void Sample3DSceneRenderer::EndDraw()
 			{ XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
 			{ XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
 			{ XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+
 		};
 
 		const UINT vertexBufferSize = sizeof(cubeVertices);
@@ -196,6 +206,25 @@ void Sample3DSceneRenderer::EndDraw()
 
 			1, 3, 7, // +z
 			1, 7, 5,
+
+
+			8, 10, 9, // -x
+			9, 10, 11,
+
+			12, 13, 14, // +x
+			13, 15, 14,
+
+			8, 9, 13, // -y
+			8, 13, 12,
+
+			10, 14, 15, // +y
+			10, 15, 11,
+
+			8, 12, 14, // -z
+			8, 14, 10,
+
+			9, 11, 15, // +z
+			9, 15, 13,
 		};
 
 		const UINT indexBufferSize = sizeof(cubeIndices);
@@ -482,7 +511,7 @@ bool Sample3DSceneRenderer::Render()
 		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		m_commandList->IASetIndexBuffer(&m_indexBufferView);
-		m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+		m_commandList->DrawIndexedInstanced(72, 1, 0, 0, 0);
 
 		// Indicate that the render target will now be used to present when the command list is done executing.
 		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =

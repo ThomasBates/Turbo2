@@ -19,7 +19,7 @@ namespace SpaceLabyrinthDX12
 		void Resize();
 		void BeginDraw();
 		void EndDraw();
-		void Update(double elapsedSeconds);
+		void Update(Camera *camera, double elapsedSeconds);
 		bool Render();
 		void Finalize();
 

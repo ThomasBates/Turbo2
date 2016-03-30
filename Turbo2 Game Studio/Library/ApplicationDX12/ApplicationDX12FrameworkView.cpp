@@ -77,19 +77,14 @@ void ApplicationDX12FrameworkView::SetWindow(CoreWindow^ window)
 // Initializes scene resources, or loads a previously saved app state.
 void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 {
+	GetDeviceResources();
+
+	_program->Initialize();
 }
 
 // This method is called after the window becomes active.
 void ApplicationDX12FrameworkView::Run()
 {
-	if (_program == nullptr)
-		return;
-
-	GetDeviceResources();
-
-	if (!_program->Initialize())
-		return;
-
 	while (!m_windowClosed)
 	{
 		if (m_windowVisible)
