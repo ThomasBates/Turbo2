@@ -210,6 +210,7 @@
     <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12PlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
     <ClInclude Include="..\..\Library\Application\IGameLevel.h" />
+    <ClInclude Include="..\..\Library\Application\INavigationController.h" />
     <ClInclude Include="..\..\Library\Application\IPlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
     <ClInclude Include="..\..\Library\GraphicsDX12\CanvasRGB.h" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="Content\SpaceLabyrinthDX12OriginalRenderer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SpaceLabyrinthDX12NavigationController.h" />
     <ClInclude Include="SpaceLabyrinthDX12Platform.h" />
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +262,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpaceLabyrinthDX12NavigationController.cpp" />
     <ClCompile Include="SpaceLabyrinthDX12Platform.cpp" />
   </ItemGroup>
   <ItemGroup>

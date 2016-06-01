@@ -98,6 +98,12 @@
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Library\Application\INavigationController.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceLabyrinthWin32NavigationController.h">
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp">
@@ -130,6 +136,9 @@
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
       <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceLabyrinthWin32NavigationController.cpp">
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

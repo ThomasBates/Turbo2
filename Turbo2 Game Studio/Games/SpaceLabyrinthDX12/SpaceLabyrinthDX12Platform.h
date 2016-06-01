@@ -3,6 +3,7 @@
 
 #include "IApplicationDX12.h"
 #include "IImage.h"
+#include "INavigationController.h"
 #include "ISpaceLabyrinthPlatform.h"
 #include "ISpaceLabyrinthRenderer.h"
 
@@ -17,6 +18,8 @@ namespace SpaceLabyrinthDX12
 	{
 	private:
 		IApplicationDX12 *_applicationDX12;
+
+		INavigationController *_controller;
 
 		// TODO: Replace with your own content renderers.
 		std::unique_ptr<ISpaceLabyrinthRenderer> _sceneRenderer;

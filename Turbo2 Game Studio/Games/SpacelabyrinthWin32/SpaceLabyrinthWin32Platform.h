@@ -1,10 +1,12 @@
 
 #pragma once
 
+
 #include "IApplicationWin32.h"
 
 #include "IApplication.h"
 #include "IImage.h"
+#include "INavigationController.h"
 #include "ISpaceLabyrinthPlatform.h"
 
 #include <gl\gl.h>						// Header File For The OpenGL32 Library
@@ -14,6 +16,8 @@ class SpaceLabyrinthWin32Platform : public ISpaceLabyrinthPlatform
 {
 private:
 	IApplicationWin32 *_applicationWin32;
+
+	INavigationController *_controller;
 
 	HGLRC			_hRC;			// Permanent Rendering Context
 	HDC				_hDC;			// Private GDI Device Context
@@ -35,14 +39,14 @@ private:
 	MazeObject		*_walls[200];
 
 	//  Local Support Methods
-	virtual int LoadTextures();
-	virtual int LoadTexture(int id, const char *fileName);
-	virtual IImage *LoadImage(const char *fileName);
-	virtual void SetCornerTexture();
-	virtual void SetEdgeTexture();
-	virtual void SetWallTexture();
-	virtual void SetCeilingTexture();
-	virtual void SetFloorTexture();
+	virtual int		LoadTextures();
+	virtual int		LoadTexture(int id, const char *fileName);
+	virtual IImage	*LoadImage(const char *fileName);
+	virtual void	SetCornerTexture();
+	virtual void	SetEdgeTexture();
+	virtual void	SetWallTexture();
+	virtual void	SetCeilingTexture();
+	virtual void	SetFloorTexture();
 
 	virtual BOOL	RedrawCorner(MazeObject *corner);
 	virtual BOOL	RedrawEdge(MazeObject *edge);
@@ -57,7 +61,7 @@ public:
 	virtual BOOL	Initialize(Camera *camera);
 	virtual void	SetPlatformResources(IPlatformResources *platformResources);
 	virtual BOOL	Resize(int width, int height);
-	virtual BOOL	BeginDraw(int numCorners, int numEdges, int numWalls);
+	virtual BOOL	BeginDraw();
 	virtual BOOL	EndDraw();
 	virtual BOOL	BeginUpdate();
 	virtual BOOL	EndUpdate();
