@@ -16,6 +16,7 @@ typedef struct {
 	int		YawLeft;
 	int		RollLeft;
 	int		RollRight;
+	int		Pause;
 	int		Restart;
 }	NavInfo;
 

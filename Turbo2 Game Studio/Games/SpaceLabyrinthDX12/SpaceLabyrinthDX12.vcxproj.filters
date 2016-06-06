@@ -132,6 +132,9 @@
     <ClCompile Include="SpaceLabyrinthDX12NavigationController.cpp">
       <Filter>Games\SpaceLabyrinthDX12</Filter>
     </ClCompile>
+    <ClCompile Include="SpaceLabyrinthDX12NavigationControl.cpp">
+      <Filter>Games\SpaceLabyrinthDX12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -214,6 +217,9 @@
       <Filter>Library\Application</Filter>
     </ClInclude>
     <ClInclude Include="SpaceLabyrinthDX12NavigationController.h">
+      <Filter>Games\SpaceLabyrinthDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceLabyrinthDX12NavigationControl.h">
       <Filter>Games\SpaceLabyrinthDX12</Filter>
     </ClInclude>
   </ItemGroup>

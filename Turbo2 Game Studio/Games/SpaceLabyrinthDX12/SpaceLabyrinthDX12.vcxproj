@@ -235,6 +235,7 @@
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="Content\SpaceLabyrinthDX12OriginalRenderer.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SpaceLabyrinthDX12NavigationControl.h" />
     <ClInclude Include="SpaceLabyrinthDX12NavigationController.h" />
     <ClInclude Include="SpaceLabyrinthDX12Platform.h" />
   </ItemGroup>
@@ -262,6 +263,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SpaceLabyrinthDX12NavigationControl.cpp" />
     <ClCompile Include="SpaceLabyrinthDX12NavigationController.cpp" />
     <ClCompile Include="SpaceLabyrinthDX12Platform.cpp" />
   </ItemGroup>
