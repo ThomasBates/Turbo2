@@ -76,17 +76,17 @@ int SpaceLabyrinthDX12NavigationControl::GetNavigationInfo(NavInfo *navInfo)
 
 void SpaceLabyrinthDX12NavigationControl::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 {
-	PointerPoint^ point = args->CurrentPoint;
-	Point pointerPosition = point->Position;
-	PointerPointProperties^ pointProperties = point->Properties;
+	//PointerPoint^ point = args->CurrentPoint;
+	//Point pointerPosition = point->Position;
+	//PointerPointProperties^ pointProperties = point->Properties;
 
-	_navInfo.Pointer = 
-		pointProperties->IsLeftButtonPressed ||
-		pointProperties->IsMiddleButtonPressed ||
-		pointProperties->IsRightButtonPressed;
+	//_navInfo.Pointer = 
+	//	pointProperties->IsLeftButtonPressed ||
+	//	pointProperties->IsMiddleButtonPressed ||
+	//	pointProperties->IsRightButtonPressed;
 
-	_navInfo.PointerX = pointerPosition.X;
-	_navInfo.PointerY = pointerPosition.Y;
+	//_navInfo.PointerX = pointerPosition.X;
+	//_navInfo.PointerY = pointerPosition.Y;
 }
 
 void SpaceLabyrinthDX12NavigationControl::OnPointerMoved(_In_ CoreWindow^ sender, _In_ PointerEventArgs^ args)
@@ -106,32 +106,32 @@ void SpaceLabyrinthDX12NavigationControl::OnPointerMoved(_In_ CoreWindow^ sender
 
 void SpaceLabyrinthDX12NavigationControl::OnPointerReleased(_In_ CoreWindow^ sender, _In_ PointerEventArgs^ args)
 {
-	PointerPoint^ point = args->CurrentPoint;
-	Point pointerPosition = point->Position;
-	PointerPointProperties^ pointProperties = point->Properties;
+	//PointerPoint^ point = args->CurrentPoint;
+	//Point pointerPosition = point->Position;
+	//PointerPointProperties^ pointProperties = point->Properties;
 
-	_navInfo.Pointer =
-		pointProperties->IsLeftButtonPressed ||
-		pointProperties->IsMiddleButtonPressed ||
-		pointProperties->IsRightButtonPressed;
+	//_navInfo.Pointer =
+	//	pointProperties->IsLeftButtonPressed ||
+	//	pointProperties->IsMiddleButtonPressed ||
+	//	pointProperties->IsRightButtonPressed;
 
-	_navInfo.PointerX = pointerPosition.X;
-	_navInfo.PointerY = pointerPosition.Y;
+	//_navInfo.PointerX = pointerPosition.X;
+	//_navInfo.PointerY = pointerPosition.Y;
 }
 
 void SpaceLabyrinthDX12NavigationControl::OnPointerExited(_In_ CoreWindow^ sender, _In_ PointerEventArgs^ args)
 {
-	PointerPoint^ point = args->CurrentPoint;
-	Point pointerPosition = point->Position;
-	PointerPointProperties^ pointProperties = point->Properties;
+	//PointerPoint^ point = args->CurrentPoint;
+	//Point pointerPosition = point->Position;
+	//PointerPointProperties^ pointProperties = point->Properties;
 
-	_navInfo.Pointer =
-		pointProperties->IsLeftButtonPressed ||
-		pointProperties->IsMiddleButtonPressed ||
-		pointProperties->IsRightButtonPressed;
+	//_navInfo.Pointer =
+	//	pointProperties->IsLeftButtonPressed ||
+	//	pointProperties->IsMiddleButtonPressed ||
+	//	pointProperties->IsRightButtonPressed;
 
-	_navInfo.PointerX = pointerPosition.X;
-	_navInfo.PointerY = pointerPosition.Y;
+	//_navInfo.PointerX = pointerPosition.X;
+	//_navInfo.PointerY = pointerPosition.Y;
 }
 
 void SpaceLabyrinthDX12NavigationControl::OnKeyDown(_In_ CoreWindow^ sender, _In_ KeyEventArgs^ args)
