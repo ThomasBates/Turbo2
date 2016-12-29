@@ -1,10 +1,11 @@
 
 //  Adapted from Jeff Molofee's tutorials at http://nehe.gamedev.net/
 
-#include <math.h>
+#include "pch.h"
 
 #include "ApplicationWin32.h"
 #include "SpaceLabyrinthWin32Platform.h"
+#include "SpaceLabyrinthWin32NavigationController.h"
 
 #include "Bitmap.h"
 #include "CanvasRGB.h"
@@ -13,8 +14,10 @@
 
 #pragma region Constructors and Destructors
 
-SpaceLabyrinthWin32Platform::SpaceLabyrinthWin32Platform()
+SpaceLabyrinthWin32Platform::SpaceLabyrinthWin32Platform(IApplication *application)
 {
+	_applicationWin32 = dynamic_cast<IApplicationWin32*>(application);
+	_controller = new SpaceLabyrinthWin32NavigationController(application);
 }
 
 SpaceLabyrinthWin32Platform::~SpaceLabyrinthWin32Platform()
@@ -43,7 +46,7 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 		glEnable(GL_TEXTURE_2D);						// Enable Texture Mapping ( NEW )
 	}
 
-	GLfloat LightAmbient[]= { 10.0f, 10.0f, 10.0f, 1.0f };	
+	GLfloat LightAmbient[]= { 50.0f, 50.0f, 50.0f, 1.0f };	
 	GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };	
 	GLfloat LightPosition[]= { 0.0f, 0.0f, 0.0f, 1.0f };
 
@@ -56,8 +59,8 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 2);
 	glEnable(GL_LIGHT1);
 
-	_hRC = Win32Application->GetRenderingContext();
-	_hDC = Win32Application->GetDeviceContext();
+	_hRC = _applicationWin32->GetRenderingContext();
+	_hDC = _applicationWin32->GetDeviceContext();
 
 	QueryPerformanceFrequency(&_frequency);
 	QueryPerformanceCounter(&_startCount);
@@ -66,23 +69,35 @@ BOOL SpaceLabyrinthWin32Platform::Initialize(Camera *camera)
 	return TRUE;								// Everything Went OK
 }
 
+void SpaceLabyrinthWin32Platform::SetPlatformResources(IPlatformResources *platformResources)
+{
+
+}
+
 BOOL SpaceLabyrinthWin32Platform::Resize(int width, int height)
 {
-	if (width == 0)
-		width = 1;
-	if (height == 0)								// Prevent A Divide By Zero By
-		height = 1;							// Making Height Equal One
-	_width = width;
-	_height = height;
-
 	glViewport(0, 0, width-1, height-1);					// Reset The Current Viewport
 
 	glMatrixMode(GL_PROJECTION);						// Select The Projection Matrix
 	glLoadIdentity();							// Reset The Projection Matrix
 
 	// Calculate The Aspect Ratio Of The Window
-	gluPerspective(75.0f,(double)width/(double)height,0.1f,10000.0f);
+	gluPerspective(75.0f, (double)width/(double)height, 0.1f, 10000.0f);
 
+	return TRUE;
+}
+
+BOOL SpaceLabyrinthWin32Platform::BeginDraw()
+{
+	_cornerCount = 0;
+	_edgeCount = 0;
+	_wallCount = 0;
+
+	return TRUE;
+}
+
+BOOL SpaceLabyrinthWin32Platform::EndDraw()
+{
 	return TRUE;
 }
 
@@ -103,7 +118,7 @@ BOOL SpaceLabyrinthWin32Platform::EndUpdate()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32Platform::BeginDraw()
+BOOL SpaceLabyrinthWin32Platform::BeginRender()
 {
 	glMatrixMode(GL_MODELVIEW);			// Set the current matrix to be the model matrix
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			// Clear The Screen And The Depth Buffer
@@ -118,8 +133,15 @@ BOOL SpaceLabyrinthWin32Platform::BeginDraw()
 	return TRUE;
 }
 
-BOOL SpaceLabyrinthWin32Platform::EndDraw()
+BOOL SpaceLabyrinthWin32Platform::EndRender()
 {
+	for (int i = 0; i < _cornerCount; i++)
+		RedrawCorner(_corners[i]);
+	for (int i = 0; i < _edgeCount; i++)
+		RedrawEdge(_edges[i]);
+	for (int i = 0; i < _wallCount; i++)
+		RedrawWall(_walls[i]);
+
 	glPopMatrix();
 
 	SwapBuffers(_hDC);			// Swap Buffers (Double Buffering)
@@ -134,224 +156,76 @@ BOOL SpaceLabyrinthWin32Platform::Finalize()
 
 BOOL SpaceLabyrinthWin32Platform::DrawCorner(MazeObject *corner)
 {
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();	
-
-	SetCornerTexture();
-	glBegin(GL_QUADS);
-		// Front Face
-		glNormal3f(0,0,1);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
-		// Back Face
-		glNormal3f(0,0,-1);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
-		// Top Face
-		glNormal3f(0,1,0);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
-		// Bottom Face
-		glNormal3f(0,-1,0);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
-		// Right face
-		glNormal3f(1,0,0);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top,    corner->Back );	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back );	// Bottom Left Of The Texture and Quad
-		// Left Face
-		glNormal3f(-1,0,0);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left,  corner->Bottom, corner->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left,  corner->Top,    corner->Front);	// Top Left Of The Texture and Quad
-	glEnd();
-
-	// Pop our Matrix from the stack (restore state)
-	glPopMatrix();
+	_corners[_cornerCount++] = corner;
 
 	return TRUE;								// Keep Going
 }
 
 BOOL SpaceLabyrinthWin32Platform::DrawEdge(MazeObject *edge)
 {
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();	
-
-	SetEdgeTexture();
-	glBegin(GL_QUADS);
-		// Front Face
-		glNormal3f(0,0,1);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
-		// Back Face
-		glNormal3f(0,0,-1);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
-		// Top Face
-		glNormal3f(0,1,0);
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
-		// Bottom Face
-		glNormal3f(0,-1,0);
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
-		// Right face
-		glNormal3f(1,0,0);
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Front);	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top,    edge->Back );	// Top Left Of The Texture and Quad
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back );	// Bottom Left Of The Texture and Quad
-		// Left Face
-		glNormal3f(-1,0,0);
-		glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
-		glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left,  edge->Bottom, edge->Back );	// Bottom Right Of The Texture and Quad
-		glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Back );	// Top Right Of The Texture and Quad
-		glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left,  edge->Top,    edge->Front);	// Top Left Of The Texture and Quad
-	glEnd();
-
-	// Pop our Matrix from the stack (restore state)
-	glPopMatrix();
+	_edges[_edgeCount++] = edge;
 
 	return TRUE;								// Keep Going
 }
 
 BOOL SpaceLabyrinthWin32Platform::DrawWall(MazeObject *wall)
 {
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();	
-
-	if (wall->Back - wall->Front < wall->Top - wall->Bottom)
-	{
-		SetWallTexture();
-		glBegin(GL_QUADS);
-			// Front Face
-			glNormal3f(0,0,1);
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
-			// Back Face
-			glNormal3f(0,0,-1);
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
-		glEnd();
-	}
-
-	if (wall->Top - wall->Bottom < wall->Right - wall->Left)
-	{
-		SetFloorTexture();
-		glBegin(GL_QUADS);
-			// Top Face
-			glNormal3f(0,1,0);
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-		glEnd();
-		SetCeilingTexture();
-		glBegin(GL_QUADS);
-			// Bottom Face
-			glNormal3f(0,-1,0);
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-		glEnd();
-	}
-
-	if (wall->Right - wall->Left < wall->Back - wall->Front)
-	{
-		SetWallTexture();
-		glBegin(GL_QUADS);
-			// Right face
-			glNormal3f(1,0,0);
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Front);	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top,    wall->Back );	// Top Left Of The Texture and Quad
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back );	// Bottom Left Of The Texture and Quad
-			// Left Face
-			glNormal3f(-1,0,0);
-			glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
-			glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left,  wall->Bottom, wall->Back );	// Bottom Right Of The Texture and Quad
-			glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Back );	// Top Right Of The Texture and Quad
-			glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left,  wall->Top,    wall->Front);	// Top Left Of The Texture and Quad
-		glEnd();
-	}
-
-	// Pop our Matrix from the stack (restore state)
-	glPopMatrix();
+	_walls[_wallCount++] = wall;
 
 	return TRUE;								// Keep Going
 }
 
 int SpaceLabyrinthWin32Platform::GetNavigationInfo(NavInfo *navInfo)
 {
-	if (navInfo != NULL)
-	{
-		int x, y, status;
+	return _controller->GetNavigationInfo(navInfo);
+	//if (navInfo != NULL)
+	//{
+	//	int x, y, status;
 
-		Win32Application->GetPointer(&x, &y, &status);
+	//	_applicationWin32->GetPointer(&x, &y, &status);
 
-		navInfo->Pointer	= status & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON);
-		navInfo->PointerX	= x;
-		navInfo->PointerY	= y;
+	//	navInfo->Pointer	= status & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON);
+	//	navInfo->PointerX	= x;
+	//	navInfo->PointerY	= y;
 
-		/*
-		navInfo->MoveLeft	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
-		navInfo->MoveRight	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
-		navInfo->MoveDown	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
-		navInfo->MoveUp		=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
-		navInfo->MoveFore	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_INSERT);
-		navInfo->MoveBack	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DELETE);
+	//	/*
+	//	navInfo->MoveLeft	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
+	//	navInfo->MoveRight	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
+	//	navInfo->MoveDown	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
+	//	navInfo->MoveUp		=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
+	//	navInfo->MoveFore	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_INSERT);
+	//	navInfo->MoveBack	=  _application->GetKey(VK_CONTROL) && _application->GetKey(VK_DELETE);
 
-		navInfo->PitchFore	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
-		navInfo->PitchBack	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
-		navInfo->YawRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
-		navInfo->YawLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
-		navInfo->RollLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD7);
-		navInfo->RollRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD9);
-		*/
+	//	navInfo->PitchFore	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_UP);
+	//	navInfo->PitchBack	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_DOWN);
+	//	navInfo->YawRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_RIGHT);
+	//	navInfo->YawLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_LEFT);
+	//	navInfo->RollLeft	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD7);
+	//	navInfo->RollRight	= !_application->GetKey(VK_CONTROL) && _application->GetKey(VK_NUMPAD9);
+	//	*/
 
-		navInfo->MoveLeft	= 0;
-		navInfo->MoveRight	= 0;
-		navInfo->MoveDown	= 0;
-		navInfo->MoveUp		= 0;
-		navInfo->MoveFore	= Win32Application->GetKey(VK_INSERT)	|| Win32Application->GetKey(VK_SPACE);
-		navInfo->MoveBack	= Win32Application->GetKey(VK_DELETE)	|| Win32Application->GetKey('X');
+	//	navInfo->MoveLeft	= 0;
+	//	navInfo->MoveRight	= 0;
+	//	navInfo->MoveDown	= 0;
+	//	navInfo->MoveUp		= 0;
+	//	navInfo->MoveFore	= _applicationWin32->GetKey(VK_INSERT)	|| _applicationWin32->GetKey(VK_SPACE);
+	//	navInfo->MoveBack	= _applicationWin32->GetKey(VK_DELETE)	|| _applicationWin32->GetKey('X');
 
-		navInfo->PitchFore	= Win32Application->GetKey(VK_UP)		|| Win32Application->GetKey('W');
-		navInfo->PitchBack	= Win32Application->GetKey(VK_DOWN)		|| Win32Application->GetKey('S');
-		navInfo->YawRight	= Win32Application->GetKey(VK_RIGHT)		|| Win32Application->GetKey('D');
-		navInfo->YawLeft	= Win32Application->GetKey(VK_LEFT)		|| Win32Application->GetKey('A');
-		navInfo->RollLeft	= 0;
-		navInfo->RollRight	= 0;
+	//	navInfo->PitchFore	= _applicationWin32->GetKey(VK_UP)		|| _applicationWin32->GetKey('W');
+	//	navInfo->PitchBack	= _applicationWin32->GetKey(VK_DOWN)	|| _applicationWin32->GetKey('S');
+	//	navInfo->YawRight	= _applicationWin32->GetKey(VK_RIGHT)	|| _applicationWin32->GetKey('D');
+	//	navInfo->YawLeft	= _applicationWin32->GetKey(VK_LEFT)	|| _applicationWin32->GetKey('A');
+	//	navInfo->RollLeft	= 0;
+	//	navInfo->RollRight	= 0;
 
-		navInfo->Restart		= Win32Application->GetKey(VK_F5); Win32Application->SetKey(VK_F5, FALSE);
+	//	navInfo->Restart	= _applicationWin32->GetKey(VK_F5); _applicationWin32->SetKey(VK_F5, FALSE);
 
-		return TRUE;
-	}
-	return FALSE;
+	//	if (navInfo->MoveFore)
+	//		navInfo->MoveFore = navInfo->MoveFore;
+
+	//	return TRUE;
+	//}
+	//return FALSE;
 }
 
 
@@ -374,12 +248,12 @@ int SpaceLabyrinthWin32Platform::LoadTextures()
 #include "stonewall2_bmp_bin.h"
 */
 
-	LoadTexture(0, "Data\\stonefloor1.bmp");
-	LoadTexture(1, "Data\\stonewall1.bmp");
-	LoadTexture(2, "Data\\stonefloor3.bmp");	//	Floor
-	LoadTexture(3, "Data\\stonefloor4.bmp");	//	Ceiling
-	LoadTexture(4, "Data\\stonefloor5.bmp");
-	LoadTexture(5, "Data\\stonefloor2.bmp");
+	LoadTexture(0, "..\\..\\Resources\\Textures\\stonefloor1.bmp");
+	LoadTexture(1, "..\\..\\Resources\\Textures\\stonewall1.bmp");
+	LoadTexture(2, "..\\..\\Resources\\Textures\\stonefloor3.bmp");	//	Floor
+	LoadTexture(3, "..\\..\\Resources\\Textures\\stonefloor4.bmp");	//	Ceiling
+	LoadTexture(4, "..\\..\\Resources\\Textures\\stonefloor5.bmp");
+	LoadTexture(5, "..\\..\\Resources\\Textures\\stonefloor2.bmp");
 
 	return status;								// Return The Status
 }
@@ -446,6 +320,179 @@ void SpaceLabyrinthWin32Platform::SetFloorTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, _texture[2]);				// Select Our Texture
 //	glColor3f(0,0.5,0);
+}
+
+BOOL SpaceLabyrinthWin32Platform::RedrawCorner(MazeObject *corner)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	SetCornerTexture();
+	glBegin(GL_QUADS);
+	// Front Face
+	glNormal3f(0, 0, 1);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left, corner->Bottom, corner->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top, corner->Back);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left, corner->Top, corner->Back);	// Top Left Of The Texture and Quad
+																					// Back Face
+	glNormal3f(0, 0, -1);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left, corner->Top, corner->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top, corner->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
+																						// Top Face
+	glNormal3f(0, 1, 0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left, corner->Top, corner->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left, corner->Top, corner->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Top, corner->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top, corner->Front);	// Top Right Of The Texture and Quad
+																						// Bottom Face
+	glNormal3f(0, -1, 0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left, corner->Bottom, corner->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left, corner->Bottom, corner->Back);	// Bottom Right Of The Texture and Quad
+																						// Right face
+	glNormal3f(1, 0, 0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Front);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Right, corner->Top, corner->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Right, corner->Top, corner->Back);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Right, corner->Bottom, corner->Back);	// Bottom Left Of The Texture and Quad
+																						// Left Face
+	glNormal3f(-1, 0, 0);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(corner->Left, corner->Bottom, corner->Front);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(corner->Left, corner->Bottom, corner->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(corner->Left, corner->Top, corner->Back);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(corner->Left, corner->Top, corner->Front);	// Top Left Of The Texture and Quad
+	glEnd();
+
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix();
+
+	return TRUE;								// Keep Going
+}
+
+BOOL SpaceLabyrinthWin32Platform::RedrawEdge(MazeObject *edge)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	SetEdgeTexture();
+	glBegin(GL_QUADS);
+	// Front Face
+	glNormal3f(0, 0, 1);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left, edge->Bottom, edge->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top, edge->Back);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left, edge->Top, edge->Back);	// Top Left Of The Texture and Quad
+																				// Back Face
+	glNormal3f(0, 0, -1);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left, edge->Top, edge->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top, edge->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
+																					// Top Face
+	glNormal3f(0, 1, 0);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left, edge->Top, edge->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left, edge->Top, edge->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Top, edge->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top, edge->Front);	// Top Right Of The Texture and Quad
+																				// Bottom Face
+	glNormal3f(0, -1, 0);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left, edge->Bottom, edge->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left, edge->Bottom, edge->Back);	// Bottom Right Of The Texture and Quad
+																				// Right face
+	glNormal3f(1, 0, 0);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Front);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Right, edge->Top, edge->Front);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Right, edge->Top, edge->Back);	// Top Left Of The Texture and Quad
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Right, edge->Bottom, edge->Back);	// Bottom Left Of The Texture and Quad
+																					// Left Face
+	glNormal3f(-1, 0, 0);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(edge->Left, edge->Bottom, edge->Front);	// Bottom Left Of The Texture and Quad
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(edge->Left, edge->Bottom, edge->Back);	// Bottom Right Of The Texture and Quad
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(edge->Left, edge->Top, edge->Back);	// Top Right Of The Texture and Quad
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(edge->Left, edge->Top, edge->Front);	// Top Left Of The Texture and Quad
+	glEnd();
+
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix();
+
+	return TRUE;								// Keep Going
+}
+
+BOOL SpaceLabyrinthWin32Platform::RedrawWall(MazeObject *wall)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	if (wall->Back - wall->Front < wall->Top - wall->Bottom)
+	{
+		SetWallTexture();
+		glBegin(GL_QUADS);
+		// Front Face
+		glNormal3f(0, 0, 1);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left, wall->Bottom, wall->Back);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top, wall->Back);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left, wall->Top, wall->Back);	// Top Left Of The Texture and Quad
+																					// Back Face
+		glNormal3f(0, 0, -1);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left, wall->Top, wall->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top, wall->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
+		glEnd();
+	}
+
+	if (wall->Top - wall->Bottom < wall->Right - wall->Left)
+	{
+		SetFloorTexture();
+		glBegin(GL_QUADS);
+		// Top Face
+		glNormal3f(0, 1, 0);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left, wall->Top, wall->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left, wall->Top, wall->Back);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Top, wall->Back);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top, wall->Front);	// Top Right Of The Texture and Quad
+		glEnd();
+		SetCeilingTexture();
+		glBegin(GL_QUADS);
+		// Bottom Face
+		glNormal3f(0, -1, 0);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left, wall->Bottom, wall->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left, wall->Bottom, wall->Back);	// Bottom Right Of The Texture and Quad
+		glEnd();
+	}
+
+	if (wall->Right - wall->Left < wall->Back - wall->Front)
+	{
+		SetWallTexture();
+		glBegin(GL_QUADS);
+		// Right face
+		glNormal3f(1, 0, 0);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Front);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Right, wall->Top, wall->Front);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Right, wall->Top, wall->Back);	// Top Left Of The Texture and Quad
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Right, wall->Bottom, wall->Back);	// Bottom Left Of The Texture and Quad
+																						// Left Face
+		glNormal3f(-1, 0, 0);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(wall->Left, wall->Bottom, wall->Front);	// Bottom Left Of The Texture and Quad
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(wall->Left, wall->Bottom, wall->Back);	// Bottom Right Of The Texture and Quad
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(wall->Left, wall->Top, wall->Back);	// Top Right Of The Texture and Quad
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(wall->Left, wall->Top, wall->Front);	// Top Left Of The Texture and Quad
+		glEnd();
+	}
+
+	// Pop our Matrix from the stack (restore state)
+	glPopMatrix();
+
+	return TRUE;								// Keep Going
 }
 
 #pragma endregion

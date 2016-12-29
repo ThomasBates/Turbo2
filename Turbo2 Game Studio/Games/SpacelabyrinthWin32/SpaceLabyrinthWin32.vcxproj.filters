@@ -1,203 +1,167 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Games">
+      <UniqueIdentifier>{159b4277-0d84-4554-a349-9638940361cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="Library">
+      <UniqueIdentifier>{058597d0-fa78-48f2-99a5-3c7a17477ef6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="Games\SpaceLabyrinth">
+      <UniqueIdentifier>{111994f7-d3d8-4e46-912c-7a658301f292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\SpaceLabyrinthWin32">
+      <UniqueIdentifier>{4ff146d3-8a45-478d-9775-8eefb9751029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Application">
+      <UniqueIdentifier>{c26661a0-6a4e-4e3b-9af8-482ab50234bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ApplicationWin32">
+      <UniqueIdentifier>{89c19898-4a8f-4e0f-a678-b72f1170075e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Graphics">
+      <UniqueIdentifier>{17fb0274-89d3-4e0e-9c0a-31e080dcbd5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\GraphicsWin32">
+      <UniqueIdentifier>{f886de2f-6b3a-4341-ad9c-bcbd1c0730cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\SpaceLabyrinth">
-      <UniqueIdentifier>{469bf95b-44a1-4089-bc83-6e6dc8083164}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\SpaceLabyrinth">
-      <UniqueIdentifier>{5980c5ac-7686-4a4b-814a-4d9cc46d4ffb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Application">
-      <UniqueIdentifier>{8b64cdbf-c7c9-4f1c-b816-e00a69d2efaa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Application">
-      <UniqueIdentifier>{d302aa16-a15d-4591-995c-7d4b7f434c12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{8bcf687c-5a2a-412d-bbb6-b7b8659983b3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Graphics">
-      <UniqueIdentifier>{1f5b89fc-17d2-4661-a312-101c83319461}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Data">
-      <UniqueIdentifier>{ae8837a1-22c2-430d-851b-2cf4fdb9334a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Classes">
-      <UniqueIdentifier>{bce596b1-e81d-4bac-ad0c-8d026ea7d12b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes">
-      <UniqueIdentifier>{8ca66f24-68fe-47da-a950-3d677197177f}</UniqueIdentifier>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{f203d464-53a2-487a-8a30-527be2c97da8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\Application\IApplication.h">
-      <Filter>Header Files\Application</Filter>
+      <Filter>Library\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Application\IProgram.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+      <Filter>Library\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IMaze.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IMazeFactory.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+      <Filter>Library\ApplicationWin32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Graphics\ICanvas.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Graphics\IImage.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Graphics\Vector.h">
-      <Filter>Header Files\Graphics</Filter>
+      <Filter>Library\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Graphics\Camera.h">
-      <Filter>Header Files\Graphics</Filter>
+      <Filter>Library\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Application\IWindow.h">
-      <Filter>Header Files\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthPlatform.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+    <ClInclude Include="..\..\Library\Graphics\ICanvas.h">
+      <Filter>Library\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Graphics\IFont.h">
-      <Filter>Header Files\Graphics</Filter>
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\IImage.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Vector.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h">
+      <Filter>Library\GraphicsWin32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\IMaze.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\IMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\ISpaceLabyrinthPlatform.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="SpaceLabyrinthWin32Platform.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Application\Window.h">
-      <Filter>Header Files\Application</Filter>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="..\..\Library\ApplicationWin32\IApplicationWin32.h">
+      <Filter>Library\ApplicationWin32</Filter>
     </ClInclude>
-    <ClInclude Include="ISpaceLabyrinthMainWindow.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h">
+      <Filter>Library\Application</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceLabyrinthMainWindow.h">
-      <Filter>Header Files\SpaceLabyrinth</Filter>
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h">
+      <Filter>Library\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Application\IComponent.h">
-      <Filter>Header Files\Application</Filter>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Application\Component.h">
-      <Filter>Header Files\Application</Filter>
+    <ClInclude Include="..\..\Library\Application\INavigationController.h">
+      <Filter>Library\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Classes\IList.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Classes\List.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Classes\ComponentStateSet.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Classes\ComponentStyleSet.h">
-      <Filter>Header Files\Classes</Filter>
+    <ClInclude Include="SpaceLabyrinthWin32NavigationController.h">
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp">
-      <Filter>Source Files\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="WinMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Library\ApplicationWin32</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Library\GraphicsWin32</Filter>
     </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Graphics\Vector.cpp">
-      <Filter>Source Files\Graphics</Filter>
+    <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp">
+      <Filter>Library\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp">
-      <Filter>Source Files\Graphics</Filter>
+      <Filter>Library\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Vector.cpp">
+      <Filter>Library\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="SpaceLabyrinthWin32Platform.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Library\Application\Window.cpp">
-      <Filter>Source Files\Application</Filter>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
-    <ClCompile Include="SpaceLabyrinthMainWindow.cpp">
-      <Filter>Source Files\SpaceLabyrinth</Filter>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Library\Application\Component.cpp">
-      <Filter>Source Files\Application</Filter>
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Library\Classes\List.cpp">
-      <Filter>Source Files\Classes</Filter>
+    <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Library\Classes\ComponentStateSet.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Classes\ComponentStyleSet.cpp">
-      <Filter>Source Files\Classes</Filter>
+    <ClCompile Include="SpaceLabyrinthWin32NavigationController.cpp">
+      <Filter>Games\SpaceLabyrinthWin32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\BIGHEAD.BMP">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\BIGHEAD2.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\Mandelbrot%27s Eye.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\POKEBALL.BMP">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test1.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test2.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
-    <None Include="Data\test3.bmp">
-      <Filter>Resource Files\Data</Filter>
-    </None>
+    <Image Include="..\..\Resources\Textures\stonefloor1.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor2.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor5.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonewall1.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonewall2.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor3.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor4.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -1,6 +1,10 @@
 
-#include <math.h>
+#include "pch.h"
+//#include <math.h>
 #include "Camera.h"
+
+#define PI 3.1415926535897932384626433832795
+#define PIby180 ((float)(PI/180.0))
 
 Camera::Camera()
 {
@@ -9,9 +13,9 @@ Camera::Camera()
 
 int Camera::Reset()
 {
-	Right    = Vector(1,0,0);
-	Up       = Vector(0,1,0);
-	Back     = Vector(0,0,1);
+	Right    = Vector3D(1,0,0);
+	Up       = Vector3D(0,1,0);
+	Back     = Vector3D(0,0,1);
 	Position = 0;
 	Velocity = 0;
 	AngularVelocity = 0;
@@ -21,14 +25,14 @@ int Camera::Reset()
 
 int Camera::GoTo(float x, float y, float z)
 {
-	Position = Vector(x,y,z);
+	Position = Vector3D(x,y,z);
 
 	Target = Position - Back;
 
 	return 1;
 }
 
-int Camera::GoTo(Vector position)
+int Camera::GoTo(Vector3D position)
 {
 	Position = position;
 
@@ -46,7 +50,7 @@ int Camera::Move(float x, float y, float z)
 	return 1;
 }
 
-int Camera::Move(Vector velocity)
+int Camera::Move(Vector3D velocity)
 {
 	Position += velocity;
 
@@ -83,7 +87,7 @@ int Camera::Rotate(float x, float y, float z)
 	return 1;
 }
 
-int Camera::Rotate(Vector angularVelocity)
+int Camera::Rotate(Vector3D angularVelocity)
 {
 	return Rotate(angularVelocity.X, angularVelocity.Y, angularVelocity.Z);
 }

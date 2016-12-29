@@ -1,13 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -21,12 +29,27 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -34,16 +57,31 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Application;..\..\Library\GraphicsWin32;..\..\Library\Graphics;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Graphics;..\..\Library\GraphicsWin32;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Graphics;..\..\Library\GraphicsWin32;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationWin32;..\..\Library\Classes;..\..\Library\Graphics;..\..\Library\GraphicsWin32;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -52,6 +90,22 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -76,13 +130,25 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Library\ApplicationWin32\ApplicationWin32.cpp" />
-    <ClCompile Include="..\..\Library\Application\Component.cpp" />
-    <ClCompile Include="..\..\Library\Application\Window.cpp" />
-    <ClCompile Include="..\..\Library\Classes\ComponentStateSet.cpp" />
-    <ClCompile Include="..\..\Library\Classes\ComponentStyleSet.cpp" />
-    <ClCompile Include="..\..\Library\Classes\List.cpp" />
     <ClCompile Include="..\..\Library\GraphicsWin32\CanvasRGB.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp" />
     <ClCompile Include="..\..\Library\Graphics\Camera.cpp" />
@@ -90,22 +156,19 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMaze.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
-    <ClCompile Include="SpaceLabyrinthMainWindow.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp" />
+    <ClCompile Include="SpaceLabyrinthWin32NavigationController.cpp" />
     <ClCompile Include="SpaceLabyrinthWin32Platform.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Library\ApplicationWin32\ApplicationWin32.h" />
-    <ClInclude Include="..\..\Library\Application\Component.h" />
+    <ClInclude Include="..\..\Library\ApplicationWin32\IApplicationWin32.h" />
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h" />
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
-    <ClInclude Include="..\..\Library\Application\IComponent.h" />
+    <ClInclude Include="..\..\Library\Application\INavigationController.h" />
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h" />
     <ClInclude Include="..\..\Library\Application\IProgram.h" />
-    <ClInclude Include="..\..\Library\Application\IWindow.h" />
-    <ClInclude Include="..\..\Library\Application\Window.h" />
-    <ClInclude Include="..\..\Library\Classes\ComponentStateSet.h" />
-    <ClInclude Include="..\..\Library\Classes\ComponentStyleSet.h" />
-    <ClInclude Include="..\..\Library\Classes\IList.h" />
-    <ClInclude Include="..\..\Library\Classes\List.h" />
     <ClInclude Include="..\..\Library\GraphicsWin32\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
     <ClInclude Include="..\..\Library\Graphics\Camera.h" />
@@ -119,19 +182,33 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeFactory.h" />
     <ClInclude Include="..\SpaceLabyrinth\SpaceLabyrinth.h" />
-    <ClInclude Include="ISpaceLabyrinthMainWindow.h" />
-    <ClInclude Include="SpaceLabyrinthMainWindow.h" />
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="SpaceLabyrinthWin32NavigationController.h" />
     <ClInclude Include="SpaceLabyrinthWin32Platform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\BIGHEAD.BMP" />
-    <None Include="Data\BIGHEAD2.bmp" />
-    <None Include="Data\Mandelbrot%27s Eye.bmp" />
-    <None Include="Data\POKEBALL.BMP" />
-    <None Include="Data\test.bmp" />
-    <None Include="Data\test1.bmp" />
-    <None Include="Data\test2.bmp" />
-    <None Include="Data\test3.bmp" />
+    <Image Include="..\..\Resources\Textures\stonefloor1.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor2.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor3.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor4.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonefloor5.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonewall1.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Resources\Textures\stonewall2.bmp">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

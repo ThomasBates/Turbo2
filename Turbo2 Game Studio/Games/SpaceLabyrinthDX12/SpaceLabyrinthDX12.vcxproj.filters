@@ -1,0 +1,301 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>dd64bc45-a589-440c-968a-f14454f0b175</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>ef39b142-9f9b-402b-9297-7664389b08c5</UniqueIdentifier>
+      <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+    <Filter Include="Content">
+      <UniqueIdentifier>c25f2fb4-2e48-4452-87d4-d98892d1a4cf</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="Common\d3dx12.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DirectXHelper.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClCompile Include="Common\DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClInclude Include="Content\ShaderStructures.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <FxCompile Include="Content\SamplePixelShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <FxCompile Include="Content\SampleVertexShader.hlsl">
+      <Filter>Content</Filter>
+    </FxCompile>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Filter Include="Games">
+      <UniqueIdentifier>{48258ef2-a876-43c3-937f-2afb0705e1a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\SpaceLabyrinth">
+      <UniqueIdentifier>{46a37cbb-0570-4d11-923b-88c2ae490709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{371eae76-03b7-408f-928e-ebb5b6ea15fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Application">
+      <UniqueIdentifier>{a4973d43-7b9b-4caf-a238-5e7440b41a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\ApplicationDX12">
+      <UniqueIdentifier>{97554564-18dc-4d55-a297-4abdf8e92b94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Graphics">
+      <UniqueIdentifier>{8333483c-357c-4c0a-a581-5dd8a76b9521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\GraphicsDX12">
+      <UniqueIdentifier>{51cb2918-45fe-4712-a020-3f86d6bd4e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Scene">
+      <UniqueIdentifier>{84bb43d0-c86c-46c0-b246-6fd3b4bf9f0c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Bitmap.cpp">
+      <Filter>Library\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\GraphicsDX12\CanvasRGB.cpp">
+      <Filter>Library\GraphicsDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthOriginalScene.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalCubicMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeSceneBuilder.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthPlayer.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Vector3D.cpp">
+      <Filter>Library\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Vector2D.cpp">
+      <Filter>Library\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\TurboApplicationDX12Platform.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\TurboApplicationDX12Renderer.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\TurboApplicationDX12NavigationController.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\ApplicationDX12\TurboApplicationDX12NavigationControl.cpp">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneObject.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectMesh.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectPlacement.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectTexture.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeCornerObject.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeEdgeObject.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeWallObject.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IApplication.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IProgram.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Bitmap.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\ICanvas.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\IImage.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\GraphicsDX12\CanvasRGB.h">
+      <Filter>Library\GraphicsDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkView.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12FrameworkViewSource.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IPlatformResources.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\IApplicationDX12PlatformResources.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12PlatformResources.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalLevel.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthOriginalScene.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\IGameLevel.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\INavigationController.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\ICubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalCubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\ITurboApplicationPlatform.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeSceneBuilder.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthPlayer.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Vector3D.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Vector2D.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12Platform.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Application\ITurboApplicationRenderer.h">
+      <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12ShaderStructures.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12Renderer.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12NavigationController.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12NavigationControl.h">
+      <Filter>Library\ApplicationDX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectTexture.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboScene.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneBuilder.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneObject.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectMesh.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectPlacement.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectTexture.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneObject.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectMesh.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectPlacement.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeCornerObject.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeEdgeObject.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeWallObject.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SpaceLabyrinthDX12_TemporaryKey.pfx" />
+  </ItemGroup>
+</Project>

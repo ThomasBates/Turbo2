@@ -107,7 +107,7 @@ public:
 	virtual	void	SetStyle(int style) { _style = style; }
 
 	//  Methods
-	virtual int		LoadFromFile(const char *fileName);
+	virtual int		LoadFromFile(std::string fileName);
 	virtual void	Draw(int width = 0, int height = 0, int style = 0);
 };
 

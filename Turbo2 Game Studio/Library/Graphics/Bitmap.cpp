@@ -1,9 +1,10 @@
 
-#include <stdio.h>
-#include <stdlib.h>
+//#define _CRT_SECURE_NO_WARNINGS 1
+//#pragma warning(disable:4996)
+
+#include "pch.h"
 
 #include "Bitmap.h"
-
 
 //  ============================================================================
 //  DSBitmap
@@ -39,7 +40,7 @@ void Bitmap::SetData(void* data)
 //  Public Access Methods
 //  ============================================================================
 
-int	Bitmap::LoadFromFile(const char *fileName)
+int	Bitmap::LoadFromFile(std::string fileName)
 {
 	FILE *file;
 	char *buffer;
@@ -48,7 +49,8 @@ int	Bitmap::LoadFromFile(const char *fileName)
 	delete [] _data;
 
 	//Open file
-	file = fopen(fileName, "rb");
+	//file = fopen(fileName, "rb");
+	fopen_s(&file, fileName.c_str(), "rb");
 	if (!file)
 	{
 		//fprintf(stderr, "Unable to open file %s", fileName);
@@ -78,7 +80,7 @@ int	Bitmap::LoadFromFile(const char *fileName)
 
 void Bitmap::Draw(int width, int height, int style)
 {
-	if (_canvas)
+	if (_canvas && _bmpFile)
 	{
 		int actualWidth;
 		if (width > 0)

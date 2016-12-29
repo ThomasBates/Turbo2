@@ -5,10 +5,9 @@
 #include <windows.h>					// Header File For Windows
 
 #include "IApplication.h"
+#include "IApplicationWin32.h"
 
-#define MAXWINDOWS 100
-
-class ApplicationWin32 : public IApplication
+class ApplicationWin32 : public IApplication, public IApplicationWin32
 {
 private:
 	LPCWSTR		_appTitle;		// Application Title
@@ -18,9 +17,6 @@ private:
 	HWND		_hWnd;			// Holds Our Window Handle
 	HINSTANCE	_hInstance;		// Holds The Instance Of The Application
 	BOOL		_fullscreen;	// Fullscreen Flag Set To Fullscreen Mode By Default
-
-	IWindow	   *_windows[MAXWINDOWS];
-	int			_windowCount;
 
 	int			_width;
 	int			_height;
@@ -35,55 +31,48 @@ private:
 	int			_pointerStatus;
 
 	BOOL		_ready;
-	//IProgram*	_program;
+	IProgram*	_program;
 
 	LARGE_INTEGER	_frequency;
-	LARGE_INTEGER	_startCount;
 	LARGE_INTEGER	_lastCount;
-	float			_time;
-	float			_deltaTime;
-	BOOL			_timeToDraw;
+
+	//  Local Support Methods
+	BOOL CreateApplicationWindow(int width, int height, int bits);
+	void KillApplicationWindow();
+	BOOL Resize(int width, int height);
+	void ProcessMessages();
+	void HandleMessage();
+	BOOL ProcessMessage(MSG *msg);
+	BOOL TimeToRender();
+	BOOL CheckFullScreenToggle();
 
 public:
 	//  Constructors and Destructors
 	ApplicationWin32(LPCWSTR appTitle);		// Application Title
 	~ApplicationWin32();
 
-	//  Public Properties
+	//  IApplication Methods
+	virtual BOOL Run(IProgram *program);
+
+	//  IApplicationWin32 Methods
 	HGLRC GetRenderingContext() { return _hRC; }
 	HDC   GetDeviceContext() { return _hDC; }
 
 	BOOL GetActive() { return _active; }
 	void SetActive(BOOL active) { _active = active; }
 
+	void GetPointer(int *x, int *y, int *status);
+	void SetPointer(int x, int y, int status);
+
 	BOOL GetKey(int keyIndex) { return _keys[keyIndex]; }
 	void SetKey(int keyIndex, BOOL keyDown) { _keys[keyIndex] = keyDown; }
 
-	//  IApplication Methods
-	virtual BOOL RegisterWindow(IWindow *window);
-	virtual BOOL UnregisterWindow(IWindow *window);
-	virtual BOOL Run();
-	virtual void HandleMessage();
-	virtual void ProcessMessages();
-
 	//  Public Access Methods
-	virtual LRESULT WndProc(HWND	hWnd,					// Handle For This Window
-							UINT	uMsg,					// Message For This Window
-							WPARAM	wParam,					// Additional Message Information
-							LPARAM	lParam);				// Additional Message Information
-	virtual BOOL Resize(int width, int height);
-	virtual void SetPointer(int x, int y, int status);
-	virtual void GetPointer(int *x, int *y, int *status);
-
-protected:
-	//  Local Support Methods
-	virtual BOOL CreateApplicationWindow(int width, int height, int bits);
-	virtual void KillApplicationWindow();
-	virtual BOOL ProcessMessage(MSG *msg);
+	virtual LRESULT WindowProc(	HWND	hWnd,					// Handle For This Window
+								UINT	uMsg,					// Message For This Window
+								WPARAM	wParam,					// Additional Message Information
+								LPARAM	lParam);				// Additional Message Information
 };
-
-extern ApplicationWin32* Win32Application;
-
 
 #define FULLSCREEN_WIDTH  800
 #define FULLSCREEN_HEIGHT 600
