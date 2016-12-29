@@ -9,6 +9,6 @@ namespace Application_DX12
 	{
 	public:
 		//  IApplication Methods
-		virtual BOOL Run(IProgram *program);
+		virtual BOOL Run(std::shared_ptr<IProgram> program);
 	};
 }

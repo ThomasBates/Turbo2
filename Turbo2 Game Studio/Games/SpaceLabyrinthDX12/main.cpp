@@ -1,24 +1,23 @@
 #include "pch.h"
 
 #include "ApplicationDX12.h"
-#include "SpaceLabyrinthDX12Platform.h"
+#include "TurboApplicationDX12Platform.h"
 #include "SpaceLabyrinth.h"
 
-using namespace SpaceLabyrinthDX12;
+using namespace Application_DX12;
 
-// The main function is only used to initialize our IFrameworkView class.
+//  The main function is only used to initialize our IFrameworkView class.
+//  Edit: The main function calls application->Run, which initializes our
+//        IFrameworkViewSource class, which creates our IFrameworkView class,
+//        which handles all the windows events.
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
-	IApplication *application = new ApplicationDX12();
-	ISpaceLabyrinthPlatform *platform = new SpaceLabyrinthDX12Platform(application);
-	IProgram *program = new SpaceLabyrinth(platform);
+	std::shared_ptr<IApplication> application = std::shared_ptr<IApplication>(new ApplicationDX12());
+	std::shared_ptr<ITurboApplicationPlatform> platform = std::shared_ptr<ITurboApplicationPlatform>(new TurboApplicationDX12Platform(application));
+	std::shared_ptr<IProgram> program = std::shared_ptr<IProgram>(new SpaceLabyrinth(platform));
 
 	int result = application->Run(program);
-
-	delete program;
-	delete platform;
-	delete application;
 
 	return result;
 }

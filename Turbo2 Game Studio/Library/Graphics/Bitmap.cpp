@@ -40,7 +40,7 @@ void Bitmap::SetData(void* data)
 //  Public Access Methods
 //  ============================================================================
 
-int	Bitmap::LoadFromFile(const char *fileName)
+int	Bitmap::LoadFromFile(std::string fileName)
 {
 	FILE *file;
 	char *buffer;
@@ -50,7 +50,7 @@ int	Bitmap::LoadFromFile(const char *fileName)
 
 	//Open file
 	//file = fopen(fileName, "rb");
-	fopen_s(&file, fileName, "rb");
+	fopen_s(&file, fileName.c_str(), "rb");
 	if (!file)
 	{
 		//fprintf(stderr, "Unable to open file %s", fileName);

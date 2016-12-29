@@ -12,7 +12,7 @@ ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource()
 {
 }
 
-ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource(IProgram *program)
+ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource(std::shared_ptr<IProgram> program)
 {
 	_program = program;
 }

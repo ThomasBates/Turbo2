@@ -7,7 +7,7 @@
 class IApplication
 {
 public:
-	virtual int Run(IProgram *program) = 0;
+	virtual int Run(std::shared_ptr<IProgram> program) = 0;
 };
 
 //extern IApplication *Application;

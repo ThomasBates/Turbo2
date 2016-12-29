@@ -5,34 +5,35 @@
 
 #include "IProgram.h"
 #include "IGameLevel.h"
-#include "ISpaceLabyrinthPlatform.h"
-#include "IMazeFactory.h"
-#include "Camera.h"
+#include "ITurboApplicationPlatform.h"
+#include "ITurboSceneBuilder.h"
 
 class SpaceLabyrinthOriginalLevel : public IGameLevel
 {
 private:
-	ISpaceLabyrinthPlatform *_platform;
-	IMazeFactory *_mazeFactory;
+	std::shared_ptr<ITurboApplicationPlatform>	_platform;
 
-	IMaze *_maze;
+	std::unique_ptr<ITurboSceneBuilder>			_sceneBuilder;
+	std::shared_ptr<ITurboScene>				_scene;
+	std::shared_ptr<ITurboSceneObject>		    _player;
+
 	int		_pointer;
 	int		_pointerX;
 	int		_pointerY;
 
-	Camera	_camera;
-
 	//  Local Support Methods
-	virtual int NavigateMaze();
-	virtual int CheckForBounce(Vector newPosition, const MazeObject *mazeObject);
-	virtual int DrawMaze();
+	Vector3D	GetSpawnPoint();
+	void	RenderStaticScene();
+	void	UpdateDynamicSceneObjects();
+	void	RenderDynamicSceneObjects();
+	void	ProcessObjectInteractions();
 
 public:
 	//  Constructors and Destructors
-	SpaceLabyrinthOriginalLevel(ISpaceLabyrinthPlatform *platform);
+	SpaceLabyrinthOriginalLevel(std::shared_ptr<ITurboApplicationPlatform> platform);
 	~SpaceLabyrinthOriginalLevel();
 
-	//  IProgram Methods
+	//  IGameLevel Methods
 	virtual int		Initialize();
 	virtual int		Update();
 	virtual int		Render();

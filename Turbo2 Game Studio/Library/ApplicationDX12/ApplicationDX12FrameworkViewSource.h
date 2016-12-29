@@ -3,12 +3,12 @@
 ref class ApplicationDX12FrameworkViewSource /*sealed*/ : Windows::ApplicationModel::Core::IFrameworkViewSource
 {
 private:
-	IProgram *_program;
+	std::shared_ptr<IProgram> _program;
 
 internal:
 	//  Constructor(s)
 	ApplicationDX12FrameworkViewSource();
-	ApplicationDX12FrameworkViewSource(IProgram *program);
+	ApplicationDX12FrameworkViewSource(std::shared_ptr<IProgram> program);
 
 public:
 	//  IFrameworkViewSource Methods

@@ -6,18 +6,12 @@
 
 #include "SpaceLabyrinth.h"
 #include "SpaceLabyrinthOriginalLevel.h"
-#include "OriginalMazeFactory.h"
 
 //============  Constructors and Destructors  --------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth(ISpaceLabyrinthPlatform *platform)
+SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboApplicationPlatform> platform)
 {
 	_platform = platform;
-}
-
-SpaceLabyrinth::~SpaceLabyrinth()
-{
-	delete _level;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -25,11 +19,11 @@ SpaceLabyrinth::~SpaceLabyrinth()
 
 int SpaceLabyrinth::Initialize()
 {
-	_level = new SpaceLabyrinthOriginalLevel(_platform);
+	_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel(_platform));
 	return _level->Initialize();
 }
 
-void SpaceLabyrinth::SetPlatformResources(IPlatformResources *platformResources)
+void SpaceLabyrinth::SetPlatformResources(std::shared_ptr<IPlatformResources> platformResources)
 {
 	//  Just pass through.
 	_platform->SetPlatformResources(platformResources);
@@ -43,15 +37,14 @@ int SpaceLabyrinth::Resize(int width, int height)
 
 int SpaceLabyrinth::Update()
 {
-	NavInfo navInfo;
-	_platform->GetNavigationInfo(&navInfo);
+	_platform->SetTimeStampForFrame();
+	NavigationInfo navInfo = _platform->GetNavigationInfo();
 
 	if (navInfo.Restart)
 	{
-		navInfo.Restart = 0;
+		navInfo.Restart = false;
 
-		delete _level;
-		_level = new SpaceLabyrinthOriginalLevel(_platform);
+		_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel(_platform));
 		return _level->Initialize();
 	}
 

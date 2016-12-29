@@ -1,42 +1,44 @@
-//  ============================================================================
-//  SpaceLabyrinthOriginalLevel.cpp
-//  ============================================================================
 
 #include "pch.h"
 
 #include "SpaceLabyrinthOriginalLevel.h"
-#include "OriginalMazeFactory.h"
+#include "SpaceLabyrinthPlayer.h"
+#include "OriginalMazeSceneBuilder.h"
 
 //============  Constructors and Destructors  --------------------------------------------------------------------------
 
-SpaceLabyrinthOriginalLevel::SpaceLabyrinthOriginalLevel(ISpaceLabyrinthPlatform *platform)
+SpaceLabyrinthOriginalLevel::SpaceLabyrinthOriginalLevel(std::shared_ptr<ITurboApplicationPlatform> platform)
 {
 	_platform = platform;
-
-	_mazeFactory = new OriginalMazeFactory;
-	_maze = 0;
 }
 
 SpaceLabyrinthOriginalLevel::~SpaceLabyrinthOriginalLevel()
 {
-	_mazeFactory->FreeMaze(_maze);
-	delete _maze;
-	delete _mazeFactory;
+	_sceneBuilder->FreeScene(_scene);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-//============  IProgram Methods  --------------------------------------------------------------------------------------
+//============  IGameLevel Methods  ------------------------------------------------------------------------------------
 
 int SpaceLabyrinthOriginalLevel::Initialize()
 {
-	int result = _platform->Initialize(&_camera);
+	int result = _platform->Initialize();
 
-	_maze = _mazeFactory->MakeMaze(3, 3, 3);
-	_camera.Reset();
-	_camera.Move(2, -2, -2);
+	//	Create the scene
+	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder(_platform));
+	_scene = _sceneBuilder->BuildScene();
 
-	DrawMaze();
-	//	_camera.Move(2,-2,-2);
+	//  Create the player
+	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer(_platform));
+	_player->Placement()->Reset();
+	_player->Placement()->GoTo(GetSpawnPoint());
+	//	set player Placement as camera Placement.
+	_platform->CameraPlacement(_player->Placement());
+
+	//  Create NPC's and obstacles ...
+	//  ...
+
+	RenderStaticScene();
 
 	return result;
 }
@@ -45,7 +47,7 @@ int SpaceLabyrinthOriginalLevel::Update()
 {
 	_platform->BeginUpdate();
 
-	NavigateMaze();
+	UpdateDynamicSceneObjects();
 
 	_platform->EndUpdate();
 
@@ -56,8 +58,8 @@ int SpaceLabyrinthOriginalLevel::Render()
 {
 	_platform->BeginRender();
 
-	//DrawMaze();
-
+	RenderDynamicSceneObjects();
+	
 	_platform->EndRender();
 
 	return 1;
@@ -77,212 +79,104 @@ int SpaceLabyrinthOriginalLevel::Finalize()
 //----------------------------------------------------------------------------------------------------------------------
 //============  Local Support Methods  ---------------------------------------------------------------------------------
 
-int SpaceLabyrinthOriginalLevel::NavigateMaze()
+Vector3D SpaceLabyrinthOriginalLevel::GetSpawnPoint()
 {
-	NavInfo navInfo;
-
-	_platform->GetNavigationInfo(&navInfo);
-
-	float deltaTime = _platform->GetDeltaTime();
-	float time = _platform->GetTime();
-
-	float moveAccelleration = 1.0;
-	float moveSpeed = moveAccelleration * deltaTime;
-
-	if (!(navInfo.MoveLeft ||
-		navInfo.MoveRight ||
-		navInfo.MoveDown ||
-		navInfo.MoveUp ||
-		navInfo.MoveFore ||
-		navInfo.MoveBack))
-	{
-		//  air friction decay
-		_camera.Velocity -= _camera.Velocity * 1.0f * deltaTime;
-
-		//  hover
-		_camera.Velocity += _camera.Up * cos(time * 2) * 0.05f * deltaTime;
-
-		//  gravity
-		//_camera.Velocity.Y -= deltaTime;
-	}
-
-
-	if (navInfo.MoveLeft)	_camera.Velocity -= _camera.Right * moveSpeed;
-	if (navInfo.MoveRight)	_camera.Velocity += _camera.Right * moveSpeed;
-	if (navInfo.MoveDown)	_camera.Velocity -= _camera.Up    * moveSpeed;
-	if (navInfo.MoveUp)		_camera.Velocity += _camera.Up    * moveSpeed;
-	if (navInfo.MoveFore)	_camera.Velocity -= _camera.Back  * moveSpeed;
-	if (navInfo.MoveBack)	_camera.Velocity += _camera.Back  * moveSpeed;
-	/*
-	if (navInfo.MoveLeft)	_camera.Velocity = -_camera.Right * moveAccelleration;
-	if (navInfo.MoveRight)	_camera.Velocity =  _camera.Right * moveAccelleration;
-	if (navInfo.MoveDown)	_camera.Velocity = -_camera.Up    * moveAccelleration;
-	if (navInfo.MoveUp)		_camera.Velocity =  _camera.Up    * moveAccelleration;
-	if (navInfo.MoveFore)	_camera.Velocity = -_camera.Back  * moveAccelleration;
-	if (navInfo.MoveBack)	_camera.Velocity =  _camera.Back  * moveAccelleration;
-	*/
-
-	float rotateAccelleration = 45.0;
-	float rotateSpeed = rotateAccelleration * deltaTime;
-
-	if (!(navInfo.Pointer ||
-		navInfo.PitchFore ||
-		navInfo.PitchBack ||
-		navInfo.YawRight ||
-		navInfo.YawLeft ||
-		navInfo.RollLeft ||
-		navInfo.RollRight))
-	{
-		_camera.AngularVelocity -= _camera.AngularVelocity * 1.0 * deltaTime;
-
-		//  self-righting
-		//_camera.AngularVelocity.Z -= _camera.Right.Y * 30 * deltaTime;
-		//_camera.AngularVelocity.X -= _camera.Back.Y * 30 * deltaTime;
-	}
-
-	if (navInfo.Pointer && _pointer)
-	{
-		int dx = navInfo.PointerX - _pointerX;
-		int dy = navInfo.PointerY - _pointerY;
-
-		_camera.AngularVelocity.X = dy / deltaTime;
-		_camera.AngularVelocity.Y = -dx / deltaTime;
-	}
-
-	_pointer = navInfo.Pointer;
-	_pointerX = navInfo.PointerX;
-	_pointerY = navInfo.PointerY;
-
-
-	if (navInfo.PitchFore)	_camera.AngularVelocity.X -= rotateSpeed;
-	if (navInfo.PitchBack)	_camera.AngularVelocity.X += rotateSpeed;
-	if (navInfo.YawRight)	_camera.AngularVelocity.Y -= rotateSpeed;
-	if (navInfo.YawLeft)	_camera.AngularVelocity.Y += rotateSpeed;
-	if (navInfo.RollLeft)	_camera.AngularVelocity.Z -= rotateSpeed;
-	if (navInfo.RollRight)	_camera.AngularVelocity.Z += rotateSpeed;
-	/*
-	if (navInfo.PitchFore)	_camera.AngularVelocity.X = -rotateAccelleration;
-	if (navInfo.PitchBack)	_camera.AngularVelocity.X =  rotateAccelleration;
-	if (navInfo.YawRight)	_camera.AngularVelocity.Y = -rotateAccelleration;
-	if (navInfo.YawLeft)	_camera.AngularVelocity.Y =  rotateAccelleration;
-	if (navInfo.RollLeft)	_camera.AngularVelocity.Z = -rotateAccelleration;
-	if (navInfo.RollRight)	_camera.AngularVelocity.Z =  rotateAccelleration;
-	*/
-	//  Check for collisions and change velocity accordingly.
-
-	Vector newPosition = _camera.Position + _camera.Velocity * deltaTime;
-
-	location size = _maze->GetSize();
-	int numCells = (size.w + 1) * (size.h + 1) * (size.d + 1);
-
-	MazeObject *corners = _maze->GetCorners();
-	for (int i = 0; i<numCells; i++)
-	{
-		MazeObject *corner = &(corners[i]);
-		if (corner->Active)
-		{
-			if (CheckForBounce(newPosition, corner))
-				newPosition = _camera.Position + _camera.Velocity * deltaTime;
-		}
-	}
-
-	MazeObject *edges = _maze->GetEdges();
-	for (int i = 0; i<numCells * 3; i++)
-	{
-		MazeObject *edge = &(edges[i]);
-		if (edge->Active)
-		{
-			if (CheckForBounce(newPosition, edge))
-				newPosition = _camera.Position + _camera.Velocity * deltaTime;
-		}
-	}
-
-	MazeObject *walls = _maze->GetWalls();
-	for (int i = 0; i<numCells * 3; i++)
-	{
-		MazeObject *wall = &(walls[i]);
-		if (wall->Active)
-		{
-			if (CheckForBounce(newPosition, wall))
-				newPosition = _camera.Position + _camera.Velocity * deltaTime;
-		}
-	}
-
-	_camera.Move(_camera.Velocity * deltaTime);
-	_camera.Rotate(_camera.AngularVelocity * deltaTime);
-
-	return 1;
+	return Vector3D(2.0f, -2.0f, -2.0f);
 }
 
-int SpaceLabyrinthOriginalLevel::DrawMaze()
+void SpaceLabyrinthOriginalLevel::RenderStaticScene()
 {
-	location size = _maze->GetSize();
-	int numCells = (size.w + 1) * (size.h + 1) * (size.d + 1);
-
 	_platform->BeginDraw();
-
-	MazeObject *corners = _maze->GetCorners();
-	for (int i = 0; i<numCells; i++)
-	{
-		MazeObject *corner = &(corners[i]);
-		if (corner->Active)
-			_platform->DrawCorner(corner);
-	}
-
-	MazeObject *edges = _maze->GetEdges();
-	for (int i = 0; i<numCells * 3; i++)
-	{
-		MazeObject *edge = &(edges[i]);
-		if (edge->Active)
-			_platform->DrawEdge(edge);
-	}
-
-	MazeObject *walls = _maze->GetWalls();
-	for (int i = 0; i<numCells * 3; i++)
-	{
-		MazeObject *wall = &(walls[i]);
-		if (wall->Active)
-			_platform->DrawWall(wall);
-	}
-
+	_scene->Render();
 	_platform->EndDraw();
-
-	return 1;							// Everything Went OK
 }
 
-int SpaceLabyrinthOriginalLevel::CheckForBounce(Vector newPosition, const MazeObject *mazeObject)
+void SpaceLabyrinthOriginalLevel::UpdateDynamicSceneObjects()
+{
+	//  Navigate player
+	_player->Navigate();
+
+	//  Navigate NPC's and obstacles
+	//  ...
+
+	//  Check for collisions
+	ProcessObjectInteractions();
+
+	//  Update player
+	_player->Update();
+
+	//  Update NPC's and obstacles
+	//  ...
+
+}
+
+void SpaceLabyrinthOriginalLevel::RenderDynamicSceneObjects()
+{
+	//  Render player
+	_player->Render();
+	//_platform->RenderSceneObject(_player);
+
+	//  Render NPC's and obstacles
+	//  ...
+
+	//_platform->CameraPlacement(_player->Placement());
+}
+
+void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions()
 {
 	const float buffer = 0.25;
 	const float bounciness = 0.25;
 
-	if (newPosition.X >= mazeObject->Left - buffer &&
-		newPosition.X <= mazeObject->Right + buffer &&
-		newPosition.Y >= mazeObject->Bottom - buffer &&
-		newPosition.Y <= mazeObject->Top + buffer &&
-		newPosition.Z >= mazeObject->Front - buffer &&
-		newPosition.Z <= mazeObject->Back + buffer)
+	NavigationInfo navInfo = _platform->GetNavigationInfo();
+	float deltaTime = navInfo.DeltaTime;
+
+	//  Player-Maze Interactions
+	std::shared_ptr<ITurboSceneObjectPlacement> placement = _player->Placement();
+	Vector3D oldPosition = placement->Position();
+	Vector3D velocity = placement->Velocity();
+	Vector3D angularVelocity = placement->AngularVelocity();
+
+	Vector3D contact;
+	Vector3D normal;
+
+	Vector3D nearestContact;
+	Vector3D nearestNormal;
+	float nearestDistance = 10000.0;
+
+	Vector3D newPosition = oldPosition + velocity * deltaTime;
+
+	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _scene->SceneObjects();
+
+	int sceneObjectsCount = sceneObjects.size();
+
+	for (int objectIndex = 0; objectIndex < sceneObjectsCount; objectIndex++)
 	{
-		if (_camera.Position.X <= mazeObject->Left - buffer)
-			_camera.Velocity.X = -_camera.Velocity.X * bounciness;
+		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[objectIndex];
 
-		if (_camera.Position.X >= mazeObject->Right + buffer)
-			_camera.Velocity.X = -_camera.Velocity.X * bounciness;
-
-		if (_camera.Position.Y <= mazeObject->Bottom - buffer)
-			_camera.Velocity.Y = -_camera.Velocity.Y * bounciness;
-
-		if (_camera.Position.Y >= mazeObject->Top + buffer)
-			_camera.Velocity.Y = -_camera.Velocity.Y * bounciness;
-
-		if (_camera.Position.Z <= mazeObject->Front - buffer)
-			_camera.Velocity.Z = -_camera.Velocity.Z * bounciness;
-
-		if (_camera.Position.Z >= mazeObject->Back + buffer)
-			_camera.Velocity.Z = -_camera.Velocity.Z * bounciness;
-
-		return 1;
+		if (sceneObject->IsTouching(oldPosition, newPosition, buffer, &contact, &normal))
+		{
+			if ((contact - oldPosition).Length() < nearestDistance)
+			{
+				nearestContact = contact;
+				nearestNormal = normal;
+				nearestDistance = (contact - oldPosition).Length();
+			}
+		}
 	}
-	return 0;
+
+	if (nearestDistance < 10000.0) 
+	{
+		Vector3D v = velocity * bounciness;
+		Vector3D n = -nearestNormal * (-nearestNormal * v);
+		Vector3D t = v - n;
+		velocity = t - n;
+
+		newPosition = oldPosition + velocity * deltaTime;
+	}
+
+	placement->Velocity(velocity);
+	placement->GoTo(newPosition);
+	placement->Rotate(angularVelocity * deltaTime);
 }
 
 //----------------------------------------------------------------------------------------------------------------------

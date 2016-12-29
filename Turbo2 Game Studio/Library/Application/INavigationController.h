@@ -1,27 +1,30 @@
 #pragma once
 
 typedef struct {
-	int		Pointer;
+	float	Time;
+	float	DeltaTime;
+	bool	Pointer;
 	int		PointerX;
 	int		PointerY;
-	int		MoveLeft;
-	int		MoveRight;
-	int		MoveDown;
-	int		MoveUp;
-	int		MoveFore;
-	int		MoveBack;
-	int		PitchFore;
-	int		PitchBack;
-	int		YawRight;
-	int		YawLeft;
-	int		RollLeft;
-	int		RollRight;
-	int		Pause;
-	int		Restart;
-}	NavInfo;
+	bool	MoveLeft;
+	bool	MoveRight;
+	bool	MoveDown;
+	bool	MoveUp;
+	bool	MoveFore;
+	bool	MoveBack;
+	bool	PitchFore;
+	bool	PitchBack;
+	bool	YawRight;
+	bool	YawLeft;
+	bool	RollLeft;
+	bool	RollRight;
+	bool	Pause;
+	bool	Restart;
+}	NavigationInfo;
 
 class INavigationController
 {
 public:
-	virtual int	GetNavigationInfo(NavInfo *navInfo) = 0;
+	virtual void SetTimeStampForFrame() = 0;
+	virtual NavigationInfo GetNavigationInfo() = 0;
 };

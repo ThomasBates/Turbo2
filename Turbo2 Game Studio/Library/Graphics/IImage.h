@@ -40,7 +40,7 @@ public:
 	virtual void	SetStyle(int style) = 0;
 
 	//  Methods
-	virtual int		LoadFromFile(const char *fileName) = 0;
+	virtual int		LoadFromFile(std::string fileName) = 0;
 	virtual	void	Draw(int width = -1, int height = -1, int style = 0) = 0;
 };
 

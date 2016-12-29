@@ -8,12 +8,12 @@ namespace Application_DX12
 	class ApplicationDX12PlatformResources : public IPlatformResources, public IApplicationDX12PlatformResources
 	{
 	private:
-		std::shared_ptr<DX::DeviceResources> m_deviceResources;
+		std::shared_ptr<DX::DeviceResources> _deviceResources;
 
 	public:
 		//  Constructors and Destructors
 		ApplicationDX12PlatformResources(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
-			m_deviceResources(deviceResources)
+			_deviceResources(deviceResources)
 		{
 		};
 
@@ -21,7 +21,7 @@ namespace Application_DX12
 		virtual void MakePolymorphic() {}
 
 		//  IApplicationDX12DeviceResources Methods
-		virtual std::shared_ptr<DX::DeviceResources> GetDeviceResources() { return m_deviceResources; }
+		virtual std::shared_ptr<DX::DeviceResources> GetDeviceResources() { return _deviceResources; }
 	};
 
 }

@@ -23,14 +23,14 @@ using namespace Windows::Graphics::Display;
 // The DirectX 12 Application template is documented at http://go.microsoft.com/fwlink/?LinkID=613670&clcid=0x409
 
 ApplicationDX12FrameworkView::ApplicationDX12FrameworkView() :
-	m_windowClosed(false),
-	m_windowVisible(true)
+	_windowClosed(false),
+	_windowVisible(true)
 {
 }
 
-ApplicationDX12FrameworkView::ApplicationDX12FrameworkView(IProgram *program) :
-	m_windowClosed(false),
-	m_windowVisible(true),
+ApplicationDX12FrameworkView::ApplicationDX12FrameworkView(std::shared_ptr<IProgram> program) :
+	_windowClosed(false),
+	_windowVisible(true),
 	_program(program)
 {
 }
@@ -85,9 +85,9 @@ void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 // This method is called after the window becomes active.
 void ApplicationDX12FrameworkView::Run()
 {
-	while (!m_windowClosed)
+	while (!_windowClosed)
 	{
-		if (m_windowVisible)
+		if (_windowVisible)
 		{
 			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
@@ -179,12 +179,12 @@ void ApplicationDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, Windo
 
 void ApplicationDX12FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
 {
-	m_windowVisible = args->Visible;
+	_windowVisible = args->Visible;
 }
 
 void ApplicationDX12FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
 {
-	m_windowClosed = true;
+	_windowClosed = true;
 }
 
 // DisplayInformation event handlers.
@@ -212,26 +212,26 @@ void ApplicationDX12FrameworkView::OnDisplayContentsInvalidated(DisplayInformati
 
 std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceResources()
 {
-	if (m_deviceResources != nullptr && m_deviceResources->IsDeviceRemoved())
+	if (_deviceResources != nullptr && _deviceResources->IsDeviceRemoved())
 	{
 		// All references to the existing D3D device must be released before a new device
 		// can be created.
 
-		m_deviceResources = nullptr;
+		_deviceResources = nullptr;
 		_program->SaveState();
 		_program->SetPlatformResources(nullptr);
 	}
 
-	if (m_deviceResources == nullptr)
+	if (_deviceResources == nullptr)
 	{
-		m_deviceResources = std::make_shared<DX::DeviceResources>();
-		m_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
+		_deviceResources = std::make_shared<DX::DeviceResources>();
+		_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
 		
-		IPlatformResources *platformResources = new ApplicationDX12PlatformResources(m_deviceResources);
+		std::shared_ptr<IPlatformResources> platformResources = std::shared_ptr<IPlatformResources>(new ApplicationDX12PlatformResources(_deviceResources));
 		_program->SetPlatformResources(platformResources);
 		_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 	}
 
-	return m_deviceResources;
+	return _deviceResources;
 }
 

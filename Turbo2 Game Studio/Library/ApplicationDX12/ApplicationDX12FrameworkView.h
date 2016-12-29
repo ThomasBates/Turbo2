@@ -10,7 +10,7 @@ namespace Application_DX12
 	ref class ApplicationDX12FrameworkView sealed : public Windows::ApplicationModel::Core::IFrameworkView
 	{
 	internal:
-		ApplicationDX12FrameworkView(IProgram *program);
+		ApplicationDX12FrameworkView(std::shared_ptr<IProgram> program);
 
 	public:
 		ApplicationDX12FrameworkView();
@@ -39,13 +39,13 @@ namespace Application_DX12
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
 	private:
-		IProgram *_program;
+		std::shared_ptr<IProgram> _program;
 
-		// Private accessor for m_deviceResources, protects against device removed errors.
+		// Private accessor for _deviceResources, protects against device removed errors.
 		std::shared_ptr<DX::DeviceResources> GetDeviceResources();
-		std::shared_ptr<DX::DeviceResources> m_deviceResources;
+		std::shared_ptr<DX::DeviceResources> _deviceResources;
 
-		bool m_windowClosed;
-		bool m_windowVisible;
+		bool _windowClosed;
+		bool _windowVisible;
 	};
 }
