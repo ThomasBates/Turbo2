@@ -1,18 +1,23 @@
 #pragma once
 
 #include <ITurboSceneObjectMesh.h>
+#include <ITurboSceneObjectMaterial.h>
 #include <ITurboSceneObjectPlacement.h>
 
 class ITurboSceneObject
 {
 public:
-	//  ITurboSceneObject Properties
+	//  ITurboSceneObject Properties  ----------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneObjectMesh>		Mesh() = 0;
-	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() = 0;
-	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	NewPlacement() = 0;
-	virtual	void NewPlacement(std::shared_ptr<ITurboSceneObjectPlacement> newPlacement) = 0;
+	virtual void Mesh(std::shared_ptr<ITurboSceneObjectMesh> mesh) = 0;
 
-	//  ITurboSceneObject Methods
+	virtual std::shared_ptr<ITurboSceneObjectMaterial>	Material() = 0;
+	virtual void Material(std::shared_ptr<ITurboSceneObjectMaterial> material) = 0;
+
+	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() = 0;
+	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) = 0;
+
+	//  ITurboSceneObject Methods  -------------------------------------------------------------------------------------
 	virtual void Navigate() = 0;
 	virtual void Update() = 0;
 	virtual void Render() = 0;

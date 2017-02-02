@@ -4,29 +4,31 @@
 
 #include <ITurboApplicationPlatform.h>
 #include <ITurboSceneObject.h>
-#include <ITurboSceneObjectMesh.h>
-#include <ITurboSceneObjectPlacement.h>
 
 class SpaceLabyrinthPlayer : public ITurboSceneObject
 {
 private:
 	std::shared_ptr<ITurboApplicationPlatform>	_platform;
 	std::shared_ptr<ITurboSceneObjectMesh>		_mesh;
+	std::shared_ptr<ITurboSceneObjectMaterial>	_material;
 	std::shared_ptr<ITurboSceneObjectPlacement>	_placement;
-	std::shared_ptr<ITurboSceneObjectPlacement>	_newPlacement;
 
 	NavigationInfo _lastNavInfo;
 
 public:
 	SpaceLabyrinthPlayer(std::shared_ptr<ITurboApplicationPlatform> platform);
 
-	//  ITurboSceneObject Properties
+	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneObjectMesh>		Mesh() { return _mesh; }
-	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() { return _placement; }
-	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	NewPlacement() { return _newPlacement; }
-	virtual	void NewPlacement(std::shared_ptr<ITurboSceneObjectPlacement> newPlacement) { _newPlacement = newPlacement; }
+	virtual void Mesh(std::shared_ptr<ITurboSceneObjectMesh> mesh) { _mesh = mesh; }
 
-	//  ITurboSceneObject Methods
+	virtual	std::shared_ptr<ITurboSceneObjectMaterial>	Material() { return _material; }
+	virtual void Material(std::shared_ptr<ITurboSceneObjectMaterial> material) { _material = material; }
+
+	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() { return _placement; }
+	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) { _placement = placement; }
+
+	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
 	virtual void Navigate();
 	virtual void Update();
 	virtual void Render();

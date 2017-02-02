@@ -156,6 +156,12 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalMazeWallObject.cpp">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectMaterial.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\Vector4D.cpp">
+      <Filter>Library\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -290,6 +296,21 @@
     </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\OriginalMazeWallObject.h">
       <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectMaterial.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectMaterial.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\Vector4D.h">
+      <Filter>Library\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneVertexShader.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboScenePixelShader.h">
+      <Filter>Library\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

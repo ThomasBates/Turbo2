@@ -6,10 +6,7 @@ class TurboSceneObject : public ITurboSceneObject
 {
 private:
 	std::shared_ptr<ITurboSceneObjectMesh>		_mesh;
-	//std::shared_ptr<ITurboSceneObjectPlacement>	_placement;
-
-protected:
-	virtual void Mesh(std::shared_ptr<ITurboSceneObjectMesh> mesh) { _mesh = mesh; };
+	std::shared_ptr<ITurboSceneObjectMaterial>	_material;
 
 public:
 	//  Constructors and Destructors  -------------------------------------------------------------------------------------
@@ -18,9 +15,13 @@ public:
 
 	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneObjectMesh>		Mesh() { return _mesh; }
+	virtual void Mesh(std::shared_ptr<ITurboSceneObjectMesh> mesh) { _mesh = mesh; }
+
+	virtual	std::shared_ptr<ITurboSceneObjectMaterial>	Material() { return _material; }
+	virtual void Material(std::shared_ptr<ITurboSceneObjectMaterial> material) { _material = material; }
+
 	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() { return nullptr; }
-	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	NewPlacement() { return nullptr; }
-	virtual	void NewPlacement(std::shared_ptr<ITurboSceneObjectPlacement> newPlacement) { }
+	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) {}
 
 	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
 	virtual void Navigate() {};

@@ -69,11 +69,11 @@ OriginalMazeWallObject::OriginalMazeWallObject(
 		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
 	}
 
-	mesh->AddTriangle(0, 1, 2, texture1);
-	mesh->AddTriangle(2, 3, 0, texture1);
+	mesh->AddTriangle(0, 1, 2);
+	mesh->AddTriangle(2, 3, 0);
 
-	mesh->AddTriangle(4, 5, 6, texture2);
-	mesh->AddTriangle(6, 7, 4, texture2);
+	mesh->AddTriangle(4, 5, 6);
+	mesh->AddTriangle(6, 7, 4);
 
 	Mesh(mesh);
 }

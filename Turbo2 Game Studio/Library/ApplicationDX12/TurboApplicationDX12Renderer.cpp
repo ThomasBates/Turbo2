@@ -670,7 +670,8 @@ void TurboApplicationDX12Renderer::RenderSceneObject(std::shared_ptr<ITurboScene
 
 		VertexPositionColor pcVertex;
 		pcVertex.pos = XMFLOAT3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
-		pcVertex.color = XMFLOAT3(vertex.Color.X, vertex.Color.Y, vertex.Color.Z);
+		//pcVertex.color = XMFLOAT3(vertex.Color.X, vertex.Color.Y, vertex.Color.Z);
+		pcVertex.color = XMFLOAT3(abs(vertex.Normal.X), abs(vertex.Normal.Y), abs(vertex.Normal.Z));
 		_pcVertices.push_back(pcVertex);
 	}
 

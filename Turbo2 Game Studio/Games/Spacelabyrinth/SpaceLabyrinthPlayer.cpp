@@ -30,8 +30,6 @@ void SpaceLabyrinthPlayer::Navigate()
 
 	float moveSpeed = cMoveAccelleration * deltaTime;
 
-	_newPlacement = _placement->Clone();
-
 	Vector3D velocity = _placement->Velocity();
 
 	if (!(navInfo.MoveLeft ||
