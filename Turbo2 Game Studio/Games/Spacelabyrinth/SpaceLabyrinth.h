@@ -5,27 +5,34 @@
 
 #include "IProgram.h"
 #include "IGameLevel.h"
-#include "ITurboApplicationPlatform.h"
 
 class SpaceLabyrinth: public IProgram
 {
-private:
-	std::shared_ptr<ITurboApplicationPlatform>	_platform;
-	std::unique_ptr<IGameLevel>					_level;
-
 public:
-	//  Constructors and Destructors
-	SpaceLabyrinth(std::shared_ptr<ITurboApplicationPlatform> platform);
+	//  Constructors and Destructors  ----------------------------------------------------------------------------------
+	SpaceLabyrinth();
 
-	//  IProgram Methods
-	virtual LPCWSTR GetTitle() { return TEXT("Space Labyrinth"); }
-	virtual int		Initialize();
-	virtual void	SetPlatformResources(std::shared_ptr<IPlatformResources> platformResources);
-	virtual int		Resize(int width, int height);
-	virtual int		Update();
-	virtual int		Render();
-	virtual int		SaveState();
-	virtual int		Finalize();
+	//  IProgram Properties  -------------------------------------------------------------------------------------------
+	virtual LPCWSTR Title() { return TEXT("Space Labyrinth"); }
+	//virtual std::shared_ptr<IGameLevel> Level() { return _level; }
+
+	virtual std::shared_ptr<IApplicationState> State();
+	virtual void State(std::shared_ptr<IApplicationState> state);
+
+	virtual std::shared_ptr<ITurboScene> StaticScene();
+	virtual std::shared_ptr<ITurboScene> DynamicScene();
+
+	virtual bool NeedToRedrawStaticScene() { return _needToRedrawStaticScene; }
+
+	//  IProgram Methods  ----------------------------------------------------------------------------------------------
+	virtual void Initialize();
+	virtual void Finalize();
+	virtual void Update(NavigationInfo navInfo);
+
+private:
+	std::shared_ptr<IGameLevel> _level = nullptr;
+	bool _lastRestart = false;
+	bool _needToRedrawStaticScene = false;
 
 };
 

@@ -1,10 +1,10 @@
-﻿#include "pch.h"
+﻿#include <pch.h>
 
-#include "IProgram.h"
+#include <IProgram.h>
 
-#include "ApplicationDX12.h"
-#include "ApplicationDX12PlatformResources.h"
-#include "ApplicationDX12FrameworkView.h"
+#include <ApplicationDX12.h>
+#include <ApplicationDX12FrameworkView.h>
+#include <TurboApplicationDX12Platform.h>
 
 #include <ppltasks.h>
 
@@ -77,9 +77,11 @@ void ApplicationDX12FrameworkView::SetWindow(CoreWindow^ window)
 // Initializes scene resources, or loads a previously saved app state.
 void ApplicationDX12FrameworkView::Load(Platform::String^ entryPoint)
 {
-	GetDeviceResources();
+	_platform = std::shared_ptr<ITurboApplicationDX12Platform>(new TurboApplicationDX12Platform(_program));
 
-	_program->Initialize();
+	GetDeviceResources();		//	Sets _platform->DeviceResources();
+
+	_platform->Initialize();	//	Create level, create & draw static scene
 }
 
 // This method is called after the window becomes active.
@@ -94,16 +96,13 @@ void ApplicationDX12FrameworkView::Run()
 			auto commandQueue = GetDeviceResources()->GetCommandQueue();
 			PIXBeginEvent(commandQueue, 0, L"Update");
 			{
-				_program->Update();
+				_platform->Update();
 			}
 			PIXEndEvent(commandQueue);
 
 			PIXBeginEvent(commandQueue, 0, L"Render");
 			{
-				if (_program->Render())
-				{
-					GetDeviceResources()->Present();
-				}
+				_platform->Render();
 			}
 			PIXEndEvent(commandQueue);
 		}
@@ -145,8 +144,8 @@ void ApplicationDX12FrameworkView::OnSuspending(Platform::Object^ sender, Suspen
 		// Process lifetime management may terminate suspended apps at any time, so it is
 		// good practice to save any state that will allow the app to restart where it left off.
 
-		_program->SaveState();
-		// _program->Suspend()    ???
+		_platform->SaveState();
+		// _platform->Suspend()    ???
 
 		// If your application uses video memory allocations that are easy to re-create,
 		// consider releasing that memory to make it available to other applications.
@@ -165,8 +164,8 @@ void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform
 	// TODO: Insert your code here.
 	// TODO: Replace this with your app's resuming logic.
 	
-	// _program->LoadState() ???
-	// _program->Resume()    ???
+	_platform->LoadState();
+	// _platform->Resume()    ???
 }
 
 // Window event handlers.
@@ -174,7 +173,7 @@ void ApplicationDX12FrameworkView::OnResuming(Platform::Object^ sender, Platform
 void ApplicationDX12FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	GetDeviceResources()->SetLogicalSize(Size(sender->Bounds.Width, sender->Bounds.Height));
-	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
+	//_program->Resize(sender->Bounds.Width, sender->Bounds.Height); //  platform has access to DeviceResources to we don't need to send width & height.
 }
 
 void ApplicationDX12FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
@@ -196,13 +195,13 @@ void ApplicationDX12FrameworkView::OnDpiChanged(DisplayInformation^ sender, Obje
 	// you should always retrieve it using the GetDpi method.
 	// See DeviceResources.cpp for more details.
 	GetDeviceResources()->SetDpi(sender->LogicalDpi);
-	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
+	//_program->Resize(0, 0); //  platform has access to DeviceResources so we don't need to send width & height.
 }
 
 void ApplicationDX12FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
 {
 	GetDeviceResources()->SetCurrentOrientation(sender->CurrentOrientation);
-	_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
+	//_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
 }
 
 void ApplicationDX12FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
@@ -218,18 +217,14 @@ std::shared_ptr<DX::DeviceResources> ApplicationDX12FrameworkView::GetDeviceReso
 		// can be created.
 
 		_deviceResources = nullptr;
-		_program->SaveState();
-		_program->SetPlatformResources(nullptr);
+		_platform->DeviceResources(_deviceResources);
 	}
 
 	if (_deviceResources == nullptr)
 	{
 		_deviceResources = std::make_shared<DX::DeviceResources>();
 		_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
-		
-		std::shared_ptr<IPlatformResources> platformResources = std::shared_ptr<IPlatformResources>(new ApplicationDX12PlatformResources(_deviceResources));
-		_program->SetPlatformResources(platformResources);
-		_program->Resize(0, 0); //  platform has access to DeviceResources to we don't need to send width & height.
+		_platform->DeviceResources(_deviceResources);
 	}
 
 	return _deviceResources;

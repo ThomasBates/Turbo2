@@ -4,25 +4,26 @@
 #include "pch.h"
 
 #include "ITurboScene.h"
-#include "ITurboApplicationPlatform.h"
 
 class SpaceLabyrinthOriginalScene : public ITurboScene
 {
 private:
-	std::shared_ptr<ITurboApplicationPlatform>	_platform;
-
 	std::vector<std::shared_ptr<ITurboSceneObject>> _sceneObjects;
+	std::shared_ptr<ITurboSceneObjectPlacement>		_cameraPlacement;
 
 public:
-	//  Constructors and Destructors
-	SpaceLabyrinthOriginalScene(std::shared_ptr<ITurboApplicationPlatform> platform);
+	//  Constructors and Destructors  ----------------------------------------------------------------------------------
+	SpaceLabyrinthOriginalScene();
 	~SpaceLabyrinthOriginalScene();
 
-	//  ITurboScene Properties
+	//  ITurboScene Properties  ----------------------------------------------------------------------------------------
 	virtual std::vector<std::shared_ptr<ITurboSceneObject>> SceneObjects() { return _sceneObjects; }
 
-	//  ITurboScene Methods
+	virtual std::shared_ptr<ITurboSceneObjectPlacement> CameraPlacement() { return _cameraPlacement; }
+	virtual void CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement) { _cameraPlacement = cameraPlacement; }
+
+	//  ITurboScene Methods  -------------------------------------------------------------------------------------------
 	virtual void AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
-	virtual int Render();
+	//virtual int Render();
 };
 

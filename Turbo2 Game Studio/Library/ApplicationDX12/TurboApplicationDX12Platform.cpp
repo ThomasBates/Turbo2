@@ -1,25 +1,24 @@
 
-#include "pch.h"
+#include <pch.h>
 
-#include "IApplication.h"
-#include "IApplicationDX12PlatformResources.h"
+#include <IApplication.h>
+#include <ITurboApplicationDX12Renderer.h>
+#include <TurboApplicationDX12Platform.h>
+#include <TurboApplicationDX12Renderer.h>
+#include <TurboApplicationDX12NavigationController.h>
 
-#include "Bitmap.h"
-#include "CanvasRGB.h"
-#include "TurboApplicationDX12Platform.h"
-#include "TurboApplicationDX12Renderer.h"
-#include "TurboApplicationDX12NavigationController.h"
-#include "ITurboApplicationRenderer.h"
+#include <ITurboSceneObjectMesh.h>
 
-#include "TurboSceneObjectMesh.h"
+#include <ApplicationState.h>
 
 using namespace Application_DX12;
 
-#pragma region Constructors and Destructors
+#pragma region Constructors and Destructors  ---------------------------------------------------------------------------
 
-TurboApplicationDX12Platform::TurboApplicationDX12Platform(std::shared_ptr<IApplication> application)
+TurboApplicationDX12Platform::TurboApplicationDX12Platform(std::shared_ptr<IProgram> program)
 {
-	_controller = std::unique_ptr<INavigationController>(new TurboApplicationDX12NavigationController(application));
+	_program = program;
+	_controller = std::unique_ptr<INavigationController>(new TurboApplicationDX12NavigationController());
 }
 
 TurboApplicationDX12Platform::~TurboApplicationDX12Platform()
@@ -27,159 +26,102 @@ TurboApplicationDX12Platform::~TurboApplicationDX12Platform()
 }
 
 #pragma endregion
-#pragma region ITurboApplicationPlatform Methods
+#pragma region ITurboApplicationPlatform Methods  ----------------------------------------------------------------------
 
-int TurboApplicationDX12Platform::Initialize()
+void TurboApplicationDX12Platform::Initialize()
 {
-	return TRUE;								// Everything Went OK
+	_program->Initialize();		//	Create level, scene & players
 }
 
-
-void TurboApplicationDX12Platform::SetPlatformResources(std::shared_ptr<IPlatformResources> platformResources)
+void TurboApplicationDX12Platform::Update()
 {
-	if (platformResources == nullptr)
-	{
-		_sceneRenderer = nullptr;
-	}
-	else
-	{
-		std::shared_ptr<IApplicationDX12PlatformResources> dx12PlatformResources = std::dynamic_pointer_cast<IApplicationDX12PlatformResources>(platformResources);
-		//_sceneRenderer = std::unique_ptr<ITurboApplicationRenderer>(new Sample3DSceneRenderer(dx12PlatformResources->GetDeviceResources()));
-		_sceneRenderer = std::unique_ptr<ITurboApplicationRenderer>(new TurboApplicationDX12Renderer(dx12PlatformResources->GetDeviceResources()));
-		Resize(0, 0);
-	}
+	NavigationInfo navInfo = _controller->GetNavigationInfo();
+
+	_program->Update(navInfo);
+
+	if (_program->NeedToRedrawStaticScene())
+		_sceneRenderer->RenderStaticScene(_program->StaticScene());
 }
 
-int TurboApplicationDX12Platform::Resize(int width, int height)
-{
-	// TODO: Replace this with the size-dependent initialization of your app's content.
-	_sceneRenderer->Resize();
-
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::BeginDraw()
-{
-	_sceneRenderer->BeginDraw();
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::EndDraw()
-{
-	_sceneRenderer->EndDraw();
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::BeginUpdate()
-{
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::EndUpdate()
-{
-	_sceneRenderer->Update();
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::BeginRender()
-{
-	return TRUE;
-}
-
-int TurboApplicationDX12Platform::EndRender()
+void TurboApplicationDX12Platform::Render()
 {
 	// Don't try to render anything before the first Update.
 
-
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return _sceneRenderer->Render();
-
-	return TRUE;
+	if (_sceneRenderer->RenderDynamicScene(_program->DynamicScene()))
+	{
+		_deviceResources->Present();
+	}
 }
 
-int TurboApplicationDX12Platform::Finalize()
+void TurboApplicationDX12Platform::SaveState()
 {
-	return TRUE;
+	std::shared_ptr<IApplicationState> programState = _program->State();
+	SaveProgramState(programState);
 }
 
-std::shared_ptr<ITurboSceneObjectMesh> TurboApplicationDX12Platform::CreateMesh()
+void TurboApplicationDX12Platform::LoadState()
 {
-	return std::shared_ptr<ITurboSceneObjectMesh>(new TurboSceneObjectMesh());
-}
-
-std::shared_ptr<ITurboSceneObjectTexture> TurboApplicationDX12Platform::LoadTexture(std::string textureName)
-{
-	return nullptr;
-}
-
-void TurboApplicationDX12Platform::SetTimeStampForFrame()
-{
-	_controller->SetTimeStampForFrame();
-}
-
-NavigationInfo TurboApplicationDX12Platform::GetNavigationInfo()
-{
-	return _controller->GetNavigationInfo();
-}
-
-void TurboApplicationDX12Platform::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
-{
-	_sceneRenderer->RenderSceneObject(sceneObject);
+	std::shared_ptr<IApplicationState> programState = LoadProgramState();
+	_program->State(programState);
 }
 
 #pragma endregion
-#pragma region ITurboApplicationPlatform Properties
+#pragma region ITurboApplicationPlatform Properties  -------------------------------------------------------------------
 
-std::shared_ptr<ITurboSceneObjectPlacement> TurboApplicationDX12Platform::CameraPlacement()
+void TurboApplicationDX12Platform::DeviceResources(std::shared_ptr<DX::DeviceResources> deviceResources)
 {
-	return _sceneRenderer->CameraPlacement();
-}
+	_deviceResources = deviceResources;
 
-void TurboApplicationDX12Platform::CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement)
-{
-	_sceneRenderer->CameraPlacement(cameraPlacement);
+	_sceneRenderer = nullptr;
+
+	if (deviceResources != nullptr)
+	{
+		_sceneRenderer = std::unique_ptr<ITurboApplicationDX12Renderer>(new TurboApplicationDX12Renderer(deviceResources));
+	}
 }
 
 #pragma endregion
 #pragma region Local Support Methods
 
-int TurboApplicationDX12Platform::LoadTextures()
+void TurboApplicationDX12Platform::SaveProgramState(std::shared_ptr<IApplicationState> programState)
 {
-	int status=TRUE;							// Status Indicator
 
-	LoadTexture(0, "Data\\test.bmp");
-	LoadTexture(1, "Data\\test1.bmp");
-	LoadTexture(2, "Data\\test2.bmp");
-	LoadTexture(3, "Data\\Mandelbrot's Eye.bmp");
-	LoadTexture(4, "Data\\BigHead.bmp");
-	LoadTexture(5, "Data\\PokeBall.bmp");
-
-	return status;								// Return The Status
 }
 
-int TurboApplicationDX12Platform::LoadTexture(int id, std::string fileName)					// Loads A Bitmap Image
+std::shared_ptr<IApplicationState> TurboApplicationDX12Platform::LoadProgramState()
 {
-	int Status=FALSE;							// Status Indicator
+	return std::shared_ptr<IApplicationState>(new ApplicationState());
+}
 
-	// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit
-	IImage *textureImage = LoadImage(fileName);
-	if (textureImage)
+void TurboApplicationDX12Platform::LoadTextures()
+{
+	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _program->StaticScene()->SceneObjects();
+
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
 	{
-		Status=TRUE;							// Set The Status To TRUE
+		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[i];
+		std::string textureName = sceneObject->Material()->Texture()->Name();
+		LoadTexture(textureName);
 	}
 
-	delete textureImage;						// Free The Image Structure
+	sceneObjects = _program->DynamicScene()->SceneObjects();
 
-	return Status;								// Return The Status
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[i];
+		std::string textureName = sceneObject->Material()->Texture()->Name();
+		LoadTexture(textureName);
+	}
 }
 
-IImage *TurboApplicationDX12Platform::LoadImage(std::string fileName)					// Loads A Bitmap Image
+void TurboApplicationDX12Platform::LoadTexture(std::string textureName)
 {
-	IImage *image = new Bitmap(new CanvasRGB(0,0));
-	image->LoadFromFile(fileName);
-	image->Draw(256,256,IMG_ZOOM);
-	return image;
+	if (_loadedTextures.count(textureName) == 1)
+		return;
+
+	_loadedTextures[textureName] = "";
 }
 
 #pragma endregion

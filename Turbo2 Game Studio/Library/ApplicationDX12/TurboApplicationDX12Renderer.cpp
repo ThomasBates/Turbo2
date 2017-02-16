@@ -14,20 +14,15 @@ using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
 using namespace Windows::Storage;
 
-// Indices into the application state map.
-//Platform::String^ AngleKey = "Angle";
-//Platform::String^ TrackingKey = "Tracking";
+
+#pragma region Constructors and Destructors  ---------------------------------------------------------------------------
 
 // Loads vertex and pixel shaders from files and instantiates the cube geometry.
 TurboApplicationDX12Renderer::TurboApplicationDX12Renderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) :
 	m_loadingComplete(false),
-	m_radiansPerSecond(XM_PIDIV4),	// rotate 45 degrees per second
-	m_angle(0),
-	m_tracking(false),
 	m_mappedConstantBuffer(nullptr),
 	_deviceResources(deviceResources)
 {
-	LoadState();
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
 	//CreateDeviceDependentResources();
@@ -41,12 +36,165 @@ TurboApplicationDX12Renderer::~TurboApplicationDX12Renderer()
 	m_mappedConstantBuffer = nullptr;
 }
 
-#pragma region ITurboApplicationRenderer Methods
+#pragma endregion
+#pragma region ITurboApplicationDX12Renderer Methods  ------------------------------------------------------------------
 
-void TurboApplicationDX12Renderer::BeginDraw()
+// Initializes view parameters when the window size changes.
+void TurboApplicationDX12Renderer::Resize()
+{
+	Size outputSize = _deviceResources->GetOutputSize();
+	float aspectRatio = outputSize.Width / outputSize.Height;
+	float fovAngleY = 70.0f * XM_PI / 180.0f;
+
+	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
+	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
+
+	// This is a simple example of change that can be made when the app is in
+	// portrait or snapped view.
+	if (aspectRatio < 1.0f)
+	{
+		fovAngleY *= 2.0f;
+	}
+
+	// Note that the OrientationTransform3D matrix is post-multiplied here
+	// in order to correctly orient the scene to match the display orientation.
+	// This post-multiplication step is required for any draw calls that are
+	// made to the swap chain render target. For draw calls to other targets,
+	// this transform should not be applied.
+
+	// This sample makes use of a right-handed coordinate system using row-major matrices.
+	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
+		fovAngleY,
+		aspectRatio,
+		0.01f,
+		100.0f
+		);
+
+	XMFLOAT4X4 orientation = _deviceResources->GetOrientationTransform3D();
+	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
+
+	XMStoreFloat4x4(
+		&m_constantBufferData.projection,
+		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
+		);
+
+	// Prepare to pass the updated model matrix to the shader.
+	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());
+}
+
+// Renders one frame using the vertex and pixel shaders.
+bool TurboApplicationDX12Renderer::RenderStaticScene(std::shared_ptr<ITurboScene> staticScene)
 {
 	_pcVertices.clear();
 	_pcIndices.clear();
+
+	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = staticScene->SceneObjects();
+
+	for (unsigned int i = 0; i < sceneObjects.size(); i++)
+	{
+		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[i];
+		DrawSceneObject(sceneObject);
+	}
+
+	EndDraw();
+
+	return true;
+}
+
+// Renders one frame using the vertex and pixel shaders.
+bool TurboApplicationDX12Renderer::RenderDynamicScene(std::shared_ptr<ITurboScene> dynamicScene)
+{
+	// Loading is asynchronous. Only draw geometry after it's loaded.
+	if (!m_loadingComplete)
+		return false;
+
+	UpdateCameraPlacement(dynamicScene->CameraPlacement());
+
+	DX::ThrowIfFailed(_deviceResources->GetCommandAllocator()->Reset());
+
+	// The command list can be reset anytime after ExecuteCommandList() is called.
+	DX::ThrowIfFailed(m_commandList->Reset(_deviceResources->GetCommandAllocator(), m_pipelineState.Get()));
+
+	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
+	{
+		// Set the graphics root signature and descriptor heaps to be used by this frame.
+		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
+		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
+		m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// Bind the current frame's constant buffer to the pipeline.
+		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), _deviceResources->GetCurrentFrameIndex(), m_cbvDescriptorSize);
+		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
+
+		// Set the viewport and scissor rectangle.
+		D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
+		m_commandList->RSSetViewports(1, &viewport);
+		m_commandList->RSSetScissorRects(1, &m_scissorRect);
+
+		// Indicate this resource will be in use as a render target.
+		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+
+		// Record drawing commands.
+		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = _deviceResources->GetRenderTargetView();
+		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
+		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
+		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+
+		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+		m_commandList->IASetIndexBuffer(&m_indexBufferView);
+		m_commandList->DrawIndexedInstanced(_pcIndices.size(), 1, 0, 0, 0);
+
+		// Indicate that the render target will now be used to present when the command list is done executing.
+		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
+	}
+	PIXEndEvent(m_commandList.Get());
+
+	DX::ThrowIfFailed(m_commandList->Close());
+
+	// Execute the command list.
+	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
+	_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+	return true;
+}
+
+#pragma endregion
+#pragma region Local Support Methods  ----------------------------------------------------------------------------------
+
+void TurboApplicationDX12Renderer::DrawSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+{
+	int baseIndex = _pcVertices.size();
+
+	std::shared_ptr<ITurboSceneObjectMesh> mesh = sceneObject->Mesh();
+	std::vector<TurboSceneObjectVertex> vertices = mesh->Vertices();
+	std::vector<TurboSceneObjectTriangle> triangles = mesh->Triangles();
+
+	for (unsigned int vertexIndex = 0; vertexIndex < vertices.size(); vertexIndex++)
+	{
+		TurboSceneObjectVertex vertex = vertices[vertexIndex];
+
+		VertexPositionColor pcVertex;
+		pcVertex.pos = XMFLOAT3((float)(vertex.Position.X), (float)(vertex.Position.Y), (float)(vertex.Position.Z));
+		//pcVertex.color = XMFLOAT3(vertex.Color.X, vertex.Color.Y, vertex.Color.Z);
+		pcVertex.color = XMFLOAT3((float)abs(vertex.Normal.X), (float)abs(vertex.Normal.Y), (float)abs(vertex.Normal.Z));
+		_pcVertices.push_back(pcVertex);
+	}
+
+	for (unsigned int triangleIndex = 0; triangleIndex < triangles.size(); triangleIndex++)
+	{
+		TurboSceneObjectTriangle triangle = triangles[triangleIndex];
+
+		_pcIndices.push_back(baseIndex + triangle.Vertex1);
+		_pcIndices.push_back(baseIndex + triangle.Vertex2);
+		_pcIndices.push_back(baseIndex + triangle.Vertex3);
+	}
 }
 
 void TurboApplicationDX12Renderer::EndDraw()
@@ -314,388 +462,25 @@ void TurboApplicationDX12Renderer::EndDraw()
 	});
 }
 
-void TurboApplicationDX12Renderer::Initialize()
+//	Calculates the model and view matrices.
+void TurboApplicationDX12Renderer::UpdateCameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement)
 {
-}
-
-// Initializes view parameters when the window size changes.
-void TurboApplicationDX12Renderer::Resize()
-{
-	Size outputSize = _deviceResources->GetOutputSize();
-	float aspectRatio = outputSize.Width / outputSize.Height;
-	float fovAngleY = 70.0f * XM_PI / 180.0f;
-
-	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
-	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height)};
-
-	// This is a simple example of change that can be made when the app is in
-	// portrait or snapped view.
-	if (aspectRatio < 1.0f)
-	{
-		fovAngleY *= 2.0f;
-	}
-
-	// Note that the OrientationTransform3D matrix is post-multiplied here
-	// in order to correctly orient the scene to match the display orientation.
-	// This post-multiplication step is required for any draw calls that are
-	// made to the swap chain render target. For draw calls to other targets,
-	// this transform should not be applied.
-
-	// This sample makes use of a right-handed coordinate system using row-major matrices.
-	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
-		fovAngleY,
-		aspectRatio,
-		0.01f,
-		100.0f
-		);
-
-	XMFLOAT4X4 orientation = _deviceResources->GetOrientationTransform3D();
-	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
-
-	XMStoreFloat4x4(
-		&m_constantBufferData.projection,
-		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
-		);
-
-	// Prepare to pass the updated model matrix to the shader.
-	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixIdentity());
-}
-
-// Called once per frame, rotates the cube and calculates the model and view matrices.
-void TurboApplicationDX12Renderer::Update()
-{
-	if (m_loadingComplete)
-	{
-		//if (!m_tracking)
-		//{
-		//	// Rotate the cube a small amount.
-		//	m_angle += static_cast<float>(elapsedSeconds) * m_radiansPerSecond;
-
-		//	Rotate(m_angle);
-		//}
-
-		Vector3D position = _cameraPlacement->Position();
-		Vector3D target = _cameraPlacement->Target();
-		Vector3D up = _cameraPlacement->Up();
-
-		XMVECTORF32 eyePosition = { position.X, position.Y, position.Z, 0.0f };
-		XMVECTORF32 focusDirection = { target.X, target.Y, target.Z, 0.0f };
-		XMVECTORF32 upDirection = { up.X, up.Y, up.Z, 0.0f };
-
-		//eye = { 0.0f, 0.7f, 1.5f, 0.0f };
-		//at = { 0.0f, -0.1f, 0.0f, 0.0f };
-		//up = { 0.0f, 1.0f, 0.0f, 0.0f };
-
-		XMStoreFloat4x4(&m_constantBufferData.view,
-			XMMatrixTranspose(XMMatrixLookAtRH(eyePosition, focusDirection, upDirection)));
-
-		// Update the constant buffer resource.
-		UINT8* destination = m_mappedConstantBuffer
-			+ (_deviceResources->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
-		memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
-	}
-}
-
-// Saves the current state of the renderer.
-void TurboApplicationDX12Renderer::SaveState()
-{
-	//auto state = ApplicationData::Current->LocalSettings->Values;
-
-	//if (state->HasKey(AngleKey))
-	//{
-	//	state->Remove(AngleKey);
-	//}
-	//if (state->HasKey(TrackingKey))
-	//{
-	//	state->Remove(TrackingKey);
-	//}
-
-	//state->Insert(AngleKey, PropertyValue::CreateSingle(m_angle));
-	//state->Insert(TrackingKey, PropertyValue::CreateBoolean(m_tracking));
-}
-
-// Restores the previous state of the renderer.
-void TurboApplicationDX12Renderer::LoadState()
-{
-	//auto state = ApplicationData::Current->LocalSettings->Values;
-	//if (state->HasKey(AngleKey))
-	//{
-	//	m_angle = safe_cast<IPropertyValue^>(state->Lookup(AngleKey))->GetSingle();
-	//	state->Remove(AngleKey);
-	//}
-	//if (state->HasKey(TrackingKey))
-	//{
-	//	m_tracking = safe_cast<IPropertyValue^>(state->Lookup(TrackingKey))->GetBoolean();
-	//	state->Remove(TrackingKey);
-	//}
-}
-
-// Rotate the 3D cube model a set amount of radians.
-void TurboApplicationDX12Renderer::Rotate(float radians)
-{
-	// Prepare to pass the updated model matrix to the shader.
-	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(radians)));
-}
-
-void TurboApplicationDX12Renderer::StartTracking()
-{
-	m_tracking = true;
-}
-
-// When tracking, the 3D cube can be rotated around its Y axis by tracking pointer position relative to the output screen width.
-void TurboApplicationDX12Renderer::TrackingUpdate(float positionX)
-{
-	if (m_tracking)
-	{
-		float radians = XM_2PI * 2.0f * positionX / _deviceResources->GetOutputSize().Width;
-		Rotate(radians);
-	}
-}
-
-void TurboApplicationDX12Renderer::StopTracking()
-{
-	m_tracking = false;
-}
-
-// Renders one frame using the vertex and pixel shaders.
-bool TurboApplicationDX12Renderer::Render()
-{
-	// Loading is asynchronous. Only draw geometry after it's loaded.
-	if (!m_loadingComplete)
-	{
-		return false;
-	}
-
-	DX::ThrowIfFailed(_deviceResources->GetCommandAllocator()->Reset());
-
-	// The command list can be reset anytime after ExecuteCommandList() is called.
-	DX::ThrowIfFailed(m_commandList->Reset(_deviceResources->GetCommandAllocator(), m_pipelineState.Get()));
-
-	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
-	{
-		// Set the graphics root signature and descriptor heaps to be used by this frame.
-		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
-		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
-		m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-
-		// Bind the current frame's constant buffer to the pipeline.
-		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), _deviceResources->GetCurrentFrameIndex(), m_cbvDescriptorSize);
-		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
-
-		// Set the viewport and scissor rectangle.
-		D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
-		m_commandList->RSSetViewports(1, &viewport);
-		m_commandList->RSSetScissorRects(1, &m_scissorRect);
-
-		// Indicate this resource will be in use as a render target.
-		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
-
-		// Record drawing commands.
-		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = _deviceResources->GetRenderTargetView();
-		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
-		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
-		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
-
-		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
-		m_commandList->IASetIndexBuffer(&m_indexBufferView);
-		m_commandList->DrawIndexedInstanced(_pcIndices.size(), 1, 0, 0, 0);
-
-		// Indicate that the render target will now be used to present when the command list is done executing.
-		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(_deviceResources->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
-	}
-	PIXEndEvent(m_commandList.Get());
-
-	DX::ThrowIfFailed(m_commandList->Close());
-
-	// Execute the command list.
-	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
-	_deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-
-	return true;
-}
-
-void TurboApplicationDX12Renderer::Finalize()
-{
-}
-
-/*
-void TurboApplicationDX12Renderer::DrawCorner(MazeObject * corner)
-{
-	int baseIndex = _pcVertices.size();
-
-	VertexPositionColor vertex;
-	vertex.color = XMFLOAT3(0.1f, 0.1f, 0.1f);
-
-	vertex.pos = XMFLOAT3(corner->Right, corner->Bottom, corner->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Right, corner->Bottom, corner->Front);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Right, corner->Top, corner->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Right, corner->Top, corner->Front);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Left, corner->Bottom, corner->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Left, corner->Bottom, corner->Front);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Left, corner->Top, corner->Back);			_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(corner->Left, corner->Top, corner->Front);		_pcVertices.push_back(vertex);
-
-	unsigned short indexOffsets[] =
-	{
-		0, 2, 1, // -x
-		1, 2, 3,
-
-		4, 5, 6, // +x
-		5, 7, 6,
-		
-		0, 1, 5, // -y
-		0, 5, 4,
-
-		2, 6, 7, // +y
-		2, 7, 3,
-		
-		0, 4, 6, // -z
-		0, 6, 2,
-
-		1, 3, 7, // +z
-		1, 7, 5,
-	};
-
-	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
-	{
-		_pcIndices.push_back(baseIndex + indexOffsets[i]);
-	}
-}
-
-void TurboApplicationDX12Renderer::DrawEdge(MazeObject * edge)
-{
-	int baseIndex = _pcVertices.size();
-
-	VertexPositionColor vertex;
-	vertex.color = XMFLOAT3(0.2f, 0.2f, 0.2f);
-
-	vertex.pos = XMFLOAT3(edge->Right, edge->Bottom, edge->Back);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Right, edge->Bottom, edge->Front);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Right, edge->Top, edge->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Right, edge->Top, edge->Front);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Left, edge->Bottom, edge->Back);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Left, edge->Bottom, edge->Front);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Left, edge->Top, edge->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(edge->Left, edge->Top, edge->Front);		_pcVertices.push_back(vertex);
-
-	unsigned short indexOffsets[] =
-	{
-		0, 2, 1, // -x
-		1, 2, 3,
-
-		4, 5, 6, // +x
-		5, 7, 6,
-
-		0, 1, 5, // -y
-		0, 5, 4,
-
-		2, 6, 7, // +y
-		2, 7, 3,
-
-		0, 4, 6, // -z
-		0, 6, 2,
-
-		1, 3, 7, // +z
-		1, 7, 5,
-	};
-
-	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
-	{
-		_pcIndices.push_back(baseIndex + indexOffsets[i]);
-	}
-}
-
-void TurboApplicationDX12Renderer::DrawWall(MazeObject * wall)
-{
-	int baseIndex = _pcVertices.size();
-
-	VertexPositionColor vertex;
-	vertex.color = XMFLOAT3(0.5f, 0.5f, 0.5f);
-
-	vertex.pos = XMFLOAT3(wall->Right, wall->Bottom, wall->Back);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Right, wall->Bottom, wall->Front);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Right, wall->Top, wall->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Right, wall->Top, wall->Front);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Left, wall->Bottom, wall->Back);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Left, wall->Bottom, wall->Front);	_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Left, wall->Top, wall->Back);		_pcVertices.push_back(vertex);
-	vertex.pos = XMFLOAT3(wall->Left, wall->Top, wall->Front);		_pcVertices.push_back(vertex);
-
-	unsigned short indexOffsets[] =
-	{
-		0, 2, 1, // -x
-		1, 2, 3,
-
-		4, 5, 6, // +x
-		5, 7, 6,
-
-		0, 1, 5, // -y
-		0, 5, 4,
-
-		2, 6, 7, // +y
-		2, 7, 3,
-
-		0, 4, 6, // -z
-		0, 6, 2,
-
-		1, 3, 7, // +z
-		1, 7, 5,
-	};
-
-	for (int i = 0; i < sizeof(indexOffsets) / sizeof(*indexOffsets); i++)
-	{
-		_pcIndices.push_back(baseIndex + indexOffsets[i]);
-	}
-}
-*/
-
-void TurboApplicationDX12Renderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
-{
-	int baseIndex = _pcVertices.size();
-
-	std::shared_ptr<ITurboSceneObjectMesh> mesh = sceneObject->Mesh();
-	std::vector<TurboSceneObjectVertex> vertices = mesh->Vertices();
-	std::vector<TurboSceneObjectTriangle> triangles = mesh->Triangles();
-
-	for (int vertexIndex = 0; vertexIndex < vertices.size(); vertexIndex++)
-	{
-		TurboSceneObjectVertex vertex = vertices[vertexIndex];
-
-		VertexPositionColor pcVertex;
-		pcVertex.pos = XMFLOAT3(vertex.Position.X, vertex.Position.Y, vertex.Position.Z);
-		//pcVertex.color = XMFLOAT3(vertex.Color.X, vertex.Color.Y, vertex.Color.Z);
-		pcVertex.color = XMFLOAT3(abs(vertex.Normal.X), abs(vertex.Normal.Y), abs(vertex.Normal.Z));
-		_pcVertices.push_back(pcVertex);
-	}
-
-	for (int triangleIndex = 0; triangleIndex < triangles.size(); triangleIndex++)
-	{
-		TurboSceneObjectTriangle triangle = triangles[triangleIndex];
-
-		_pcIndices.push_back(baseIndex + triangle.Vertex1);
-		_pcIndices.push_back(baseIndex + triangle.Vertex2);
-		_pcIndices.push_back(baseIndex + triangle.Vertex3);
-	}
+	Vector3D position = cameraPlacement->Position();
+	Vector3D target = cameraPlacement->Target();
+	Vector3D up = cameraPlacement->Up();
+
+	XMVECTORF32 eyePosition = { (float)(position.X), (float)(position.Y), (float)(position.Z), 0.0f };
+	XMVECTORF32 focusDirection = { (float)(target.X), (float)(target.Y), (float)(target.Z), 0.0f };
+	XMVECTORF32 upDirection = { (float)(up.X), (float)(up.Y), (float)(up.Z), 0.0f };
+
+	XMStoreFloat4x4(&m_constantBufferData.view,
+		XMMatrixTranspose(XMMatrixLookAtRH(eyePosition, focusDirection, upDirection)));
+
+	// Update the constant buffer resource.
+	UINT8* destination = m_mappedConstantBuffer
+		+ (_deviceResources->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
+	memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
 }
 
 #pragma endregion
-#pragma region ITurboApplicationRenderer Properties
 
-std::shared_ptr<ITurboSceneObjectPlacement> TurboApplicationDX12Renderer::CameraPlacement()
-{
-	return _cameraPlacement;
-}
-
-void TurboApplicationDX12Renderer::CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement)
-{
-	_cameraPlacement = cameraPlacement;
-}
-
-#pragma endregion

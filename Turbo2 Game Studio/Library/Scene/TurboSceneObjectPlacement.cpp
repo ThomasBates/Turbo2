@@ -3,7 +3,7 @@
 #include <TurboSceneObjectPlacement.h>
 
 #define PI 3.1415926535897932384626433832795
-#define PIby180 ((float)(PI/180.0))
+#define PIby180 ((double)(PI/180.0))
 
 
 TurboSceneObjectPlacement::TurboSceneObjectPlacement()
@@ -22,7 +22,7 @@ void TurboSceneObjectPlacement::Reset()
 	_target = _position - _back;
 }
 
-void TurboSceneObjectPlacement::GoTo(float x, float y, float z)
+void TurboSceneObjectPlacement::GoTo(double x, double y, double z)
 {
 	_position = Vector3D(x, y, z);
 
@@ -36,7 +36,7 @@ void TurboSceneObjectPlacement::GoTo(Vector3D position)
 	_target = _position - _back;
 }
 
-void TurboSceneObjectPlacement::Move(float x, float y, float z)
+void TurboSceneObjectPlacement::Move(double x, double y, double z)
 {
 	_position += _right * x + _up * y + _back * z;
 
@@ -50,7 +50,7 @@ void TurboSceneObjectPlacement::Move(Vector3D velocity)
 	_target = _position - _back;
 }
 
-void TurboSceneObjectPlacement::Rotate(float x, float y, float z)
+void TurboSceneObjectPlacement::Rotate(double x, double y, double z)
 {
 	if (x != 0)
 	{

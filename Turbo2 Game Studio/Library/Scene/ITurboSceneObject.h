@@ -1,5 +1,6 @@
 #pragma once
 
+#include <INavigationController.h>
 #include <ITurboSceneObjectMesh.h>
 #include <ITurboSceneObjectMaterial.h>
 #include <ITurboSceneObjectPlacement.h>
@@ -18,10 +19,10 @@ public:
 	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) = 0;
 
 	//  ITurboSceneObject Methods  -------------------------------------------------------------------------------------
-	virtual void Navigate() = 0;
-	virtual void Update() = 0;
-	virtual void Render() = 0;
+	//virtual void Navigate() = 0;
+	virtual void Update(NavigationInfo navInfo) = 0;
+	//virtual void Render() = 0;
 
-	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal) = 0;
+	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal) = 0;
 };
 

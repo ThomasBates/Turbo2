@@ -5,11 +5,14 @@
 class ITurboScene
 {
 public:
-	//  ITurboScene Properties
+	//  ITurboScene Properties  ----------------------------------------------------------------------------------------
 	virtual std::vector<std::shared_ptr<ITurboSceneObject>> SceneObjects() = 0;
 
-	//  ITurboScene Methods
+	virtual std::shared_ptr<ITurboSceneObjectPlacement> CameraPlacement() = 0;
+	virtual void CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement) = 0;
+
+	//  ITurboScene Methods  -------------------------------------------------------------------------------------------
 	virtual void AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject) = 0;
-	virtual int Render() = 0;
+	//virtual int Render() = 0;
 };
 

@@ -1,9 +1,8 @@
 
 #include "pch.h"
 
-#include <ITurboApplicationPlatform.h>
 #include <TurboSceneObject.h>
-#include <TurboSceneObjectPlacement.h>
+//#include <TurboSceneObjectPlacement.h>
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 
@@ -22,17 +21,17 @@ TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneObjectMesh> mesh)
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 //  ITurboSceneObject Methods  -----------------------------------------------------------------------------------------
 
-void TurboSceneObject::Update()
-{
+//void TurboSceneObject::Update()
+//{
+//
+//}
 
-}
+//void TurboSceneObject::Render()
+//{
+//
+//}
 
-void TurboSceneObject::Render()
-{
-
-}
-
-bool TurboSceneObject::IsTouching(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal)
+bool TurboSceneObject::IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal)
 {
 	return false;
 }

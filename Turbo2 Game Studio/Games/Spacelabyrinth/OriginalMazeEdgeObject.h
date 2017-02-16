@@ -9,7 +9,7 @@ class OriginalMazeEdgeObject : public TurboSceneObject
 {
 public:
 	//  Constructors and Destructors  -------------------------------------------------------------------------------------
-	OriginalMazeEdgeObject(std::shared_ptr<ITurboSceneObjectMesh> mesh, MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture);
+	OriginalMazeEdgeObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectMaterial> material);
 
 	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
 

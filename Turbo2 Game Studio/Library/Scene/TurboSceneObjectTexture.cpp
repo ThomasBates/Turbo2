@@ -3,7 +3,7 @@
 
 #include <TurboSceneObjectTexture.h>
 
-void TurboSceneObjectTexture::Dummy()
+TurboSceneObjectTexture::TurboSceneObjectTexture(std::string name)
 {
-
+	_name = name;
 }

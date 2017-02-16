@@ -16,7 +16,7 @@ private:
 public:
 	TurboSceneObjectPlacement();
 
-	//  ITurboSceneObjectPlacement Properties
+	//  ITurboSceneObjectPlacement Properties  -------------------------------------------------------------------------
 	virtual Vector3D	Right() { return _right; }
 	virtual void		Right(Vector3D value) { _right = value; }
 	virtual Vector3D	Up() { return _up; }
@@ -32,13 +32,13 @@ public:
 	virtual Vector3D	AngularVelocity() { return _angularVelocity; }
 	virtual void		AngularVelocity(Vector3D value) { _angularVelocity = value; }
 
-	//  ITurboSceneObjectPlacement Methods
+	//  ITurboSceneObjectPlacement Methods  -------------------------------------------------------------------------------
 	virtual void	Reset();
-	virtual void	GoTo(float x, float y, float z);
+	virtual void	GoTo(double x, double y, double z);
 	virtual void	GoTo(Vector3D position);
-	virtual void	Move(float x, float y, float z);
+	virtual void	Move(double x, double y, double z);
 	virtual void	Move(Vector3D velocity);
-	virtual void	Rotate(float x, float y, float z);
+	virtual void	Rotate(double x, double y, double z);
 	virtual void	Rotate(Vector3D angularVelocity);
 	virtual std::shared_ptr<ITurboSceneObjectPlacement> Clone();
 };

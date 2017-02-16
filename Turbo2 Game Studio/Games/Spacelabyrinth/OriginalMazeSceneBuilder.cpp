@@ -12,12 +12,12 @@
 #include <SpaceLabyrinthOriginalScene.h>
 #include <TurboSceneObject.h>
 #include <TurboSceneObjectMesh.h>
+#include <TurboSceneObjectMaterial.h>
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 
-OriginalMazeSceneBuilder::OriginalMazeSceneBuilder(std::shared_ptr<ITurboApplicationPlatform> platform)
+OriginalMazeSceneBuilder::OriginalMazeSceneBuilder()
 {
-	_platform = platform;
 }
 
 //  ITurboSceneBuilder Methods  ----------------------------------------------------------------------------------------
@@ -27,15 +27,11 @@ std::shared_ptr<ITurboScene> OriginalMazeSceneBuilder::BuildScene()
 	std::unique_ptr<ICubicMazeFactory> factory = std::unique_ptr<ICubicMazeFactory>(new OriginalCubicMazeFactory());
 	std::shared_ptr<CubicMaze> maze = factory->MakeMaze(3, 3, 3);
 
-	std::shared_ptr<ITurboScene> scene = std::shared_ptr<ITurboScene>(new SpaceLabyrinthOriginalScene(_platform));
+	std::shared_ptr<ITurboScene> scene = std::shared_ptr<ITurboScene>(new SpaceLabyrinthOriginalScene());
 	BuildSceneObjects(scene, maze);
 	factory->FreeMaze(maze);
 
 	return scene;
-}
-
-void OriginalMazeSceneBuilder::FreeScene(std::shared_ptr<ITurboScene> scene)
-{
 }
 
 //  ITurboSceneBuilder Methods  ----------------------------------------------------------------------------------------
@@ -46,30 +42,65 @@ void OriginalMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> sc
 	location size = maze->GetSize();
 	Array3D mazeArray = maze->GetMazeArray();
 
-	std::shared_ptr<ITurboSceneObjectTexture> cornerTexture = _platform->LoadTexture("OriginalCorner");
-	std::shared_ptr<ITurboSceneObjectTexture> edgeTexture = _platform->LoadTexture("OriginalEdge");
-	std::shared_ptr<ITurboSceneObjectTexture> wallTexture = _platform->LoadTexture("OriginalWall");
-	std::shared_ptr<ITurboSceneObjectTexture> floorTexture = _platform->LoadTexture("OriginalFloor");
-	std::shared_ptr<ITurboSceneObjectTexture> ceilingTexture = _platform->LoadTexture("OriginalCeiling");
+	std::shared_ptr<ITurboSceneObjectMaterial> cornerMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalCorner",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> edgeMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalEdge",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> wallMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalWall",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> floorMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalFloor",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> ceilingMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalCeiling",
+		"StandardVertexShader",
+		"StandardPixelShader"));
 
 	for (int w = 0; w <= size.w; w++)
 	for (int h = 0; h <= size.h; h++)
 	for (int d = 0; d <= size.d; d++)
 	{
-		scene->AddSceneObject(BuildCorner(w, h, d, cornerTexture));
+		BuildCorner(scene, w, h, d, cornerMaterial);
 
-		if (w>0)	scene->AddSceneObject(BuildWEdge(w, h, d, edgeTexture));
-		if (h>0)	scene->AddSceneObject(BuildHEdge(w, h, d, edgeTexture));
-		if (d>0)	scene->AddSceneObject(BuildDEdge(w, h, d, edgeTexture));
+		if (w>0)	BuildWEdge(scene, w, h, d, edgeMaterial);
+		if (h>0)	BuildHEdge(scene, w, h, d, edgeMaterial);
+		if (d>0)	BuildDEdge(scene, w, h, d, edgeMaterial);
 		
 		char walls = mazeArray[w][h][d];
-		if (GETBIT(walls, RIGHTBIT ) > 0)	scene->AddSceneObject(BuildRightWall (w, h, d, wallTexture, wallTexture));
-		if (GETBIT(walls, BOTTOMBIT) > 0)	scene->AddSceneObject(BuildBottomWall(w, h, d, floorTexture, ceilingTexture));
-		if (GETBIT(walls, FRONTBIT ) > 0)	scene->AddSceneObject(BuildFrontWall (w, h, d, wallTexture, wallTexture));
+		if (GETBIT(walls, RIGHTBIT ) > 0)	BuildRightWall (scene, w, h, d, wallMaterial,  wallMaterial);
+		if (GETBIT(walls, BOTTOMBIT) > 0)	BuildBottomWall(scene, w, h, d, floorMaterial, ceilingMaterial);
+		if (GETBIT(walls, FRONTBIT ) > 0)	BuildFrontWall (scene, w, h, d, wallMaterial,  wallMaterial);
 	}
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildCorner(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture)
+void OriginalMazeSceneBuilder::BuildCorner(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
 	MazeObject mazeObject;
 
@@ -81,10 +112,10 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildCorner(int w, 
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	front
 
-	return CreateCornerObject(mazeObject, texture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeCornerObject(mazeObject, material)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildWEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture)
+void OriginalMazeSceneBuilder::BuildWEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
 	MazeObject mazeObject;
 
@@ -96,10 +127,10 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildWEdge(int w, i
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	front
 
-	return CreateEdgeObject(mazeObject, texture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeEdgeObject(mazeObject, material)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildHEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture)
+void OriginalMazeSceneBuilder::BuildHEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
 	MazeObject mazeObject;
 
@@ -111,10 +142,10 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildHEdge(int w, i
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	front
 
-	return CreateEdgeObject(mazeObject, texture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeEdgeObject(mazeObject, material)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildDEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture)
+void OriginalMazeSceneBuilder::BuildDEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
 	MazeObject mazeObject;
 
@@ -126,10 +157,10 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildDEdge(int w, i
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	front
 
-	return CreateEdgeObject(mazeObject, texture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeEdgeObject(mazeObject, material)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildRightWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> leftTexture, std::shared_ptr<ITurboSceneObjectTexture> rightTexture)
+void OriginalMazeSceneBuilder::BuildRightWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> leftMaterial, std::shared_ptr<ITurboSceneObjectMaterial> rightMaterial)
 {
 	MazeObject mazeObject;
 
@@ -141,10 +172,11 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildRightWall(int 
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	front
 
-	return CreateWallObject(mazeObject, leftTexture, rightTexture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, leftMaterial, 1)));
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, rightMaterial, 2)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildBottomWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> topTexture, std::shared_ptr<ITurboSceneObjectTexture> bottomTexture)
+void OriginalMazeSceneBuilder::BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> topMaterial, std::shared_ptr<ITurboSceneObjectMaterial> bottomMaterial)
 {
 	MazeObject mazeObject;
 
@@ -156,10 +188,11 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildBottomWall(int
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	front
 
-	return CreateWallObject(mazeObject, topTexture, bottomTexture);
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, topMaterial, 1)));
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, bottomMaterial, 2)));
 }
 
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildFrontWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> backTexture, std::shared_ptr<ITurboSceneObjectTexture> frontTexture)
+void OriginalMazeSceneBuilder::BuildFrontWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> backMaterial, std::shared_ptr<ITurboSceneObjectMaterial> frontMaterial)
 {
 	MazeObject mazeObject;
 
@@ -171,28 +204,8 @@ std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::BuildFrontWall(int 
 	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	bottom
 	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	front
 
-	return CreateWallObject(mazeObject, backTexture, frontTexture);
-}
-
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::CreateCornerObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture)
-{
-	std::shared_ptr<ITurboSceneObjectMesh> mesh = _platform->CreateMesh();
-
-	return std::shared_ptr<ITurboSceneObject>(new OriginalMazeCornerObject(mesh, mazeObject, texture));
-}
-
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::CreateEdgeObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture)
-{
-	std::shared_ptr<ITurboSceneObjectMesh> mesh = _platform->CreateMesh();
-
-	return std::shared_ptr<ITurboSceneObject>(new OriginalMazeEdgeObject(mesh, mazeObject, texture));
-}
-
-std::shared_ptr<ITurboSceneObject> OriginalMazeSceneBuilder::CreateWallObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture1, std::shared_ptr<ITurboSceneObjectTexture> texture2)
-{
-	std::shared_ptr<ITurboSceneObjectMesh> mesh = _platform->CreateMesh();
-
-	return std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mesh, mazeObject, texture1, texture2));
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, backMaterial, 1)));
+	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, frontMaterial, 2)));
 }
 
 //  Local Support Methods  ---------------------------------------------------------------------------------------------

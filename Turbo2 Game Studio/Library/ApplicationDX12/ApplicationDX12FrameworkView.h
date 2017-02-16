@@ -4,6 +4,8 @@
 
 #include "Common\DeviceResources.h"
 
+#include <ITurboApplicationDX12Platform.h>
+
 namespace Application_DX12
 {
 	// Main entry point for our app. Connects the app with the Windows shell and handles application lifecycle events.
@@ -39,6 +41,7 @@ namespace Application_DX12
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
 	private:
+		std::shared_ptr<ITurboApplicationDX12Platform> _platform;
 		std::shared_ptr<IProgram> _program;
 
 		// Private accessor for _deviceResources, protects against device removed errors.

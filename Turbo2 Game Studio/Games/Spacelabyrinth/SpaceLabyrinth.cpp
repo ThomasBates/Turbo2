@@ -7,64 +7,78 @@
 #include "SpaceLabyrinth.h"
 #include "SpaceLabyrinthOriginalLevel.h"
 
-//============  Constructors and Destructors  --------------------------------------------------------------------------
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboApplicationPlatform> platform)
+SpaceLabyrinth::SpaceLabyrinth()
 {
-	_platform = platform;
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-//============  IProgram Methods  --------------------------------------------------------------------------------------
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
+//  IProgram Properties  -----------------------------------------------------------------------------------------------
 
-int SpaceLabyrinth::Initialize()
+std::shared_ptr<IApplicationState> SpaceLabyrinth::State()
 {
-	_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel(_platform));
-	return _level->Initialize();
+	std::shared_ptr<IApplicationState> state = _level->State();
+	state->SaveString("ProgramInfo", "project info");
+	return state;
 }
 
-void SpaceLabyrinth::SetPlatformResources(std::shared_ptr<IPlatformResources> platformResources)
+void SpaceLabyrinth::State(std::shared_ptr<IApplicationState> state)
 {
-	//  Just pass through.
-	_platform->SetPlatformResources(platformResources);
+	state->LoadString("ProgramInfo");
+	_level->State(state);
 }
 
-int SpaceLabyrinth::Resize(int width, int height)
+std::shared_ptr<ITurboScene> SpaceLabyrinth::StaticScene()
 {
-	//  Just pass through.
-	return _platform->Resize(width, height);
+	return _level->Scene();
 }
 
-int SpaceLabyrinth::Update()
+std::shared_ptr<ITurboScene> SpaceLabyrinth::DynamicScene()
 {
-	_platform->SetTimeStampForFrame();
-	NavigationInfo navInfo = _platform->GetNavigationInfo();
+	return _level->Scene();
+}
 
-	if (navInfo.Restart)
+//  IProgram Properties  -----------------------------------------------------------------------------------------------
+//  IProgram Methods  --------------------------------------------------------------------------------------------------
+
+void SpaceLabyrinth::Initialize()
+{
+	//_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel());
+	//_level->Initialize();	//	Build scene and players
+}
+
+void SpaceLabyrinth::Finalize()
+{
+	if (_level != nullptr)
 	{
-		navInfo.Restart = false;
+		_level->Finalize();
+		_level = nullptr;
+	}
+}
 
-		_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel(_platform));
-		return _level->Initialize();
+void SpaceLabyrinth::Update(NavigationInfo navInfo)
+{
+	//  Beef this up with multiple levels and state logic.
+	_needToRedrawStaticScene = false;
+
+	if ((navInfo.Restart && !_lastRestart) || //  Just get the rising edge of Restart. Don't keep restarting if user keeps their finger on the button.
+		(_level == nullptr))
+	{
+		if (_level != nullptr)
+		{
+			_level->Finalize();
+			_level = nullptr;
+		}
+
+		_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel());
+		_level->Initialize();
+		_needToRedrawStaticScene = true;
 	}
 
-	return _level->Update();
+	_lastRestart = navInfo.Restart;
+
+	_level->Update(navInfo);
 }
 
-int SpaceLabyrinth::Render()
-{
-	return _level->Render();
-}
-
-int SpaceLabyrinth::SaveState()
-{
-	//_platform->SaveState(_state);
-	return 1;
-}
-
-int SpaceLabyrinth::Finalize()
-{
-	return _level->Finalize();
-}
-
-//----------------------------------------------------------------------------------------------------------------------
+//  IProgram Methods  --------------------------------------------------------------------------------------------------

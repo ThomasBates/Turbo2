@@ -2,14 +2,15 @@
 #include "pch.h"
 
 #include <OriginalMazeCornerObject.h>
+#include <TurboSceneObjectMesh.h>
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 
-OriginalMazeCornerObject::OriginalMazeCornerObject(std::shared_ptr<ITurboSceneObjectMesh> mesh, MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture)
+OriginalMazeCornerObject::OriginalMazeCornerObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
 	const float cShadeFactor = 0.50;
 
-	//std::shared_ptr<ITurboSceneObjectMesh> mesh = _platform->CreateMesh();
+	std::shared_ptr<ITurboSceneObjectMesh> mesh = std::shared_ptr<ITurboSceneObjectMesh>(new TurboSceneObjectMesh());
 
 	Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f) * cShadeFactor;
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));
@@ -68,6 +69,7 @@ OriginalMazeCornerObject::OriginalMazeCornerObject(std::shared_ptr<ITurboSceneOb
 	mesh->AddTriangle(22, 23, 20);
 
 	Mesh(mesh);
+	Material(material);
 }
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------

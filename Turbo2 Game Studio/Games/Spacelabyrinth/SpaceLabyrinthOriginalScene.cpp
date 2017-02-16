@@ -7,9 +7,8 @@
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 
-SpaceLabyrinthOriginalScene::SpaceLabyrinthOriginalScene(std::shared_ptr<ITurboApplicationPlatform> platform)
+SpaceLabyrinthOriginalScene::SpaceLabyrinthOriginalScene()
 {
-	_platform = platform;
 }
 
 SpaceLabyrinthOriginalScene::~SpaceLabyrinthOriginalScene()
@@ -25,17 +24,6 @@ SpaceLabyrinthOriginalScene::~SpaceLabyrinthOriginalScene()
 void SpaceLabyrinthOriginalScene::AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 	_sceneObjects.push_back(sceneObject);
-}
-
-int SpaceLabyrinthOriginalScene::Render()
-{
-	for (int i = 0; i < _sceneObjects.size(); i++)
-	{
-		std::shared_ptr<ITurboSceneObject> sceneObject = _sceneObjects[i];
-		_platform->RenderSceneObject(sceneObject);
-		//sceneObject->Render();
-	}
-	return 1;
 }
 
 //  ITurboScene Methods  -----------------------------------------------------------------------------------------------

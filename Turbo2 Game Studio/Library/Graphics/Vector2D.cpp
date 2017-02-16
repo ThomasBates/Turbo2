@@ -9,15 +9,15 @@ Vector2D::Vector2D()
 	Y = 0;
 }
 
-Vector2D::Vector2D(float x, float y)
+Vector2D::Vector2D(double x, double y)
 {
 	X = x;
 	Y = y;
 }
 
-float Vector2D::Length()
+double Vector2D::Length()
 {
-	return (float)sqrt(X*X + Y*Y);
+	return (double)sqrt(X*X + Y*Y);
 }
 
 Vector2D Vector2D::Normalize()
@@ -40,19 +40,19 @@ Vector2D Vector2D::operator-(const Vector2D &v) const
 	return Vector2D(X - v.X, Y - v.Y);
 }
 
-Vector2D Vector2D::operator*(float r) const
+Vector2D Vector2D::operator*(double r) const
 {
 	return Vector2D(X*r, Y*r);
 }
 
-Vector2D Vector2D::operator/(float r) const
+Vector2D Vector2D::operator/(double r) const
 {
 	if (r != 0)
 		return Vector2D(X/r, Y/r);
 	return Vector2D();
 }
 
-Vector2D &Vector2D::operator=(float r)
+Vector2D &Vector2D::operator=(double r)
 {
 	*this = Vector2D(r,r);
 	return *this;
@@ -72,19 +72,19 @@ Vector2D &Vector2D::operator-=(const Vector2D &v)
 	return *this;
 }
 
-Vector2D &Vector2D::operator*=(float r)
+Vector2D &Vector2D::operator*=(double r)
 {
 	*this = *this * r;
 	return *this;
 }
 
-Vector2D &Vector2D::operator/=(float r)
+Vector2D &Vector2D::operator/=(double r)
 {
 	*this = *this / r;
 	return *this;
 }
 
-float Vector2D::operator*(const Vector2D &v) const	//dot product
+double Vector2D::operator*(const Vector2D &v) const	//dot product
 {
 	return X*v.X + Y*v.Y;
 }

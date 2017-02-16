@@ -13,3 +13,4 @@
 #include <vector>
 #include <agile.h>
 #include <concrt.h>
+#include <map>

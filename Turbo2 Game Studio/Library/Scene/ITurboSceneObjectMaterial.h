@@ -6,18 +6,19 @@
 #include <ITurboScenePixelShader.h>
 #include <ITurboSceneVertexShader.h>
 
-#include <Vector4D.h>
+#include <TurboColor.h>
 
 class ITurboSceneObjectMaterial
 {
-	virtual Vector4D MeshColor() = 0;
-	virtual void MeshColor(Vector4D meshColor) = 0;
+public:
+	virtual TurboColor MeshColor() = 0;
+	virtual void MeshColor(TurboColor meshColor) = 0;
 
-	virtual Vector4D DiffuseColor() = 0;
-	virtual void DiffuseColor(Vector4D diffuseColor) = 0;
+	virtual TurboColor DiffuseColor() = 0;
+	virtual void DiffuseColor(TurboColor diffuseColor) = 0;
 
-	virtual Vector4D SpecularColor() = 0;
-	virtual void SpecularColor(Vector4D specularColor) = 0;
+	virtual TurboColor SpecularColor() = 0;
+	virtual void SpecularColor(TurboColor specularColor) = 0;
 
 	virtual float SpecularExponent() = 0;
 	virtual void SpecularExponent(float specularExponent) = 0;

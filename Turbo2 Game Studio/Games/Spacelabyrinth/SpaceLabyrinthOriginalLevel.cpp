@@ -1,79 +1,73 @@
 
 #include "pch.h"
 
+#include <ApplicationState.h>
 #include "SpaceLabyrinthOriginalLevel.h"
 #include "SpaceLabyrinthPlayer.h"
 #include "OriginalMazeSceneBuilder.h"
 
-//============  Constructors and Destructors  --------------------------------------------------------------------------
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
 
-SpaceLabyrinthOriginalLevel::SpaceLabyrinthOriginalLevel(std::shared_ptr<ITurboApplicationPlatform> platform)
+SpaceLabyrinthOriginalLevel::SpaceLabyrinthOriginalLevel()
 {
-	_platform = platform;
 }
 
 SpaceLabyrinthOriginalLevel::~SpaceLabyrinthOriginalLevel()
 {
-	_sceneBuilder->FreeScene(_scene);
 }
 
-//----------------------------------------------------------------------------------------------------------------------
-//============  IGameLevel Methods  ------------------------------------------------------------------------------------
+//  IGameLevel Properties  ---------------------------------------------------------------------------------------------
 
-int SpaceLabyrinthOriginalLevel::Initialize()
+std::shared_ptr<IApplicationState> SpaceLabyrinthOriginalLevel::State()
 {
-	int result = _platform->Initialize();
+	std::shared_ptr<IApplicationState> state = std::shared_ptr<IApplicationState>(new ApplicationState());
+	state->SaveString("LevelInfo", "level info");
+	return state;
+}
 
+void SpaceLabyrinthOriginalLevel::State(std::shared_ptr<IApplicationState> state)
+{
+	state->LoadString("LevelInfo");
+}
+
+//  IGameLevel Methods  ------------------------------------------------------------------------------------------------
+
+void SpaceLabyrinthOriginalLevel::Initialize()
+{
 	//	Create the scene
-	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder(_platform));
+	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder());
 	_scene = _sceneBuilder->BuildScene();
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer(_platform));
+	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer());
 	_player->Placement()->Reset();
 	_player->Placement()->GoTo(GetSpawnPoint());
-	//	set player Placement as camera Placement.
-	_platform->CameraPlacement(_player->Placement());
+
+	////	set player Placement as camera Placement.
+	_scene->CameraPlacement(_player->Placement());
 
 	//  Create NPC's and obstacles ...
 	//  ...
 
-	RenderStaticScene();
-
-	return result;
+	//RenderStaticScene();
 }
 
-int SpaceLabyrinthOriginalLevel::Update()
+void SpaceLabyrinthOriginalLevel::Update(NavigationInfo navInfo)
 {
-	_platform->BeginUpdate();
+	//  Update player
+	_player->Update(navInfo);
 
-	UpdateDynamicSceneObjects();
+	//  Update NPC's and obstacles
+	//  ...
 
-	_platform->EndUpdate();
+	//  Check for collisions
+	ProcessObjectInteractions(navInfo);
 
-	return 1;
+	_scene->CameraPlacement(_player->Placement());
 }
 
-int SpaceLabyrinthOriginalLevel::Render()
+void SpaceLabyrinthOriginalLevel::Finalize()
 {
-	_platform->BeginRender();
-
-	RenderDynamicSceneObjects();
-	
-	_platform->EndRender();
-
-	return 1;
-}
-
-int SpaceLabyrinthOriginalLevel::SaveState()
-{
-	//_platform->SaveState(_state);
-	return 1;
-}
-
-int SpaceLabyrinthOriginalLevel::Finalize()
-{
-	return _platform->Finalize();
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -84,51 +78,12 @@ Vector3D SpaceLabyrinthOriginalLevel::GetSpawnPoint()
 	return Vector3D(2.0f, -2.0f, -2.0f);
 }
 
-void SpaceLabyrinthOriginalLevel::RenderStaticScene()
+void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions(NavigationInfo navInfo)
 {
-	_platform->BeginDraw();
-	_scene->Render();
-	_platform->EndDraw();
-}
+	const double buffer = 0.25;
+	const double bounciness = 0.25;
 
-void SpaceLabyrinthOriginalLevel::UpdateDynamicSceneObjects()
-{
-	//  Navigate player
-	_player->Navigate();
-
-	//  Navigate NPC's and obstacles
-	//  ...
-
-	//  Check for collisions
-	ProcessObjectInteractions();
-
-	//  Update player
-	_player->Update();
-
-	//  Update NPC's and obstacles
-	//  ...
-
-}
-
-void SpaceLabyrinthOriginalLevel::RenderDynamicSceneObjects()
-{
-	//  Render player
-	_player->Render();
-	//_platform->RenderSceneObject(_player);
-
-	//  Render NPC's and obstacles
-	//  ...
-
-	//_platform->CameraPlacement(_player->Placement());
-}
-
-void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions()
-{
-	const float buffer = 0.25;
-	const float bounciness = 0.25;
-
-	NavigationInfo navInfo = _platform->GetNavigationInfo();
-	float deltaTime = navInfo.DeltaTime;
+	double deltaTime = navInfo.DeltaTime;
 
 	//  Player-Maze Interactions
 	std::shared_ptr<ITurboSceneObjectPlacement> placement = _player->Placement();
@@ -141,7 +96,7 @@ void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions()
 
 	Vector3D nearestContact;
 	Vector3D nearestNormal;
-	float nearestDistance = 10000.0;
+	double nearestDistance = 10000.0;
 
 	Vector3D newPosition = oldPosition + velocity * deltaTime;
 

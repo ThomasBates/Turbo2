@@ -5,14 +5,11 @@
 
 #include "IProgram.h"
 #include "IGameLevel.h"
-#include "ITurboApplicationPlatform.h"
 #include "ITurboSceneBuilder.h"
 
 class SpaceLabyrinthOriginalLevel : public IGameLevel
 {
 private:
-	std::shared_ptr<ITurboApplicationPlatform>	_platform;
-
 	std::unique_ptr<ITurboSceneBuilder>			_sceneBuilder;
 	std::shared_ptr<ITurboScene>				_scene;
 	std::shared_ptr<ITurboSceneObject>		    _player;
@@ -23,22 +20,29 @@ private:
 
 	//  Local Support Methods
 	Vector3D	GetSpawnPoint();
-	void	RenderStaticScene();
-	void	UpdateDynamicSceneObjects();
-	void	RenderDynamicSceneObjects();
-	void	ProcessObjectInteractions();
+	//void	RenderStaticScene();
+	//void	UpdateDynamicSceneObjects();
+	//void	RenderDynamicSceneObjects();
+	void	ProcessObjectInteractions(NavigationInfo navInfo);
 
 public:
-	//  Constructors and Destructors
-	SpaceLabyrinthOriginalLevel(std::shared_ptr<ITurboApplicationPlatform> platform);
+	//  Constructors and Destructors  ----------------------------------------------------------------------------------
+	SpaceLabyrinthOriginalLevel();
 	~SpaceLabyrinthOriginalLevel();
 
-	//  IGameLevel Methods
-	virtual int		Initialize();
-	virtual int		Update();
-	virtual int		Render();
-	virtual int		SaveState();
-	virtual int		Finalize();
+	//	IGameLevel Properties  ---------------------------------------------------------------------------------------------
+	virtual std::shared_ptr<IApplicationState> State();
+	virtual void State(std::shared_ptr<IApplicationState> state);
+
+	virtual std::shared_ptr<ITurboScene> Scene() { return _scene; }
+
+	//  IGameLevel Methods  --------------------------------------------------------------------------------------------
+	virtual void		Initialize();
+	virtual void		Finalize();
+
+	virtual void		Update(NavigationInfo navInfo);
+	//virtual int		Render();
+	//virtual void		SaveState();
 
 };
 

@@ -3,44 +3,23 @@
 #include "..\Common\DeviceResources.h"
 #include "..\Common\StepTimer.h"
 
-#include "ITurboApplicationRenderer.h"
+#include "ITurboApplicationDX12Renderer.h"
 
 #include "TurboApplicationDX12ShaderStructures.h"
 
 namespace Application_DX12
 {
 	// This sample renderer instantiates a basic rendering pipeline.
-	class TurboApplicationDX12Renderer : public ITurboApplicationRenderer
+	class TurboApplicationDX12Renderer : public ITurboApplicationDX12Renderer
 	{
 	public:
 		TurboApplicationDX12Renderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
 		~TurboApplicationDX12Renderer();
 
-		//  ITurboApplicationRenderer Methods  -----------------------------------------------------------------------------
-		void Initialize();
+		//  ITurboApplicationDX12Renderer Methods  ---------------------------------------------------------------------------
 		void Resize();
-		void BeginDraw();
-		void EndDraw();
-		void Update();
-		bool Render();
-		void Finalize();
-
-		void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
-
-		//  ITurboApplicationRenderer Properties  -----------------------------------------------------------------------------
-		virtual std::shared_ptr<ITurboSceneObjectPlacement> CameraPlacement();
-		virtual void CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement);
-
-	private:
-		void SaveState();
-		
-		void StartTracking();
-		void TrackingUpdate(float positionX);
-		void StopTracking();
-		bool IsTracking() { return m_tracking; }
-
-		void LoadState();
-		void Rotate(float radians);
+		bool RenderStaticScene(std::shared_ptr<ITurboScene> staticScene);
+		bool RenderDynamicScene(std::shared_ptr<ITurboScene> dynamicScene);
 
 	private:
 		// Constant buffers must be 256-byte aligned.
@@ -71,11 +50,13 @@ namespace Application_DX12
 
 		// Variables used with the rendering loop.
 		bool	m_loadingComplete;
-		float	m_radiansPerSecond;
-		float	m_angle;
-		bool	m_tracking;
 
-		std::shared_ptr<ITurboSceneObjectPlacement> _cameraPlacement;
+		//std::shared_ptr<ITurboSceneObjectPlacement> _cameraPlacement;
+
+		//	Local Support Methods  --------------------------------------------------------------------------------------------
+		void DrawSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
+		void EndDraw();
+		void UpdateCameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement);
 	};
 }
 

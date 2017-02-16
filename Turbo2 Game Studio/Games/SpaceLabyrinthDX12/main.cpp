@@ -13,10 +13,11 @@ using namespace Application_DX12;
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
-	std::shared_ptr<IApplication> application = std::shared_ptr<IApplication>(new ApplicationDX12());
-	std::shared_ptr<ITurboApplicationPlatform> platform = std::shared_ptr<ITurboApplicationPlatform>(new TurboApplicationDX12Platform(application));
-	std::shared_ptr<IProgram> program = std::shared_ptr<IProgram>(new SpaceLabyrinth(platform));
+	std::shared_ptr<IProgram> program = std::shared_ptr<IProgram>(new SpaceLabyrinth());
 
+	std::shared_ptr<IApplication> application = std::shared_ptr<IApplication>(new ApplicationDX12());
+	//std::shared_ptr<ITurboApplicationPlatform> platform = std::shared_ptr<ITurboApplicationPlatform>(new TurboApplicationDX12Platform(application));
+	
 	int result = application->Run(program);
 
 	return result;

@@ -1,12 +1,22 @@
 
 #pragma once
 
+#include <INavigationController.h>
+#include <ITurboScene.h>
+
 class IGameLevel
 {
 public:
-	virtual int		Initialize() = 0;
-	virtual int		Update() = 0;
-	virtual int		Render() = 0;
-//	virtual int		SaveState() = 0;
-	virtual int		Finalize() = 0;
+	//	IGameLevel Properties  ---------------------------------------------------------------------------------------------
+	virtual std::shared_ptr<IApplicationState> State() = 0;
+	virtual void State(std::shared_ptr<IApplicationState> state) = 0;
+
+	virtual std::shared_ptr<ITurboScene> Scene() = 0;
+
+	//	IGameLevel Methods  ------------------------------------------------------------------------------------------------
+	virtual void	Initialize() = 0;
+	virtual void	Finalize() = 0;
+
+	virtual void	Update(NavigationInfo navInfo) = 0;
+//	virtual void	Render() = 0;
 };

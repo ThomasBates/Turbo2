@@ -3,28 +3,28 @@
 
 struct Vector2D
 {
-	float X, Y;
+	double X, Y;
 
 	//  Constructors
 	Vector2D();
-	Vector2D(float x, float y);
+	Vector2D(double x, double y);
 
-	float Length();
+	double Length();
 	Vector2D Normalize();
 
 	Vector2D operator-() const;
 
 	Vector2D operator+(const Vector2D &v) const;
     Vector2D operator-(const Vector2D &v) const;
-    Vector2D operator*(float r) const;
-    Vector2D operator/(float r) const;
+    Vector2D operator*(double r) const;
+    Vector2D operator/(double r) const;
 
-	Vector2D &operator=(float r);
+	Vector2D &operator=(double r);
 	Vector2D &operator+=(const Vector2D &v);
 	Vector2D &operator-=(const Vector2D &v);
-    Vector2D &operator*=(float r);
-    Vector2D &operator/=(float r);
+    Vector2D &operator*=(double r);
+    Vector2D &operator/=(double r);
 
-    float operator*(const Vector2D &v) const;   //  Dot product
+    double operator*(const Vector2D &v) const;   //  Dot product
 };
 

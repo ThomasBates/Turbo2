@@ -7,27 +7,27 @@
 
 class OriginalMazeWallObject: public TurboSceneObject
 {
-private:
-	bool	_rightLeft;
-	bool	_topBottom;
-	bool	_backFront;
-
-	bool IsTouchingX(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal);
-	bool IsTouchingY(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal);
-	bool IsTouchingZ(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal);
-
 public:
 	//  Constructors and Destructors  -------------------------------------------------------------------------------------
 	OriginalMazeWallObject(
-		std::shared_ptr<ITurboSceneObjectMesh> mesh, 
-		MazeObject mazeObject, 
-		std::shared_ptr<ITurboSceneObjectTexture> texture1, 
-		std::shared_ptr<ITurboSceneObjectTexture> texture2);
+		MazeObject mazeObject,
+		std::shared_ptr<ITurboSceneObjectMaterial> material,
+		int wallSide);
 
 	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
 
 	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
-	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal);
+	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal);
 
+private:
+	bool	_rightLeft;
+	bool	_topBottom;
+	bool	_backFront;
+	int		_wallSide;
+
+	//  Local Support Methods  --------------------------------------------------------------------------------------------
+	bool IsTouchingX(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal);
+	bool IsTouchingY(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal);
+	bool IsTouchingZ(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal);
 };
 

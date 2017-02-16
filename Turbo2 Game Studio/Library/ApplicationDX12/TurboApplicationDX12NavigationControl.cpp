@@ -1,27 +1,16 @@
 
-#include "pch.h"
+#include <pch.h>
 
-#include "IApplication.h"
-#include "TurboApplicationDX12NavigationControl.h"
+#include <TurboApplicationDX12NavigationControl.h>
 
 using namespace Windows::Devices::Input;
 using namespace Windows::Foundation;
-using namespace Windows::UI::Core;
-
-using namespace concurrency;
-using namespace Windows::ApplicationModel;
-using namespace Windows::ApplicationModel::Core;
-using namespace Windows::ApplicationModel::Activation;
-using namespace Windows::UI::Input;
-using namespace Windows::UI;
 using namespace Windows::System;
-using namespace Windows::Graphics::Display;
-using namespace Microsoft::WRL;
-using namespace DirectX;
+using namespace Windows::UI::Input;
 
 using namespace Application_DX12;
 
-#pragma region Constructors and Destructors
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
 
 TurboApplicationDX12NavigationControl::TurboApplicationDX12NavigationControl()
 {
@@ -55,28 +44,23 @@ TurboApplicationDX12NavigationControl::TurboApplicationDX12NavigationControl()
 	}
 }
 
-//TurboApplicationDX12NavigationControl::~TurboApplicationDX12NavigationControl()
-//{
-//}
-
-void TurboApplicationDX12NavigationControl::SetTimeStampForFrame()
-{
-	// Update scene objects.
-	_timer.Tick([&]()                                
-	{
-		// TODO: Replace this with your app's content update functions.
-		_navInfo.Time = _timer.GetTotalSeconds();
-		_navInfo.DeltaTime = _timer.GetElapsedSeconds();
-	});
-}
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
+//  Public Access Methods  ---------------------------------------------------------------------------------------------
 
 NavigationInfo TurboApplicationDX12NavigationControl::GetNavigationInfo()
 {
+	//  Set TimeStamp for frame
+	_timer.Tick([&]()
+	{
+		_navInfo.Time = _timer.GetTotalSeconds();
+		_navInfo.DeltaTime = _timer.GetElapsedSeconds();
+	});
+
 	return _navInfo;
 }
 
-//#pragma endregion
-//#pragma region Event Handler Methods
+//  Public Access Methods  ---------------------------------------------------------------------------------------------
+//  Event Handler Methods  ---------------------------------------------------------------------------------------------
 
 void TurboApplicationDX12NavigationControl::OnPointerPressed(CoreWindow^ sender, PointerEventArgs^ args)
 {
@@ -200,33 +184,8 @@ void TurboApplicationDX12NavigationControl::OnMouseMoved(_In_ MouseDevice^ mouse
 	//args->MouseDelta.
 }
 
-#pragma endregion
+//  Event Handler Methods  ---------------------------------------------------------------------------------------------
+//  Local Support Methods  ---------------------------------------------------------------------------------------------
 
-void TurboApplicationDX12NavigationControl::ResetState()
-{
-	// Reset the state of the controller.
-	// Disable any active pointer IDs to stop all interaction.
-	m_buttonPressed = false;
-	m_pausePressed = false;
-	m_buttonInUse = false;
-	m_moveInUse = false;
-	m_lookInUse = false;
-	m_fireInUse = false;
-	m_mouseInUse = false;
-	m_mouseLeftInUse = false;
-	m_mouseRightInUse = false;
-	m_movePointerID = 0;
-	m_lookPointerID = 0;
-	m_firePointerID = 0;
-	m_mousePointerID = 0;
-	m_velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_moveCommand = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	m_forward = false;
-	m_back = false;
-	m_left = false;
-	m_right = false;
-	m_up = false;
-	m_down = false;
-	m_pause = false;
-}
+//  Local Support Methods  ---------------------------------------------------------------------------------------------
 

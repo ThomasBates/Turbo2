@@ -1,11 +1,12 @@
+
 #pragma once
 
 typedef struct {
-	float	Time;
-	float	DeltaTime;
+	double	Time;
+	double	DeltaTime;
 	bool	Pointer;
-	int		PointerX;
-	int		PointerY;
+	float	PointerX;
+	float	PointerY;
 	bool	MoveLeft;
 	bool	MoveRight;
 	bool	MoveDown;
@@ -25,6 +26,5 @@ typedef struct {
 class INavigationController
 {
 public:
-	virtual void SetTimeStampForFrame() = 0;
 	virtual NavigationInfo GetNavigationInfo() = 0;
 };

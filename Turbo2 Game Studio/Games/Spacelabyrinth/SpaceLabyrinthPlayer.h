@@ -2,13 +2,11 @@
 
 #include <pch.h>
 
-#include <ITurboApplicationPlatform.h>
 #include <ITurboSceneObject.h>
 
 class SpaceLabyrinthPlayer : public ITurboSceneObject
 {
 private:
-	std::shared_ptr<ITurboApplicationPlatform>	_platform;
 	std::shared_ptr<ITurboSceneObjectMesh>		_mesh;
 	std::shared_ptr<ITurboSceneObjectMaterial>	_material;
 	std::shared_ptr<ITurboSceneObjectPlacement>	_placement;
@@ -16,7 +14,7 @@ private:
 	NavigationInfo _lastNavInfo;
 
 public:
-	SpaceLabyrinthPlayer(std::shared_ptr<ITurboApplicationPlatform> platform);
+	SpaceLabyrinthPlayer();
 
 	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneObjectMesh>		Mesh() { return _mesh; }
@@ -29,9 +27,9 @@ public:
 	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) { _placement = placement; }
 
 	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
-	virtual void Navigate();
-	virtual void Update();
-	virtual void Render();
+	//virtual void Navigate();
+	virtual void Update(NavigationInfo navInfo);
+	//virtual void Render();
 
-	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal) { return false; };
+	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal) { return false; };
 };

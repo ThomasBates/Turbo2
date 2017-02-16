@@ -2,5 +2,7 @@
 
 class ITurboSceneObjectTexture
 {
-	virtual void Dummy() = 0;
+public:
+	//  ITurboSceneObjectTexture Properties  ---------------------------------------------------------------------------
+	virtual std::string Name() = 0;
 };

@@ -2,37 +2,28 @@
 #pragma once
 
 #include <ITurboSceneBuilder.h>
-#include <ITurboApplicationPlatform.h>
 
 #include <CubicMaze.h>
 
 class OriginalMazeSceneBuilder: public ITurboSceneBuilder
 {
-private:
-	std::shared_ptr<ITurboApplicationPlatform> _platform;
-
-	//	Local Support Methods  -----------------------------------------------------------------------------------------
-	void BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> maze);
-
-	std::shared_ptr<ITurboSceneObject> BuildCorner(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> BuildWEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> BuildHEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> BuildDEdge(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> BuildRightWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> leftTexture, std::shared_ptr<ITurboSceneObjectTexture> rightTexture);
-	std::shared_ptr<ITurboSceneObject> BuildBottomWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> topTexture, std::shared_ptr<ITurboSceneObjectTexture> bottomTexture);
-	std::shared_ptr<ITurboSceneObject> BuildFrontWall(int w, int h, int d, std::shared_ptr<ITurboSceneObjectTexture> backTexture, std::shared_ptr<ITurboSceneObjectTexture> frontTexture);
-
-	std::shared_ptr<ITurboSceneObject> CreateCornerObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> CreateEdgeObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture);
-	std::shared_ptr<ITurboSceneObject> CreateWallObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectTexture> texture1, std::shared_ptr<ITurboSceneObjectTexture> texture2);
-
 public:
 	//  Constructors and Destructors  ----------------------------------------------------------------------------------
-	OriginalMazeSceneBuilder(std::shared_ptr<ITurboApplicationPlatform> platform);
+	OriginalMazeSceneBuilder();
 
 	//  ITurboSceneBuilder Methods  ------------------------------------------------------------------------------------
 	virtual std::shared_ptr<ITurboScene> BuildScene();
-	virtual void FreeScene(std::shared_ptr<ITurboScene> scene);
 
+private:
+	//	Local Support Methods  -----------------------------------------------------------------------------------------
+	void	BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> maze);
+
+	void	BuildCorner(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
+	void	BuildWEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
+	void	BuildHEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
+	void	BuildDEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
+	void	BuildRightWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> leftMaterial, std::shared_ptr<ITurboSceneObjectMaterial> rightMaterial);
+	void	BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> topMaterial, std::shared_ptr<ITurboSceneObjectMaterial> bottomMaterial);
+	void	BuildFrontWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> backMaterial, std::shared_ptr<ITurboSceneObjectMaterial> frontMaterial);
 };
 

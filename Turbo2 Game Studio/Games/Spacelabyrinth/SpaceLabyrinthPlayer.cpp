@@ -7,28 +7,25 @@
 
 #include <SpaceLabyrinthPlayer.h>
 
-SpaceLabyrinthPlayer::SpaceLabyrinthPlayer(std::shared_ptr<ITurboApplicationPlatform> platform)
+SpaceLabyrinthPlayer::SpaceLabyrinthPlayer()
 {
-	_platform = platform;
 	_placement = std::shared_ptr<ITurboSceneObjectPlacement>(new TurboSceneObjectPlacement());
 }
 
-void SpaceLabyrinthPlayer::Navigate()
+void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 {
-	const float cMoveAccelleration = 2.0f;
-	const float cRotateAccelleration = 45.0f;
-	const float cFrictionFactor = 2.0f;
-	const float cHoverFrequency = 2.0f;
-	const float cHoverMagnitude = 0.05f;
-	const float cGravityFactor = 0.0f; // 9.8f;
-	const float cSelfRightingSpeed = 0.0f; // 30.0f;
+	const double cMoveAccelleration = 2.0f;
+	const double cRotateAccelleration = 45.0f;
+	const double cFrictionFactor = 2.0f;
+	const double cHoverFrequency = 2.0f;
+	const double cHoverMagnitude = 0.05f;
+	const double cGravityFactor = 0.0f; // 9.8f;
+	const double cSelfRightingSpeed = 0.0f; // 30.0f;
 
-	NavigationInfo navInfo = _platform->GetNavigationInfo();
+	double deltaTime = navInfo.DeltaTime;
+	double time = navInfo.Time;
 
-	float deltaTime = navInfo.DeltaTime;
-	float time = navInfo.Time;
-
-	float moveSpeed = cMoveAccelleration * deltaTime;
+	double moveSpeed = cMoveAccelleration * deltaTime;
 
 	Vector3D velocity = _placement->Velocity();
 
@@ -59,7 +56,7 @@ void SpaceLabyrinthPlayer::Navigate()
 
 	_placement->Velocity(velocity);
 
-	float rotateSpeed = cRotateAccelleration * deltaTime;
+	double rotateSpeed = cRotateAccelleration * deltaTime;
 
 	Vector3D angularVelocity = _placement->AngularVelocity();
 
@@ -80,8 +77,8 @@ void SpaceLabyrinthPlayer::Navigate()
 
 	if (navInfo.Pointer && _lastNavInfo.Pointer)
 	{
-		int dx = navInfo.PointerX - _lastNavInfo.PointerX;
-		int dy = navInfo.PointerY - _lastNavInfo.PointerY;
+		double dx = navInfo.PointerX - _lastNavInfo.PointerX;
+		double dy = navInfo.PointerY - _lastNavInfo.PointerY;
 
 		angularVelocity.X = dy / deltaTime;
 		angularVelocity.Y = -dx / deltaTime;
@@ -98,14 +95,4 @@ void SpaceLabyrinthPlayer::Navigate()
 	if (navInfo.RollRight)	angularVelocity.Z += rotateSpeed;
 
 	_placement->AngularVelocity(angularVelocity);
-}
-
-void SpaceLabyrinthPlayer::Update()
-{
-	_platform->CameraPlacement(_placement);
-}
-
-void SpaceLabyrinthPlayer::Render()
-{
-	//_platform->RenderSceneObject(std::shared_ptr<ITurboSceneObject>(this));
 }

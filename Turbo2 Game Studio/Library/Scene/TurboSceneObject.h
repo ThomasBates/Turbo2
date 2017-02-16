@@ -24,10 +24,10 @@ public:
 	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) {}
 
 	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
-	virtual void Navigate() {};
-	virtual void Update();
-	virtual void Render();
+	//virtual void Navigate() {}
+	virtual void Update(NavigationInfo navInfo) {}
+	//virtual void Render();
 
-	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, float radius, Vector3D *contact, Vector3D *normal);
+	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal);
 };
 
