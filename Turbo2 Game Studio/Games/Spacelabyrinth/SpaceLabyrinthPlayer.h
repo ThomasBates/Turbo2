@@ -10,6 +10,7 @@ private:
 	std::shared_ptr<ITurboSceneObjectMesh>		_mesh;
 	std::shared_ptr<ITurboSceneObjectMaterial>	_material;
 	std::shared_ptr<ITurboSceneObjectPlacement>	_placement;
+	std::vector<std::shared_ptr<ITurboSceneObject>> _childSceneObjects;
 
 	NavigationInfo _lastNavInfo;
 
@@ -25,6 +26,8 @@ public:
 
 	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() { return _placement; }
 	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) { _placement = placement; }
+
+	virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() { return _childSceneObjects; };
 
 	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
 	//virtual void Navigate();

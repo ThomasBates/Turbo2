@@ -66,6 +66,45 @@ void OriginalMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> sc
 		"OriginalWall",
 		"StandardVertexShader",
 		"StandardPixelShader"));
+
+	std::shared_ptr<ITurboSceneObjectMaterial> leftWallMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalLeftWall",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> rightWallMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalRightWall",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> backWallMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalBackWall",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+	std::shared_ptr<ITurboSceneObjectMaterial> frontWallMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
+		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
+		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
+		TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
+		1.0f,
+		"OriginalFrontWall",
+		"StandardVertexShader",
+		"StandardPixelShader"));
+
+	leftWallMaterial = wallMaterial;
+	rightWallMaterial = wallMaterial;
+	backWallMaterial = wallMaterial;
+	frontWallMaterial = wallMaterial;
+
 	std::shared_ptr<ITurboSceneObjectMaterial> floorMaterial = std::shared_ptr<ITurboSceneObjectMaterial>(new TurboSceneObjectMaterial(
 		TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
 		TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
@@ -92,11 +131,11 @@ void OriginalMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> sc
 		if (w>0)	BuildWEdge(scene, w, h, d, edgeMaterial);
 		if (h>0)	BuildHEdge(scene, w, h, d, edgeMaterial);
 		if (d>0)	BuildDEdge(scene, w, h, d, edgeMaterial);
-		
+
 		char walls = mazeArray[w][h][d];
-		if (GETBIT(walls, RIGHTBIT ) > 0)	BuildRightWall (scene, w, h, d, wallMaterial,  wallMaterial);
-		if (GETBIT(walls, BOTTOMBIT) > 0)	BuildBottomWall(scene, w, h, d, floorMaterial, ceilingMaterial);
-		if (GETBIT(walls, FRONTBIT ) > 0)	BuildFrontWall (scene, w, h, d, wallMaterial,  wallMaterial);
+		if (GETBIT(walls, RIGHTBIT ) > 0)	BuildRightWall (scene, w, h, d, leftWallMaterial,	rightWallMaterial);
+		if (GETBIT(walls, BOTTOMBIT) > 0)	BuildBottomWall(scene, w, h, d, floorMaterial,		ceilingMaterial);
+		if (GETBIT(walls, FRONTBIT ) > 0)	BuildFrontWall (scene, w, h, d, backWallMaterial,	frontWallMaterial);
 	}
 }
 
@@ -165,12 +204,12 @@ void OriginalMazeSceneBuilder::BuildRightWall(std::shared_ptr<ITurboScene> scene
 	MazeObject mazeObject;
 
 	mazeObject.Active = 1;
-	mazeObject.Left   = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	left
-	mazeObject.Top    = h * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	//	top
-	mazeObject.Back   = d * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	//	back
-	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF + WALLHALF);	//	right
-	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	bottom
-	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	front
+	mazeObject.Left   = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	1 * 2.0 - 0.0 + (1.0 - 0.1) =  2.9
+	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF + WALLHALF);	//	1 * 2.0 - 0.0 + (1.0 + 0.1) =  3.1
+	mazeObject.Top    = h * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 + (1.0 - 0.1) = -1.1
+	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
+	mazeObject.Back   = d * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 + (1.0 - 0.1) = -1.1
+	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
 
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, leftMaterial, 1)));
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, rightMaterial, 2)));
@@ -181,12 +220,12 @@ void OriginalMazeSceneBuilder::BuildBottomWall(std::shared_ptr<ITurboScene> scen
 	MazeObject mazeObject;
 
 	mazeObject.Active = 1;
-	mazeObject.Left   = w *  CELLSIZE - OFFSET - (CELLHALF - WALLHALF);	//	left
-	mazeObject.Top    = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	top
-	mazeObject.Back   = d * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	//	back
-	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	right
-	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	bottom
-	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	front
+	mazeObject.Left   = w *  CELLSIZE - OFFSET - (CELLHALF - WALLHALF);	//	1 * 2.0 - 0.0 - (1.0 - 0.1) =  1.1
+	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	1 * 2.0 - 0.0 + (1.0 - 0.1) =  2.9
+	mazeObject.Top    = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
+	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 + 0.1) = -3.1
+	mazeObject.Back   = d * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 + (1.0 - 0.1) = -1.1
+	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
 
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, topMaterial, 1)));
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, bottomMaterial, 2)));
@@ -197,16 +236,16 @@ void OriginalMazeSceneBuilder::BuildFrontWall(std::shared_ptr<ITurboScene> scene
 	MazeObject mazeObject;
 
 	mazeObject.Active = 1;
-	mazeObject.Left   = w *  CELLSIZE - OFFSET - (CELLHALF - WALLHALF);	//	left
-	mazeObject.Top    = h * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	//	top
-	mazeObject.Back   = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	back
-	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	right
-	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	//	bottom
-	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	//	front
-
+	mazeObject.Left   = w *  CELLSIZE - OFFSET - (CELLHALF - WALLHALF);	//	1 * 2.0 - 0.0 - (1.0 - 0.1) =  1.1
+	mazeObject.Right  = w *  CELLSIZE - OFFSET + (CELLHALF - WALLHALF);	//	1 * 2.0 - 0.0 + (1.0 - 0.1) =  2.9
+	mazeObject.Top    = h * -CELLSIZE + OFFSET + (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 + (1.0 - 0.1) = -1.1
+	mazeObject.Bottom = h * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
+	mazeObject.Back   = d * -CELLSIZE + OFFSET - (CELLHALF - WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 - 0.1) = -2.9
+	mazeObject.Front  = d * -CELLSIZE + OFFSET - (CELLHALF + WALLHALF);	// -1 * 2.0 + 0.0 - (1.0 + 0.1) = -3.1
+																				  
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, backMaterial, 1)));
 	scene->AddSceneObject(std::shared_ptr<ITurboSceneObject>(new OriginalMazeWallObject(mazeObject, frontMaterial, 2)));
-}
-
+}																				 
+																				 
 //  Local Support Methods  ---------------------------------------------------------------------------------------------
 

@@ -18,6 +18,8 @@ public:
 	virtual	std::shared_ptr<ITurboSceneObjectPlacement>	Placement() = 0;
 	virtual void Placement(std::shared_ptr<ITurboSceneObjectPlacement> placement) = 0;
 
+	virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() = 0;
+
 	//  ITurboSceneObject Methods  -------------------------------------------------------------------------------------
 	//virtual void Navigate() = 0;
 	virtual void Update(NavigationInfo navInfo) = 0;

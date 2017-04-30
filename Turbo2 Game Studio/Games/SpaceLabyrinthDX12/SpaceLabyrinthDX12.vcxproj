@@ -34,7 +34,7 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Store</ApplicationType>
-    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
   </PropertyGroup>
@@ -217,7 +217,6 @@
     <ClInclude Include="..\..\Library\Application\IApplication.h" />
     <ClInclude Include="..\..\Library\Application\IGameLevel.h" />
     <ClInclude Include="..\..\Library\Application\INavigationController.h" />
-    <ClInclude Include="..\..\Library\Application\IProgram.h" />
     <ClInclude Include="..\..\Library\Application\IApplicationState.h" />
     <ClInclude Include="..\..\Library\GraphicsDX12\CanvasRGB.h" />
     <ClInclude Include="..\..\Library\Graphics\Bitmap.h" />
@@ -257,7 +256,6 @@
     <ClInclude Include="Common\DeviceResources.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
-    <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -305,13 +303,14 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="..\..\Library\GraphicsDX12\ShaderStructures.hlsli" />
     <None Include="SpaceLabyrinthDX12_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Content\SamplePixelShader.hlsl">
+    <FxCompile Include="..\..\Library\GraphicsDX12\PixelShader.hlsl">
       <ShaderType>Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Content\SampleVertexShader.hlsl">
+    <FxCompile Include="..\..\Library\GraphicsDX12\VertexShader.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>

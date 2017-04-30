@@ -27,6 +27,7 @@ namespace Application_DX12
 	private:
 		NavigationInfo _navInfo;
 		DX::StepTimer _timer;
+		bool _lastRestart;
 
 		//  Event Handler Methods  -------------------------------------------------------------------------------------
 		void OnPointerPressed(_In_ CoreWindow^ sender, _In_ PointerEventArgs^ args);

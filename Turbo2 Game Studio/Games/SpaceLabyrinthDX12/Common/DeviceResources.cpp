@@ -139,6 +139,7 @@ void DX::DeviceResources::CreateDeviceResources()
 
 	DX::ThrowIfFailed(m_d3dDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)));
 
+	//  For three rotating frames, each one needs its own command allocator.
 	for (UINT n = 0; n < c_frameCount; n++)
 	{
 		DX::ThrowIfFailed(
@@ -160,6 +161,8 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
 	WaitForGpu();
 
 	// Clear the previous window size specific content.
+	//  The three rotating frames each have their own render target resources, 
+	//	and each has a render target view descriptor on the rtv heap.
 	for (UINT n = 0; n < c_frameCount; n++)
 	{
 		m_renderTargets[n] = nullptr;
@@ -274,12 +277,20 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
 		m_rtvHeap->SetName(L"Render Target View Descriptor Heap");
 
 		m_currentFrame = 0;
+
+		//	Point rtvDescriptor to the first slot in the rtv heap.
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvDescriptor(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 		m_rtvDescriptorSize = m_d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
 		for (UINT n = 0; n < c_frameCount; n++)
 		{
+			//  Assign m_renderTargets[n] to reference the render target buffer resource within the swap chain.
 			DX::ThrowIfFailed(m_swapChain->GetBuffer(n, IID_PPV_ARGS(&m_renderTargets[n])));
+
+			//	Create a rtv descriptor and store it in the current slot in the rtv heap.
 			m_d3dDevice->CreateRenderTargetView(m_renderTargets[n].Get(), nullptr, rtvDescriptor);
+
+			//	Point rtvDescriptor to the next slot in the rtv heap.
 			rtvDescriptor.Offset(m_rtvDescriptorSize);
 
 			WCHAR name[25];
@@ -290,12 +301,14 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
 
 	// Create a depth stencil view.
 	{
+		//	Create the depth stensil view (dsv) heap.
 		D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
 		dsvHeapDesc.NumDescriptors = 1;
 		dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 		dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		ThrowIfFailed(m_d3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_dsvHeap)));
 
+		//	Set properties to describe the depth stencil resource.
 		D3D12_HEAP_PROPERTIES depthHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 		D3D12_RESOURCE_DESC depthResourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 			DXGI_FORMAT_D32_FLOAT,
@@ -312,6 +325,7 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
 		depthOptimizedClearValue.DepthStencil.Depth = 1.0f;
 		depthOptimizedClearValue.DepthStencil.Stencil = 0;
 
+		//	Create the depth stensil resource.
 		ThrowIfFailed(m_d3dDevice->CreateCommittedResource(
 			&depthHeapProperties,
 			D3D12_HEAP_FLAG_NONE,
@@ -321,6 +335,8 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
 			IID_PPV_ARGS(&m_depthStencil)
 			));
 
+		//	Create the depth stencil view descriptor in the first (and only) slot of the dsv heap,
+		//	pointing to the depth stencil resource.
 		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;

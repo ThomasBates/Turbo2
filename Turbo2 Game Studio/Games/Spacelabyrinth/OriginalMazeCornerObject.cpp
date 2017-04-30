@@ -8,43 +8,41 @@
 
 OriginalMazeCornerObject::OriginalMazeCornerObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
-	const float cShadeFactor = 0.50;
-
 	std::shared_ptr<ITurboSceneObjectMesh> mesh = std::shared_ptr<ITurboSceneObjectMesh>(new TurboSceneObjectMesh());
 
-	Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f) * cShadeFactor;
+	Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
 
-	normal = Vector3D(0.0f, 0.0f, -1.0f) * cShadeFactor;
+	normal = Vector3D(0.0f, 0.0f, -1.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
 
 
-	normal = Vector3D(0.0f, 1.0f, 0.0f) * cShadeFactor;
+	normal = Vector3D(0.0f, 1.0f, 0.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
 
-	normal = Vector3D(0.0f, -1.0f, 0.0f) * cShadeFactor;
+	normal = Vector3D(0.0f, -1.0f, 0.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
 
 
-	normal = Vector3D(1.0f, 0.0f, 0.0f) * cShadeFactor;
+	normal = Vector3D(1.0f, 0.0f, 0.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
 
-	normal = Vector3D(-1.0f, 0.0f, 0.0f) * cShadeFactor;
+	normal = Vector3D(-1.0f, 0.0f, 0.0f);
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
 	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));

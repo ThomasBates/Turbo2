@@ -1,11 +1,6 @@
 
 #pragma once
 
-#include "Common\DeviceResources.h"
-
-#include "INavigationController.h"
-#include "ITurboSceneObject.h"
-
 class ITurboApplicationDX12Platform
 {
 public:
@@ -15,9 +10,13 @@ public:
 	virtual void	Render() = 0;
 	virtual void	SaveState() = 0;
 	virtual void	LoadState() = 0;
+	virtual void	Finalize() = 0;
+
+	virtual void	Resize(float width, float height) = 0;
+	virtual void	SetDPI(float logicalDPI) = 0;
+	virtual void	SetDisplayOrientation(Windows::Graphics::Display::DisplayOrientations displayOrientation) = 0;
+	virtual void	ValidateDevice() = 0;
 
 	//  ITurboApplicationPlatform Properties  -----------------------------------------------------------------------------
-	virtual std::shared_ptr<DX::DeviceResources> DeviceResources() = 0;
-	virtual void DeviceResources(std::shared_ptr<DX::DeviceResources> deviceResources) = 0;
 };
 

@@ -8,47 +8,166 @@
 
 OriginalMazeEdgeObject::OriginalMazeEdgeObject(MazeObject mazeObject, std::shared_ptr<ITurboSceneObjectMaterial> material)
 {
-	const float cShadeFactor = 0.75;
-
 	std::shared_ptr<ITurboSceneObjectMesh> mesh = std::shared_ptr<ITurboSceneObjectMesh>(new TurboSceneObjectMesh());
 
-	Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
+	if (mazeObject.Right - mazeObject.Left > CELLHALF)
+	{
+		Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	1.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	0.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));		//	1.0f, 1.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	1.0f, 1.0f	//	X,X
 
-	normal = Vector3D(0.0f, 0.0f, -1.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
+		normal = Vector3D(0.0f, 1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	0.0f, 0.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	X,X			//	1.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	1.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));		//	1.0f, 0.0f	//	X,X			//	0.0f, 0.0f
+
+		normal = Vector3D(0.0f, 0.0f, -1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 0.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 1.0f	//	1.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 1.0f	//	1.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 0.0f	//	0.0f, 0.0f	//	X,X
+
+		normal = Vector3D(0.0f, -1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	X,X			//	1.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));	//	0.0f, 1.0f	//	X,X			//	0.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	X,X			//	1.0f, 1.0f
 
 
-	normal = Vector3D(0.0f, 1.0f, 0.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
+		normal = Vector3D(-1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));		//	X,X			//	0.0f, 0.0f	//	1.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	X,X			//	0.0f, 1.0f	//	0.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	X,X			//	1.0f, 1.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	1.0f, 1.0f	
 
-	normal = Vector3D(0.0f, -1.0f, 0.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
+		normal = Vector3D(1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));		//	X,X			//	0.0f, 0.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));	//	X,X			//	0.0f, 1.0f	//	1.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	X,X			//	1.0f, 1.0f	//	1.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	0.0f, 0.0f	
+	}
+	else if (mazeObject.Top - mazeObject.Bottom > CELLHALF)
+	{
+		Vector3D normal = Vector3D(-1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));		//	X,X			//	0.0f, 0.0f	//	1.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	X,X			//	0.0f, 1.0f	//	0.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));	//	X,X			//	1.0f, 1.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	1.0f, 1.0f	
+
+		normal = Vector3D(0.0f, 0.0f, 1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	0.0f, 1.0f	//	0.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	1.0f, 1.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 0.0f	//	1.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	0.0f, 0.0f	//	1.0f, 0.0f	//	X,X
+
+		normal = Vector3D(1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	X,X			//	0.0f, 0.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));	//	X,X			//	0.0f, 1.0f	//	1.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	X,X			//	1.0f, 1.0f	//	1.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	0.0f, 0.0f	
+
+		normal = Vector3D(0.0f, 0.0f, -1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	1.0f, 0.0f	//	0.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 0.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	0.0f, 1.0f	//	1.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 1.0f	//	1.0f, 0.0f	//	X,X
 
 
-	normal = Vector3D(1.0f, 0.0f, 0.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));
+		normal = Vector3D(0.0f, 1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));		//	1.0f, 0.0f	//	X,X			//	0.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	0.0f, 0.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	X,X			//	1.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	1.0f, 0.0f
 
-	normal = Vector3D(-1.0f, 0.0f, 0.0f) * cShadeFactor;
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));
-	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));
+		normal = Vector3D(0.0f, -1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));	//	0.0f, 1.0f	//	X,X			//	0.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	X,X			//	1.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	X,X			//	1.0f, 0.0f
+
+	}
+	else if (mazeObject.Back - mazeObject.Front > CELLHALF)
+	{
+		Vector3D normal = Vector3D(0.0f, 1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	1.0f, 0.0f	//	X,X			//	0.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 0.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));		//	0.0f, 1.0f	//	X,X			//	1.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 1.0f	//	X,X			//	1.0f, 0.0f
+
+		normal = Vector3D(-1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	X,X			//	0.0f, 1.0f	//	0.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));	//	X,X			//	1.0f, 1.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	X,X			//	1.0f, 0.0f	//	1.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));		//	X,X			//	0.0f, 0.0f	//	1.0f, 0.0f	
+
+		normal = Vector3D(0.0f, -1.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 1.0f	//	X,X			//	0.0f, 0.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	0.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 0.0f	//	X,X			//	1.0f, 1.0f
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	0.0f, 0.0f	//	X,X			//	1.0f, 0.0f
+
+		normal = Vector3D(1.0f, 0.0f, 0.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	0.0f, 0.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	X,X			//	0.0f, 0.0f	//	0.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	X,X			//	0.0f, 1.0f	//	1.0f, 1.0f	
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 1.0f	//	1.0f, 0.0f	
+
+
+		normal = Vector3D(0.0f, 0.0f, 1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	1.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	0.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));		//	1.0f, 1.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	1.0f, 1.0f	//	X,X
+
+		normal = Vector3D(0.0f, 0.0f, -1.0f);
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 0.0f	//	0.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 1.0f	//	1.0f, 1.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 1.0f	//	1.0f, 0.0f	//	X,X
+		mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 0.0f	//	0.0f, 0.0f	//	X,X
+	}
+
+	/*
+	Vector3D normal = Vector3D(0.0f, 0.0f, 1.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	1.0f, 0.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	0.0f, 0.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));		//	1.0f, 1.0f	//	0.0f, 1.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	1.0f, 1.0f	//	X,X
+
+	normal = Vector3D(0.0f, 0.0f, -1.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 0.0f	//	0.0f, 1.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 1.0f	//	1.0f, 1.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 1.0f	//	1.0f, 0.0f	//	X,X
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 0.0f	//	0.0f, 0.0f	//	X,X
+
+
+	normal = Vector3D(0.0f, 1.0f, 0.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));		//	1.0f, 0.0f	//	X,X			//	0.0f, 0.0f
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));		//	0.0f, 0.0f	//	X,X			//	0.0f, 1.0f
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));		//	0.0f, 1.0f	//	X,X			//	1.0f, 1.0f
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	1.0f, 0.0f
+
+	normal = Vector3D(0.0f, -1.0f, 0.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));	//	0.0f, 1.0f	//	X,X			//	0.0f, 0.0f
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));	//	1.0f, 1.0f	//	X,X			//	0.0f, 1.0f
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	1.0f, 0.0f	//	X,X			//	1.0f, 1.0f
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	0.0f, 0.0f	//	X,X			//	1.0f, 0.0f
+
+
+	normal = Vector3D(-1.0f, 0.0f, 0.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Front), normal, Vector2D(1.0f, 1.0f));		//	X,X			//	0.0f, 0.0f	//	1.0f, 0.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Top, mazeObject.Back), normal, Vector2D(0.0f, 1.0f));		//	X,X			//	0.0f, 1.0f	//	0.0f, 0.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(0.0f, 0.0f));	//	X,X			//	1.0f, 1.0f	//	0.0f, 1.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Left, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	1.0f, 1.0f	
+
+	normal = Vector3D(1.0f, 0.0f, 0.0f);
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Back), normal, Vector2D(1.0f, 1.0f));		//	X,X			//	0.0f, 0.0f	//	0.0f, 1.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Top, mazeObject.Front), normal, Vector2D(0.0f, 1.0f));	//	X,X			//	0.0f, 1.0f	//	1.0f, 1.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Front), normal, Vector2D(0.0f, 0.0f));	//	X,X			//	1.0f, 1.0f	//	1.0f, 0.0f	
+	mesh->AddVertex(Vector3D(mazeObject.Right, mazeObject.Bottom, mazeObject.Back), normal, Vector2D(1.0f, 0.0f));	//	X,X			//	1.0f, 0.0f	//	0.0f, 0.0f	
+	*/
 
 	mesh->AddTriangle(0, 1, 2);
 	mesh->AddTriangle(2, 3, 0);

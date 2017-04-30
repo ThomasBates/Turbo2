@@ -7,7 +7,7 @@ struct TurboSceneObjectVertex
 {
 	Vector3D Position;
 	Vector3D Normal;
-	Vector2D TextureCoordinate;
+	Vector2D TextureUV;
 };
 
 struct TurboSceneObjectTriangle
@@ -21,7 +21,7 @@ class ITurboSceneObjectMesh
 {
 public:
 	//  ITurboSceneObjectMesh Methods  ---------------------------------------------------------------------------------
-	virtual void AddVertex(Vector3D position, Vector3D normal, Vector2D textureCoordinate) = 0;
+	virtual void AddVertex(Vector3D position, Vector3D normal, Vector2D textureUV) = 0;
 	virtual void AddTriangle(int vertex1, int vertex2, int vertex3) = 0;
 
 	//  ITurboSceneObjectMesh Properties  ------------------------------------------------------------------------------

@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include "..\Common\DeviceResources.h"
-#include "..\Common\StepTimer.h"
 
 #include "ITurboApplicationDX12Renderer.h"
-
 #include "TurboApplicationDX12ShaderStructures.h"
+
+using namespace Windows::System;
 
 namespace Application_DX12
 {
@@ -13,50 +13,97 @@ namespace Application_DX12
 	class TurboApplicationDX12Renderer : public ITurboApplicationDX12Renderer
 	{
 	public:
-		TurboApplicationDX12Renderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+		TurboApplicationDX12Renderer();
 		~TurboApplicationDX12Renderer();
 
 		//  ITurboApplicationDX12Renderer Methods  ---------------------------------------------------------------------------
-		void Resize();
-		bool RenderStaticScene(std::shared_ptr<ITurboScene> staticScene);
-		bool RenderDynamicScene(std::shared_ptr<ITurboScene> dynamicScene);
+		virtual void Resize(float width, float height);
+		virtual void SetDPI(float logicalDPI);
+		virtual void SetDisplayOrientation(Windows::Graphics::Display::DisplayOrientations displayOrientation);
+		virtual void ValidateDevice();
+		virtual bool NeedsReset();
+
+		virtual bool LoadLevelResources(std::shared_ptr<IGameLevel> level);
+		virtual bool RenderLevel(std::shared_ptr<IGameLevel> level);
 
 	private:
 		// Constant buffers must be 256-byte aligned.
-		static const UINT c_alignedConstantBufferSize = (sizeof(ModelViewProjectionConstantBuffer) + 255) & ~255;
+		static const UINT c_alignedConstantBufferSize = (sizeof(ProjectionViewModelConstantBuffer) + 255) & ~255;
 
 		// Cached pointer to device resources.
-		std::shared_ptr<DX::DeviceResources> _deviceResources;
+		std::shared_ptr<DX::DeviceResources>	_deviceResources;
+		ID3D12Device*							_device;
 
-		std::vector<VertexPositionColor>	_pcVertices;
-		std::vector<unsigned short>			_pcIndices;
 
-		// Direct3D resources for cube geometry.
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
-		Microsoft::WRL::ComPtr<ID3D12RootSignature>			m_rootSignature;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState>			m_pipelineState;
-		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_cbvHeap;
-		Microsoft::WRL::ComPtr<ID3D12Resource>				m_vertexBuffer;
-		Microsoft::WRL::ComPtr<ID3D12Resource>				m_indexBuffer;
-		Microsoft::WRL::ComPtr<ID3D12Resource>				m_constantBuffer;
-		ModelViewProjectionConstantBuffer					m_constantBufferData;
-		UINT8*												m_mappedConstantBuffer;
-		UINT												m_cbvDescriptorSize;
+		std::map<std::shared_ptr<ITurboSceneObject>, Microsoft::WRL::ComPtr<ID3D12Resource>>	_levelVertexTargetResources;
+		std::map<std::shared_ptr<ITurboSceneObject>, Microsoft::WRL::ComPtr<ID3D12Resource>>	_levelVertexSourceResources;
+		std::map<std::shared_ptr<ITurboSceneObject>, D3D12_VERTEX_BUFFER_VIEW>					_levelVertexBufferViews;
+
+		std::map<std::shared_ptr<ITurboSceneObject>, Microsoft::WRL::ComPtr<ID3D12Resource>>	_levelIndexTargetResources;
+		std::map<std::shared_ptr<ITurboSceneObject>, Microsoft::WRL::ComPtr<ID3D12Resource>>	_levelIndexSourceResources;
+		std::map<std::shared_ptr<ITurboSceneObject>, D3D12_INDEX_BUFFER_VIEW>					_levelIndexBufferViews;
+		
+		std::map<std::shared_ptr<ITurboSceneObject>, int>										_levelSceneObjectOffsets;
+		int																						_levelSceneObjectCount;
+
+		std::map<std::string, Microsoft::WRL::ComPtr<ID3D12Resource>>							_levelTextureTargetResources;
+		std::map<std::string, Microsoft::WRL::ComPtr<ID3D12Resource>>							_levelTextureSourceResources;
+		
+		std::map<std::string, int>																_levelTextureOffsets;
+		int																						_levelTextureCount;
+
+
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	_commandList;
+		Microsoft::WRL::ComPtr<ID3D12RootSignature>			_rootSignature;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState>			_pipelineState;
+		
+		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		_cbvSrvDescriptorHeap;
+		UINT												_cbvSrvDescriptorSize;
+		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		_samplerDescriptorHeap;
+
+		Microsoft::WRL::ComPtr<ID3D12Resource>				_constantBufferTargetResource;
+		ProjectionViewModelConstantBuffer*					_constantBufferMappedResource;
+		ProjectionViewModelConstantBuffer					m_constantBufferData;
+
+
 		D3D12_RECT											m_scissorRect;
-		std::vector<byte>									m_vertexShader;
-		std::vector<byte>									m_pixelShader;
-		D3D12_VERTEX_BUFFER_VIEW							m_vertexBufferView;
-		D3D12_INDEX_BUFFER_VIEW								m_indexBufferView;
 
 		// Variables used with the rendering loop.
-		bool	m_loadingComplete;
 
-		//std::shared_ptr<ITurboSceneObjectPlacement> _cameraPlacement;
+		const UINT64 TextureWidth = 256U;
+		const UINT64 TextureHeight = 256U;
+		const UINT64 TexturePixelSize = 4U;
+
 
 		//	Local Support Methods  --------------------------------------------------------------------------------------------
-		void DrawSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
-		void EndDraw();
-		void UpdateCameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement);
+		void CreateRootSignature();
+		void CreatePipelineStateObject();
+		void CreateCommandList();
+		void ResetCommandList();
+		void ExecuteCommandList();
+
+		void CreateLevelVertexResources(std::shared_ptr<IGameLevel> level);
+		void LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject);
+		void LoadVertexData(std::shared_ptr<ITurboSceneObjectMesh> mesh, std::vector<ShaderVertex> *vertexList, std::vector<unsigned short> *indexList);
+
+		void CreateLevelTextureResources(std::shared_ptr<IGameLevel> level);
+		void LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject);
+		void LoadTextureData(std::string textureName, D3D12_RESOURCE_DESC *textureResourceDesc, std::vector<unsigned char> *textureData);
+
+		void CreateConstantBufferResources();
+		void CreateCBVSRVDescriptorHeap();
+		void CreateCBVDescriptors();
+		void CreateSRVDescriptors();
+		void CreateSamplerDescriptorHeap();
+		void CreateSamplerDescriptor();
+
+		void UpdateProjectionMatrix();
+		void UpdateViewMatrix(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement);
+		void InitializeRendering();
+		void PopulateCommandList(std::shared_ptr<IGameLevel> level);
+		void PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject);
+		void FinalizeRendering();
+
 	};
 }
 

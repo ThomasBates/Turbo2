@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "Common\DeviceResources.h"
+//#include "Common\DeviceResources.h"
 
 #include <ITurboApplicationDX12Platform.h>
 
@@ -12,7 +12,7 @@ namespace Application_DX12
 	ref class ApplicationDX12FrameworkView sealed : public Windows::ApplicationModel::Core::IFrameworkView
 	{
 	internal:
-		ApplicationDX12FrameworkView(std::shared_ptr<IProgram> program);
+		ApplicationDX12FrameworkView(std::shared_ptr<IGameLevel> program);
 
 	public:
 		ApplicationDX12FrameworkView();
@@ -41,12 +41,12 @@ namespace Application_DX12
 		void OnDisplayContentsInvalidated(Windows::Graphics::Display::DisplayInformation^ sender, Platform::Object^ args);
 
 	private:
-		std::shared_ptr<ITurboApplicationDX12Platform> _platform;
-		std::shared_ptr<IProgram> _program;
+		std::shared_ptr<IGameLevel>						_program;
+		std::shared_ptr<ITurboApplicationDX12Platform>	_platform;
 
 		// Private accessor for _deviceResources, protects against device removed errors.
-		std::shared_ptr<DX::DeviceResources> GetDeviceResources();
-		std::shared_ptr<DX::DeviceResources> _deviceResources;
+		//std::shared_ptr<DX::DeviceResources> GetDeviceResources();
+		//std::shared_ptr<DX::DeviceResources> _deviceResources;
 
 		bool _windowClosed;
 		bool _windowVisible;

@@ -8,9 +8,6 @@
       <UniqueIdentifier>ef39b142-9f9b-402b-9297-7664389b08c5</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
-    <Filter Include="Content">
-      <UniqueIdentifier>c25f2fb4-2e48-4452-87d4-d98892d1a4cf</UniqueIdentifier>
-    </Filter>
     <ClInclude Include="Common\d3dx12.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -26,15 +23,6 @@
     <ClCompile Include="Common\DeviceResources.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClInclude Include="Content\ShaderStructures.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <FxCompile Include="Content\SamplePixelShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
-    <FxCompile Include="Content\SampleVertexShader.hlsl">
-      <Filter>Content</Filter>
-    </FxCompile>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
@@ -178,9 +166,6 @@
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Application\IApplication.h">
-      <Filter>Library\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Application\IProgram.h">
       <Filter>Library\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\ApplicationDX12\ApplicationDX12.h">
@@ -330,5 +315,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SpaceLabyrinthDX12_TemporaryKey.pfx" />
+    <None Include="..\..\Library\GraphicsDX12\ShaderStructures.hlsli">
+      <Filter>Library\GraphicsDX12</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Library\GraphicsDX12\VertexShader.hlsl">
+      <Filter>Library\GraphicsDX12</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Library\GraphicsDX12\PixelShader.hlsl">
+      <Filter>Library\GraphicsDX12</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

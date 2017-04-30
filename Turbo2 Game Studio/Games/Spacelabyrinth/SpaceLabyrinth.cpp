@@ -14,10 +14,15 @@ SpaceLabyrinth::SpaceLabyrinth()
 }
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
-//  IProgram Properties  -----------------------------------------------------------------------------------------------
+//  IGameLevel Properties  ---------------------------------------------------------------------------------------------
 
 std::shared_ptr<IApplicationState> SpaceLabyrinth::State()
 {
+	if (_level == nullptr)
+	{
+		return nullptr;
+	}
+
 	std::shared_ptr<IApplicationState> state = _level->State();
 	state->SaveString("ProgramInfo", "project info");
 	return state;
@@ -31,16 +36,16 @@ void SpaceLabyrinth::State(std::shared_ptr<IApplicationState> state)
 
 std::shared_ptr<ITurboScene> SpaceLabyrinth::StaticScene()
 {
-	return _level->Scene();
+	return _level->StaticScene();
 }
 
 std::shared_ptr<ITurboScene> SpaceLabyrinth::DynamicScene()
 {
-	return _level->Scene();
+	return _level->DynamicScene();
 }
 
-//  IProgram Properties  -----------------------------------------------------------------------------------------------
-//  IProgram Methods  --------------------------------------------------------------------------------------------------
+//  IGameLevel Properties  ---------------------------------------------------------------------------------------------
+//  IGameLevel Methods  ------------------------------------------------------------------------------------------------
 
 void SpaceLabyrinth::Initialize()
 {
@@ -60,10 +65,9 @@ void SpaceLabyrinth::Finalize()
 void SpaceLabyrinth::Update(NavigationInfo navInfo)
 {
 	//  Beef this up with multiple levels and state logic.
-	_needToRedrawStaticScene = false;
+	_sceneChanged = false;
 
-	if ((navInfo.Restart && !_lastRestart) || //  Just get the rising edge of Restart. Don't keep restarting if user keeps their finger on the button.
-		(_level == nullptr))
+	if (navInfo.Restart || (_level == nullptr))
 	{
 		if (_level != nullptr)
 		{
@@ -73,12 +77,10 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 
 		_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel());
 		_level->Initialize();
-		_needToRedrawStaticScene = true;
+		_sceneChanged = true;
 	}
-
-	_lastRestart = navInfo.Restart;
 
 	_level->Update(navInfo);
 }
 
-//  IProgram Methods  --------------------------------------------------------------------------------------------------
+//  IGameLevel Methods  ------------------------------------------------------------------------------------------------

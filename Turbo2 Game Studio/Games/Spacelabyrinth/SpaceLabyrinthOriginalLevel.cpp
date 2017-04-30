@@ -36,7 +36,7 @@ void SpaceLabyrinthOriginalLevel::Initialize()
 {
 	//	Create the scene
 	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder());
-	_scene = _sceneBuilder->BuildScene();
+	_staticScene = _sceneBuilder->BuildScene();
 
 	//  Create the player
 	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer());
@@ -44,12 +44,12 @@ void SpaceLabyrinthOriginalLevel::Initialize()
 	_player->Placement()->GoTo(GetSpawnPoint());
 
 	////	set player Placement as camera Placement.
-	_scene->CameraPlacement(_player->Placement());
+	_staticScene->CameraPlacement(_player->Placement());
 
 	//  Create NPC's and obstacles ...
 	//  ...
 
-	//RenderStaticScene();
+	//LoadLevel();
 }
 
 void SpaceLabyrinthOriginalLevel::Update(NavigationInfo navInfo)
@@ -63,7 +63,7 @@ void SpaceLabyrinthOriginalLevel::Update(NavigationInfo navInfo)
 	//  Check for collisions
 	ProcessObjectInteractions(navInfo);
 
-	_scene->CameraPlacement(_player->Placement());
+	_staticScene->CameraPlacement(_player->Placement());
 }
 
 void SpaceLabyrinthOriginalLevel::Finalize()
@@ -100,7 +100,7 @@ void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions(NavigationInfo navIn
 
 	Vector3D newPosition = oldPosition + velocity * deltaTime;
 
-	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _scene->SceneObjects();
+	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _staticScene->SceneObjects();
 
 	int sceneObjectsCount = sceneObjects.size();
 

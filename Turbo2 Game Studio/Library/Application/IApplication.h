@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "IProgram.h"
+#include "IGameLevel.h"
 
 class IApplication
 {
 public:
-	virtual int Run(std::shared_ptr<IProgram> program) = 0;
+	virtual int Run(std::shared_ptr<IGameLevel> level) = 0;
 };
 
 //extern IApplication *Application;

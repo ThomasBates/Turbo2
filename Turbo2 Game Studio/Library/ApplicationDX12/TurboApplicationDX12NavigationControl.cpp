@@ -124,51 +124,53 @@ void TurboApplicationDX12NavigationControl::OnPointerExited(_In_ CoreWindow^ sen
 
 void TurboApplicationDX12NavigationControl::OnKeyDown(_In_ CoreWindow^ sender, _In_ KeyEventArgs^ args)
 {
-	Windows::System::VirtualKey Key;
-	Key = args->VirtualKey;
+	Windows::System::VirtualKey key = args->VirtualKey;
 
 	// Figure out the command from the keyboard.
-	if ((Key == VirtualKey::Up) || (Key == VirtualKey::W))
+	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
 		_navInfo.PitchFore = true;
-	if ((Key == VirtualKey::Down) || (Key == VirtualKey::S))
+	if ((key == VirtualKey::Down) || (key == VirtualKey::S))
 		_navInfo.PitchBack = true;
-	if ((Key == VirtualKey::Left) || (Key == VirtualKey::A))
+	if ((key == VirtualKey::Left) || (key == VirtualKey::A))
 		_navInfo.YawLeft = true;
-	if ((Key == VirtualKey::Right) || (Key == VirtualKey::D))
+	if ((key == VirtualKey::Right) || (key == VirtualKey::D))
 		_navInfo.YawRight = true;
-	if ((Key == VirtualKey::Insert) || (Key == VirtualKey::Space))
+	if ((key == VirtualKey::Insert) || (key == VirtualKey::Space))
 		_navInfo.MoveFore = true;
-	if ((Key == VirtualKey::Delete) || (Key == VirtualKey::X))
+	if ((key == VirtualKey::Delete) || (key == VirtualKey::X))
 		_navInfo.MoveBack = true;
-	if (Key == VirtualKey::P)
+	if (key == VirtualKey::P)
 		_navInfo.Pause = true;
-	if (Key == VirtualKey::F5)
+	if ((key == VirtualKey::F5) && !_lastRestart) //  Just get the rising edge of Restart. Don't keep restarting if user keeps their finger on the button.
+	{
 		_navInfo.Restart = true;
+	}
+	_lastRestart = _navInfo.Restart;
 }
 
 void TurboApplicationDX12NavigationControl::OnKeyUp(_In_ CoreWindow^ sender, _In_ KeyEventArgs^ args)
 {
-	Windows::System::VirtualKey Key;
-	Key = args->VirtualKey;
+	Windows::System::VirtualKey key;
+	key = args->VirtualKey;
 
 	// Figure out the command from the keyboard.
-	if ((Key == VirtualKey::Up) || (Key == VirtualKey::W))
+	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
 		_navInfo.PitchFore = false;
-	if ((Key == VirtualKey::Down) || (Key == VirtualKey::S))
+	if ((key == VirtualKey::Down) || (key == VirtualKey::S))
 		_navInfo.PitchBack = false;
-	if ((Key == VirtualKey::Left) || (Key == VirtualKey::A))
+	if ((key == VirtualKey::Left) || (key == VirtualKey::A))
 		_navInfo.YawLeft = false;
-	if ((Key == VirtualKey::Right) || (Key == VirtualKey::D))
+	if ((key == VirtualKey::Right) || (key == VirtualKey::D))
 		_navInfo.YawRight = false;
-	if ((Key == VirtualKey::Insert) || (Key == VirtualKey::Space))
+	if ((key == VirtualKey::Insert) || (key == VirtualKey::Space))
 		_navInfo.MoveFore = false;
-	if ((Key == VirtualKey::Delete) || (Key == VirtualKey::X))
+	if ((key == VirtualKey::Delete) || (key == VirtualKey::X))
 		_navInfo.MoveBack = false;
-	if (Key == VirtualKey::P)
+	if (key == VirtualKey::P)
 		_navInfo.Pause = false;
-	if (Key == VirtualKey::F5)
+	if (key == VirtualKey::F5)
 		_navInfo.Restart = false;
-	//if (Key == VirtualKey::P)
+	//if (key == VirtualKey::P)
 	//{
 	//	if (m_pause)
 	//	{

@@ -1,7 +1,6 @@
 
 #include <pch.h>
 
-#include <IApplication.h>
 #include <ITurboApplicationDX12Renderer.h>
 #include <TurboApplicationDX12Platform.h>
 #include <TurboApplicationDX12Renderer.h>
@@ -12,12 +11,14 @@
 #include <ApplicationState.h>
 
 using namespace Application_DX12;
+using namespace Windows::Foundation;
 
 #pragma region Constructors and Destructors  ---------------------------------------------------------------------------
 
-TurboApplicationDX12Platform::TurboApplicationDX12Platform(std::shared_ptr<IProgram> program)
+TurboApplicationDX12Platform::TurboApplicationDX12Platform(std::shared_ptr<IGameLevel> program) :
+	_program(program),
+	_sceneRenderer(nullptr)
 {
-	_program = program;
 	_controller = std::unique_ptr<INavigationController>(new TurboApplicationDX12NavigationController());
 }
 
@@ -39,89 +40,84 @@ void TurboApplicationDX12Platform::Update()
 
 	_program->Update(navInfo);
 
-	if (_program->NeedToRedrawStaticScene())
-		_sceneRenderer->RenderStaticScene(_program->StaticScene());
+	if (_program->SceneChanged())
+	{
+		_sceneRenderer = nullptr;
+		GetSceneRenderer()->LoadLevelResources(_program);
+	}
 }
 
 void TurboApplicationDX12Platform::Render()
 {
-	// Don't try to render anything before the first Update.
-
-	// Render the scene objects.
-	// TODO: Replace this with your app's content rendering functions.
-	if (_sceneRenderer->RenderDynamicScene(_program->DynamicScene()))
-	{
-		_deviceResources->Present();
-	}
+	GetSceneRenderer()->RenderLevel(_program);
 }
 
 void TurboApplicationDX12Platform::SaveState()
 {
-	std::shared_ptr<IApplicationState> programState = _program->State();
-	SaveProgramState(programState);
+	std::shared_ptr<IApplicationState> gameState = _program->State();
+	SaveGameState(gameState);
 }
 
 void TurboApplicationDX12Platform::LoadState()
 {
-	std::shared_ptr<IApplicationState> programState = LoadProgramState();
-	_program->State(programState);
+	std::shared_ptr<IApplicationState> gameState = LoadGameState();
+	_program->State(gameState);
+}
+
+void TurboApplicationDX12Platform::Finalize()
+{
+	_program->Finalize();
+}
+
+void Application_DX12::TurboApplicationDX12Platform::Resize(float width, float height)
+{
+	GetSceneRenderer()->Resize(width, height);
+}
+
+void Application_DX12::TurboApplicationDX12Platform::SetDPI(float logicalDPI)
+{
+	GetSceneRenderer()->SetDPI(logicalDPI);
+}
+
+void Application_DX12::TurboApplicationDX12Platform::SetDisplayOrientation(Windows::Graphics::Display::DisplayOrientations displayOrientation)
+{
+	GetSceneRenderer()->SetDisplayOrientation(displayOrientation);
+}
+
+void Application_DX12::TurboApplicationDX12Platform::ValidateDevice()
+{
+	GetSceneRenderer()->ValidateDevice();
 }
 
 #pragma endregion
 #pragma region ITurboApplicationPlatform Properties  -------------------------------------------------------------------
 
-void TurboApplicationDX12Platform::DeviceResources(std::shared_ptr<DX::DeviceResources> deviceResources)
-{
-	_deviceResources = deviceResources;
-
-	_sceneRenderer = nullptr;
-
-	if (deviceResources != nullptr)
-	{
-		_sceneRenderer = std::unique_ptr<ITurboApplicationDX12Renderer>(new TurboApplicationDX12Renderer(deviceResources));
-	}
-}
-
 #pragma endregion
 #pragma region Local Support Methods
 
-void TurboApplicationDX12Platform::SaveProgramState(std::shared_ptr<IApplicationState> programState)
+std::shared_ptr<ITurboApplicationDX12Renderer> TurboApplicationDX12Platform::GetSceneRenderer()
+{
+	if ((_sceneRenderer != nullptr) && (_sceneRenderer->NeedsReset()))
+	{
+		_sceneRenderer = nullptr;
+	}
+
+	if (_sceneRenderer == nullptr)
+	{
+		_sceneRenderer = std::unique_ptr<ITurboApplicationDX12Renderer>(new TurboApplicationDX12Renderer());
+	}
+
+	return _sceneRenderer;
+}
+
+void TurboApplicationDX12Platform::SaveGameState(std::shared_ptr<IApplicationState> programState)
 {
 
 }
 
-std::shared_ptr<IApplicationState> TurboApplicationDX12Platform::LoadProgramState()
+std::shared_ptr<IApplicationState> TurboApplicationDX12Platform::LoadGameState()
 {
 	return std::shared_ptr<IApplicationState>(new ApplicationState());
-}
-
-void TurboApplicationDX12Platform::LoadTextures()
-{
-	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _program->StaticScene()->SceneObjects();
-
-	for (unsigned int i = 0; i < sceneObjects.size(); i++)
-	{
-		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[i];
-		std::string textureName = sceneObject->Material()->Texture()->Name();
-		LoadTexture(textureName);
-	}
-
-	sceneObjects = _program->DynamicScene()->SceneObjects();
-
-	for (unsigned int i = 0; i < sceneObjects.size(); i++)
-	{
-		std::shared_ptr<ITurboSceneObject> sceneObject = sceneObjects[i];
-		std::string textureName = sceneObject->Material()->Texture()->Name();
-		LoadTexture(textureName);
-	}
-}
-
-void TurboApplicationDX12Platform::LoadTexture(std::string textureName)
-{
-	if (_loadedTextures.count(textureName) == 1)
-		return;
-
-	_loadedTextures[textureName] = "";
 }
 
 #pragma endregion

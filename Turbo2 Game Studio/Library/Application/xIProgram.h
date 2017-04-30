@@ -19,7 +19,7 @@ public:
 	virtual std::shared_ptr<ITurboScene> StaticScene() = 0;
 	virtual std::shared_ptr<ITurboScene> DynamicScene() = 0;
 
-	virtual bool NeedToRedrawStaticScene() = 0;
+	virtual bool SceneChanged() = 0;
 
 	//  IProgram Methods  ----------------------------------------------------------------------------------------------
 	virtual void	Initialize() = 0;

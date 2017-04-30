@@ -3,13 +3,13 @@
 
 #include <TurboSceneObjectMesh.h>
 
-void TurboSceneObjectMesh::AddVertex(Vector3D position, Vector3D normal, Vector2D textureCoordinate)
+void TurboSceneObjectMesh::AddVertex(Vector3D position, Vector3D normal, Vector2D textureUV)
 {
 	TurboSceneObjectVertex vertex;
 	
 	vertex.Position = position;
 	vertex.Normal = normal;
-	vertex.TextureCoordinate = textureCoordinate;
+	vertex.TextureUV = textureUV;
 
 	_vertices.push_back(vertex);
 

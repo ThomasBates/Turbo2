@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "IProgram.h"
+#include "IGameLevel.h"
 #include "ApplicationDX12FrameworkView.h"
 #include "ApplicationDX12FrameworkViewSource.h"
 
@@ -12,9 +12,9 @@ ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource()
 {
 }
 
-ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource(std::shared_ptr<IProgram> program)
+ApplicationDX12FrameworkViewSource::ApplicationDX12FrameworkViewSource(std::shared_ptr<IGameLevel> program) :
+	_program(program)
 {
-	_program = program;
 }
 
 IFrameworkView^ ApplicationDX12FrameworkViewSource::CreateView()

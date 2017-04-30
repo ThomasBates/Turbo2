@@ -5,7 +5,6 @@
 
 #include <ITurboApplicationDX12Platform.h>
 #include <ITurboApplicationDX12Renderer.h>
-#include <TurboApplicationDX12Renderer.h>
 
 namespace Application_DX12
 {
@@ -13,35 +12,34 @@ namespace Application_DX12
 	{
 	public:
 		//  Constructors and Destructors  ------------------------------------------------------------------------------
-		TurboApplicationDX12Platform(std::shared_ptr<IProgram> program);
+		TurboApplicationDX12Platform(std::shared_ptr<IGameLevel> program);
 		~TurboApplicationDX12Platform();
 
 		//  ITurboApplicationDX12Platform Methods  ---------------------------------------------------------------------
-		virtual void	Initialize();
-		virtual void	Update();
-		virtual void	Render();
-		virtual void	SaveState();
-		virtual void	LoadState();
+		virtual void Initialize();
+		virtual void Update();
+		virtual void Render();
+		virtual void SaveState();
+		virtual void LoadState();
+		virtual void Finalize();
+
+		virtual void Resize(float width, float height);
+		virtual void SetDPI(float logicalDPI);
+		virtual void SetDisplayOrientation(Windows::Graphics::Display::DisplayOrientations displayOrientation);
+		virtual void ValidateDevice();
 
 		//  ITurboApplicationDX12Platform Properties  ------------------------------------------------------------------
-		virtual std::shared_ptr<DX::DeviceResources> DeviceResources() { return _deviceResources; }
-		virtual void DeviceResources(std::shared_ptr<DX::DeviceResources> deviceResources);
 
 	private:
-		std::shared_ptr<IProgram>					_program;
-		std::unique_ptr<INavigationController>		_controller;
-		std::shared_ptr<DX::DeviceResources>		_deviceResources;
-		std::unique_ptr<ITurboApplicationDX12Renderer>	_sceneRenderer;
-		std::shared_ptr<ITurboSceneObjectPlacement> _cameraPlacement;
-		std::map<std::string, std::string>			_loadedTextures;
-		bool _lastRestart;
+		std::shared_ptr<IGameLevel>						_program;
+		std::unique_ptr<INavigationController>			_controller;
+		std::shared_ptr<ITurboApplicationDX12Renderer>	_sceneRenderer;
 
 		//  Local Support Methods  -------------------------------------------------------------------------------------
-		void	SaveProgramState(std::shared_ptr<IApplicationState> programState);
-		std::shared_ptr<IApplicationState> LoadProgramState();
-		void	LoadTextures();
-		void	LoadTexture(std::string fileName);
-		//virtual IImage *LoadImage(std::string fileName);
+		std::shared_ptr<ITurboApplicationDX12Renderer> GetSceneRenderer();
+
+		void SaveGameState(std::shared_ptr<IApplicationState> programState);
+		std::shared_ptr<IApplicationState> LoadGameState();
 	};
 }
 

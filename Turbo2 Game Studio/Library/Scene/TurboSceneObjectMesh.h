@@ -14,7 +14,7 @@ private:
 
 public:
 	//  ITurboSceneObjectMesh Methods  ---------------------------------------------------------------------------------
-	virtual void AddVertex(Vector3D position, Vector3D normal, Vector2D textureCoordinate);
+	virtual void AddVertex(Vector3D position, Vector3D normal, Vector2D textureUV);
 	virtual void AddTriangle(int vertex1, int vertex2, int vertex3);
 
 	//  ITurboSceneObjectMesh Properties  ------------------------------------------------------------------------------
