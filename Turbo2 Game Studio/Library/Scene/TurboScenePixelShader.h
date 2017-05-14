@@ -5,10 +5,10 @@
 class TurboScenePixelShader : public ITurboScenePixelShader
 {
 public:
-	//  Constructors  --------------------------------------------------------------------------------------------------
+	//  Constructors  -----------------------------------------------------------------------------------------------------
 	TurboScenePixelShader(std::string name);
 
-	//  ITurboSceneObjectTexture Properties  ---------------------------------------------------------------------------
+	//  ITurboScenePixelShader Properties  --------------------------------------------------------------------------------
 	virtual std::string Name() { return _name; }
 
 private:

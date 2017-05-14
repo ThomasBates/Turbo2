@@ -28,8 +28,7 @@ TurboApplicationDX12Renderer::TurboApplicationDX12Renderer() :
 
 TurboApplicationDX12Renderer::~TurboApplicationDX12Renderer()
 {
-	_constantBufferTargetResource->Unmap(0, nullptr);
-	_constantBufferMappedResource = nullptr;
+	ReleaseSceneResources();
 }
 
 #pragma endregion
@@ -60,14 +59,16 @@ bool Application_DX12::TurboApplicationDX12Renderer::NeedsReset()
 	return _deviceResources->IsDeviceRemoved();
 }
 
-bool TurboApplicationDX12Renderer::LoadLevelResources(std::shared_ptr<IGameLevel> level)
+bool TurboApplicationDX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 {
+	ReleaseSceneResources();
+
 	CreateRootSignature();
 	CreatePipelineStateObject();
 	CreateCommandList();
 
-	CreateLevelVertexResources(level);
-	CreateLevelTextureResources(level);
+	CreateSceneVertexResources(scene);
+	CreateSceneTextureResources(scene);
 	CreateConstantBufferResources();
 
 	CreateCBVSRVDescriptorHeap();
@@ -93,17 +94,17 @@ bool TurboApplicationDX12Renderer::LoadLevelResources(std::shared_ptr<IGameLevel
 }
 
 // Renders one frame using the vertex and pixel shaders.
-bool TurboApplicationDX12Renderer::RenderLevel(std::shared_ptr<IGameLevel> level)
+bool TurboApplicationDX12Renderer::RenderScene(std::shared_ptr<ITurboScene> scene)
 {
 	auto commandQueue = _deviceResources->GetCommandQueue();
 	PIXBeginEvent(commandQueue, 0, L"Render");
 	{
 		UpdateProjectionMatrix();
-		UpdateViewMatrix(level->StaticScene()->CameraPlacement());
+		UpdateViewMatrix(scene->CameraPlacement());
 
 		InitializeRendering();
 
-		PopulateCommandList(level);
+		PopulateCommandList(scene);
 
 		FinalizeRendering();
 	}
@@ -115,25 +116,61 @@ bool TurboApplicationDX12Renderer::RenderLevel(std::shared_ptr<IGameLevel> level
 #pragma endregion
 #pragma region Local Support Methods  ----------------------------------------------------------------------------------
 
-void Application_DX12::TurboApplicationDX12Renderer::CreateRootSignature()
+void TurboApplicationDX12Renderer::ReleaseSceneResources()
 {
-	CD3DX12_DESCRIPTOR_RANGE descriptorRanges[3];
-	//descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0);
-	//descriptorRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	////descriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
-	//descriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-	descriptorRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	descriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0);
+	if (_deviceResources != nullptr) 
+	{
+		_deviceResources->WaitForGpu();
+	}
 
-	CD3DX12_ROOT_PARAMETER rootParameters[3];
-	//rootParameters[0].InitAsDescriptorTable(1, &descriptorRanges[0], D3D12_SHADER_VISIBILITY_PIXEL);
-	//rootParameters[1].InitAsDescriptorTable(1, &descriptorRanges[1], D3D12_SHADER_VISIBILITY_VERTEX);
-	////rootParameters[2].InitAsDescriptorTable(1, &descriptorRanges[2], D3D12_SHADER_VISIBILITY_VERTEX);
-	//rootParameters[2].InitAsDescriptorTable(1, &descriptorRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
-	rootParameters[0].InitAsDescriptorTable(1, &descriptorRanges[0], D3D12_SHADER_VISIBILITY_VERTEX);
-	rootParameters[1].InitAsDescriptorTable(1, &descriptorRanges[1], D3D12_SHADER_VISIBILITY_PIXEL);
-	rootParameters[2].InitAsDescriptorTable(1, &descriptorRanges[2], D3D12_SHADER_VISIBILITY_PIXEL);
+	if (_constantBufferMappedResource != nullptr)
+	{
+		_constantBufferTargetResource->Unmap(0, nullptr);
+		_constantBufferMappedResource = nullptr;
+		_constantBufferData = nullptr;
+	}
+
+	_sceneVertexTargetResources.clear();
+	_sceneVertexSourceResources.clear();
+	_sceneVertexBufferViews.clear();
+
+	_sceneIndexTargetResources.clear();
+	_sceneIndexSourceResources.clear();
+	_sceneIndexBufferViews.clear();
+
+	_sceneTextureTargetResources.clear();
+	_sceneTextureSourceResources.clear();
+
+	_sceneObjectOffsets.clear();
+	_sceneObjectCount = 0;
+	_sceneObjectMeshOffsets.clear();
+	_sceneObjectMeshCount = 0;
+	_sceneObjectTextureOffsets.clear();
+	_sceneObjectTextureCount = 0;
+
+	_commandList = nullptr;
+	_rootSignature = nullptr;
+	_pipelineState = nullptr;
+
+	_cbvSrvDescriptorHeap = nullptr;
+	_cbvSrvDescriptorSize = 0;
+	_samplerDescriptorHeap = nullptr;
+
+}
+
+void TurboApplicationDX12Renderer::CreateRootSignature()
+{
+	CD3DX12_DESCRIPTOR_RANGE descriptorRanges[4];
+	descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0);
+	descriptorRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+	descriptorRanges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1);
+	descriptorRanges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_ROOT_PARAMETER rootParameters[4];
+	rootParameters[0].InitAsDescriptorTable(1, &descriptorRanges[0], D3D12_SHADER_VISIBILITY_PIXEL);
+	rootParameters[1].InitAsDescriptorTable(1, &descriptorRanges[1], D3D12_SHADER_VISIBILITY_VERTEX);
+	rootParameters[2].InitAsDescriptorTable(1, &descriptorRanges[2], D3D12_SHADER_VISIBILITY_VERTEX);
+	rootParameters[3].InitAsDescriptorTable(1, &descriptorRanges[3], D3D12_SHADER_VISIBILITY_PIXEL);
 
 	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | // Only the input assembler stage needs access to the constant buffer.
@@ -242,60 +279,58 @@ void Application_DX12::TurboApplicationDX12Renderer::ExecuteCommandList()
 	commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 }
 
-//	Level Vertex Resources ----------------------------------------------------------------------------------------------
+//	Scene Vertex Resources ----------------------------------------------------------------------------------------------
 
-void TurboApplicationDX12Renderer::CreateLevelVertexResources(std::shared_ptr<IGameLevel> level)
+void TurboApplicationDX12Renderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
 {
-	if (level == nullptr)
+	if (scene == nullptr)
 	{
 		return;
 	}
 
-	_levelVertexTargetResources.clear();
-	_levelVertexSourceResources.clear();
-	_levelVertexBufferViews.clear();
+	//	Prepare data structures.
+	_sceneVertexTargetResources.clear();
+	_sceneVertexSourceResources.clear();
+	_sceneVertexBufferViews.clear();
 
-	_levelIndexTargetResources.clear();
-	_levelIndexSourceResources.clear();
-	_levelIndexBufferViews.clear();
+	_sceneIndexTargetResources.clear();
+	_sceneIndexSourceResources.clear();
+	_sceneIndexBufferViews.clear();
 
-	_levelSceneObjectOffsets.clear();
+	_sceneObjectMeshOffsets.clear();
 
-	auto scene = level->StaticScene();
-	if (scene != nullptr)
+	auto sceneObjects = scene->SceneObjects();
+
+	for (auto& sceneObject : sceneObjects)
 	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			LoadSceneObjectVertices(sceneObject);
-			//break;
-		}
+		LoadSceneObjectVertices(sceneObject);
 	}
 
-	scene = level->DynamicScene();
-	if (scene != nullptr)
-	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			LoadSceneObjectVertices(sceneObject);
-		}
-	}
-
-	_levelSceneObjectCount = _levelSceneObjectOffsets.size();
+	_sceneObjectCount = _sceneObjectOffsets.size();
+	_sceneObjectMeshCount = _sceneObjectMeshOffsets.size();
 }
 
 void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-	int sceneObjectOffset = _levelSceneObjectOffsets.size();
-	_levelSceneObjectOffsets[sceneObject] = sceneObjectOffset;
+
+	int sceneObjectOffset = _sceneObjectOffsets.size();
+	_sceneObjectOffsets[sceneObject] = sceneObjectOffset;
+
+	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+
+	//  Already loaded this texture? don't reload it.
+	if (_sceneObjectMeshOffsets.find(mesh) != _sceneObjectMeshOffsets.end())
+	{
+		return;
+	}
+
+	int meshOffset = _sceneObjectMeshOffsets.size();
+	_sceneObjectMeshOffsets[mesh] = meshOffset;
 
 	std::vector<ShaderVertex> vertexList;
 	std::vector<unsigned short> indexList;
 
-	LoadVertexData(sceneObject->Mesh(), &vertexList, &indexList);
+	LoadVertexData(mesh, &vertexList, &indexList);
 
 	//  Load mesh vertices  --------------------------------------------------------------------------------------------
 	UINT vertexBufferSize = vertexList.size() * sizeof(vertexList[0]);
@@ -330,8 +365,8 @@ void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurb
 	vertexTargetResource->SetName(L"Vertex Target Resource");
 	vertexSourceResource->SetName(L"Vertex Source Resource");
 
-	_levelVertexTargetResources[sceneObject] = vertexTargetResource;
-	_levelVertexSourceResources[sceneObject] = vertexSourceResource;
+	_sceneVertexTargetResources[mesh] = vertexTargetResource;
+	_sceneVertexSourceResources[mesh] = vertexSourceResource;
 
 	//	Copy data to the intermediate upload heap, vertexSourceResource, 
 	//	and then schedule a copy from the upload heap to the space allocated in GPU memory, 
@@ -362,7 +397,7 @@ void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurb
 		vertexBufferView.BufferLocation = vertexTargetResource->GetGPUVirtualAddress();
 		vertexBufferView.StrideInBytes = sizeof(ShaderVertex);
 		vertexBufferView.SizeInBytes = vertexBufferSize;
-		_levelVertexBufferViews[sceneObject] = vertexBufferView;
+		_sceneVertexBufferViews[mesh] = vertexBufferView;
 	}
 
 	//	Load mesh indices  ---------------------------------------------------------------------------------------------
@@ -397,8 +432,8 @@ void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurb
 	indexTargetResource->SetName(L"Index Buffer Target Resource");
 	indexSourceResource->SetName(L"Index Buffer Source Resource");
 
-	_levelIndexTargetResources[sceneObject] = indexTargetResource;
-	_levelIndexSourceResources[sceneObject] = indexSourceResource;
+	_sceneIndexTargetResources[mesh] = indexTargetResource;
+	_sceneIndexSourceResources[mesh] = indexSourceResource;
 
 	//	Copy data to the intermediate upload heap, indexSourceResource, 
 	//	and then schedule a copy from the upload heap to the space allocated in GPU memory, 
@@ -429,7 +464,7 @@ void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurb
 		indexBufferView.BufferLocation = indexTargetResource->GetGPUVirtualAddress();
 		indexBufferView.SizeInBytes = indexBufferSize;
 		indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-		_levelIndexBufferViews[sceneObject] = indexBufferView;
+		_sceneIndexBufferViews[mesh] = indexBufferView;
 	}
 
 
@@ -441,7 +476,7 @@ void TurboApplicationDX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurb
 }
 
 void TurboApplicationDX12Renderer::LoadVertexData(
-	std::shared_ptr<ITurboSceneObjectMesh> mesh,
+	std::shared_ptr<ITurboSceneMesh> mesh,
 	std::vector<ShaderVertex> *vertexList,
 	std::vector<unsigned short> *indexList)
 {
@@ -449,9 +484,9 @@ void TurboApplicationDX12Renderer::LoadVertexData(
 	{
 		ShaderVertex shaderVertex;
 
-		shaderVertex.pos = XMFLOAT3((float)(meshVertex.Position.X), (float)(meshVertex.Position.Y), (float)(meshVertex.Position.Z));
-		shaderVertex.normal = XMFLOAT3((float)(meshVertex.Normal.X), (float)(meshVertex.Normal.Y), (float)(meshVertex.Normal.Z));
-		shaderVertex.texture = XMFLOAT2((float)(meshVertex.TextureUV.X), (float)(meshVertex.TextureUV.Y));
+		shaderVertex.Position = XMFLOAT3((float)(meshVertex.Position.X), (float)(meshVertex.Position.Y), (float)(meshVertex.Position.Z));
+		shaderVertex.Normal = XMFLOAT3((float)(meshVertex.Normal.X), (float)(meshVertex.Normal.Y), (float)(meshVertex.Normal.Z));
+		shaderVertex.Texture = XMFLOAT2((float)(meshVertex.TextureUV.X), (float)(meshVertex.TextureUV.Y));
 
 		vertexList->push_back(shaderVertex);
 	}
@@ -464,58 +499,42 @@ void TurboApplicationDX12Renderer::LoadVertexData(
 	}
 }
 
-//	Level Texture Resources ---------------------------------------------------------------------------------------------
+//	Scene Texture Resources ---------------------------------------------------------------------------------------------
 
-void TurboApplicationDX12Renderer::CreateLevelTextureResources(std::shared_ptr<IGameLevel> level)
+void TurboApplicationDX12Renderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
 {
-	if (level == nullptr)
+	if (scene == nullptr)
 	{
 		return;
 	}
 
-	_levelTextureOffsets.clear();
-	_levelTextureTargetResources.clear();
-	_levelTextureSourceResources.clear();
+	//	Prepare data structures.
+	_sceneObjectTextureOffsets.clear();
+	_sceneTextureTargetResources.clear();
+	_sceneTextureSourceResources.clear();
 
-	auto scene = level->StaticScene();
-	if (scene != nullptr)
+	auto sceneObjects = scene->SceneObjects();
+
+	for (auto& sceneObject : sceneObjects)
 	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			LoadSceneObjectTextures(sceneObject);
-			//break;
-		}
+		LoadSceneObjectTextures(sceneObject);
 	}
 
-	scene = level->DynamicScene();
-	if (scene != nullptr)
-	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			LoadSceneObjectTextures(sceneObject);
-		}
-	}
-
-	_levelTextureCount = _levelTextureOffsets.size();
+	_sceneObjectTextureCount = _sceneObjectTextureOffsets.size();
 }
 
 void TurboApplicationDX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-	//  For now, just one level of scene objects.
 	std::string textureName = sceneObject->Material()->Texture()->Name();
 
 	//  Already loaded this texture? don't reload it.
-	if (_levelTextureOffsets.find(textureName) != _levelTextureOffsets.end())
+	if (_sceneObjectTextureOffsets.find(textureName) != _sceneObjectTextureOffsets.end())
 	{
 		return;
 	}
 
-	int textureOffset = _levelTextureOffsets.size();
-	_levelTextureOffsets[textureName] = textureOffset;
+	int textureOffset = _sceneObjectTextureOffsets.size();
+	_sceneObjectTextureOffsets[textureName] = textureOffset;
 
 	D3D12_RESOURCE_DESC textureResourceDesc = {};
 	std::vector<unsigned char> textureData;
@@ -551,8 +570,8 @@ void TurboApplicationDX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurb
 	textureTargetResource->SetName(L"Texture Buffer Target Resource");
 	textureSourceResource->SetName(L"Texture Buffer Source Resource");
 
-	_levelTextureTargetResources[textureName] = textureTargetResource;
-	_levelTextureSourceResources[textureName] = textureSourceResource;
+	_sceneTextureTargetResources[textureName] = textureTargetResource;
+	_sceneTextureSourceResources[textureName] = textureSourceResource;
 
 	//	Copy data to the intermediate upload heap, textureSourceResource, 
 	//	and then schedule a copy from the upload heap to the space allocated in GPU memory, 
@@ -822,7 +841,7 @@ void TurboApplicationDX12Renderer::LoadTextureData(
 	}
 }
 
-//	Level Assets -------------------------------------------------------------------------------------------------------
+//	Scene Assets -------------------------------------------------------------------------------------------------------
 
 void TurboApplicationDX12Renderer::CreateConstantBufferResources()
 {
@@ -839,7 +858,7 @@ void TurboApplicationDX12Renderer::CreateConstantBufferResources()
 	//		to a descriptor heap with descriptors that point to this heap resource.
 	CD3DX12_RESOURCE_DESC resourceDesc = 
 		CD3DX12_RESOURCE_DESC::Buffer(
-			(1 + DX::c_frameCount * _levelSceneObjectCount) * c_alignedConstantBufferSize);
+			(1 + DX::c_frameCount * _sceneObjectCount) * c_alignedConstantBufferSize);
 	
 	DX::ThrowIfFailed(_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -858,7 +877,7 @@ void TurboApplicationDX12Renderer::CreateCBVSRVDescriptorHeap()
 	//		and shader resources (textures).
 
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc = {};
-	descriptorHeapDesc.NumDescriptors = 1 + DX::c_frameCount * _levelSceneObjectCount + _levelTextureCount;
+	descriptorHeapDesc.NumDescriptors = 1 + DX::c_frameCount * _sceneObjectCount + _sceneObjectTextureCount;
 	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
 	//	This flag indicates that this descriptor heap can be bound to the 
@@ -884,7 +903,7 @@ void TurboApplicationDX12Renderer::CreateCBVDescriptors()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvCpuHandle(
 		_cbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	for (int n = 0; n < 1 + DX::c_frameCount * _levelSceneObjectCount; n++)
+	for (int n = 0; n < 1 + DX::c_frameCount * _sceneObjectCount; n++)
 	{
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
 		cbvDesc.BufferLocation = cbvGpuAddress;
@@ -905,21 +924,22 @@ void TurboApplicationDX12Renderer::CreateCBVDescriptors()
 		&readRange,
 		reinterpret_cast<void**>(&_constantBufferMappedResource)));
 	
-	ZeroMemory(_constantBufferMappedResource, (1 + DX::c_frameCount * _levelSceneObjectCount) * c_alignedConstantBufferSize);
+	ZeroMemory(_constantBufferMappedResource, (1 + DX::c_frameCount * _sceneObjectCount) * c_alignedConstantBufferSize);
 	// We don't unmap this until the app closes. Keeping things mapped for the lifetime of the resource is okay.
+	_constantBufferData = (SceneConstantBuffer*)_constantBufferMappedResource;
 }
 
 void TurboApplicationDX12Renderer::CreateSRVDescriptors()
 {
-	for (auto &levelTextureOffset : _levelTextureOffsets)
+	for (auto &sceneTextureOffset : _sceneObjectTextureOffsets)
 	{
-		std::string textureName = levelTextureOffset.first;
-		int textureOffset = levelTextureOffset.second;
-		auto levelTextureTargetResource = _levelTextureTargetResources[textureName];
+		std::string textureName = sceneTextureOffset.first;
+		int textureOffset = sceneTextureOffset.second;
+		auto sceneTextureTargetResource = _sceneTextureTargetResources[textureName];
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE srvCpuHandle(
 			_cbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-			1 + DX::c_frameCount * _levelSceneObjectCount + textureOffset,
+			1 + DX::c_frameCount * _sceneObjectCount + textureOffset,
 			_cbvSrvDescriptorSize);
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -929,7 +949,7 @@ void TurboApplicationDX12Renderer::CreateSRVDescriptors()
 		srvDesc.Texture2D.MipLevels = 1;
 
 		_device->CreateShaderResourceView(
-			levelTextureTargetResource.Get(), 
+			sceneTextureTargetResource.Get(), 
 			&srvDesc, 
 			srvCpuHandle);
 	}
@@ -981,7 +1001,7 @@ void TurboApplicationDX12Renderer::UpdateProjectionMatrix()
 	float fovAngleY = 70.0f * XM_PI / 180.0f;
 
 	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
-	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
+	_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
 
 	// This is a simple example of change that can be made when the app is in
 	// portrait or snapped view.
@@ -1008,31 +1028,42 @@ void TurboApplicationDX12Renderer::UpdateProjectionMatrix()
 	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
 
 	XMStoreFloat4x4(
-		&_constantBufferMappedResource[0].projection,
+		&_constantBufferData[0].Projection,
 		XMMatrixTranspose(perspectiveMatrix * orientationMatrix));
 
 	// Prepare to pass the updated model matrix to the shader.
-	XMStoreFloat4x4(&_constantBufferMappedResource[0].model, XMMatrixIdentity());
+	//DirectX::XMMATRIX model = DirectX::XMMATRIX(
+	//	1.0, 0.0, 0.0, 1.5,
+	//	0.0, 1.0, 0.0,-1.5,
+	//	0.0, 0.0, 1.0, 0.0,
+	//	0.0, 0.0, 0.0, 1.0);
+	//XMStoreFloat4x4(&_constantBufferMappedResource[0].model, model);
+
+	//	XMStoreFloat4x4(&_constantBufferData[0].model, XMMatrixIdentity());
 }
 
-void TurboApplicationDX12Renderer::UpdateViewMatrix(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement)
+void TurboApplicationDX12Renderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement)
 {
 	Vector3D position = cameraPlacement->Position();
 	Vector3D target = cameraPlacement->Target();
 	Vector3D up = cameraPlacement->Up();
+	Vector3D front = -cameraPlacement->Back();
 
-	XMVECTORF32 eyePosition = { (float)(position.X), (float)(position.Y), (float)(position.Z), 0.0f };
-	XMVECTORF32 focusPosition = { (float)(target.X), (float)(target.Y), (float)(target.Z), 0.0f };
-	XMVECTORF32 upDirection = { (float)(up.X), (float)(up.Y), (float)(up.Z), 0.0f };
+	XMVECTORF32 eyePosition = { (float)(position.X), (float)(position.Y), (float)(position.Z), 1.0f };
+	XMVECTORF32 focusPosition = { (float)(target.X), (float)(target.Y), (float)(target.Z), 1.0f };
+	XMVECTORF32 upDirection = { (float)(up.X), (float)(up.Y), (float)(up.Z), 1.0f };
+	XMVECTORF32 eyeDirection = { (float)(front.X), (float)(front.Y), (float)(front.Z), 1.0f };
 
-	XMStoreFloat4x4(&_constantBufferMappedResource[0].view,
-		XMMatrixTranspose(XMMatrixLookAtRH(eyePosition, focusPosition, upDirection)));
+	XMMATRIX lookAtRH = XMMatrixLookAtRH(eyePosition, focusPosition, upDirection);
+	XMMATRIX transpose = XMMatrixTranspose(lookAtRH);
 
-	// Update the constant buffer resource.
-	//UINT8* destination = _constantBufferMappedResource
-	//	+ (_deviceResources->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
+	XMVECTOR determinant; // = XMMatrixDeterminant(transpose);
+	XMMATRIX inverse = XMMatrixInverse(&determinant, lookAtRH);
 
-	//memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
+	XMStoreFloat4x4(&_constantBufferData->View, transpose);
+	XMStoreFloat4x4(&_constantBufferData->ViewInverseTranspose, inverse);
+	XMStoreFloat4(&_constantBufferData->Light, eyeDirection);
+	XMStoreFloat4(&_constantBufferData->Camera, eyeDirection);
 }
 
 void TurboApplicationDX12Renderer::InitializeRendering()
@@ -1054,7 +1085,7 @@ void TurboApplicationDX12Renderer::InitializeRendering()
 	// Set the viewport and scissor rectangle.
 	D3D12_VIEWPORT viewport = _deviceResources->GetScreenViewport();
 	_commandList->RSSetViewports(1, &viewport);
-	_commandList->RSSetScissorRects(1, &m_scissorRect);
+	_commandList->RSSetScissorRects(1, &_scissorRect);
 
 	// Indicate this resource will be in use as a render target.
 	CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
@@ -1075,68 +1106,72 @@ void TurboApplicationDX12Renderer::InitializeRendering()
 	CD3DX12_GPU_DESCRIPTOR_HANDLE samplerGpuHandle(
 		_samplerDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
-	_commandList->SetGraphicsRootDescriptorTable(2, samplerGpuHandle);
+	_commandList->SetGraphicsRootDescriptorTable(0, samplerGpuHandle);
 
 	//	Bind the scene constant buffer to the pipeline.
 	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvGpuHandle(
 		_cbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
-	_commandList->SetGraphicsRootDescriptorTable(0, cbvGpuHandle);
+	_commandList->SetGraphicsRootDescriptorTable(1, cbvGpuHandle);
 }
 
-void TurboApplicationDX12Renderer::PopulateCommandList(std::shared_ptr<IGameLevel> level)
+void TurboApplicationDX12Renderer::PopulateCommandList(std::shared_ptr<ITurboScene> scene)
 {
-	if (level == nullptr)
+	if (scene == nullptr)
 	{
 		return;
 	}
 
-	auto scene = level->StaticScene();
-	if (scene != nullptr)
+	auto sceneObjects = scene->SceneObjects();
+
+	for (auto& sceneObject : sceneObjects)
 	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			PopulateCommandList(sceneObject);
-		}
-	}
-
-	scene = level->DynamicScene();
-	if (scene != nullptr)
-	{
-		auto sceneObjects = scene->SceneObjects();
-
-		for (auto& sceneObject : sceneObjects)
-		{
-			PopulateCommandList(sceneObject);
-		}
+		PopulateCommandList(sceneObject);
 	}
 }
 
 void TurboApplicationDX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-	D3D12_VERTEX_BUFFER_VIEW *pVertexBufferView = &_levelVertexBufferViews[sceneObject];
-	D3D12_INDEX_BUFFER_VIEW *pIndexBufferView = &_levelIndexBufferViews[sceneObject];
+	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+
+	D3D12_VERTEX_BUFFER_VIEW *pVertexBufferView = &_sceneVertexBufferViews[mesh];
+	D3D12_INDEX_BUFFER_VIEW *pIndexBufferView = &_sceneIndexBufferViews[mesh];
 	
-	//int cbvOffset = _levelSceneObjectOffsets[sceneObject];
-	//int cbvIndex = 1 + _deviceResources->GetCurrentFrameIndex() * _levelSceneObjectCount + cbvOffset;
+	int cbvOffset = _sceneObjectOffsets[sceneObject];
+	int cbvIndex = 1 + _deviceResources->GetCurrentFrameIndex() * _sceneObjectCount + cbvOffset;
 
 	// Prepare to pass the updated model matrix to the shader.
-	//XMStoreFloat4x4(&_constantBufferMappedResource[cbvIndex].model, XMMatrixIdentity());
+	TurboMatrix4D transform = sceneObject->Placement()->Transform();
+	DirectX::XMMATRIX model = DirectX::XMMATRIX(
+		transform.M11, transform.M12, transform.M13, transform.M14,
+		transform.M21, transform.M22, transform.M23, transform.M24,
+		transform.M31, transform.M32, transform.M33, transform.M34,
+		transform.M41, transform.M42, transform.M43, transform.M44);
+
+	//  Transpose because DirectX (and Wikipedia, apparently) 
+	//	uses a transposed version compared to what I'm used to.
+	//	Is it a LH vs. RH thing?
+	XMMATRIX transpose = XMMatrixTranspose(model);
+
+	XMStoreFloat4x4(&_constantBufferMappedResource[cbvIndex].Model, transpose);
+
+	XMVECTOR determinant; // = XMMatrixDeterminant(transpose);
+	XMMATRIX inverse = XMMatrixInverse(&determinant, model);
+
+	XMStoreFloat4x4(&_constantBufferMappedResource[cbvIndex].ModelInverseTranspose, inverse);
 
 	std::string textureName = sceneObject->Material()->Texture()->Name();
 	
-	int srvOffset = _levelTextureOffsets[textureName];
-	int srvIndex = 1 + DX::c_frameCount * _levelSceneObjectCount + srvOffset;
+	int srvOffset = _sceneObjectTextureOffsets[textureName];
+	int srvIndex = 1 + DX::c_frameCount * _sceneObjectCount + srvOffset;
 
 	int indexCount = sceneObject->Mesh()->Triangles().size() * 3;
 
 	//	Create handles for root signature arguments.
-	//CD3DX12_GPU_DESCRIPTOR_HANDLE cbvGpuHandle(
-	//	_cbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(),
-	//	cbvIndex,
-	//	_cbvSrvDescriptorSize);
+	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvGpuHandle(
+		_cbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(),
+		cbvIndex,
+		_cbvSrvDescriptorSize);
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE srvGpuHandle(
 		_cbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), 
@@ -1144,8 +1179,8 @@ void TurboApplicationDX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSce
 		_cbvSrvDescriptorSize);
 
 	//  Set Root Signature Arguments.
-	//_commandList->SetGraphicsRootDescriptorTable(2, cbvGpuHandle);
-	_commandList->SetGraphicsRootDescriptorTable(1, srvGpuHandle);
+	_commandList->SetGraphicsRootDescriptorTable(2, cbvGpuHandle);
+	_commandList->SetGraphicsRootDescriptorTable(3, srvGpuHandle);
 
 	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	_commandList->IASetVertexBuffers(0, 1, pVertexBufferView);

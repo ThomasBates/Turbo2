@@ -97,3 +97,11 @@ Vector3D Vector3D::operator%(const Vector3D &v) const	//  cross product
 					Z * v.X - X * v.Z,
 					X * v.Y - Y * v.X);
 }
+
+Vector3D Vector3D::operator*(const TurboMatrix4D & m) const
+{
+	return Vector3D(
+		X * m.M11 + Y * m.M21 + Z * m.M31 + 1 * m.M41,
+		X * m.M12 + Y * m.M22 + Z * m.M32 + 1 * m.M42,
+		X * m.M13 + Y * m.M23 + Z * m.M33 + 1 * m.M43);
+}

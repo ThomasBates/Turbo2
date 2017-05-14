@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <TurboMatrix4D.h>
+
 struct Vector3D
 {
 	double X, Y, Z;
@@ -27,5 +29,7 @@ struct Vector3D
 
     double operator*(const Vector3D &v) const;   //  Dot product
 	Vector3D operator%(const Vector3D &v) const;  //  cross product
+	
+	Vector3D operator*(const TurboMatrix4D &m) const;  //  transform
 };
 

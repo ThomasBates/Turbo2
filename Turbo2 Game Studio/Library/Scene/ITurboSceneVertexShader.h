@@ -3,6 +3,6 @@
 class ITurboSceneVertexShader
 {
 public:
-	//  ITurboSceneObjectTexture Properties  ---------------------------------------------------------------------------
+	//  ITurboSceneVertexShader Properties  -------------------------------------------------------------------------------
 	virtual std::string Name() = 0;
 };

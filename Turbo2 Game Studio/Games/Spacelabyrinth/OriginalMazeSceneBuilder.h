@@ -18,12 +18,18 @@ private:
 	//	Local Support Methods  -----------------------------------------------------------------------------------------
 	void	BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> maze);
 
-	void	BuildCorner(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
-	void	BuildWEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
-	void	BuildHEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
-	void	BuildDEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> material);
-	void	BuildRightWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> leftMaterial, std::shared_ptr<ITurboSceneObjectMaterial> rightMaterial);
-	void	BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> topMaterial, std::shared_ptr<ITurboSceneObjectMaterial> bottomMaterial);
-	void	BuildFrontWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneObjectMaterial> backMaterial, std::shared_ptr<ITurboSceneObjectMaterial> frontMaterial);
+	std::shared_ptr<ITurboSceneMesh> BuildCornerMesh();
+	std::shared_ptr<ITurboSceneMesh> BuildEdgeMesh();
+	std::shared_ptr<ITurboSceneMesh> BuildRightWallMesh();
+	std::shared_ptr<ITurboSceneMesh> BuildBottomWallMesh();
+	std::shared_ptr<ITurboSceneMesh> BuildFrontWallMesh();
+
+	void	BuildCorner(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void	BuildWEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void	BuildHEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void	BuildDEdge(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void	BuildRightWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> leftMaterial, std::shared_ptr<ITurboSceneMaterial> rightMaterial);
+	void	BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> topMaterial, std::shared_ptr<ITurboSceneMaterial> bottomMaterial);
+	void	BuildFrontWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> backMaterial, std::shared_ptr<ITurboSceneMaterial> frontMaterial);
 };
 

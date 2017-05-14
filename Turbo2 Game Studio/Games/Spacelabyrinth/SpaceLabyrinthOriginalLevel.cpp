@@ -36,7 +36,7 @@ void SpaceLabyrinthOriginalLevel::Initialize()
 {
 	//	Create the scene
 	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder());
-	_staticScene = _sceneBuilder->BuildScene();
+	_scene = _sceneBuilder->BuildScene();
 
 	//  Create the player
 	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer());
@@ -44,7 +44,7 @@ void SpaceLabyrinthOriginalLevel::Initialize()
 	_player->Placement()->GoTo(GetSpawnPoint());
 
 	////	set player Placement as camera Placement.
-	_staticScene->CameraPlacement(_player->Placement());
+	_scene->CameraPlacement(_player->Placement());
 
 	//  Create NPC's and obstacles ...
 	//  ...
@@ -63,7 +63,7 @@ void SpaceLabyrinthOriginalLevel::Update(NavigationInfo navInfo)
 	//  Check for collisions
 	ProcessObjectInteractions(navInfo);
 
-	_staticScene->CameraPlacement(_player->Placement());
+	_scene->CameraPlacement(_player->Placement());
 }
 
 void SpaceLabyrinthOriginalLevel::Finalize()
@@ -86,7 +86,7 @@ void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions(NavigationInfo navIn
 	double deltaTime = navInfo.DeltaTime;
 
 	//  Player-Maze Interactions
-	std::shared_ptr<ITurboSceneObjectPlacement> placement = _player->Placement();
+	std::shared_ptr<ITurboScenePlacement> placement = _player->Placement();
 	Vector3D oldPosition = placement->Position();
 	Vector3D velocity = placement->Velocity();
 	Vector3D angularVelocity = placement->AngularVelocity();
@@ -100,7 +100,7 @@ void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions(NavigationInfo navIn
 
 	Vector3D newPosition = oldPosition + velocity * deltaTime;
 
-	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _staticScene->SceneObjects();
+	std::vector<std::shared_ptr<ITurboSceneObject>> sceneObjects = _scene->SceneObjects();
 
 	int sceneObjectsCount = sceneObjects.size();
 
@@ -121,10 +121,10 @@ void SpaceLabyrinthOriginalLevel::ProcessObjectInteractions(NavigationInfo navIn
 
 	if (nearestDistance < 10000.0) 
 	{
-		Vector3D v = velocity * bounciness;
+		Vector3D v = velocity * 0.75;
 		Vector3D n = -nearestNormal * (-nearestNormal * v);
 		Vector3D t = v - n;
-		velocity = t - n;
+		velocity = t - n * 0.5;
 
 		newPosition = oldPosition + velocity * deltaTime;
 	}

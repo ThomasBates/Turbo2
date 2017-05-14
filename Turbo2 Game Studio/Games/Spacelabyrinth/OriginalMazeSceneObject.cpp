@@ -1,0 +1,370 @@
+
+#include "pch.h"
+
+#include <CubicMaze.h>
+#include <OriginalMazeSceneObject.h>
+#include <TurboSceneMesh.h>
+
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
+
+OriginalMazeSceneObject::OriginalMazeSceneObject(std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+{
+	Mesh(mesh);
+	Material(material);
+}
+
+//  Constructors and Destructors  --------------------------------------------------------------------------------------
+//  ITurboSceneObject Methods  -----------------------------------------------------------------------------------------
+
+bool OriginalMazeSceneObject::IsTouching(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	if (mesh == nullptr)
+	{
+		return false;
+	}
+
+	TurboMatrix4D inverse = Placement()->Inverse();
+
+	//  transform fromPoint and toPoint into model space.
+	Vector3D modelFromPoint = fromPoint * inverse;
+	Vector3D modelToPoint = toPoint * inverse;
+
+	/*
+	double nearestDistance = 1e+10;
+	Vector3D nearestIntersection = Vector3D(1e+10, 1e+10, 1e+10);
+
+	for (auto& triangle : mesh->Triangles())
+	{
+		Vector3D p1 = mesh->Vertices()[triangle.Vertex1].Position;
+		Vector3D p2 = mesh->Vertices()[triangle.Vertex2].Position;
+		Vector3D p3 = mesh->Vertices()[triangle.Vertex3].Position;
+
+		//	From http://geomalgorithms.com/a05-_intersect-1.html
+
+		// normal from cross product of clockwise points
+		Vector3D n = ((p1 - p2) % (p3 - p2)).Normalize();
+		Vector3D v = p2 + n * buffer;
+		Vector3D u = modelToPoint - modelFromPoint;
+		Vector3D w = modelFromPoint - v;
+
+		double n_dot_u = n * u;
+		double n_dot_w = n * w;
+
+		if (n_dot_u == 0.0)
+		{
+			//	The line is parallel to the plane.
+			continue;
+		}
+
+		double sI = -n_dot_w / n_dot_u;
+
+		Vector3D pI = modelFromPoint + u * sI;	//	intersection point.
+	}
+	*/
+
+	bool result = false;
+
+	double nearestDistance = 0.0;
+	Vector3D nearestContact;
+	Vector3D nearestNormal;
+
+	double distance;
+	Vector3D contact;
+	Vector3D normal;
+
+	if (IsTouchingLeftSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (IsTouchingFrontSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (IsTouchingTopSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (IsTouchingBottomSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (IsTouchingBackSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (IsTouchingFrontSideOfWall(modelFromPoint, modelToPoint, buffer, &contact, &normal))
+	{
+		distance = (contact - modelFromPoint).Length();
+
+		if ((!result) || (distance < nearestDistance))
+		{
+			nearestDistance = distance;
+			nearestContact = contact;
+			nearestNormal = normal;
+			result = true;
+		}
+	}
+
+	if (result)
+	{
+		TurboMatrix4D transform = Placement()->Transform();
+
+		*pContact = nearestContact * transform;
+
+		transform = transform.Translate(-(Placement()->Position()));
+
+		*pNormal = nearestNormal * transform;
+	}
+	
+	return result;
+}
+
+//  ITurboSceneObject Methods  -----------------------------------------------------------------------------------------
+//  Local Support Methods  ---------------------------------------------------------------------------------------------
+
+bool OriginalMazeSceneObject::IsTouchingLeftSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.X - min.X) > CELLSIZE) ||
+		(abs(toPoint.X - max.X) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.X <= toPoint.X) &&	//	moving in +X direction
+		(fromPoint.X <= min.X) &&		//	fromPoint has not entered wall
+		(toPoint.X + buffer >= min.X))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.X - fromPoint.X) / (min.X - buffer - fromPoint.X);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(-1.0, 0.0, 0.0);
+
+		if ((pContact->Y + WALLSIZE >= min.Y) && (pContact->Y - WALLSIZE <= max.Y) &&
+			(pContact->Z + WALLSIZE >= min.Z) && (pContact->Z - WALLSIZE <= max.Z))
+		{
+			return true;
+		}
+
+		//if ((pContact->Y + buffer >= min.Y) && (pContact->Y - buffer <= max.Y) &&
+		//	(pContact->Z + buffer >= min.Z) && (pContact->Z - buffer <= max.Z))
+		//{
+		//	return true;
+		//}
+	}
+
+	return false;
+}
+
+bool OriginalMazeSceneObject::IsTouchingRightSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.X - min.X) > CELLSIZE) ||
+		(abs(toPoint.X - max.X) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.X >= toPoint.X) &&	//	moving in -X direction
+		(fromPoint.X >= max.X) &&		//	fromPoint has not entered wall
+		(toPoint.X - buffer <= max.X))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.X - fromPoint.X) / (max.X - buffer - fromPoint.X);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(1.0, 0.0, 0.0);
+
+		if ((pContact->Y + WALLSIZE >= min.Y) && (pContact->Y - WALLSIZE <= max.Y) &&
+			(pContact->Z + WALLSIZE >= min.Z) && (pContact->Z - WALLSIZE <= max.Z))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool OriginalMazeSceneObject::IsTouchingTopSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.Y - min.Y) > CELLSIZE) ||
+		(abs(toPoint.Y - max.Y) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.Y >= toPoint.Y) &&	//	moving in -Y direction
+		(fromPoint.Y >= max.Y) &&		//	fromPoint has not entered wall
+		(toPoint.Y - buffer <= max.Y))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.Y - fromPoint.Y) / (max.Y - fromPoint.Y);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(0.0, 1.0, 0.0);
+
+		if ((pContact->Z + WALLSIZE >= min.Z) && (pContact->Z - WALLSIZE <= max.Z) &&
+			(pContact->X + WALLSIZE >= min.X) && (pContact->X - WALLSIZE <= max.X))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool OriginalMazeSceneObject::IsTouchingBottomSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.Y - min.Y) > CELLSIZE) ||
+		(abs(toPoint.Y - max.Y) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.Y <= toPoint.Y) &&	//	moving in +Y direction
+		(fromPoint.Y <= min.Y) &&		//	fromPoint has not entered wall
+		(toPoint.Y + buffer >= min.Y))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.Y - fromPoint.Y) / (min.Y - buffer - fromPoint.Y);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(0.0, -1.0, 0.0);
+
+		if ((pContact->Z + WALLSIZE >= min.Z) && (pContact->Z - WALLSIZE <= max.Z) &&
+			(pContact->X + WALLSIZE >= min.X) && (pContact->X - WALLSIZE <= max.X))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool OriginalMazeSceneObject::IsTouchingBackSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.Z - min.Z) > CELLSIZE) ||
+		(abs(toPoint.Z - max.Z) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.Z >= toPoint.Z) &&	//	moving in -Z direction
+		(fromPoint.Z >= max.Z) &&		//	fromPoint has not entered wall
+		(toPoint.Z - buffer <= max.Z))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.Z - fromPoint.Z) / (min.Z - buffer - fromPoint.Z);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(0.0, 0.0, 1.0);
+
+		if ((pContact->X + WALLSIZE >= min.X) && (pContact->X - WALLSIZE <= max.X) &&
+			(pContact->Y + WALLSIZE >= min.Y) && (pContact->Y - WALLSIZE <= max.Y))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool OriginalMazeSceneObject::IsTouchingFrontSideOfWall(Vector3D fromPoint, Vector3D toPoint, double buffer, Vector3D *pContact, Vector3D *pNormal)
+{
+	std::shared_ptr<ITurboSceneMesh> mesh = Mesh();
+
+	Vector3D min = mesh->MinExtent();
+	Vector3D max = mesh->MaxExtent();
+
+	if ((abs(toPoint.Z - min.Z) > CELLSIZE) ||
+		(abs(toPoint.Z - max.Z) > CELLSIZE))
+	{
+		return false;
+	}
+
+	if ((fromPoint.Z <= toPoint.Z) &&	//	moving in +Z direction
+		(fromPoint.Z <= min.Z) &&		//	fromPoint has not entered wall
+		(toPoint.Z + buffer >= min.Z))	//	toPoint has entered buffer zone
+	{
+		double factor = (toPoint.Z - fromPoint.Z) / (min.Z - buffer - fromPoint.Z);
+
+		*pContact = fromPoint + (toPoint - fromPoint) * factor;
+		*pNormal = Vector3D(0.0, 0.0, -1.0);
+
+		if ((pContact->X + WALLSIZE >= min.X) && (pContact->X - WALLSIZE <= max.X) &&
+			(pContact->Y + WALLSIZE >= min.Y) && (pContact->Y - WALLSIZE <= max.Y))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//  Local Support Methods  ---------------------------------------------------------------------------------------------

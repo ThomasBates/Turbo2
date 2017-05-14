@@ -1,54 +1,89 @@
 
 #include <ShaderStructures.hlsli>
 
+//	HLSL Introduction (including Diffuse Color, Diffuse and Specular, Draw Texture)
+//	http://www.neatware.com/lbstudio/web/hlsl.html
+
 // A constant buffer that stores the three basic column-major matrices for composing geometry.
 cbuffer SceneConstantBuffer : register(b0)
 {
 	matrix sceneProjection;
 	matrix sceneView;
-	matrix sceneModel;
+	matrix sceneViewInverseTranspose;
+	float4 sceneLightVector;
+	float4 sceneCameraVector;
 };
-//
-//// Per-vertex data used as input to the vertex shader.
-//struct VertexShaderInput
-//{
-//	float3 pos : POSITION;
-//	//float3 normal : NORMAL;
-//	float2 textureuv : TEXCOORD0;
-//};
-//
-//// Per-pixel color data passed through the pixel shader.
-//struct PixelShaderInput
-//{
-//	float4 pos : SV_POSITION;
-//	float2 textureuv : TEXCOORD0;
-//};
 
-
-/*
 cbuffer SceneObjectConstantBuffer : register(b1)
 {
-	matrix sceneObjectProjection;
-	matrix sceneObjectView;
 	matrix sceneObjectModel;
+	matrix sceneObjectModelInverseTranspose;
 };
-*/
+
 
 // Simple shader to do vertex processing on the GPU.
 PixelShaderInput main(VertexShaderInput input)
 {
 	PixelShaderInput output;
-	float4 pos = float4(input.position, 1.0f);
+	float4 position = float4(input.position, 1.0f);
 
 	// Transform the vertex position into projected space.
-	pos = mul(pos, sceneModel);
-	pos = mul(pos, sceneView);
-	pos = mul(pos, sceneProjection);
-	output.position = pos;
+	position = mul(position, sceneObjectModel);
+	position = mul(position, sceneView);
+	output.position = mul(position, sceneProjection);
 
-	// Pass the color through without modification.
-	//output.normal = float4(input.normal, 0.0f);
+	float litArea = 0.5;
+
+	float distance = length(position);
+	float power = 1.0;
+	if (distance > 1.0 + litArea)
+	{
+		power = 1.0 / (distance - litArea);
+		power = pow(power, 3);
+	}
+
+	output.color = float4(power, power, power, 1.0f);
+
+	// Pass the texture coordinates through without modification.
 	output.texcoord = input.texcoord;
 
 	return output;
 }
+
+/*
+
+float4 normal = float4(input.normal, 0.0f);
+normal = mul(normal, sceneObjectModel);
+normal = mul(normal, sceneView);
+normal = normalize(normal);
+
+float4 light = sceneLightVector;
+light = normalize(position);
+
+float4 eye = sceneCameraVector;
+eye = normalize(position);
+
+//float4 light = normalize(sceneLightVector);
+//float4 eye = sceneCameraVector;
+float4 vhalf = normalize(light + eye);
+//float4 vhalf = normalize(position);
+
+float diffuse = dot(normal, -light);
+float specular = dot(normal, vhalf);
+specular = pow(specular, 32);
+
+float4 diffuseMaterial = float4(0.5, 0.5, 1.0, 1.0);
+float4 specularMaterial = float4(0.5, 0.5, 1.0, 1.0);
+
+//output.color = diffuse * diffuseMaterial + specular * specularMaterial;
+//output.color = diffuse + specular;
+//output.color = diffuse;
+
+// Pass the texture coordinates through without modification.
+output.texcoord = input.texcoord;
+
+//output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+//output.color = normal * 0.25 + float4(0.5f, 0.5f, 0.5f, 1.0f);
+//abs(normal.x), abs(normal.y), abs(normal.z), 1.0f);
+
+*/

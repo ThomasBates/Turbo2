@@ -2,27 +2,32 @@
 
 namespace Application_DX12
 {
-	// Constant buffer used to send MVP matrices to the vertex shader.
-	struct ProjectionViewModelConstantBuffer
+	// Constant buffer used to send scene matrices to the vertex shader.
+	struct SceneConstantBuffer
 	{
-		DirectX::XMFLOAT4X4 projection;
-		DirectX::XMFLOAT4X4 view;
-		DirectX::XMFLOAT4X4 model;
-		DirectX::XMFLOAT4X4 filler;
+		DirectX::XMFLOAT4X4 Projection;
+		DirectX::XMFLOAT4X4 View;
+		DirectX::XMFLOAT4X4 ViewInverseTranspose;
+		DirectX::XMFLOAT4 Light;
+		DirectX::XMFLOAT4 Camera;
+		DirectX::XMFLOAT4 __filler1;
+		DirectX::XMFLOAT4 __filler2;
 	};
 
-	// Used to send per-vertex data to the vertex shader.
-	//struct VertexPositionColor
-	//{
-	//	DirectX::XMFLOAT3 pos;
-	//	DirectX::XMFLOAT3 color;
-	//};
+	// Constant buffer used to send model matrices to the vertex shader.
+	struct SceneObjectConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 Model;
+		DirectX::XMFLOAT4X4 ModelInverseTranspose;
+		DirectX::XMFLOAT4X4 __filler1;
+		DirectX::XMFLOAT4X4 __filler2;
+	};
 
 	// Used to send per-vertex data to the vertex shader.
 	struct ShaderVertex
 	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT3 normal;
-		DirectX::XMFLOAT2 texture;
+		DirectX::XMFLOAT3 Position;
+		DirectX::XMFLOAT3 Normal;
+		DirectX::XMFLOAT2 Texture;
 	};
 }

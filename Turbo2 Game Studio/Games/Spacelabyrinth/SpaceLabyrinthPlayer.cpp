@@ -2,14 +2,14 @@
 #include "pch.h"
 
 #include <ITurboSceneObject.h>
-#include <ITurboSceneObjectPlacement.h>
-#include <TurboSceneObjectPlacement.h>
+#include <ITurboScenePlacement.h>
+#include <TurboScenePlacement.h>
 
 #include <SpaceLabyrinthPlayer.h>
 
 SpaceLabyrinthPlayer::SpaceLabyrinthPlayer()
 {
-	_placement = std::shared_ptr<ITurboSceneObjectPlacement>(new TurboSceneObjectPlacement());
+	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
 void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
@@ -29,6 +29,7 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 
 	Vector3D velocity = _placement->Velocity();
 
+	//	If no movement inputs, slow down, hover, and fall (if enabled).
 	if (!(navInfo.MoveLeft ||
 		navInfo.MoveRight ||
 		navInfo.MoveDown ||
@@ -46,7 +47,7 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 		velocity.Y -= deltaTime * cGravityFactor;
 	}
 
-
+	//	Handle keyboard movement inputs.
 	if (navInfo.MoveLeft)	velocity -= _placement->Right() * moveSpeed;
 	if (navInfo.MoveRight)	velocity += _placement->Right() * moveSpeed;
 	if (navInfo.MoveDown)	velocity -= _placement->Up()    * moveSpeed;
@@ -60,13 +61,14 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 
 	Vector3D angularVelocity = _placement->AngularVelocity();
 
+	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
 	if (!(navInfo.Pointer ||
 		navInfo.PitchFore ||
 		navInfo.PitchBack ||
 		navInfo.YawRight ||
 		navInfo.YawLeft ||
-		navInfo.RollLeft ||
-		navInfo.RollRight))
+		navInfo.RollRight ||
+		navInfo.RollLeft))
 	{
 		angularVelocity -= angularVelocity * 1.0f * deltaTime;
 
@@ -75,24 +77,25 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 		angularVelocity.X -= _placement->Back().Y * cSelfRightingSpeed * deltaTime;
 	}
 
+	//	Handle mouse direction inputs
 	if (navInfo.Pointer && _lastNavInfo.Pointer)
 	{
 		double dx = navInfo.PointerX - _lastNavInfo.PointerX;
 		double dy = navInfo.PointerY - _lastNavInfo.PointerY;
 
-		angularVelocity.X = dy / deltaTime;
+		angularVelocity.X = -dy / deltaTime;
 		angularVelocity.Y = -dx / deltaTime;
 	}
 
 	_lastNavInfo = navInfo;
 
-
+	//	Handle keyboard direction inputs.
 	if (navInfo.PitchFore)	angularVelocity.X -= rotateSpeed;
 	if (navInfo.PitchBack)	angularVelocity.X += rotateSpeed;
 	if (navInfo.YawRight)	angularVelocity.Y -= rotateSpeed;
 	if (navInfo.YawLeft)	angularVelocity.Y += rotateSpeed;
-	if (navInfo.RollLeft)	angularVelocity.Z -= rotateSpeed;
-	if (navInfo.RollRight)	angularVelocity.Z += rotateSpeed;
+	if (navInfo.RollRight)	angularVelocity.Z -= rotateSpeed;
+	if (navInfo.RollLeft)	angularVelocity.Z += rotateSpeed;
 
 	_placement->AngularVelocity(angularVelocity);
 }

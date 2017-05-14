@@ -126,27 +126,6 @@
     <ClCompile Include="..\..\Library\Scene\TurboSceneObject.cpp">
       <Filter>Library\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectMesh.cpp">
-      <Filter>Library\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectPlacement.cpp">
-      <Filter>Library\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectTexture.cpp">
-      <Filter>Library\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalMazeCornerObject.cpp">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalMazeEdgeObject.cpp">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalMazeWallObject.cpp">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Library\Scene\TurboSceneObjectMaterial.cpp">
-      <Filter>Library\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Library\Scene\TurboScenePixelShader.cpp">
       <Filter>Library\Scene</Filter>
     </ClCompile>
@@ -158,6 +137,33 @@
     </ClCompile>
     <ClCompile Include="..\..\Library\Application\ApplicationState.cpp">
       <Filter>Library\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeCornerMesh.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneMaterial.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneMesh.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboScenePlacement.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Scene\TurboSceneTexture.cpp">
+      <Filter>Library\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeEdgeMesh.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeWallMesh.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\OriginalMazeSceneObject.cpp">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\Graphics\TurboMatrix4D.cpp">
+      <Filter>Library\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -237,9 +243,6 @@
     <ClInclude Include="..\..\Library\ApplicationDX12\TurboApplicationDX12NavigationControl.h">
       <Filter>Library\ApplicationDX12</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectTexture.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Library\Scene\ITurboScene.h">
       <Filter>Library\Scene</Filter>
     </ClInclude>
@@ -249,37 +252,7 @@
     <ClInclude Include="..\..\Library\Scene\ITurboSceneObject.h">
       <Filter>Library\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectMesh.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectPlacement.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectTexture.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Library\Scene\TurboSceneObject.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectMesh.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectPlacement.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalMazeCornerObject.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalMazeEdgeObject.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalMazeWallObject.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\ITurboSceneObjectMaterial.h">
-      <Filter>Library\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Library\Scene\TurboSceneObjectMaterial.h">
       <Filter>Library\Scene</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\Scene\ITurboSceneVertexShader.h">
@@ -308,6 +281,45 @@
     </ClInclude>
     <ClInclude Include="..\..\Library\Application\ApplicationState.h">
       <Filter>Library\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeCornerMesh.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneMesh.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneMaterial.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboScenePlacement.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\ITurboSceneTexture.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneMaterial.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneMesh.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboScenePlacement.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Scene\TurboSceneTexture.h">
+      <Filter>Library\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeEdgeMesh.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeWallMesh.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\OriginalMazeSceneObject.h">
+      <Filter>Games\SpaceLabyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\Graphics\TurboMatrix4D.h">
+      <Filter>Library\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,20 +2,19 @@
 #include "pch.h"
 
 #include <TurboSceneObject.h>
-//#include <TurboSceneObjectPlacement.h>
+#include <TurboScenePlacement.h>
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------
 
 TurboSceneObject::TurboSceneObject()
 {
-	//_mesh = mesh;
-	//_placement = std::shared_ptr<ITurboSceneObjectPlacement>(new TurboSceneObjectPlacement());
+	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
-TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneObjectMesh> mesh)
+TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)
 {
 	_mesh = mesh;
-	//_placement = std::shared_ptr<ITurboSceneObjectPlacement>(new TurboSceneObjectPlacement());
+	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
 //  Constructors and Destructors  --------------------------------------------------------------------------------------

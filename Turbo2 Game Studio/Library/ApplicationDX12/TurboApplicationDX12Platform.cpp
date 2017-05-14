@@ -6,7 +6,7 @@
 #include <TurboApplicationDX12Renderer.h>
 #include <TurboApplicationDX12NavigationController.h>
 
-#include <ITurboSceneObjectMesh.h>
+#include <ITurboSceneMesh.h>
 
 #include <ApplicationState.h>
 
@@ -42,14 +42,14 @@ void TurboApplicationDX12Platform::Update()
 
 	if (_program->SceneChanged())
 	{
-		_sceneRenderer = nullptr;
-		GetSceneRenderer()->LoadLevelResources(_program);
+		//_sceneRenderer = nullptr;
+		GetSceneRenderer()->LoadSceneResources(_program->Scene());
 	}
 }
 
 void TurboApplicationDX12Platform::Render()
 {
-	GetSceneRenderer()->RenderLevel(_program);
+	GetSceneRenderer()->RenderScene(_program->Scene());
 }
 
 void TurboApplicationDX12Platform::SaveState()

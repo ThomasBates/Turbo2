@@ -13,7 +13,7 @@ public:
 	virtual void	ValidateDevice() = 0;
 	virtual bool	NeedsReset() = 0;
 
-	virtual bool	LoadLevelResources(std::shared_ptr<IGameLevel> level) = 0;
-	virtual bool	RenderLevel(std::shared_ptr<IGameLevel> level) = 0;
+	virtual bool	LoadSceneResources(std::shared_ptr<ITurboScene> scene) = 0;
+	virtual bool	RenderScene(std::shared_ptr<ITurboScene> scene) = 0;
 };
 

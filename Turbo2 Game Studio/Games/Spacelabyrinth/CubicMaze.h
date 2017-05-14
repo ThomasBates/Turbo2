@@ -74,6 +74,6 @@ public:
 
 
 #define CELLSIZE ((float)2.0)
-#define OFFSET   ((float)0.0)
 #define CELLHALF ((float)1.0)
+#define WALLSIZE ((float)0.2)
 #define WALLHALF ((float)0.1)

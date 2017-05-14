@@ -34,14 +34,9 @@ void SpaceLabyrinth::State(std::shared_ptr<IApplicationState> state)
 	_level->State(state);
 }
 
-std::shared_ptr<ITurboScene> SpaceLabyrinth::StaticScene()
+std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
 {
-	return _level->StaticScene();
-}
-
-std::shared_ptr<ITurboScene> SpaceLabyrinth::DynamicScene()
-{
-	return _level->DynamicScene();
+	return _level->Scene();
 }
 
 //  IGameLevel Properties  ---------------------------------------------------------------------------------------------

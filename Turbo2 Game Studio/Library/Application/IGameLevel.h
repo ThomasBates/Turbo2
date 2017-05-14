@@ -16,8 +16,7 @@ public:
 	virtual std::shared_ptr<IApplicationState> State() = 0;
 	virtual void State(std::shared_ptr<IApplicationState> state) = 0;
 
-	virtual std::shared_ptr<ITurboScene> StaticScene() = 0;
-	virtual std::shared_ptr<ITurboScene> DynamicScene() = 0;
+	virtual std::shared_ptr<ITurboScene> Scene() = 0;
 
 	virtual bool SceneChanged() = 0;
 

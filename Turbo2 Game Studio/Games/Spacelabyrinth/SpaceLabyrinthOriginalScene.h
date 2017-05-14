@@ -9,7 +9,7 @@ class SpaceLabyrinthOriginalScene : public ITurboScene
 {
 private:
 	std::vector<std::shared_ptr<ITurboSceneObject>> _sceneObjects;
-	std::shared_ptr<ITurboSceneObjectPlacement>		_cameraPlacement;
+	std::shared_ptr<ITurboScenePlacement>			_cameraPlacement;
 
 public:
 	//  Constructors and Destructors  ----------------------------------------------------------------------------------
@@ -19,8 +19,8 @@ public:
 	//  ITurboScene Properties  ----------------------------------------------------------------------------------------
 	virtual std::vector<std::shared_ptr<ITurboSceneObject>> SceneObjects() { return _sceneObjects; }
 
-	virtual std::shared_ptr<ITurboSceneObjectPlacement> CameraPlacement() { return _cameraPlacement; }
-	virtual void CameraPlacement(std::shared_ptr<ITurboSceneObjectPlacement> cameraPlacement) { _cameraPlacement = cameraPlacement; }
+	virtual std::shared_ptr<ITurboScenePlacement> CameraPlacement() { return _cameraPlacement; }
+	virtual void CameraPlacement(std::shared_ptr<ITurboScenePlacement> cameraPlacement) { _cameraPlacement = cameraPlacement; }
 
 	//  ITurboScene Methods  -------------------------------------------------------------------------------------------
 	virtual void AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);

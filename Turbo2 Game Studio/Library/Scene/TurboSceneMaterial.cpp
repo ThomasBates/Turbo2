@@ -1,17 +1,17 @@
 
 #include "pch.h"
 
-#include <TurboSceneObjectMaterial.h>
-#include <TurboSceneObjectTexture.h>
+#include <TurboSceneMaterial.h>
+#include <TurboSceneTexture.h>
 #include <TurboScenePixelShader.h>
 #include <TurboSceneVertexShader.h>
 
-TurboSceneObjectMaterial::TurboSceneObjectMaterial(
+TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor meshColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
 	float specularExponent,
-	std::shared_ptr<ITurboSceneObjectTexture> texture,
+	std::shared_ptr<ITurboSceneTexture> texture,
 	std::shared_ptr<ITurboSceneVertexShader> vertexShader,
 	std::shared_ptr<ITurboScenePixelShader> pixelShader)
 {
@@ -25,7 +25,7 @@ TurboSceneObjectMaterial::TurboSceneObjectMaterial(
 	_pixelShader = pixelShader;
 }
 
-TurboSceneObjectMaterial::TurboSceneObjectMaterial(
+TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor meshColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
@@ -39,7 +39,7 @@ TurboSceneObjectMaterial::TurboSceneObjectMaterial(
 	_specularColor = specularColor;
 	_specularExponent = specularExponent;
 
-	_texture = std::shared_ptr<ITurboSceneObjectTexture>(new TurboSceneObjectTexture(textureName));
+	_texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
 	_vertexShader = std::shared_ptr<ITurboSceneVertexShader>(new TurboSceneVertexShader(vertexShaderName));
 	_pixelShader = std::shared_ptr<ITurboScenePixelShader>(new TurboScenePixelShader(pixelShaderName));
 }

@@ -1,22 +1,22 @@
 #pragma once
 
-#include <ITurboSceneObjectMaterial.h>
+#include <ITurboSceneMaterial.h>
 #include <ITurboScenePixelShader.h>
 #include <ITurboSceneVertexShader.h>
 
-class TurboSceneObjectMaterial : public ITurboSceneObjectMaterial
+class TurboSceneMaterial : public ITurboSceneMaterial
 {
 public:
 	//  Constructors and Destructors  ----------------------------------------------------------------------------------
-	TurboSceneObjectMaterial(
+	TurboSceneMaterial(
 		TurboColor meshColor,
 		TurboColor diffuseColor,
 		TurboColor specularColor,
 		float specularExponent,
-		std::shared_ptr<ITurboSceneObjectTexture> texture,
+		std::shared_ptr<ITurboSceneTexture> texture,
 		std::shared_ptr<ITurboSceneVertexShader> vertexShader,
 		std::shared_ptr<ITurboScenePixelShader> pixelShader);
-	TurboSceneObjectMaterial(
+	TurboSceneMaterial(
 		TurboColor meshColor,
 		TurboColor diffuseColor,
 		TurboColor specularColor,
@@ -38,8 +38,8 @@ public:
 	virtual float SpecularExponent() { return _specularExponent; }
 	virtual void SpecularExponent(float specularExponent) { _specularExponent = specularExponent; }
 
-	virtual std::shared_ptr<ITurboSceneObjectTexture> Texture() { return _texture; }
-	virtual void Texture(std::shared_ptr<ITurboSceneObjectTexture> texture) { _texture = texture; }
+	virtual std::shared_ptr<ITurboSceneTexture> Texture() { return _texture; }
+	virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) { _texture = texture; }
 
 	virtual std::shared_ptr<ITurboSceneVertexShader> VertexShader() { return _vertexShader; }
 	virtual void VertexShader(std::shared_ptr<ITurboSceneVertexShader> vertexShader) { _vertexShader = vertexShader; }
@@ -54,7 +54,7 @@ private:
 	TurboColor _diffuseColor;
 	TurboColor _specularColor;
 	float _specularExponent;
-	std::shared_ptr<ITurboSceneObjectTexture> _texture;
+	std::shared_ptr<ITurboSceneTexture> _texture;
 	std::shared_ptr<ITurboSceneVertexShader> _vertexShader;
 	std::shared_ptr<ITurboScenePixelShader> _pixelShader;
 };

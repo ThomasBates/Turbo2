@@ -2,13 +2,13 @@
 
 #include<pch.h>
 
-#include <ITurboSceneObjectTexture.h>
+#include <ITurboSceneTexture.h>
 #include <ITurboScenePixelShader.h>
 #include <ITurboSceneVertexShader.h>
 
 #include <TurboColor.h>
 
-class ITurboSceneObjectMaterial
+class ITurboSceneMaterial
 {
 public:
 	virtual TurboColor MeshColor() = 0;
@@ -23,8 +23,8 @@ public:
 	virtual float SpecularExponent() = 0;
 	virtual void SpecularExponent(float specularExponent) = 0;
 
-	virtual std::shared_ptr<ITurboSceneObjectTexture> Texture() = 0;
-	virtual void Texture(std::shared_ptr<ITurboSceneObjectTexture> texture) = 0;
+	virtual std::shared_ptr<ITurboSceneTexture> Texture() = 0;
+	virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) = 0;
 
 	virtual std::shared_ptr<ITurboSceneVertexShader> VertexShader() = 0;
 	virtual void VertexShader(std::shared_ptr<ITurboSceneVertexShader> vertexShader) = 0;

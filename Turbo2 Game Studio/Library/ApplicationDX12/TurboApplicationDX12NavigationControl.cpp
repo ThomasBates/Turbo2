@@ -127,9 +127,9 @@ void TurboApplicationDX12NavigationControl::OnKeyDown(_In_ CoreWindow^ sender, _
 	Windows::System::VirtualKey key = args->VirtualKey;
 
 	// Figure out the command from the keyboard.
-	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
-		_navInfo.PitchFore = true;
 	if ((key == VirtualKey::Down) || (key == VirtualKey::S))
+		_navInfo.PitchFore = true;
+	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
 		_navInfo.PitchBack = true;
 	if ((key == VirtualKey::Left) || (key == VirtualKey::A))
 		_navInfo.YawLeft = true;
@@ -154,9 +154,9 @@ void TurboApplicationDX12NavigationControl::OnKeyUp(_In_ CoreWindow^ sender, _In
 	key = args->VirtualKey;
 
 	// Figure out the command from the keyboard.
-	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
-		_navInfo.PitchFore = false;
 	if ((key == VirtualKey::Down) || (key == VirtualKey::S))
+		_navInfo.PitchFore = false;
+	if ((key == VirtualKey::Up) || (key == VirtualKey::W))
 		_navInfo.PitchBack = false;
 	if ((key == VirtualKey::Left) || (key == VirtualKey::A))
 		_navInfo.YawLeft = false;

@@ -1,11 +1,11 @@
 
 #include <pch.h>
 
-#include <TurboSceneObjectMesh.h>
+#include <TurboSceneMesh.h>
 
-void TurboSceneObjectMesh::AddVertex(Vector3D position, Vector3D normal, Vector2D textureUV)
+void TurboSceneMesh::AddVertex(Vector3D position, Vector3D normal, Vector2D textureUV)
 {
-	TurboSceneObjectVertex vertex;
+	TurboSceneVertex vertex;
 	
 	vertex.Position = position;
 	vertex.Normal = normal;
@@ -22,9 +22,9 @@ void TurboSceneObjectMesh::AddVertex(Vector3D position, Vector3D normal, Vector2
 	if (_maxExtent.Z < position.Z)	_maxExtent.Z = position.Z;
 }
 
-void TurboSceneObjectMesh::AddTriangle(int vertex1, int vertex2, int vertex3)
+void TurboSceneMesh::AddTriangle(int vertex1, int vertex2, int vertex3)
 {
-	TurboSceneObjectTriangle triangle;
+	TurboSceneTriangle triangle;
 
 	int vertexCount = _vertices.size();
 

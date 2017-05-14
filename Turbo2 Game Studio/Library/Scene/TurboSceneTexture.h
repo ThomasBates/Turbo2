@@ -1,12 +1,12 @@
 #pragma once
 
-#include <ITurboSceneObjectTexture.h>
+#include <ITurboSceneTexture.h>
 
-class TurboSceneObjectTexture : public ITurboSceneObjectTexture
+class TurboSceneTexture : public ITurboSceneTexture
 {
 public:
 	//  Constructors  --------------------------------------------------------------------------------------------------
-	TurboSceneObjectTexture(std::string name);
+	TurboSceneTexture(std::string name);
 
 	//  ITurboSceneObjectTexture Properties  ---------------------------------------------------------------------------
 	virtual std::string Name() { return _name; }
