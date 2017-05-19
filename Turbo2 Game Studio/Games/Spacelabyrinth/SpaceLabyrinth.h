@@ -3,31 +3,31 @@
 
 #include "pch.h"
 
-#include "IGameLevel.h"
+#include "ITurboGameLevel.h"
 
-class SpaceLabyrinth: public IGameLevel
+class SpaceLabyrinth: public ITurboGameLevel
 {
 public:
-	//  Constructors and Destructors  ----------------------------------------------------------------------------------
+	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	SpaceLabyrinth();
 
-	//  IGameLevel Properties  -----------------------------------------------------------------------------------------
+	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Space Labyrinth"; }
 
-	virtual std::shared_ptr<IApplicationState> State();
-	virtual void State(std::shared_ptr<IApplicationState> state);
+	virtual std::shared_ptr<ITurboGameState> State();
+	virtual void State(std::shared_ptr<ITurboGameState> state);
 
 	virtual std::shared_ptr<ITurboScene> Scene();
 
 	virtual bool SceneChanged() { return _sceneChanged; }
 
-	//  IGameLevel Methods  --------------------------------------------------------------------------------------------
+	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();
 	virtual void Finalize();
 	virtual void Update(NavigationInfo navInfo);
 
 private:
-	std::shared_ptr<IGameLevel> _level = nullptr;
+	std::shared_ptr<ITurboGameLevel> _level = nullptr;
 	bool _sceneChanged = false;
 
 };

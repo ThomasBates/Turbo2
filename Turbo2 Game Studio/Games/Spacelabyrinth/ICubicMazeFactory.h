@@ -6,7 +6,7 @@
 class ICubicMazeFactory
 {
 public:
-	//	ICubicMazeFactory Methods  -------------------------------------------------------------------------------------
+	//	ICubicMazeFactory Methods --------------------------------------------------------------------------------------
 	virtual std::shared_ptr<CubicMaze> MakeMaze(int width, int height, int depth) = 0;
 	virtual void FreeMaze(std::shared_ptr<CubicMaze> cubicMaze) = 0;
 };

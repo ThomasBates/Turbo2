@@ -5,30 +5,30 @@
 #include "pch.h"
 
 #include "SpaceLabyrinth.h"
-#include "SpaceLabyrinthOriginalLevel.h"
+#include "OriginalLevel.h"
 
-//  Constructors and Destructors  --------------------------------------------------------------------------------------
+//  Constructors and Destructors ---------------------------------------------------------------------------------------
 
 SpaceLabyrinth::SpaceLabyrinth()
 {
 }
 
-//  Constructors and Destructors  --------------------------------------------------------------------------------------
-//  IGameLevel Properties  ---------------------------------------------------------------------------------------------
+//  Constructors and Destructors ---------------------------------------------------------------------------------------
+//  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 
-std::shared_ptr<IApplicationState> SpaceLabyrinth::State()
+std::shared_ptr<ITurboGameState> SpaceLabyrinth::State()
 {
 	if (_level == nullptr)
 	{
 		return nullptr;
 	}
 
-	std::shared_ptr<IApplicationState> state = _level->State();
+	std::shared_ptr<ITurboGameState> state = _level->State();
 	state->SaveString("ProgramInfo", "project info");
 	return state;
 }
 
-void SpaceLabyrinth::State(std::shared_ptr<IApplicationState> state)
+void SpaceLabyrinth::State(std::shared_ptr<ITurboGameState> state)
 {
 	state->LoadString("ProgramInfo");
 	_level->State(state);
@@ -39,12 +39,12 @@ std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
 	return _level->Scene();
 }
 
-//  IGameLevel Properties  ---------------------------------------------------------------------------------------------
-//  IGameLevel Methods  ------------------------------------------------------------------------------------------------
+//  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
+//  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 
 void SpaceLabyrinth::Initialize()
 {
-	//_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel());
+	//_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
 	//_level->Initialize();	//	Build scene and players
 }
 
@@ -70,7 +70,7 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		_level = std::unique_ptr<IGameLevel>(new SpaceLabyrinthOriginalLevel());
+		_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
 		_level->Initialize();
 		_sceneChanged = true;
 	}
@@ -78,4 +78,4 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 	_level->Update(navInfo);
 }
 
-//  IGameLevel Methods  ------------------------------------------------------------------------------------------------
+//  ITurboGameLevel Methods --------------------------------------------------------------------------------------------

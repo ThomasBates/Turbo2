@@ -1,50 +1,79 @@
 
 #pragma once
 
-#define		RIGHTBIT	0
-#define		BOTTOMBIT	1
-#define		FRONTBIT	2
-#define		SPACEBIT	6
-#define		USEDBIT		7
+struct MazeWalls
+{
+	bool right : 1;
+	bool bottom : 1;
+	bool front : 1;
+	bool used : 1;
 
-#define SETBIT(c,b)	((c) = (c) | (1<<(b)))
-#define RESETBIT(c,b)	((c) = (c) & (0xff - (1<<(b))))
-#define GETBIT(c,b)	((c) & (1<<(b)))
+	MazeWalls()
+	{
+		Initialize(false);
+	}
+
+	MazeWalls(bool isOn)
+	{
+		Initialize(isOn);
+	}
+
+	void Initialize(bool isOn)
+	{
+		right = isOn;
+		bottom = isOn;
+		front = isOn;
+		used = isOn;
+	}
+};
+
+struct Direction
+{
+	bool left : 1;
+	bool up : 1;
+	bool back : 1;
+	bool right : 1;
+	bool down : 1;
+	bool front : 1;
+
+	Direction()
+	{
+		Initialize(false);
+	}
+
+	Direction(bool isOn) 
+	{
+		Initialize(isOn);
+	}
+
+	void Initialize(bool isOn)
+	{
+		left = isOn;
+		up = isOn;
+		back = isOn;
+		right = isOn;
+		down = isOn;
+		front = isOn;
+	}
+};
+
 
 typedef	struct
 {
 	int w, h, d;
 }	location;
 
-typedef	char *** Array3D;
-typedef	char  ** Array2D;
-typedef	char   * Array1D;
+typedef	MazeWalls *** Array3D;
+typedef	MazeWalls  ** Array2D;
+typedef	MazeWalls   * Array1D;
 
 typedef	struct llist
 {
 	location		posn;
-	char			mask;
+	MazeWalls		mask;
 	struct llist	*prev;
 	struct llist	*next;
 }	locationList;
-
-typedef struct
-{
-	int		Active;
-	float	Left, Right;
-	float	Top, Bottom;
-	float	Back, Front;
-}	MazeObject;
-
-typedef struct
-{
-	Array3D			MazeArray;
-	location		Size;
-	location		Entrance;
-	location		Exit;
-	locationList	Solution;
-}	_CubicMaze;
-
 
 class CubicMaze
 {

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="6e9bbb07-09bc-4dc0-839b-0e56c1aa1b5b" Publisher="CN=ejdeh" Version="1.0.0.0" />
+  <Identity Name="6e9bbb07-09bc-4dc0-839b-0e56c1aa1b5b" Publisher="CN=Thomas Bates" Version="0.1.3.0" />
   <mp:PhoneIdentity PhoneProductId="6e9bbb07-09bc-4dc0-839b-0e56c1aa1b5b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SpaceLabyrinthDX12</DisplayName>
-    <PublisherDisplayName>ejdeh</PublisherDisplayName>
+    <PublisherDisplayName>Thomas Bates</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>

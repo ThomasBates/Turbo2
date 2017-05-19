@@ -27,7 +27,7 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 
 	double moveSpeed = cMoveAccelleration * deltaTime;
 
-	Vector3D velocity = _placement->Velocity();
+	TurboVector3D velocity = _placement->Velocity();
 
 	//	If no movement inputs, slow down, hover, and fall (if enabled).
 	if (!(navInfo.MoveLeft ||
@@ -59,7 +59,7 @@ void SpaceLabyrinthPlayer::Update(NavigationInfo navInfo)
 
 	double rotateSpeed = cRotateAccelleration * deltaTime;
 
-	Vector3D angularVelocity = _placement->AngularVelocity();
+	TurboVector3D angularVelocity = _placement->AngularVelocity();
 
 	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
 	if (!(navInfo.Pointer ||

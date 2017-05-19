@@ -16,7 +16,7 @@ private:
 public:
 	SpaceLabyrinthPlayer();
 
-	//  ITurboSceneObject Properties  -------------------------------------------------------------------------------------
+	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneMesh> Mesh() { return _mesh; }
 	virtual void Mesh(std::shared_ptr<ITurboSceneMesh> mesh) { _mesh = mesh; }
 
@@ -28,7 +28,7 @@ public:
 
 	virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() { return _childSceneObjects; };
 
-	//  ITurboSceneObject Methods  ----------------------------------------------------------------------------------------
+	//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
 	virtual void Update(NavigationInfo navInfo);
-	virtual bool IsTouching(Vector3D oldPosition, Vector3D newPosition, double radius, Vector3D *contact, Vector3D *normal) { return false; };
+	virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal) { return false; };
 };
