@@ -3,8 +3,12 @@
 
 #include <TurboGameState.h>
 #include "OriginalLevel.h"
-#include "SpaceLabyrinthPlayer.h"
+#include "OriginalPlayer.h"
 #include "OriginalMazeSceneBuilder.h"
+
+using namespace Turbo::Game;
+using namespace Turbo::Math;
+using namespace Turbo::Scene;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -39,7 +43,7 @@ void OriginalLevel::Initialize()
 	_scene = _sceneBuilder->BuildScene();
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new SpaceLabyrinthPlayer());
+	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());
 	_player->Placement()->Reset();
 	_player->Placement()->GoTo(GetSpawnPoint());
 

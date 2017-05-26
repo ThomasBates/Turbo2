@@ -3,7 +3,7 @@
 #include <wrl.h>
 #include <wrl/client.h>
 #include <d3d12.h>
-#include "Common\d3dx12.h"
+#include <d3dx12.h>
 #include <dxgi1_4.h>
 #include <d3d11_3.h>
 #include <pix.h>
@@ -14,3 +14,5 @@
 #include <agile.h>
 #include <concrt.h>
 #include <map>
+#include <ppltasks.h>	// For create_task
+#include <synchapi.h>

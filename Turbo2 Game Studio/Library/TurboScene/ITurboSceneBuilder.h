@@ -2,9 +2,15 @@
 
 #include "ITurboScene.h"
 
-class ITurboSceneBuilder
+namespace Turbo
 {
-public:
-	//  ITurboSceneBuilder Methods -------------------------------------------------------------------------------------
-	virtual std::shared_ptr<ITurboScene> BuildScene() = 0;
-};
+	namespace Scene
+	{
+		class ITurboSceneBuilder
+		{
+		public:
+			//  ITurboSceneBuilder Methods -------------------------------------------------------------------------------------
+			virtual std::shared_ptr<ITurboScene> BuildScene() = 0;
+		};
+	}
+}

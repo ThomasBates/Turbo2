@@ -8,7 +8,7 @@
 
 #pragma region Constructors --------------------------------------------------------------------------------------------
 
-TurboScenePlacement::TurboScenePlacement()
+Turbo::Scene::TurboScenePlacement::TurboScenePlacement()
 {
 	Reset();
 }
@@ -19,7 +19,7 @@ TurboScenePlacement::TurboScenePlacement()
 #pragma endregion ITurboScenePlacement Properties ----------------------------------------------------------------------
 #pragma region ITurboScenePlacement Methods ----------------------------------------------------------------------------
 
-void TurboScenePlacement::Reset()
+void Turbo::Scene::TurboScenePlacement::Reset()
 {
 	_position = 0;
 	_transform = TurboMatrix4x4();
@@ -34,26 +34,26 @@ void TurboScenePlacement::Reset()
 	_angularVelocity = 0;
 }
 
-void TurboScenePlacement::GoTo(double x, double y, double z)
+void Turbo::Scene::TurboScenePlacement::GoTo(double x, double y, double z)
 {
 	TurboVector3D delta = TurboVector3D(x, y, z) - Position();
 
 	Move(delta);
 }
 
-void TurboScenePlacement::GoTo(TurboVector3D position)
+void Turbo::Scene::TurboScenePlacement::GoTo(TurboVector3D position)
 {
 	TurboVector3D delta = position - Position();
 
 	Move(delta);
 }
 
-void TurboScenePlacement::Move(double x, double y, double z)
+void Turbo::Scene::TurboScenePlacement::Move(double x, double y, double z)
 {
 	Move(TurboVector3D(x, y, z));
 }
 
-void TurboScenePlacement::Move(TurboVector3D velocity)
+void Turbo::Scene::TurboScenePlacement::Move(TurboVector3D velocity)
 {
 	TurboMatrix4x4 translate = TurboMatrix4x4().Translate(velocity);
 	TurboMatrix4x4 inverse = TurboMatrix4x4().Translate(-velocity);
@@ -62,7 +62,7 @@ void TurboScenePlacement::Move(TurboVector3D velocity)
 	_inverse = inverse * _inverse;
 }
 
-void TurboScenePlacement::Rotate(double x, double y, double z)
+void Turbo::Scene::TurboScenePlacement::Rotate(double x, double y, double z)
 {
 	if (x != 0)
 	{
@@ -80,12 +80,12 @@ void TurboScenePlacement::Rotate(double x, double y, double z)
 	}
 }
 
-void TurboScenePlacement::Rotate(TurboVector3D angularVelocity)
+void Turbo::Scene::TurboScenePlacement::Rotate(TurboVector3D angularVelocity)
 {
 	Rotate(angularVelocity.X, angularVelocity.Y, angularVelocity.Z);
 }
 
-void TurboScenePlacement::RotateX(double degrees)
+void Turbo::Scene::TurboScenePlacement::RotateX(double degrees)
 {
 	TurboMatrix4x4 rotate = TurboMatrix4x4().RotateX(degrees);
 	TurboMatrix4x4 inverse = TurboMatrix4x4().RotateX(-degrees);
@@ -97,7 +97,7 @@ void TurboScenePlacement::RotateX(double degrees)
 	_inverse = _inverse * inverse;
 }
 
-void TurboScenePlacement::RotateY(double degrees)
+void Turbo::Scene::TurboScenePlacement::RotateY(double degrees)
 {
 	TurboMatrix4x4 rotate = TurboMatrix4x4().RotateY(degrees);
 	TurboMatrix4x4 inverse = TurboMatrix4x4().RotateY(-degrees);
@@ -106,7 +106,7 @@ void TurboScenePlacement::RotateY(double degrees)
 	_inverse = _inverse * inverse;
 }
 
-void TurboScenePlacement::RotateZ(double degrees)
+void Turbo::Scene::TurboScenePlacement::RotateZ(double degrees)
 {
 	TurboMatrix4x4 rotate = TurboMatrix4x4().RotateZ(degrees);
 	TurboMatrix4x4 inverse = TurboMatrix4x4().RotateZ(-degrees);
@@ -115,13 +115,13 @@ void TurboScenePlacement::RotateZ(double degrees)
 	_inverse = _inverse * inverse;
 }
 
-//void TurboScenePlacement::Transform(TurboMatrix4x4 transform)
+//void Turbo::Scene::TurboScenePlacement::Transform(TurboMatrix4x4 transform)
 //{
 //	_transform = _transform * transform;
 //	_inverse = transform * _inverse;
 //}
 
-//std::shared_ptr<ITurboScenePlacement> TurboScenePlacement::Clone()
+//std::shared_ptr<ITurboScenePlacement> Turbo::Scene::TurboScenePlacement::Clone()
 //{
 //	std::shared_ptr<ITurboScenePlacement> clone =
 //		std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());

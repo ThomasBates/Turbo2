@@ -5,6 +5,7 @@
 #include "pch.h"
 
 #include "SpaceLabyrinth.h"
+#include "IntroLevel.h"
 #include "OriginalLevel.h"
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
@@ -70,7 +71,7 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
+		_level = std::unique_ptr<ITurboGameLevel>(new IntroLevel());
 		_level->Initialize();
 		_sceneChanged = true;
 	}

@@ -3,7 +3,7 @@
 
 #include <TurboSceneTexture.h>
 
-TurboSceneTexture::TurboSceneTexture(std::string name)
+Turbo::Scene::TurboSceneTexture::TurboSceneTexture(std::string name)
 {
 	_name = name;
 }

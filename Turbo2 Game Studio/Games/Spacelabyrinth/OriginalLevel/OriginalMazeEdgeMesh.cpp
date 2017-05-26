@@ -6,6 +6,8 @@
 #include <TurboSceneMaterial.h>
 #include <TurboSceneMesh.h>
 
+using namespace Turbo::Math;
+
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
 OriginalMazeEdgeMesh::OriginalMazeEdgeMesh()

@@ -1,8 +1,14 @@
 #pragma once
 
-class ITurboScenePixelShader
+namespace Turbo
 {
-public:
-	//  ITurboScenePixelShader Properties ------------------------------------------------------------------------------
-	virtual std::string Name() = 0;
-};
+	namespace Scene
+	{
+		class ITurboScenePixelShader
+		{
+		public:
+			//  ITurboScenePixelShader Properties ------------------------------------------------------------------------------
+			virtual std::string Name() = 0;
+		};
+	}
+}

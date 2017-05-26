@@ -3,7 +3,7 @@
 
 #include <TurboSceneMesh.h>
 
-void TurboSceneMesh::AddVertex(TurboVector3D position, TurboVector3D normal, TurboVector2D textureUV)
+void Turbo::Scene::TurboSceneMesh::AddVertex(TurboVector3D position, TurboVector3D normal, TurboVector2D textureUV)
 {
 	TurboSceneVertex vertex;
 	
@@ -22,7 +22,7 @@ void TurboSceneMesh::AddVertex(TurboVector3D position, TurboVector3D normal, Tur
 	if (_maxExtent.Z < position.Z)	_maxExtent.Z = position.Z;
 }
 
-void TurboSceneMesh::AddTriangle(int vertex1, int vertex2, int vertex3)
+void Turbo::Scene::TurboSceneMesh::AddTriangle(int vertex1, int vertex2, int vertex3)
 {
 	TurboSceneTriangle triangle;
 

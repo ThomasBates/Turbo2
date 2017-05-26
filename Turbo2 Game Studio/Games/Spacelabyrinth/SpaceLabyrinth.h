@@ -1,11 +1,15 @@
 
 #pragma once
 
-#include "pch.h"
+#include <pch.h>
 
-#include "ITurboGameLevel.h"
+#include <ITurboGame.h>
+#include <ITurboGameLevel.h>
 
-class SpaceLabyrinth: public ITurboGameLevel
+using namespace Turbo::Game;
+using namespace Turbo::Scene;
+
+class SpaceLabyrinth: public ITurboGame
 {
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------

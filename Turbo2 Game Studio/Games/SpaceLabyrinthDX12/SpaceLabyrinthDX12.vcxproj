@@ -108,7 +108,7 @@
     <PackageCertificateThumbprint>4BEDDD033CD4589A0ECB4D750889EC734421FB25</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>.;..\Spacelabyrinth;..\Spacelabyrinth\IntroLevel;..\Spacelabyrinth\OriginalLevel;..\..\Library\DX12;..\..\Library\DX12\Shaders;..\..\Library\TurboGame;..\..\Library\TurboMath;..\..\Library\TurboScene;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\Spacelabyrinth;..\Spacelabyrinth\IntroLevel;..\Spacelabyrinth\OriginalLevel;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationDX12;..\..\Library\Graphics;..\..\Library\GraphicsDX12;$(IncludePath)</IncludePath>
@@ -145,6 +145,8 @@
     <Link>
       <AdditionalDependencies>mincore.lib;d3d12.lib;dxgi.lib;windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories); $(VCInstallDir)\lib\store; $(VCInstallDir)\lib</AdditionalLibraryDirectories>
+      <EmbedManagedResourceFile>
+      </EmbedManagedResourceFile>
     </Link>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -198,6 +200,15 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Image Include="..\..\Resources\Textures\IntroCeiling.bmp" />
+    <Image Include="..\..\Resources\Textures\IntroEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\IntroFloor.bmp" />
+    <Image Include="..\..\Resources\Textures\IntroWall.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalCeiling.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalCorner.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalFloor.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalWall.bmp" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
     <Image Include="Assets\SplashScreen.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
@@ -207,20 +218,22 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Library\DX12\DX12FrameworkView.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12FrameworkViewSource.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12Game.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12GameController.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12NavigationControl.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12Platform.h" />
-    <ClInclude Include="..\..\Library\DX12\DX12Renderer.h" />
-    <ClInclude Include="..\..\Library\DX12\Shaders\DX12ShaderStructures.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGame.h" />
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGameApplication.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameController.h" />
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGameIOService.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameLevel.h" />
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGamePlatform.h" />
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGameRenderer.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameState.h" />
     <ClInclude Include="..\..\Library\TurboGame\TurboGameState.h" />
-    <ClInclude Include="..\..\Library\TurboMath\TurboColor.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\ITurboCanvas.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\ITurboFont.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\ITurboImage.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\TurboBitmap.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\TurboCanvasRGB24.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\TurboCanvasRGBA32.h" />
+    <ClInclude Include="..\..\Library\TurboGraphics\TurboColor.h" />
     <ClInclude Include="..\..\Library\TurboMath\TurboMatrix4x4.h" />
     <ClInclude Include="..\..\Library\TurboMath\TurboVector2D.h" />
     <ClInclude Include="..\..\Library\TurboMath\TurboVector3D.h" />
@@ -240,9 +253,31 @@
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePixelShader.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePlacement.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneTexture.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneTypes.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneVertexShader.h" />
+    <ClInclude Include="..\..\Platform\DirectX12\d3dx12.h" />
+    <ClInclude Include="..\..\Platform\DirectX12\DirectX12DeviceResources.h" />
+    <ClInclude Include="..\..\Platform\DirectX12\DirectX12Renderer.h" />
+    <ClInclude Include="..\..\Platform\DirectX12\Shaders\DirectX12ShaderStructures.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10FrameworkView.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10FrameworkViewSource.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10GameApplication.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10GameController.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10Helpers.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10IOService.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10NavigationControl.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10Platform.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10Timer.h" />
     <ClInclude Include="..\Spacelabyrinth\CubicMaze.h" />
     <ClInclude Include="..\Spacelabyrinth\ICubicMazeFactory.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroLevel.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.h" />
@@ -250,23 +285,15 @@
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
-    <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinthPlayer.h" />
-    <ClInclude Include="Common\d3dx12.h" />
-    <ClInclude Include="Common\DeviceResources.h" />
-    <ClInclude Include="Common\DirectXHelper.h" />
-    <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Library\DX12\DX12FrameworkView.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12FrameworkViewSource.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12Game.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12GameController.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12NavigationControl.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12Platform.cpp" />
-    <ClCompile Include="..\..\Library\DX12\DX12Renderer.cpp" />
     <ClCompile Include="..\..\Library\TurboGame\TurboGameState.cpp" />
+    <ClCompile Include="..\..\Library\TurboGraphics\TurboBitmap.cpp" />
+    <ClCompile Include="..\..\Library\TurboGraphics\TurboCanvasRGB24.cpp" />
+    <ClCompile Include="..\..\Library\TurboGraphics\TurboCanvasRGBA32.cpp" />
     <ClCompile Include="..\..\Library\TurboMath\TurboMatrix4x4.cpp" />
     <ClCompile Include="..\..\Library\TurboMath\TurboVector2D.cpp" />
     <ClCompile Include="..\..\Library\TurboMath\TurboVector3D.cpp" />
@@ -278,6 +305,23 @@
     <ClCompile Include="..\..\Library\TurboScene\TurboScenePlacement.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneTexture.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneVertexShader.cpp" />
+    <ClCompile Include="..\..\Platform\DirectX12\DirectX12DeviceResources.cpp" />
+    <ClCompile Include="..\..\Platform\DirectX12\DirectX12Renderer.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10FrameworkView.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10FrameworkViewSource.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10GameApplication.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10GameController.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10IOService.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10NavigationControl.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10Platform.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroLevel.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.cpp" />
@@ -285,9 +329,8 @@
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinthPlayer.cpp" />
-    <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -302,14 +345,14 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="..\..\Library\DX12\Shaders\DX12ShaderStructures.hlsli" />
+    <None Include="..\..\Platform\DirectX12\Shaders\DX12ShaderStructures.hlsli" />
     <None Include="SpaceLabyrinthDX12_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Library\DX12\Shaders\DX12PixelShader.hlsl">
+    <FxCompile Include="..\..\Platform\DirectX12\Shaders\DX12PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="..\..\Library\DX12\Shaders\DX12VertexShader.hlsl">
+    <FxCompile Include="..\..\Platform\DirectX12\Shaders\DX12VertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>

@@ -6,7 +6,7 @@
 #include <TurboScenePixelShader.h>
 #include <TurboSceneVertexShader.h>
 
-TurboSceneMaterial::TurboSceneMaterial(
+Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor meshColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
@@ -25,7 +25,7 @@ TurboSceneMaterial::TurboSceneMaterial(
 	_pixelShader = pixelShader;
 }
 
-TurboSceneMaterial::TurboSceneMaterial(
+Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor meshColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,

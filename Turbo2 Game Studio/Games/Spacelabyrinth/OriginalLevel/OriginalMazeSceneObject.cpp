@@ -5,6 +5,9 @@
 #include <OriginalMazeSceneObject.h>
 #include <TurboSceneMesh.h>
 
+using namespace Turbo::Math;
+using namespace Turbo::Scene;
+
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
 OriginalMazeSceneObject::OriginalMazeSceneObject(std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)

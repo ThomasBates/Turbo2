@@ -4,6 +4,8 @@
 
 #include <TurboSceneMesh.h>
 
+using namespace Turbo::Scene;
+
 class OriginalMazeWallMesh: public TurboSceneMesh
 {
 public:

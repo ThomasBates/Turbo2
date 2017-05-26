@@ -5,11 +5,11 @@
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-TurboScene::TurboScene()
+Turbo::Scene::TurboScene::TurboScene()
 {
 }
 
-TurboScene::~TurboScene()
+Turbo::Scene::TurboScene::~TurboScene()
 {
 }
 
@@ -19,7 +19,7 @@ TurboScene::~TurboScene()
 //  ITurboScene Properties ---------------------------------------------------------------------------------------------
 //  ITurboScene Methods ------------------------------------------------------------------------------------------------
 
-void TurboScene::AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+void Turbo::Scene::TurboScene::AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 	_sceneObjects.push_back(sceneObject);
 }

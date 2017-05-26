@@ -4,6 +4,9 @@
 
 #include <TurboSceneObject.h>
 
+using namespace Turbo::Math;
+using namespace Turbo::Scene;
+
 class OriginalMazeSceneObject : public TurboSceneObject
 {
 public:

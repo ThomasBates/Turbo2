@@ -7,7 +7,7 @@
 #define PI 3.1415926535897932384626433832795
 #define PIby180 ((double)(PI/180.0))
 
-TurboMatrix4x4::TurboMatrix4x4()
+Turbo::Math::TurboMatrix4x4::TurboMatrix4x4()
 {
 	//	Initialize to identity matrix by default
 	M11 = 1; M12 = 0; M13 = 0; M14 = 0;
@@ -16,7 +16,7 @@ TurboMatrix4x4::TurboMatrix4x4()
 	M41 = 0; M42 = 0; M43 = 0; M44 = 1;
 }
 
-TurboMatrix4x4::TurboMatrix4x4(
+Turbo::Math::TurboMatrix4x4::TurboMatrix4x4(
 	double m11, double m12, double m13, double m14,
 	double m21, double m22, double m23, double m24,
 	double m31, double m32, double m33, double m34,
@@ -28,7 +28,7 @@ TurboMatrix4x4::TurboMatrix4x4(
 	M41 = m41; M42 = m42; M43 = m43; M44 = m44;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::Translate(double x, double y, double z)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::Translate(double x, double y, double z)
 {
 	TurboMatrix4x4 translate = TurboMatrix4x4(
 		1, 0, 0, 0,
@@ -39,17 +39,17 @@ TurboMatrix4x4 TurboMatrix4x4::Translate(double x, double y, double z)
 	return *this * translate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::Translate(TurboVector3D translation)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::Translate(TurboVector3D translation)
 {
 	return Translate(translation.X, translation.Y, translation.Z);
 }
 
-TurboMatrix4x4 TurboMatrix4x4::Rotate(TurboVector3D axis, double degrees)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::Rotate(TurboVector3D axis, double degrees)
 {
 	return TurboMatrix4x4();
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateX(double degrees)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::RotateX(double degrees)
 {
 	double c = cos(degrees * PIby180);
 	double s = sin(degrees * PIby180);
@@ -63,7 +63,7 @@ TurboMatrix4x4 TurboMatrix4x4::RotateX(double degrees)
 	return *this * rotate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateY(double degrees)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::RotateY(double degrees)
 {
 	double c = cos(degrees * PIby180);
 	double s = sin(degrees * PIby180);
@@ -77,7 +77,7 @@ TurboMatrix4x4 TurboMatrix4x4::RotateY(double degrees)
 	return *this * rotate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateZ(double degrees)
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::RotateZ(double degrees)
 {
 	double c = cos(degrees * PIby180);
 	double s = sin(degrees * PIby180);
@@ -91,7 +91,7 @@ TurboMatrix4x4 TurboMatrix4x4::RotateZ(double degrees)
 	return *this * rotate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::operator*(const TurboMatrix4x4 &m) const	//  cross product
+Turbo::Math::TurboMatrix4x4 Turbo::Math::TurboMatrix4x4::operator*(const TurboMatrix4x4 &m) const	//  cross product
 {
 	TurboMatrix4x4 result = TurboMatrix4x4();
 
@@ -118,7 +118,7 @@ TurboMatrix4x4 TurboMatrix4x4::operator*(const TurboMatrix4x4 &m) const	//  cros
 	return result;
 }
 
-TurboVector3D TurboMatrix4x4::operator*(const TurboVector3D & v) const
+Turbo::Math::TurboVector3D Turbo::Math::TurboMatrix4x4::operator*(const TurboVector3D & v) const
 {
 	return TurboVector3D();
 }

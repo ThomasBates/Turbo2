@@ -6,17 +6,17 @@
 
 //  Constructors & Destructors -----------------------------------------------------------------------------------------
 
-TurboGameState::TurboGameState()
+Turbo::Game::TurboGameState::TurboGameState()
 {
 }
 
-TurboGameState::~TurboGameState()
+Turbo::Game::TurboGameState::~TurboGameState()
 {
 }
 
 //  ITurboGameState Properties -----------------------------------------------------------------------------------------
 
-std::vector<std::string> TurboGameState::Keys()
+std::vector<std::string> Turbo::Game::TurboGameState::Keys()
 {
 	std::vector<std::string> keys;
 	
@@ -29,52 +29,52 @@ std::vector<std::string> TurboGameState::Keys()
 }
 
 //  ITurboGameState Methods --------------------------------------------------------------------------------------------
-void TurboGameState::SaveBoolean(std::string key, bool value)
+void Turbo::Game::TurboGameState::SaveBoolean(std::string key, bool value)
 {
 
 }
 
-void TurboGameState::SaveInteger(std::string key, int value)
+void Turbo::Game::TurboGameState::SaveInteger(std::string key, int value)
 {
 
 }
 
-void TurboGameState::SaveFloat(std::string key, float value)
+void Turbo::Game::TurboGameState::SaveFloat(std::string key, float value)
 {
 
 }
 
-void TurboGameState::SaveVector(std::string key, TurboVector3D value)
+void Turbo::Game::TurboGameState::SaveVector(std::string key, TurboVector3D value)
 {
 
 }
 
-void TurboGameState::SaveString(std::string key, std::string value)
+void Turbo::Game::TurboGameState::SaveString(std::string key, std::string value)
 {
 	_map.insert(KeyValue(key, value));
 }
 
-bool TurboGameState::LoadBoolean(std::string key)
+bool Turbo::Game::TurboGameState::LoadBoolean(std::string key)
 {
 	return false;
 }
 
-int TurboGameState::LoadInteger(std::string key)
+int Turbo::Game::TurboGameState::LoadInteger(std::string key)
 {
 	return 0;
 }
 
-float TurboGameState::LoadFloat(std::string key)
+float Turbo::Game::TurboGameState::LoadFloat(std::string key)
 {
 	return 0.0;
 }
 
-TurboVector3D TurboGameState::LoadVector(std::string key)
+TurboVector3D Turbo::Game::TurboGameState::LoadVector(std::string key)
 {
 	return TurboVector3D(0.0, 0.0, 0.0);
 }
 
-std::string TurboGameState::LoadString(std::string key)
+std::string Turbo::Game::TurboGameState::LoadString(std::string key)
 {
 	return _map[key];
 }

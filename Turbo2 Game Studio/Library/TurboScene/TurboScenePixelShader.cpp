@@ -3,7 +3,7 @@
 
 #include <TurboScenePixelShader.h>
 
-TurboScenePixelShader::TurboScenePixelShader(std::string name)
+Turbo::Scene::TurboScenePixelShader::TurboScenePixelShader(std::string name)
 {
 	_name = name;
 }

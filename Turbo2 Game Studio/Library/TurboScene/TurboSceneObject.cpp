@@ -6,12 +6,12 @@
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-TurboSceneObject::TurboSceneObject()
+Turbo::Scene::TurboSceneObject::TurboSceneObject()
 {
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
-TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)
+Turbo::Scene::TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)
 {
 	_mesh = mesh;
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
@@ -20,17 +20,17 @@ TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboSceneObject Methods ------------------------------------------------------------------------------------------
 
-//void TurboSceneObject::Update()
+//void Turbo::Scene::TurboSceneObject::Update()
 //{
 //
 //}
 
-//void TurboSceneObject::Render()
+//void Turbo::Scene::TurboSceneObject::Render()
 //{
 //
 //}
 
-bool TurboSceneObject::IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal)
+bool Turbo::Scene::TurboSceneObject::IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal)
 {
 	return false;
 }

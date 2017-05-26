@@ -6,6 +6,10 @@
 #include "ITurboGameLevel.h"
 #include "ITurboSceneBuilder.h"
 
+using namespace Turbo::Game;
+using namespace Turbo::Math;
+using namespace Turbo::Scene;
+
 class OriginalLevel : public ITurboGameLevel
 {
 private:
