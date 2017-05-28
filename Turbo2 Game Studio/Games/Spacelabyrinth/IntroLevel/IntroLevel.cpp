@@ -78,7 +78,7 @@ void IntroLevel::Finalize()
 
 TurboVector3D IntroLevel::GetSpawnPoint()
 {
-	return TurboVector3D(2.0f, -2.0f, -2.0f);
+	return TurboVector3D(10.0f, -2.0f, -8.0f);
 }
 
 void IntroLevel::ProcessObjectInteractions(NavigationInfo navInfo)

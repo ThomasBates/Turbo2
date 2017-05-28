@@ -54,7 +54,7 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
 			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
 			1.0f,
-			"IntroCorner",
+			"OriginalCorner",
 			"StandardVertexShader",
 			"StandardPixelShader"));
 	std::shared_ptr<ITurboSceneMaterial> edgeMaterial = 
@@ -63,7 +63,7 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
 			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
 			1.0f,
-			"IntroEdge",
+			"OriginalEdge",
 			"StandardVertexShader",
 			"StandardPixelShader"));
 	std::shared_ptr<ITurboSceneMaterial> wallMaterial = 
@@ -72,7 +72,7 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
 			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
 			1.0f,
-			"IntroWall",
+			"OriginalWall",
 			"StandardVertexShader",
 			"StandardPixelShader"));
 
@@ -119,7 +119,7 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
 			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
 			1.0f,
-			"IntroFloor",
+			"OriginalFloor",
 			"StandardVertexShader",
 			"StandardPixelShader"));
 	std::shared_ptr<ITurboSceneMaterial> ceilingMaterial = 
@@ -128,11 +128,11 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
 			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
 			1.0f,
-			"IntroCeiling",
+			"OriginalCeiling",
 			"StandardVertexShader",
 			"StandardPixelShader"));
 
-	cornerMaterial = wallMaterial;
+	//cornerMaterial = wallMaterial;
 	//edgeMaterial = wallMaterial;
 	leftWallMaterial = wallMaterial;
 	rightWallMaterial = wallMaterial;
@@ -145,13 +145,53 @@ void IntroMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 	for (int h = 0; h <= size.h; h++)
 	for (int d = 0; d <= size.d; d++)
 	{
-		BuildCorner(scene, w, h, d, cornerMesh, cornerMaterial);
-
-		if (w>0)	BuildWEdge(scene, w, h, d, edgeMesh, edgeMaterial);
-		if (h>0)	BuildHEdge(scene, w, h, d, edgeMesh, edgeMaterial);
-		if (d>0)	BuildDEdge(scene, w, h, d, edgeMesh, edgeMaterial);
-
 		MazeWalls walls = mazeArray[w][h][d];
+
+		if (mazeArray[w][h][d].right ||
+			((h < size.h) && mazeArray[w][h + 1][d].right) ||
+			((d < size.d) && mazeArray[w][h][d + 1].right) ||
+			((h < size.h) && (d < size.d) && mazeArray[w][h + 1][d + 1].right) ||
+			mazeArray[w][h][d].bottom ||
+			((w < size.w) && mazeArray[w + 1][h][d].bottom) ||
+			((d < size.d) && mazeArray[w][h][d + 1].bottom) ||
+			((w < size.w) && (d < size.d) && mazeArray[w + 1][h][d + 1].bottom) ||
+			mazeArray[w][h][d].front ||
+			((w < size.w) && mazeArray[w + 1][h][d].front) ||
+			((h < size.h) && mazeArray[w][h + 1][d].front) ||
+			((w < size.w) && (h < size.h) && mazeArray[w + 1][h + 1][d].front))
+		{
+			BuildCorner(scene, w, h, d, cornerMesh, cornerMaterial);
+		}
+
+		if (mazeArray[w][h][d].front ||
+			((h < size.h) && mazeArray[w][h + 1][d].front) ||
+			mazeArray[w][h][d].bottom ||
+			((d < size.d) && mazeArray[w][h][d + 1].bottom))
+		{
+			BuildWEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+		}
+
+		if (mazeArray[w][h][d].right ||
+			((h < size.h) && mazeArray[w][h + 1][d].right) ||
+			mazeArray[w][h][d].bottom ||
+			((w < size.w) && mazeArray[w + 1][h][d].bottom))
+		{
+			BuildDEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+		}
+
+		if (mazeArray[w][h][d].right ||
+			((d < size.d) && mazeArray[w][h][d + 1].right) ||
+			mazeArray[w][h][d].front ||
+			((w < size.w) && mazeArray[w + 1][h][d].front))
+		{
+			BuildHEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+		}
+
+
+		//if (w>0)	BuildWEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+		//if (h>0)	BuildHEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+		//if (d>0)	BuildDEdge(scene, w, h, d, edgeMesh, edgeMaterial);
+
 		if (walls.right)	BuildRightWall (scene,	w, h, d,	wallMesh,	leftWallMaterial,	rightWallMaterial);
 		if (walls.bottom)	BuildBottomWall(scene,	w, h, d,	wallMesh,	floorMaterial,		ceilingMaterial);
 		if (walls.front)	BuildFrontWall (scene,	w, h, d,	wallMesh,	backWallMaterial,	frontWallMaterial);

@@ -215,22 +215,6 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateRootSignature()
 
 void Turbo::Platform::DirectX12::DirectX12Renderer::CreatePipelineStateObject()
 {
-	UINT8* pVertexShaderData;
-	UINT8* pPixelShaderData;
-	UINT vertexShaderDataLength;
-	UINT pixelShaderDataLength;
-
-	//  Load the shaders.
-	ThrowIfFailed(ReadDataFromFile(
-		L"DX12VertexShader.cso", 
-		&pVertexShaderData, 
-		&vertexShaderDataLength));
-
-	ThrowIfFailed(ReadDataFromFile(
-		L"DX12PixelShader.cso", 
-		&pPixelShaderData, 
-		&pixelShaderDataLength));
-
 	std::vector<byte> vertexShaderData = _ioService->ReadData(L"DX12VertexShader.cso");
 	std::vector<byte> pixelShaderData = _ioService->ReadData(L"DX12PixelShader.cso");
 
@@ -264,8 +248,8 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreatePipelineStateObject()
 		IID_PPV_ARGS(&_pipelineState)));
 
 	// Shader data can be deleted once the pipeline state is created.
-	delete pVertexShaderData;
-	delete pPixelShaderData;
+	vertexShaderData.clear();
+	pixelShaderData.clear();
 }
 
 void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCommandList()
