@@ -6,7 +6,7 @@
 //#include <stdio.h>
 //#include <memory.h>
 
-#include "TurboCanvasRGB24.h"
+#include <TurboCanvasRGB24.h>
 
 #define MIN(a,b)	((a)<(b)?(a):(b))
 #define MAX(a,b)	((a)>(b)?(a):(b))

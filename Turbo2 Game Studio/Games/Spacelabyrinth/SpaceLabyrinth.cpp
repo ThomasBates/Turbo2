@@ -2,15 +2,16 @@
 //  SpaceLabyrinth.cpp
 //  ============================================================================
 
-#include "pch.h"
+#include <pch.h>
 
-#include "SpaceLabyrinth.h"
-#include "IntroLevel.h"
-#include "OriginalLevel.h"
+#include <SpaceLabyrinth.h>
+#include <Level0.h>
+#include <OriginalLevel.h>
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth()
+SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug) :
+	_debug(debug)
 {
 }
 
@@ -71,12 +72,18 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		_level = std::unique_ptr<ITurboGameLevel>(new IntroLevel());
+		//_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
+		_level = std::unique_ptr<ITurboGameLevel>(new Level0(_debug));
 		_level->Initialize();
 		_sceneChanged = true;
 	}
 
 	_level->Update(navInfo);
+
+	if (_level->SceneChanged())
+	{
+		_sceneChanged = true;
+	}
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------

@@ -15,13 +15,17 @@ using namespace Windows::Foundation;
 using namespace Windows::Storage;
 using namespace Windows::UI::Core;
 
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Graphics;
 using namespace Turbo::Platform::Windows10;
 
 #pragma region Constructors and Destructors ----------------------------------------------------------------------------
 
 // Loads vertex and pixel shaders from files and instantiates the cube geometry.
-Turbo::Platform::DirectX12::DirectX12Renderer::DirectX12Renderer(std::shared_ptr<ITurboGameIOService> ioService) :
+Turbo::Platform::DirectX12::DirectX12Renderer::DirectX12Renderer(
+	std::shared_ptr<ITurboDebug> debug,
+	std::shared_ptr<ITurboGameIOService> ioService) :
+	_debug(debug),
 	_ioService(ioService),
 	_constantBufferMappedResource(nullptr)
 {
@@ -39,31 +43,6 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateDisplayInformation()
 {
 	_deviceResources->UpdateDisplayInformation();
 }
-
-//void Turbo::Platform::DirectX12::DirectX12Renderer::Resize(float width, float height)
-//{
-//	_deviceResources->SetLogicalSize(Size(width, height));
-//}
-//
-//void Turbo::Platform::DirectX12::DirectX12Renderer::SetDPI(float logicalDPI)
-//{
-//	_deviceResources->SetDpi(logicalDPI);
-//}
-//
-//void Turbo::Platform::DirectX12::DirectX12Renderer::SetDisplayOrientation(Windows::Graphics::Display::DisplayOrientations displayOrientation)
-//{
-//	_deviceResources->SetCurrentOrientation(displayOrientation);
-//}
-
-//void Turbo::Platform::DirectX12::DirectX12Renderer::ValidateDevice()
-//{
-//	_deviceResources->ValidateDevice();
-//}
-
-//bool Turbo::Platform::DirectX12::DirectX12Renderer::NeedsReset()
-//{
-//	return _deviceResources->IsDeviceRemoved();
-//}
 
 bool Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 {
@@ -96,12 +75,6 @@ bool Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneResources(std::shar
 	//	Wait for the command list to finish executing; 
 	//	the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 	_deviceResources->WaitForGpu();
-
-	//auto commandQueue = _deviceResources->GetCommandQueue();
-	//PIXBeginEvent(commandQueue, 0, L"Update");
-	//{
-	//}
-	//PIXEndEvent(commandQueue);
 
 	return true;
 }
@@ -229,8 +202,6 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreatePipelineStateObject()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
 	psoDesc.InputLayout = { inputLayout, _countof(inputLayout) };
 	psoDesc.pRootSignature = _rootSignature.Get();
-//	psoDesc.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderData, vertexShaderDataLength);
-//	psoDesc.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderData, pixelShaderDataLength);
 	psoDesc.VS = CD3DX12_SHADER_BYTECODE(vertexShaderData.data(), vertexShaderData.size());
 	psoDesc.PS = CD3DX12_SHADER_BYTECODE(pixelShaderData.data(), pixelShaderData.size());
 	psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);

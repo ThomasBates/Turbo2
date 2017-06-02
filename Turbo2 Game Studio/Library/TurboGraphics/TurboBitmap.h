@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "ITurboImage.h"
+#include <ITurboImage.h>
 
 namespace Turbo
 {

@@ -2,8 +2,10 @@
 
 #include <pch.h>
 
+#include <ITurboDebug.h>
 #include <ITurboGameIOService.h>
 
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 
 namespace Turbo 
@@ -16,6 +18,7 @@ namespace Turbo
 			{
 			public:
 				//  Constructors and Destructors -------------------------------------------------------------------------------
+				Windows10IOService(std::shared_ptr<ITurboDebug> debug);
 
 				//	ITurboGameIOService Methods --------------------------------------------------------------------------------
 				virtual void SaveGameState(std::shared_ptr<ITurboGameState> programState);
@@ -29,6 +32,8 @@ namespace Turbo
 
 			private:
 				std::wstring GetFullPath(LPCWSTR filename);
+
+				std::shared_ptr<ITurboDebug> _debug;
 			};
 		}	//	namespace Turbo::Platform::Windows10
 	}	//	namespace Turbo::Platform

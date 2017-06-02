@@ -1,6 +1,6 @@
-﻿#include "pch.h"
-#include "DirectX12DeviceResources.h"
-#include "Windows10Helpers.h"
+﻿#include <pch.h>
+#include <DirectX12DeviceResources.h>
+#include <Windows10Helpers.h>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;

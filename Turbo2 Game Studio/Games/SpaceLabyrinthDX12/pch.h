@@ -14,5 +14,9 @@
 #include <agile.h>
 #include <concrt.h>
 #include <map>
-#include <ppltasks.h>	// For create_task
+
+#include <ppltasks.h>
 #include <synchapi.h>
+#include <iostream>
+#include <sstream>
+#include <string>

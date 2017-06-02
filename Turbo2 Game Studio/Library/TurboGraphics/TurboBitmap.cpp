@@ -2,9 +2,9 @@
 //#define _CRT_SECURE_NO_WARNINGS 1
 //#pragma warning(disable:4996)
 
-#include "pch.h"
+#include <pch.h>
 
-#include "TurboBitmap.h"
+#include <TurboBitmap.h>
 
 //  ============================================================================
 //  DSBitmap

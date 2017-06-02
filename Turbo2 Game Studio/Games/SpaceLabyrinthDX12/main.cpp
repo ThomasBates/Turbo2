@@ -1,12 +1,17 @@
 #include <pch.h>
 
+#include <TurboDebug.h>
+#include <TurboDebugMemoryLogger.h>
+
 #include <DirectX12Renderer.h>
+
 #include <Windows10GameApplication.h>
 #include <Windows10IOService.h>
 #include <Windows10Platform.h>
 
 #include <SpaceLabyrinth.h>
 
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::DirectX12;
 using namespace Turbo::Platform::Windows10;
 
@@ -17,11 +22,14 @@ using namespace Turbo::Platform::Windows10;
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
-	std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new Windows10IOService());
-	std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new DirectX12Renderer(ioService));
-	std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new Windows10GameApplication(ioService, renderer));
+	std::shared_ptr<ITurboDebugLogger> logger = std::shared_ptr<ITurboDebugLogger>(new TurboDebugMemoryLogger());
+	std::shared_ptr<ITurboDebug> debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
+	
+	std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new Windows10IOService(debug));
+	std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new DirectX12Renderer(debug, ioService));
+	std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new Windows10GameApplication(debug, ioService, renderer));
 
-	std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new SpaceLabyrinth());
+	std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new SpaceLabyrinth(debug));
 
 	return application->Run(game);
 }

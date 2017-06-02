@@ -1,5 +1,5 @@
-#include "pch.h"
-#include "Windows10IOService.h"
+#include <pch.h>
+#include <Windows10IOService.h>
 
 using namespace Concurrency;
 using namespace Microsoft::WRL;
@@ -7,6 +7,13 @@ using namespace Platform;
 using namespace Windows::ApplicationModel;
 using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
+
+using namespace Turbo::Core::Debug;
+
+Turbo::Platform::Windows10::Windows10IOService::Windows10IOService(std::shared_ptr<ITurboDebug> debug) :
+	_debug(debug)
+{
+}
 
 void Turbo::Platform::Windows10::Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> programState)
 {

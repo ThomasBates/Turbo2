@@ -108,7 +108,7 @@
     <PackageCertificateThumbprint>4BEDDD033CD4589A0ECB4D750889EC734421FB25</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>.;..\Spacelabyrinth;..\Spacelabyrinth\IntroLevel;..\Spacelabyrinth\OriginalLevel;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\SpaceLabyrinth;..\SpaceLabyrinth\CubicMaze;..\SpaceLabyrinth\Level0;..\SpaceLabyrinth\OriginalLevel;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>.;..\Spacelabyrinth;..\..\Library\Application;..\..\Library\ApplicationDX12;..\..\Library\Graphics;..\..\Library\GraphicsDX12;$(IncludePath)</IncludePath>
@@ -202,6 +202,7 @@
   <ItemGroup>
     <Image Include="..\..\Resources\Textures\IntroCeiling.bmp" />
     <Image Include="..\..\Resources\Textures\IntroEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\IntroEntrance.bmp" />
     <Image Include="..\..\Resources\Textures\IntroFloor.bmp" />
     <Image Include="..\..\Resources\Textures\IntroWall.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalCeiling.bmp" />
@@ -218,6 +219,13 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\ITurboDebug.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\ITurboDebugLogger.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebug.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStream.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStreamBuf.h" />
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugTypes.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGame.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameApplication.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameController.h" />
@@ -268,28 +276,31 @@
     <ClInclude Include="..\..\Platform\Windows10\Windows10NavigationControl.h" />
     <ClInclude Include="..\..\Platform\Windows10\Windows10Platform.h" />
     <ClInclude Include="..\..\Platform\Windows10\Windows10Timer.h" />
-    <ClInclude Include="..\Spacelabyrinth\CubicMaze.h" />
-    <ClInclude Include="..\Spacelabyrinth\ICubicMazeFactory.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroLevel.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.h" />
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMaze.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeCornerMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeEdgeMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeFactory.h" />
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneBuilder.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneObject.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeWallMesh.h" />
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\ICubicMazeFactory.h" />
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\ICubicMazeSceneBuilder.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level01.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level02.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level03.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level04.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0Player.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeEdgeMesh.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.h" />
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebug.cpp" />
+    <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.cpp" />
     <ClCompile Include="..\..\Library\TurboGame\TurboGameState.cpp" />
     <ClCompile Include="..\..\Library\TurboGraphics\TurboBitmap.cpp" />
     <ClCompile Include="..\..\Library\TurboGraphics\TurboCanvasRGB24.cpp" />
@@ -314,21 +325,22 @@
     <ClCompile Include="..\..\Platform\Windows10\Windows10IOService.cpp" />
     <ClCompile Include="..\..\Platform\Windows10\Windows10NavigationControl.cpp" />
     <ClCompile Include="..\..\Platform\Windows10\Windows10Platform.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroLevel.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMaze.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeCornerMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeEdgeMesh.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeFactory.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneBuilder.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneObject.cpp" />
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeWallMesh.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level01.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level02.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level03.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level04.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0Player.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeEdgeMesh.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.cpp" />
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />
     <ClCompile Include="main.cpp" />

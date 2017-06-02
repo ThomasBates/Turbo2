@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <pch.h>
 #include <TurboMatrix4x4.h>
 
 namespace Turbo
@@ -36,5 +37,12 @@ namespace Turbo
 
 			TurboVector3D operator*(const TurboMatrix4x4 &m) const;  //  transform
 		};
+
+		//std::ostream & operator<<(std::ostream & os, const TurboVector3D & v);
+		inline std::ostream& operator<<(std::ostream& os, const TurboVector3D& v)
+		{
+			os << "(" << v.X << "," << v.Y << "," << v.Z << ")";
+			return os;
+		}
 	}
 }

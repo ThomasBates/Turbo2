@@ -1,10 +1,10 @@
 
 #pragma once
 
-#include "pch.h"
+#include <pch.h>
 
-#include "ITurboGameLevel.h"
-#include "ITurboSceneBuilder.h"
+#include <ITurboGameLevel.h>
+#include <ITurboSceneBuilder.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -13,7 +13,6 @@ using namespace Turbo::Scene;
 class OriginalLevel : public ITurboGameLevel
 {
 private:
-	std::unique_ptr<ITurboSceneBuilder>			_sceneBuilder;
 	std::shared_ptr<ITurboScene>				_scene;
 	std::shared_ptr<ITurboSceneObject>		    _player;
 

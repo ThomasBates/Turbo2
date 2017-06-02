@@ -1,16 +1,20 @@
-#include "pch.h"
+#include <pch.h>
 
-#include "Windows10GameApplication.h"
-#include "Windows10FrameworkViewSource.h"
+#include <Windows10GameApplication.h>
+#include <Windows10FrameworkViewSource.h>
 
 using namespace Windows::ApplicationModel::Core;
+
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 
 #pragma region ITurboGame Methods
 
 Turbo::Platform::Windows10::Windows10GameApplication::Windows10GameApplication(
+	std::shared_ptr<ITurboDebug> debug,
 	std::shared_ptr<ITurboGameIOService> ioService,
 	std::shared_ptr<ITurboGameRenderer> renderer) :
+	_debug(debug),
 	_ioService(ioService),
 	_renderer(renderer)
 {

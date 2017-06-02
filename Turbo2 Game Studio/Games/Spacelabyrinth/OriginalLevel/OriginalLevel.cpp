@@ -1,10 +1,11 @@
 
-#include "pch.h"
+#include <pch.h>
 
+#include <CubicMazeSceneBuilder.h>
+#include <CubicMazeFactory.h>
+#include <OriginalLevel.h>
+#include <OriginalPlayer.h>
 #include <TurboGameState.h>
-#include "OriginalLevel.h"
-#include "OriginalPlayer.h"
-#include "OriginalMazeSceneBuilder.h"
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -38,9 +39,18 @@ void OriginalLevel::State(std::shared_ptr<ITurboGameState> state)
 
 void OriginalLevel::Initialize()
 {
-	//	Create the scene
-	_sceneBuilder = std::unique_ptr<ITurboSceneBuilder>(new OriginalMazeSceneBuilder());
-	_scene = _sceneBuilder->BuildScene();
+	//	Create the maze.
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory());
+	std::shared_ptr<CubicMaze> cubicMaze = mazeFactory->MakeMaze(3, 3, 3);
+
+	//	Create the exit.
+	cubicMaze->Cell(2, 2, 2)->FrontWall.Type = Exit;
+	cubicMaze->Cell(2, 2, 2)->FrontWall.PortalIndex = 1;
+
+
+	//	Build the scene.
+	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder());
+	_scene = sceneBuilder->BuildScene(cubicMaze);
 
 	//  Create the player
 	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());

@@ -47,9 +47,6 @@
     <Filter Include="Games\SpaceLabyrinth\OriginalLevel">
       <UniqueIdentifier>{563848d4-569a-466b-8f96-24c9ab6188b5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Games\SpaceLabyrinth\IntroLevel">
-      <UniqueIdentifier>{536c0ab6-b1fd-46dc-af2f-5832fc006c20}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\TurboGraphics">
       <UniqueIdentifier>{07170d58-390d-4044-8b2c-41c8217037a5}</UniqueIdentifier>
     </Filter>
@@ -71,6 +68,18 @@
     <Filter Include="Resources\Textures">
       <UniqueIdentifier>{f47127bc-958b-4cf0-909d-4d0f77ee2579}</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+    <Filter Include="Games\SpaceLabyrinth\CubicMaze">
+      <UniqueIdentifier>{f71a393d-e5bb-4fdc-b8d1-3d787cf614ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboCore">
+      <UniqueIdentifier>{94b4f0a2-794f-4d60-be23-ff2a06a20325}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboCore\TurboDebug">
+      <UniqueIdentifier>{1c685eb6-ebcf-4f2f-82e0-20a7ee7ef59a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\SpaceLabyrinth\Level0">
+      <UniqueIdentifier>{1e0f0038-cdc3-4e86-80ad-bcbfad42a6d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,53 +124,11 @@
     <ClCompile Include="..\..\Library\TurboMath\TurboVector2D.cpp">
       <Filter>Library\TurboMath</Filter>
     </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeEdgeMesh.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.cpp">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.cpp">
       <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
     </ClCompile>
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.cpp">
       <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Spacelabyrinth\IntroLevel\IntroLevel.cpp">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Library\TurboGraphics\TurboBitmap.cpp">
       <Filter>Library\TurboGraphics</Filter>
@@ -199,16 +166,61 @@
     <ClCompile Include="..\..\Platform\Windows10\Windows10IOService.cpp">
       <Filter>Platform\Windows10</Filter>
     </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMaze.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneBuilder.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneObject.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeWallMesh.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeCornerMesh.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeEdgeMesh.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Spacelabyrinth\CubicMaze\CubicMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebug.cpp">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.cpp">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0Player.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level01.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level02.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level03.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level0\Level04.cpp">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\ICubicMazeFactory.h">
-      <Filter>Games\SpaceLabyrinth</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\CubicMaze.h">
       <Filter>Games\SpaceLabyrinth</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\TurboGame\TurboGameState.h">
@@ -283,53 +295,11 @@
     <ClInclude Include="..\..\Library\TurboMath\TurboVector2D.h">
       <Filter>Library\TurboMath</Filter>
     </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeWallMesh.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeCornerMesh.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeEdgeMesh.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneBuilder.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalMazeSceneObject.h">
-      <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalCubicMazeFactory.h">
       <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
     </ClInclude>
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.h">
       <Filter>Games\SpaceLabyrinth\OriginalLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeCornerMesh.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeEdgeMesh.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneBuilder.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeSceneObject.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroMazeWallMesh.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroPlayer.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroCubicMazeFactory.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Spacelabyrinth\IntroLevel\IntroLevel.h">
-      <Filter>Games\SpaceLabyrinth\IntroLevel</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\TurboGraphics\ITurboCanvas.h">
       <Filter>Library\TurboGraphics</Filter>
@@ -409,6 +379,78 @@
     <ClInclude Include="..\..\Library\TurboGraphics\TurboColor.h">
       <Filter>Library\TurboGraphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\ICubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMaze.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneBuilder.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeSceneObject.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeWallMesh.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeCornerMesh.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeEdgeMesh.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Spacelabyrinth\CubicMaze\CubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\ICubicMazeSceneBuilder.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\ITurboDebug.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\ITurboDebugLogger.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebug.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugTypes.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0Player.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level01.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStreamBuf.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStream.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level02.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level03.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level0\Level04.h">
+      <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -453,6 +495,9 @@
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="..\..\Resources\Textures\IntroEdge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\IntroEntrance.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>
