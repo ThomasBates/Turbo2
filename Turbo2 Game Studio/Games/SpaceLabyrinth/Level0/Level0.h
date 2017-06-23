@@ -21,6 +21,7 @@ private:
 	std::shared_ptr<ITurboScene>		_scene;
 	std::shared_ptr<ITurboSceneObject>	_player;
 	std::shared_ptr<ITurboGameLevel>	_subLevel;
+	int _subLevelIndex;
 	
 	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
 
@@ -42,6 +43,7 @@ public:
 	virtual void State(std::shared_ptr<ITurboGameState> state);
 
 	virtual std::shared_ptr<ITurboScene> Scene();
+	virtual std::shared_ptr<ITurboSceneObject> Player() { return _player; }
 
 	virtual bool SceneChanged() { return _sceneChanged; }
 

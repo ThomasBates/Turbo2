@@ -7,6 +7,7 @@
 #include <Level0Player.h>
 #include <OriginalPlayer.h>
 #include <TurboGameState.h>
+#include <TurboScenePointLight.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -32,7 +33,7 @@ void Level03::State(std::shared_ptr<ITurboGameState> state)
 void Level03::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory());
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Cube));
 	_maze = mazeFactory->MakeMaze(3, 3, 3);
 
 	//	Create the exit.
@@ -47,11 +48,12 @@ void Level03::Initialize()
 
 	//  Create the player
 	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());
-	_player->Placement()->Reset();
-	_player->Placement()->GoTo(4, -4, -4);
-	_player->Placement()->RotateY(180);
+	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
 
-	////	set player Placement as camera Placement.
+	//	This is easier for now.
+	_scene->LightHack(true);
+
+	//	set player Placement as camera Placement.
 	_scene->CameraPlacement(_player->Placement());
 
 	//  Create NPC's and obstacles ...

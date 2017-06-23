@@ -40,7 +40,7 @@ void OriginalLevel::State(std::shared_ptr<ITurboGameState> state)
 void OriginalLevel::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory());
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Cube));
 	std::shared_ptr<CubicMaze> cubicMaze = mazeFactory->MakeMaze(3, 3, 3);
 
 	//	Create the exit.

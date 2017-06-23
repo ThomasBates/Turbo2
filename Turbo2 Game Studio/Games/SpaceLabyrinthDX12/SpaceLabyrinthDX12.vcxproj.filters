@@ -217,6 +217,9 @@
     <ClCompile Include="..\SpaceLabyrinth\Level0\Level04.cpp">
       <Filter>Games\SpaceLabyrinth\Level0</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Platform\Windows10\Windows10DebugFileLogger.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -450,6 +453,24 @@
     </ClInclude>
     <ClInclude Include="..\SpaceLabyrinth\Level0\Level04.h">
       <Filter>Games\SpaceLabyrinth\Level0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Windows10\Windows10DebugFileLogger.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\ITurboSceneLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneAmbientLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboScenePointLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneDirectionalLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneSpotLight.h">
+      <Filter>Library\TurboScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 #include <Level0Player.h>
 #include <OriginalPlayer.h>
 #include <TurboGameState.h>
+#include <TurboScenePointLight.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -32,8 +33,14 @@ void Level02::State(std::shared_ptr<ITurboGameState> state)
 void Level02::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory());
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Layered));
 	_maze = mazeFactory->MakeMaze(3, 3, 3);
+
+	//	Create the passages between layers.
+	_maze->Cell(2, 0, 0)->BottomWall.Type = None;
+	_maze->Cell(2, 1, 0)->TopWall.Type = None;
+	_maze->Cell(0, 1, 2)->BottomWall.Type = None;
+	_maze->Cell(0, 2, 2)->TopWall.Type = None;
 
 	//	Create the exit.
 	_maze->Cell(0, 0, 2)->LeftWall.Type = EntranceBack;
@@ -46,12 +53,13 @@ void Level02::Initialize()
 	_scene = sceneBuilder->BuildScene(_maze);
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());
-	_player->Placement()->Reset();
-	_player->Placement()->GoTo(0, 0, -4);
-	_player->Placement()->RotateY(-90);
+	_player = std::shared_ptr<ITurboSceneObject>(new Level0Player());
+	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
 
-	////	set player Placement as camera Placement.
+	//	This is easier for now.
+	_scene->LightHack(true);
+
+	//	set player Placement as camera Placement.
 	_scene->CameraPlacement(_player->Placement());
 
 	//  Create NPC's and obstacles ...

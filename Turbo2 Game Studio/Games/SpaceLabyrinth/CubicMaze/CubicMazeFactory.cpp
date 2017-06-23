@@ -5,6 +5,16 @@
 
 #include <CubicMazeFactory.h>
 
+#pragma region // Constructors -----------------------------------------------------------------------------------------
+
+CubicMazeFactory::CubicMazeFactory(CubicMazeType cubicMazeType) :
+	_cubicMazeType(cubicMazeType)
+{
+	if (_cubicMazeType == Unknown)
+		_cubicMazeType = Cube;
+}
+
+
 //  ========================================================================  //
 //  IMazeFactory Methods
 //  ========================================================================  //
@@ -55,14 +65,26 @@ std::shared_ptr<CubicMaze> CubicMazeFactory::MakeMaze(int width, int height, int
 	srand(time(0) % 0xFFFF);
 
 	int count = 0;
+	//CubicMazeLocation location(0, 0, 0);
+	//
+	////	--------------	//
+	////	Now trace maze	//
+	////	--------------	//
+	//cubicMaze->Cell(location, CubicMazeCell(Wall));
+	//cubicMaze->Cell(location)->Used = true;
+	//++count;
+
+	for (int h = 0; h < size.H; h++)
+	{
+		cubicMaze->Cell(0, h, 0, CubicMazeCell(Wall));
+		cubicMaze->Cell(0, h, 0)->Used = true;
+		++count;
+
+		if (_cubicMazeType != Layered)
+			break;
+	}
+
 	CubicMazeLocation location(0, 0, 0);
-	
-	//	--------------	//
-	//	Now trace maze	//
-	//	--------------	//
-	cubicMaze->Cell(location, CubicMazeCell(Wall));
-	cubicMaze->Cell(location)->Used = true;
-	++count;
 
 	//	flag set to false when maze is completed
 	bool mazeIsComplete = false;
@@ -78,6 +100,12 @@ std::shared_ptr<CubicMaze> CubicMazeFactory::MakeMaze(int width, int height, int
 		if (location.W == size.W-1	|| cubicMaze->Cell(location.W + 1, location.H, location.D)->Used)	mask.right = false;
 		if (location.H == size.H-1	|| cubicMaze->Cell(location.W, location.H + 1, location.D)->Used)	mask.down = false;
 		if (location.D == size.D-1	|| cubicMaze->Cell(location.W, location.H, location.D + 1)->Used)	mask.front = false;
+
+		if (_cubicMazeType == Layered)
+		{
+			mask.up = false;
+			mask.down = false;
+		}
 
 		if (mask.left || mask.right || mask.up || mask.down || mask.front || mask.back)
 			mazeIsComplete = Move(mask, cubicMaze, size, &location, &count);

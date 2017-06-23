@@ -2,6 +2,7 @@
 
 #include <TurboDebug.h>
 #include <TurboDebugMemoryLogger.h>
+#include <Windows10DebugFileLogger.h>
 
 #include <DirectX12Renderer.h>
 
@@ -22,7 +23,7 @@ using namespace Turbo::Platform::Windows10;
 [Platform::MTAThread]
 int main(Platform::Array<Platform::String^>^)
 {
-	std::shared_ptr<ITurboDebugLogger> logger = std::shared_ptr<ITurboDebugLogger>(new TurboDebugMemoryLogger());
+	std::shared_ptr<ITurboDebugLogger> logger = std::shared_ptr<ITurboDebugLogger>(new Windows10DebugFileLogger());
 	std::shared_ptr<ITurboDebug> debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 	
 	std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new Windows10IOService(debug));

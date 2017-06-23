@@ -23,13 +23,13 @@ void Level0Player::Update(NavigationInfo navInfo)
 
 	//const double cHoverFrequency = 2.0f;
 	//const double cHoverMagnitude = 0.05f;
-	const double cGravityFactor = 0.0f;
-	const double cSelfRightingSpeed = 0.0f;
+	//const double cGravityFactor = 0.0f;
+	//const double cSelfRightingSpeed = 0.0f;
 
 	const double cHoverFrequency = 0.0f;
 	const double cHoverMagnitude = 0.0f;
-	//const double cGravityFactor = 9.8f;
-	//const double cSelfRightingSpeed = 30.0f;
+	const double cGravityFactor = 9.8f;
+	const double cSelfRightingSpeed = 3000.0f;
 
 	double deltaTime = navInfo.DeltaTime;
 	double time = navInfo.Time;
@@ -49,22 +49,20 @@ void Level0Player::Update(NavigationInfo navInfo)
 		//  air friction decay
 		velocity -= velocity * cFrictionFactor * deltaTime;
 
-		////  hover
-		//velocity += _placement->Up() * cos(time * cHoverFrequency) * cHoverMagnitude * deltaTime;
+		//  hover
+		velocity += _placement->Up() * cos(time * cHoverFrequency) * cHoverMagnitude * deltaTime;
 
-		////  gravity
-		//velocity.Y -= deltaTime * cGravityFactor;
+		//  gravity
+		velocity.Y -= deltaTime * cGravityFactor;
 	}
 
 	//	Handle keyboard movement inputs.
 	if (navInfo.MoveLeft)	velocity -= _placement->Right() * moveSpeed;
 	if (navInfo.MoveRight)	velocity += _placement->Right() * moveSpeed;
-	//if (navInfo.MoveDown)	velocity -= _placement->Up()    * moveSpeed;
-	//if (navInfo.MoveUp)		velocity += _placement->Up()    * moveSpeed;
+	if (navInfo.MoveDown)	velocity -= _placement->Up()    * moveSpeed;
+	if (navInfo.MoveUp)		velocity += _placement->Up()    * moveSpeed;
 	if (navInfo.MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo.MoveBack)	velocity += _placement->Back()  * moveSpeed;
-
-	velocity.Y = 0;
 
 	_placement->Velocity(velocity);
 
@@ -81,11 +79,12 @@ void Level0Player::Update(NavigationInfo navInfo)
 		navInfo.RollRight ||
 		navInfo.RollLeft))
 	{
+		// Slow down spinning
 		angularVelocity -= angularVelocity * 1.0f * deltaTime;
 
 		//  self-righting
-		angularVelocity.Z -= _placement->Right().Y * cSelfRightingSpeed * deltaTime;
-		angularVelocity.X -= _placement->Back().Y * cSelfRightingSpeed * deltaTime;
+		angularVelocity.X = _placement->Back().Y * cSelfRightingSpeed * deltaTime;
+		angularVelocity.Z = -_placement->Right().Y * cSelfRightingSpeed * deltaTime;
 	}
 
 	//	Handle mouse direction inputs
@@ -94,19 +93,19 @@ void Level0Player::Update(NavigationInfo navInfo)
 		double dx = navInfo.PointerX - _lastNavInfo.PointerX;
 		double dy = navInfo.PointerY - _lastNavInfo.PointerY;
 
-//		angularVelocity.X = -dy / deltaTime;
+		angularVelocity.X = -dy / deltaTime;
 		angularVelocity.Y = -dx / deltaTime;
 	}
 
 	_lastNavInfo = navInfo;
 
 	//	Handle keyboard direction inputs.
-	//if (navInfo.PitchFore)	angularVelocity.X -= rotateSpeed;
-	//if (navInfo.PitchBack)	angularVelocity.X += rotateSpeed;
+	if (navInfo.PitchFore)	angularVelocity.X -= rotateSpeed;
+	if (navInfo.PitchBack)	angularVelocity.X += rotateSpeed;
 	if (navInfo.YawRight)	angularVelocity.Y -= rotateSpeed;
 	if (navInfo.YawLeft)	angularVelocity.Y += rotateSpeed;
-	//if (navInfo.RollRight)	angularVelocity.Z -= rotateSpeed;
-	//if (navInfo.RollLeft)	angularVelocity.Z += rotateSpeed;
+	if (navInfo.RollRight)	angularVelocity.Z -= rotateSpeed;
+	if (navInfo.RollLeft)	angularVelocity.Z += rotateSpeed;
 
 	_placement->AngularVelocity(angularVelocity);
 }

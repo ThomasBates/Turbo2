@@ -247,6 +247,7 @@
     <ClInclude Include="..\..\Library\TurboMath\TurboVector3D.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboScene.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneBuilder.h" />
+    <ClInclude Include="..\..\Library\TurboScene\ITurboSceneLight.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneMaterial.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneMesh.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneObject.h" />
@@ -255,11 +256,15 @@
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneTexture.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneVertexShader.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScene.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneAmbientLight.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneDirectionalLight.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneMaterial.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneMesh.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneObject.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePixelShader.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePlacement.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboScenePointLight.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneSpotLight.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneTexture.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneTypes.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneVertexShader.h" />
@@ -267,6 +272,7 @@
     <ClInclude Include="..\..\Platform\DirectX12\DirectX12DeviceResources.h" />
     <ClInclude Include="..\..\Platform\DirectX12\DirectX12Renderer.h" />
     <ClInclude Include="..\..\Platform\DirectX12\Shaders\DirectX12ShaderStructures.h" />
+    <ClInclude Include="..\..\Platform\Windows10\Windows10DebugFileLogger.h" />
     <ClInclude Include="..\..\Platform\Windows10\Windows10FrameworkView.h" />
     <ClInclude Include="..\..\Platform\Windows10\Windows10FrameworkViewSource.h" />
     <ClInclude Include="..\..\Platform\Windows10\Windows10GameApplication.h" />
@@ -318,6 +324,7 @@
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneVertexShader.cpp" />
     <ClCompile Include="..\..\Platform\DirectX12\DirectX12DeviceResources.cpp" />
     <ClCompile Include="..\..\Platform\DirectX12\DirectX12Renderer.cpp" />
+    <ClCompile Include="..\..\Platform\Windows10\Windows10DebugFileLogger.cpp" />
     <ClCompile Include="..\..\Platform\Windows10\Windows10FrameworkView.cpp" />
     <ClCompile Include="..\..\Platform\Windows10\Windows10FrameworkViewSource.cpp" />
     <ClCompile Include="..\..\Platform\Windows10\Windows10GameApplication.cpp" />

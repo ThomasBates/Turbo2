@@ -79,6 +79,7 @@ namespace Turbo
 
 				ComPtr<ID3D12Resource>				_constantBufferTargetResource;
 				SceneObjectConstantBuffer*			_constantBufferMappedResource;
+				SceneLightConstantBuffer*			_constantBufferLightData;
 				SceneConstantBuffer*				_constantBufferData;
 
 
@@ -114,7 +115,7 @@ namespace Turbo
 				void CreateSamplerDescriptor();
 
 				void UpdateProjectionMatrix();
-				void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement);
+				void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack);
 				void InitializeRendering();
 				void PopulateCommandList(std::shared_ptr<ITurboScene> scene);
 				void PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject);

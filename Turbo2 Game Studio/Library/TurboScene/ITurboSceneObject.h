@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ITurboSceneMesh.h>
+#include <ITurboSceneLight.h>
 #include <ITurboSceneMaterial.h>
+#include <ITurboSceneMesh.h>
 #include <ITurboScenePlacement.h>
 #include <TurboSceneTypes.h>
 
@@ -18,6 +19,9 @@ namespace Turbo
 
 			virtual std::shared_ptr<ITurboSceneMaterial> Material() = 0;
 			virtual void Material(std::shared_ptr<ITurboSceneMaterial> material) = 0;
+
+			virtual std::shared_ptr<ITurboSceneLight> Light() = 0;
+			virtual void Light(std::shared_ptr<ITurboSceneLight> light) = 0;
 
 			virtual	std::shared_ptr<ITurboScenePlacement> Placement() = 0;
 			virtual void Placement(std::shared_ptr<ITurboScenePlacement> placement) = 0;

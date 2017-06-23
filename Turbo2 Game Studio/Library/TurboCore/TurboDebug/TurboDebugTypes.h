@@ -8,36 +8,40 @@ namespace Turbo
 	{
 		namespace Debug
 		{
+			//	Debug Severity -----------------------------------------------------------------------------------------
+
 			enum TurboDebugSeverity
 			{
-				Error,
-				Warning,
-				Information
-			};
-
-			enum TurboDebugCategory
-			{
-				DebugLevel0
+				debugError,
+				debugWarning,
+				debugInformation
 			};
 
 			inline std::string DebugSeverity(TurboDebugSeverity severity)
 			{
 				switch (severity)
 				{
-				case Error: return "Error";
-				case Warning: return "Warning";
-				case Information: return "Information";
+				case debugError:		return "Error";
+				case debugWarning:		return "Warning";
+				case debugInformation:	return "Information";
 				}
-				return "Unknown Severity";
+				return "Unknown Debug Severity";
 			}
+
+			//	Debug Category -----------------------------------------------------------------------------------------
+
+			enum TurboDebugCategory
+			{
+				debugInteractions
+			};
 
 			inline std::string DebugCategory(TurboDebugCategory category)
 			{
 				switch (category)
 				{
-				case DebugLevel0: return "DebugLevel0";
+				case debugInteractions: return "Interactions";
 				}
-				return "Unknown Category";
+				return "Unknown Debug Category";
 			}
 		}
 	}

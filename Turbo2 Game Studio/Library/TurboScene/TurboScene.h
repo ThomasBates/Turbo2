@@ -12,8 +12,9 @@ namespace Turbo
 		class TurboScene : public ITurboScene
 		{
 		private:
-			std::vector<std::shared_ptr<ITurboSceneObject>> _sceneObjects;
+			std::vector<std::shared_ptr<ITurboSceneObject>>	_sceneObjects;
 			std::shared_ptr<ITurboScenePlacement>			_cameraPlacement;
+			bool											_lightHack;
 
 		public:
 			//  Constructors and Destructors -----------------------------------------------------------------------------------
@@ -25,6 +26,9 @@ namespace Turbo
 
 			virtual std::shared_ptr<ITurboScenePlacement> CameraPlacement() { return _cameraPlacement; }
 			virtual void CameraPlacement(std::shared_ptr<ITurboScenePlacement> cameraPlacement) { _cameraPlacement = cameraPlacement; }
+
+			virtual bool LightHack() { return _lightHack; }
+			virtual void LightHack(bool lightHack) { _lightHack = lightHack; }
 
 			//  ITurboScene Methods --------------------------------------------------------------------------------------------
 			virtual void AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);

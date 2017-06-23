@@ -21,6 +21,7 @@ namespace Turbo
 			virtual void State(std::shared_ptr<ITurboGameState> state) = 0;
 
 			virtual std::shared_ptr<ITurboScene> Scene() = 0;
+			virtual std::shared_ptr<ITurboSceneObject> Player() = 0;
 
 			virtual bool SceneChanged() = 0;
 

@@ -8,6 +8,23 @@
 #include <Level0.h>
 #include <OriginalLevel.h>
 
+//	2017-06-07
+//	TODO:	Textures selectable by layer.
+//	TODO:	Game Level State (to replace "levelChanged")
+
+//	TODO:	Unlock doors on accomplishments.
+//	TODO:	Artwork for Textures.
+//	TODO:	Instructions for users.
+//	TODO:	Key(s) to unlock exit in level 0-4.
+//	TODO:	Hazard(s) in level 0-4?
+//	TODO:	Lights implemented properly.
+
+//	DONE:
+//	2017-06-07:	Player maintains orientation and velocity when going through portals.
+//	2017-06-07:	Allow viewing up/down even when navigating flat (e.g. Layer 0 & Layer 0-1).
+//	2017-06-14:	Maze Factory for Tiered mazes (e.g. Layer 0-2).
+//	2017-06-23:	Lights selectable by layer (lightHack).
+
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
 SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug) :
@@ -32,13 +49,33 @@ std::shared_ptr<ITurboGameState> SpaceLabyrinth::State()
 
 void SpaceLabyrinth::State(std::shared_ptr<ITurboGameState> state)
 {
+	if (_level == nullptr)
+	{
+		return;
+	}
+
 	state->LoadString("ProgramInfo");
 	_level->State(state);
 }
 
 std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
 {
+	if (_level == nullptr)
+	{
+		return nullptr;
+	}
+
 	return _level->Scene();
+}
+
+std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
+{
+	if (_level == nullptr)
+	{
+		return nullptr;
+	}
+
+	return _level->Player();
 }
 
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------

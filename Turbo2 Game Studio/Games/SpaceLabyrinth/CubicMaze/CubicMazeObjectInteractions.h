@@ -39,13 +39,12 @@ public:
 	void ProcessObjectInteractions(NavigationInfo navInfo, int *pPortalIndex);
 
 private:
-	bool IsTouchingCellWall(CubicMazeLocation location, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-
-	bool IsTouchingRightWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-	bool IsTouchingLeftWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-	bool IsTouchingBottomWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-	bool IsTouchingTopWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-	bool IsTouchingFrontWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
-	bool IsTouchingBackWall(CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, TurboVector3D *pContact, TurboVector3D *pNormal, int *pPortalIndex);
+	void IsTouchingCellWall(	CubicMazeLocation location, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingRightWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingLeftWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingBottomWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingTopWall(		CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingFrontWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingBackWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, double buffer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
 };
 

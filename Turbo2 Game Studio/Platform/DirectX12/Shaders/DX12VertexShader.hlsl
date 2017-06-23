@@ -10,8 +10,8 @@ cbuffer SceneConstantBuffer : register(b0)
 	matrix sceneProjection;
 	matrix sceneView;
 	matrix sceneViewInverseTranspose;
-	float4 sceneLightVector;
 	float4 sceneCameraVector;
+	int    sceneLightCount;
 };
 
 cbuffer SceneObjectConstantBuffer : register(b1)
@@ -32,17 +32,24 @@ PixelShaderInput main(VertexShaderInput input)
 	position = mul(position, sceneView);
 	output.position = mul(position, sceneProjection);
 
-	float litArea = 0.5;
-
-	float distance = length(position);
-	float power = 1.0;
-	if (distance > 1.0 + litArea)
+	if (sceneLightCount > 0)
 	{
-		power = 1.0 / (distance - litArea);
-		power = pow(power, 3);
-	}
+		float litArea = 0.5;
 
-	output.color = float4(power, power, power, 1.0f);
+		float distance = length(position);
+		float power = 1.0;
+		if (distance > 1.0 + litArea)
+		{
+			power = 1.0 / (distance - litArea);
+			power = pow(power, 3);
+		}
+
+		output.color = float4(power, power, power, 1.0f);
+	}
+	else
+	{
+		output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	}
 
 	// Pass the texture coordinates through without modification.
 	output.texcoord = input.texcoord;

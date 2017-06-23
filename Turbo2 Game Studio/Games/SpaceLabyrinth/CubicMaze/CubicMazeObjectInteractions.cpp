@@ -8,6 +8,8 @@ using namespace Turbo::Scene;
 
 void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navInfo, int *pPortalIndex)
 {
+	*pPortalIndex = 0;
+
 	const double buffer = 0.25;
 	const double bounciness = 0.25;
 
@@ -20,64 +22,87 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 	TurboVector3D oldPosition = placement->Position();
 	TurboVector3D newPosition = oldPosition + velocity * deltaTime;
 
-
 	CubicMazeLocation oldLocation = CubicMazeLocation(
 		(int)round(oldPosition.X / CELLSIZE), 
 		(int)round(-oldPosition.Y / CELLSIZE), 
 		(int)round(-oldPosition.Z / CELLSIZE));
-	
-	//CubicMazeLocation newLocation = CubicMazeLocation(
-	//	(int)round(newPosition.X / CELLSIZE), 
-	//	(int)round(-newPosition.Y / CELLSIZE), 
-	//	(int)round(-newPosition.Z / CELLSIZE));
-
-	//if (oldPosition.Z > 1.0)
-	//{
-	//	_debug->Send(Information, DebugLevel0) << "Outside\n";
-	//}
 
 	TurboVector3D contact;
 	TurboVector3D normal;
 
 	int portalIndex;
+	bool isLeaving;
+	bool isTouching;
 
-	bool isTouching = IsTouchingCellWall(
+	_debug->Send(debugInformation, debugInteractions) << "Current From " << oldPosition << "\n";
+	_debug->Send(debugInformation, debugInteractions) << "Current To   " << newPosition << "\n";
+	_debug->Send(debugInformation, debugInteractions) << "Current Cell " << oldLocation << "\n";
+
+	IsTouchingCellWall(
 		oldLocation, 
 		oldPosition, 
 		newPosition, 
-		buffer, 
+		buffer,
+		&portalIndex,
+		&isLeaving,
+		&isTouching,
 		&contact, 
-		&normal, 
-		&portalIndex);
+		&normal);
 
+	//	If we've entered a door, none of the rest matters.
 	if (portalIndex > 0)
 	{
 		*pPortalIndex = portalIndex;
 		return;
 	}
 
-	if (!isTouching)
+	if (!isTouching && isLeaving)
 	{
-		for (int dw = -1; (dw <= 1) && !isTouching; dw++)
-		for (int dh = -1; (dh <= 1) && !isTouching; dh++)
-		for (int dd = -1; (dd <= 1) && !isTouching; dd++)
+		CubicMazeCell *cell = _maze->Cell(oldLocation);
+
+		//	Test the adjacent cells that are in the direction of travel.
+		int w1 = 0, w2 = 0;
+		int h1 = 0, h2 = 0;
+		int d1 = 0, d2 = 0;
+
+		if (velocity.X > 0) w2 = 1;
+		if (velocity.X < 0) w1 = -1;
+		if (velocity.Y > 0) h1 = -1;
+		if (velocity.Y < 0) h2 = 1;
+		if (velocity.Z > 0) d1 = -1;
+		if (velocity.Z < 0) d2 = 1;
+
+		for (int dw = w1; (dw <= w2) && !isTouching; dw++)
+		for (int dh = h1; (dh <= h2) && !isTouching; dh++)
+		for (int dd = d1; (dd <= d2) && !isTouching; dd++)
 		{
+			if ((dw < 0) && (cell->LeftWall.Type	!= None)) continue;
+			if ((dw > 0) && (cell->RightWall.Type	!= None)) continue;
+			if ((dh < 0) && (cell->TopWall.Type		!= None)) continue;
+			if ((dh > 0) && (cell->BottomWall.Type	!= None)) continue;
+			if ((dd < 0) && (cell->BackWall.Type	!= None)) continue;
+			if ((dd > 0) && (cell->FrontWall.Type	!= None)) continue;
+
 			//	Already did 0,0,0 above.
-			if ((dw != 0) && (dh != 0) && (dd != 0))
+			if ((dw != 0) || (dh != 0) || (dd != 0))
 			{
-				CubicMazeLocation tempLocation = CubicMazeLocation(
+				CubicMazeLocation testLocation = CubicMazeLocation(
 					oldLocation.W + dw, 
 					oldLocation.H + dh, 
 					oldLocation.D + dd);
 
-				isTouching = IsTouchingCellWall(
-					oldLocation, 
+				_debug->Send(debugInformation, debugInteractions) << "Testing Cell " << testLocation << "\n";
+
+				IsTouchingCellWall(
+					testLocation,
 					oldPosition, 
 					newPosition, 
-					buffer, 
+					buffer,
+					&portalIndex,
+					&isLeaving,
+					&isTouching,
 					&contact, 
-					&normal, 
-					&portalIndex);
+					&normal);
 			}
 		}
 	}
@@ -89,35 +114,39 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 		TurboVector3D t = v - n;
 		velocity = t - n * 0.5;
 
-		newPosition = oldPosition + velocity * deltaTime;
+		newPosition = contact + velocity * deltaTime;
 	}
-
-
 
 	placement->Velocity(velocity);
 	placement->GoTo(newPosition);
 	placement->Rotate(angularVelocity * deltaTime);
 }
 
-bool CubicMazeObjectInteractions::IsTouchingCellWall(
+void CubicMazeObjectInteractions::IsTouchingCellWall(
 	CubicMazeLocation location,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	CubicMazeCell *cell = _maze->Cell(location);
 
 	if (cell == NULL)
 	{
-		return false;
+		return;
 	}
+
+	_debug->Send(debugInformation, debugInteractions) << "Testing Cell " << location << "\n";
 
 	TurboVector3D cellCenter = TurboVector3D(
 		location.W * CELLSIZE,
@@ -127,161 +156,247 @@ bool CubicMazeObjectInteractions::IsTouchingCellWall(
 	TurboVector3D cellFromPoint = fromPoint - cellCenter;
 	TurboVector3D celltoPoint = toPoint - cellCenter;
 
-	bool result = false;
+	_debug->Send(debugInformation, debugInteractions) << "Testing From " << cellFromPoint << "\n";
+	_debug->Send(debugInformation, debugInteractions) << "Testing To   " << celltoPoint << "\n";
 
 	double nearestDistance = 0.0;
 	TurboVector3D nearestContact;
 	TurboVector3D nearestNormal;
 
+	int portalIndex;
+	bool isLeaving;
+	bool isTouching;
 	TurboVector3D contact;
 	TurboVector3D normal;
-	int portalIndex;
 
-	if (IsTouchingLeftWall(cell->LeftWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
+
+	//	Left Wall --------------------------------------------------------------
+	IsTouchingLeftWall(
+		cell->LeftWall, cellFromPoint, celltoPoint, buffer, 
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
+
+	if (portalIndex > 0)
 	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
 
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (IsTouchingRightWall(cell->RightWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
-	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+	//	Right Wall -------------------------------------------------------------
+	IsTouchingRightWall(
+		cell->RightWall, cellFromPoint, celltoPoint, buffer,
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
+	if (portalIndex > 0)
+	{
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
+
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (IsTouchingTopWall(cell->TopWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
-	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+	//	Top Wall ---------------------------------------------------------------
+	IsTouchingTopWall(
+		cell->TopWall, cellFromPoint, celltoPoint, buffer,
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
+	if (portalIndex > 0)
+	{
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
+
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (IsTouchingBottomWall(cell->BottomWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
-	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+	//	Bottom Wall ----------------------------------------------------------------
+	IsTouchingBottomWall(
+		cell->BottomWall, cellFromPoint, celltoPoint, buffer,
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
+	if (portalIndex > 0)
+	{
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
+
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (IsTouchingFrontWall(cell->FrontWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
-	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+	//	Front Wall -----------------------------------------------------------------
+	IsTouchingFrontWall(
+		cell->FrontWall, cellFromPoint, celltoPoint, buffer,
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
+	if (portalIndex > 0)
+	{
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
+
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (IsTouchingBackWall(cell->BackWall, cellFromPoint, celltoPoint, buffer, &contact, &normal, &portalIndex))
-	{
-		if (portalIndex > 0)
-		{
-			*pPortalIndex = portalIndex;
-			return true;
-		}
+	//	Back Wall ------------------------------------------------------------------
+	IsTouchingBackWall(
+		cell->BackWall, cellFromPoint, celltoPoint, buffer,
+		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
+	if (portalIndex > 0)
+	{
+		*pPortalIndex = portalIndex;
+		*pIsTouching = true;
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
+		return;
+	}
+
+	if (isLeaving)
+	{
+		*pIsLeaving = true;
+	}
+
+	if (isTouching)
+	{
 		double distance = (contact - cellFromPoint).Length();
 
-		if ((!result) || (distance < nearestDistance))
+		if ((!*pIsTouching) || (distance < nearestDistance))
 		{
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
-			result = true;
 		}
+		*pIsTouching = true;
 	}
 
-	if (result)
+	if (*pIsTouching)
 	{
 		*pContact = nearestContact + cellCenter;
 		*pNormal = nearestNormal;
+
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: touching\n";
+	}
+	else if (*pIsLeaving)
+	{
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: leaving\n";
+	}
+	else
+	{
+		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: not touching\n";
 	}
 
-	return result;
+	return;
 }
 
-bool CubicMazeObjectInteractions::IsTouchingRightWall(
+void CubicMazeObjectInteractions::IsTouchingRightWall(
 	CubicMazeCellWall cellWall, 
 	TurboVector3D fromPoint, 
 	TurboVector3D toPoint, 
 	double buffer, 
-	TurboVector3D *pContact, 
-	TurboVector3D *pNormal, 
-	int *pPortalIndex)
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
+	TurboVector3D *pContact,
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(+CELLHALF - WALLHALF, -CELLHALF - WALLHALF, -CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(+CELLHALF + WALLHALF, +CELLHALF + WALLHALF, +CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Right:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Right:  min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Right:  max " << max << '\n';
 
 	if ((fromPoint.X <= toPoint.X) &&	//	moving in +X direction
 		(fromPoint.X <= min.X) &&		//	fromPoint has not entered wall
@@ -298,42 +413,53 @@ bool CubicMazeObjectInteractions::IsTouchingRightWall(
 				(pContact->Z >= -PORTALHALF) && (pContact->Z <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Right:  portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->Y >= min.Y) && (pContact->Y <= max.Y) &&
-			(pContact->Z >= min.Z) && (pContact->Z <= max.Z))
+		if ((pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer) &&
+			(pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Right:  leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Right:  touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Right:  not touching\n";
 }
 
-bool CubicMazeObjectInteractions::IsTouchingLeftWall(
+void CubicMazeObjectInteractions::IsTouchingLeftWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(-CELLHALF - WALLHALF, -CELLHALF - WALLHALF, -CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(-CELLHALF + WALLHALF, +CELLHALF + WALLHALF, +CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Left:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Left:   min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Left:   max " << max << '\n';
 
 	if ((fromPoint.X >= toPoint.X) &&	//	moving in -X direction
 		(fromPoint.X >= max.X) &&		//	fromPoint has not entered wall
@@ -350,42 +476,53 @@ bool CubicMazeObjectInteractions::IsTouchingLeftWall(
 				(pContact->Z >= -PORTALHALF) && (pContact->Z <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Left:   portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->Y >= min.Y) && (pContact->Y <= max.Y) &&
-			(pContact->Z >= min.Z) && (pContact->Z <= max.Z))
+		if ((pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer) &&
+			(pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Left:   leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Left:   touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Left:   not touching\n";
 }
 
-bool CubicMazeObjectInteractions::IsTouchingBottomWall(
+void CubicMazeObjectInteractions::IsTouchingBottomWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(-CELLHALF - WALLHALF, -CELLHALF - WALLHALF, -CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(+CELLHALF + WALLHALF, -CELLHALF + WALLHALF, +CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Bottom:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Bottom: min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Bottom: max " << max << '\n';
 
 	if ((fromPoint.Y >= toPoint.Y) &&	//	moving in -Y direction
 		(fromPoint.Y >= max.Y) &&		//	fromPoint has not entered wall
@@ -402,42 +539,53 @@ bool CubicMazeObjectInteractions::IsTouchingBottomWall(
 				(pContact->X >= -PORTALHALF) && (pContact->X <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Bottom: portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->Z >= min.Z) && (pContact->Z <= max.Z) &&
-			(pContact->X >= min.X) && (pContact->X <= max.X))
+		if ((pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer) &&
+			(pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Bottom: leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Bottom: touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Bottom: not touching\n";
 }
 
-bool CubicMazeObjectInteractions::IsTouchingTopWall(
+void CubicMazeObjectInteractions::IsTouchingTopWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(-CELLHALF - WALLHALF, +CELLHALF - WALLHALF, -CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(+CELLHALF + WALLHALF, +CELLHALF + WALLHALF, +CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Top:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Top:    min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Top:    max " << max << '\n';
 
 	if ((fromPoint.Y <= toPoint.Y) &&	//	moving in +Y direction
 		(fromPoint.Y <= min.Y) &&		//	fromPoint has not entered wall
@@ -454,42 +602,53 @@ bool CubicMazeObjectInteractions::IsTouchingTopWall(
 				(pContact->X >= -PORTALHALF) && (pContact->X <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Top:    portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->Z >= min.Z) && (pContact->Z <= max.Z) &&
-			(pContact->X >= min.X) && (pContact->X <= max.X))
+		if ((pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer) &&
+			(pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Top:    leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Top:    touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Top:    not touching\n";
 }
 
-bool CubicMazeObjectInteractions::IsTouchingFrontWall(
+void CubicMazeObjectInteractions::IsTouchingFrontWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(-CELLHALF - WALLHALF, -CELLHALF - WALLHALF, -CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(+CELLHALF + WALLHALF, +CELLHALF + WALLHALF, -CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Front:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Front:  min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Front:  max " << max << '\n';
 
 	if ((fromPoint.Z >= toPoint.Z) &&	//	moving in -Z direction
 		(fromPoint.Z >= max.Z) &&		//	fromPoint has not entered wall
@@ -506,42 +665,53 @@ bool CubicMazeObjectInteractions::IsTouchingFrontWall(
 				(pContact->Y >= -PORTALHALF) && (pContact->Y <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Front:  portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->X >= min.X) && (pContact->X <= max.X) &&
-			(pContact->Y >= min.Y) && (pContact->Y <= max.Y))
+		if ((pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer) &&
+			(pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Front:  leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Front:  touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Front:  not touching\n";
 }
 
-bool CubicMazeObjectInteractions::IsTouchingBackWall(
+void CubicMazeObjectInteractions::IsTouchingBackWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
 	double buffer,
+	int *pPortalIndex,
+	bool *pIsLeaving,
+	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal,
-	int *pPortalIndex)
+	TurboVector3D *pNormal)
 {
-	if (cellWall.Type == None)
-	{
-		return false;
-	}
-
+	*pPortalIndex = 0;
+	*pIsLeaving = false;
+	*pIsTouching = false;
 	*pContact = TurboVector3D();
 	*pNormal = TurboVector3D();
-	*pPortalIndex = 0;
 
 	TurboVector3D min = TurboVector3D(-CELLHALF - WALLHALF, -CELLHALF - WALLHALF, +CELLHALF - WALLHALF);
 	TurboVector3D max = TurboVector3D(+CELLHALF + WALLHALF, +CELLHALF + WALLHALF, +CELLHALF + WALLHALF);
 
-	//_debug->Send(Information, DebugLevel0) << "Back:  from " << fromPoint << ", to " << toPoint << ", min " << min << ", max " << max << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Back:   min " << min << '\n';
+	_debug->Send(debugInformation, debugInteractions) << "Back:   max " << max << '\n';
 
 	if ((fromPoint.Z <= toPoint.Z) &&	//	moving in +Z direction
 		(fromPoint.Z <= min.Z) &&		//	fromPoint has not entered wall
@@ -558,16 +728,27 @@ bool CubicMazeObjectInteractions::IsTouchingBackWall(
 				(pContact->Y >= -PORTALHALF) && (pContact->Y <= PORTALHALF))
 			{
 				*pPortalIndex = cellWall.PortalIndex;
-				return true;
+				_debug->Send(debugInformation, debugInteractions) << "Back:   portal " << *pPortalIndex << '\n';
+				return;
 			}
 		}
 
-		if ((pContact->X >= min.X) && (pContact->X <= max.X) &&
-			(pContact->Y >= min.Y) && (pContact->Y <= max.Y))
+		if ((pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer) &&
+			(pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer))
 		{
-			return true;
+			if (cellWall.Type == None)
+			{
+				*pIsLeaving = true;
+				_debug->Send(debugInformation, debugInteractions) << "Back:   leaving\n";
+			}
+			else
+			{
+				*pIsTouching = true;
+				_debug->Send(debugInformation, debugInteractions) << "Back:   touching\n";
+			}
+			return;
 		}
 	}
 
-	return false;
+	_debug->Send(debugInformation, debugInteractions) << "Back:   not touching\n";
 }

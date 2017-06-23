@@ -43,6 +43,13 @@ enum CubicMazeCellWallType
 	CellWallTypeCount
 };
 
+enum CubicMazeType
+{
+	Unknown,
+	Cube,
+	Layered
+};
+
 struct CubicMazeCellWall
 {
 	CubicMazeCellWallType Type;
@@ -134,6 +141,12 @@ struct CubicMazeLocation
 	{
 	}
 };
+
+inline std::ostream& operator<<(std::ostream& os, const CubicMazeLocation& location)
+{
+	os << "(" << location.W << "," << location.H << "," << location.D << ")";
+	return os;
+}
 
 typedef	CubicMazeCell*			CubicMazeCellArray1D;
 typedef	CubicMazeCellArray1D*	CubicMazeCellArray2D;

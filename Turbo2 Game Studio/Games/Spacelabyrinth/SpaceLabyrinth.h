@@ -24,6 +24,7 @@ public:
 	virtual void State(std::shared_ptr<ITurboGameState> state);
 
 	virtual std::shared_ptr<ITurboScene> Scene();
+	virtual std::shared_ptr<ITurboSceneObject> Player();
 
 	virtual bool SceneChanged() { return _sceneChanged; }
 

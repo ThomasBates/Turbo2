@@ -17,12 +17,13 @@ using namespace Windows::UI::Core;
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Graphics;
+using namespace Turbo::Platform::DirectX12;
 using namespace Turbo::Platform::Windows10;
 
 #pragma region Constructors and Destructors ----------------------------------------------------------------------------
 
 // Loads vertex and pixel shaders from files and instantiates the cube geometry.
-Turbo::Platform::DirectX12::DirectX12Renderer::DirectX12Renderer(
+DirectX12Renderer::DirectX12Renderer(
 	std::shared_ptr<ITurboDebug> debug,
 	std::shared_ptr<ITurboGameIOService> ioService) :
 	_debug(debug),
@@ -31,7 +32,7 @@ Turbo::Platform::DirectX12::DirectX12Renderer::DirectX12Renderer(
 {
 }
 
-Turbo::Platform::DirectX12::DirectX12Renderer::~DirectX12Renderer()
+DirectX12Renderer::~DirectX12Renderer()
 {
 	ReleaseSceneResources();
 }
@@ -39,12 +40,12 @@ Turbo::Platform::DirectX12::DirectX12Renderer::~DirectX12Renderer()
 #pragma endregion
 #pragma region Methods -------------------------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateDisplayInformation()
+void DirectX12Renderer::UpdateDisplayInformation()
 {
 	_deviceResources->UpdateDisplayInformation();
 }
 
-bool Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
+bool DirectX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 {
 	ReleaseSceneResources();
 
@@ -80,13 +81,13 @@ bool Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneResources(std::shar
 }
 
 // Renders one frame using the vertex and pixel shaders.
-bool Turbo::Platform::DirectX12::DirectX12Renderer::RenderScene(std::shared_ptr<ITurboScene> scene)
+bool DirectX12Renderer::RenderScene(std::shared_ptr<ITurboScene> scene)
 {
 	auto commandQueue = _deviceResources->GetCommandQueue();
 	PIXBeginEvent(commandQueue, 0, L"Render");
 	{
 		UpdateProjectionMatrix();
-		UpdateViewMatrix(scene->CameraPlacement());
+		UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
 
 		InitializeRendering();
 
@@ -102,7 +103,7 @@ bool Turbo::Platform::DirectX12::DirectX12Renderer::RenderScene(std::shared_ptr<
 #pragma endregion
 #pragma region Local Support Methods -----------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::ReleaseSceneResources()
+void DirectX12Renderer::ReleaseSceneResources()
 {
 	if (_deviceResources != nullptr) 
 	{
@@ -144,7 +145,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::ReleaseSceneResources()
 
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateRootSignature()
+void DirectX12Renderer::CreateRootSignature()
 {
 	CD3DX12_DESCRIPTOR_RANGE descriptorRanges[4];
 	descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, 0);
@@ -186,7 +187,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateRootSignature()
 		IID_PPV_ARGS(&_rootSignature)));
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreatePipelineStateObject()
+void DirectX12Renderer::CreatePipelineStateObject()
 {
 	std::vector<byte> vertexShaderData = _ioService->ReadData(L"DX12VertexShader.cso");
 	std::vector<byte> pixelShaderData = _ioService->ReadData(L"DX12PixelShader.cso");
@@ -223,7 +224,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreatePipelineStateObject()
 	pixelShaderData.clear();
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCommandList()
+void DirectX12Renderer::CreateCommandList()
 {
 	ThrowIfFailed(_device->CreateCommandList(
 		0, 
@@ -233,7 +234,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCommandList()
 		IID_PPV_ARGS(&_commandList)));
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::ResetCommandList()
+void DirectX12Renderer::ResetCommandList()
 {
 	ThrowIfFailed(_deviceResources->GetCommandAllocator()->Reset());
 
@@ -243,7 +244,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::ResetCommandList()
 		_pipelineState.Get()));
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::ExecuteCommandList()
+void DirectX12Renderer::ExecuteCommandList()
 {
 	// Close the command list and execute it to begin the vertex/index buffer copy into the GPU's default heap.
 	ThrowIfFailed(_commandList->Close());
@@ -255,7 +256,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::ExecuteCommandList()
 
 //	Scene Vertex Resources ---------------------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
+void DirectX12Renderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
 {
 	if (scene == nullptr)
 	{
@@ -284,7 +285,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSceneVertexResources(s
 	_sceneObjectMeshCount = _sceneObjectMeshOffsets.size();
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
+void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 
 	int sceneObjectOffset = _sceneObjectOffsets.size();
@@ -292,7 +293,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneObjectVertices(std:
 
 	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
 
-	//  Already loaded this texture? don't reload it.
+	//  Already loaded this mesh? don't reload it.
 	if (_sceneObjectMeshOffsets.find(mesh) != _sceneObjectMeshOffsets.end())
 	{
 		return;
@@ -449,7 +450,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneObjectVertices(std:
 	}
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::LoadVertexData(
+void DirectX12Renderer::LoadVertexData(
 	std::shared_ptr<ITurboSceneMesh> mesh,
 	std::vector<ShaderVertex> *vertexList,
 	std::vector<unsigned short> *indexList)
@@ -475,7 +476,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::LoadVertexData(
 
 //	Scene Texture Resources --------------------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
+void DirectX12Renderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
 {
 	if (scene == nullptr)
 	{
@@ -497,7 +498,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSceneTextureResources(
 	_sceneObjectTextureCount = _sceneObjectTextureOffsets.size();
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
+void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 	std::string textureName = sceneObject->Material()->Texture()->Name();
 
@@ -575,7 +576,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::LoadSceneObjectTextures(std:
 	}
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::LoadTextureData(
+void DirectX12Renderer::LoadTextureData(
 	std::string textureName,
 	D3D12_RESOURCE_DESC *textureResourceDesc,
 	std::vector<unsigned char> *textureData)
@@ -607,7 +608,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::LoadTextureData(
 
 //	Scene Assets -------------------------------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateConstantBufferResources()
+void DirectX12Renderer::CreateConstantBufferResources()
 {
 
 	//	This creates a resource in the GPU.
@@ -635,7 +636,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateConstantBufferResource
 	_constantBufferTargetResource->SetName(L"Constant Buffer Target Resource");
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCBVSRVDescriptorHeap()
+void DirectX12Renderer::CreateCBVSRVDescriptorHeap()
 {
 	//	Create a descriptor heap for the constant buffer resources (transform matrices) 
 	//		and shader resources (textures).
@@ -658,7 +659,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCBVSRVDescriptorHeap()
 	_cbvSrvDescriptorSize = _device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCBVDescriptors()
+void DirectX12Renderer::CreateCBVDescriptors()
 {
 	//	Create constant buffer view descriptors to access the upload buffer.
 	//	The CBV descriptors point to locations in the CB heap resource created above.
@@ -693,7 +694,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateCBVDescriptors()
 	_constantBufferData = (SceneConstantBuffer*)_constantBufferMappedResource;
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSRVDescriptors()
+void DirectX12Renderer::CreateSRVDescriptors()
 {
 	for (auto &sceneTextureOffset : _sceneObjectTextureOffsets)
 	{
@@ -719,7 +720,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSRVDescriptors()
 	}
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSamplerDescriptorHeap()
+void DirectX12Renderer::CreateSamplerDescriptorHeap()
 {
 	// Describe and create a sampler descriptor heap.
 	D3D12_DESCRIPTOR_HEAP_DESC samplerHeapDesc = {};
@@ -732,7 +733,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSamplerDescriptorHeap(
 		IID_PPV_ARGS(&_samplerDescriptorHeap)));
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSamplerDescriptor()
+void DirectX12Renderer::CreateSamplerDescriptor()
 {
 	//	Describe and create a sampler.
 	//	CreateSampler() creates the sampler resource described by samplerDesc 
@@ -756,7 +757,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::CreateSamplerDescriptor()
 
 //	Rendering Support Methods ------------------------------------------------------------------------------------------
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateProjectionMatrix()
+void DirectX12Renderer::UpdateProjectionMatrix()
 {
 	// Initializes view parameters when the window size changes.
 
@@ -806,7 +807,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateProjectionMatrix()
 	//	XMStoreFloat4x4(&_constantBufferData[0].model, XMMatrixIdentity());
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement)
+void DirectX12Renderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
 {
 	TurboVector3D position = cameraPlacement->Position();
 	TurboVector3D target = cameraPlacement->Target();
@@ -826,11 +827,12 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::UpdateViewMatrix(std::shared
 
 	XMStoreFloat4x4(&_constantBufferData->View, transpose);
 	XMStoreFloat4x4(&_constantBufferData->ViewInverseTranspose, inverse);
-	XMStoreFloat4(&_constantBufferData->Light, eyeDirection);
 	XMStoreFloat4(&_constantBufferData->Camera, eyeDirection);
+
+	_constantBufferData->LightCount = lightHack ? 1 : 0;
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::InitializeRendering()
+void DirectX12Renderer::InitializeRendering()
 {
 	ResetCommandList();
 
@@ -880,7 +882,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::InitializeRendering()
 	_commandList->SetGraphicsRootDescriptorTable(1, cbvGpuHandle);
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboScene> scene)
+void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboScene> scene)
 {
 	if (scene == nullptr)
 	{
@@ -895,7 +897,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::PopulateCommandList(std::sha
 	}
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject)
+void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
 
@@ -959,7 +961,7 @@ void Turbo::Platform::DirectX12::DirectX12Renderer::PopulateCommandList(std::sha
 	}
 }
 
-void Turbo::Platform::DirectX12::DirectX12Renderer::FinalizeRendering()
+void DirectX12Renderer::FinalizeRendering()
 {
 	// Indicate that the render target will now be used to present when the command list is done executing.
 	CD3DX12_RESOURCE_BARRIER presentResourceBarrier = 
