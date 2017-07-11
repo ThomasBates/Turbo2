@@ -51,10 +51,10 @@ void Level0Player::Update(NavigationInfo navInfo)
 
 		//  hover
 		velocity += _placement->Up() * cos(time * cHoverFrequency) * cHoverMagnitude * deltaTime;
-
-		//  gravity
-		velocity.Y -= deltaTime * cGravityFactor;
 	}
+
+	//  gravity
+	velocity.Y -= deltaTime * cGravityFactor;
 
 	//	Handle keyboard movement inputs.
 	if (navInfo.MoveLeft)	velocity -= _placement->Right() * moveSpeed;

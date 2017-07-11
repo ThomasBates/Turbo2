@@ -35,10 +35,10 @@ enum CubicMazeCellWallType
 	Wall, 
 	InvisibleWall, 
 	Entrance, 
-	LockedEntrance, 
+	EntranceLocked,
 	EntranceBack, 
 	Exit, 
-	LockedExit, 
+	ExitLocked,
 	ExitBack,
 	CellWallTypeCount
 };

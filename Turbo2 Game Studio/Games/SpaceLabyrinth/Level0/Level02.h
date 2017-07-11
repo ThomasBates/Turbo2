@@ -20,6 +20,7 @@ private:
 	std::shared_ptr<CubicMaze>			_maze;
 	std::shared_ptr<ITurboScene>		_scene;
 	std::shared_ptr<ITurboSceneObject>	_player;
+	TurboGameLevelState					_levelState;
 
 	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
 
@@ -31,14 +32,18 @@ private:
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	Level02(std::shared_ptr<ITurboDebug> debug) :
-		_debug(debug)
+		_debug(debug),
+		_levelState(TurboGameLevelState::Initializing)
 	{}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
 
-	virtual std::shared_ptr<ITurboGameState> State();
-	virtual void State(std::shared_ptr<ITurboGameState> state);
+	virtual std::shared_ptr<ITurboGameState> GameState();
+	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);
+
+	virtual TurboGameLevelState LevelState() { return _levelState; }
+	virtual void LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
 
 	virtual std::shared_ptr<ITurboScene> Scene() { return _scene; }
 	virtual std::shared_ptr<ITurboSceneObject> Player() { return _player; }

@@ -44,3 +44,16 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	_pixelShader = std::shared_ptr<ITurboScenePixelShader>(new TurboScenePixelShader(pixelShaderName));
 }
 
+Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::string textureName)
+{
+	//	Standard default values.
+	_meshColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);
+	_diffuseColor = TurboColor(0.8f, 0.8f, 0.8f, 1.0f);
+	_specularColor = TurboColor(0.3f, 0.3f, 0.3f, 1.0f);
+	_specularExponent = 1.0f;
+
+	_texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
+	_vertexShader = nullptr;
+	_pixelShader = nullptr;
+}
+

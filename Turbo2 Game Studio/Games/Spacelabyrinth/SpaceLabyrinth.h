@@ -20,8 +20,11 @@ public:
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Space Labyrinth"; }
 
-	virtual std::shared_ptr<ITurboGameState> State();
-	virtual void State(std::shared_ptr<ITurboGameState> state);
+	virtual std::shared_ptr<ITurboGameState> GameState();
+	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);
+
+	virtual TurboGameLevelState LevelState() { return _levelState; }
+	virtual void LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
 
 	virtual std::shared_ptr<ITurboScene> Scene();
 	virtual std::shared_ptr<ITurboSceneObject> Player();
@@ -34,9 +37,10 @@ public:
 	virtual void Update(NavigationInfo navInfo);
 
 private:
-	std::shared_ptr<ITurboDebug> _debug;
-	std::shared_ptr<ITurboGameLevel> _level = nullptr;
-	bool _sceneChanged = false;
+	std::shared_ptr<ITurboDebug>		_debug;
+	std::shared_ptr<ITurboGameLevel>	_level = nullptr;
+	bool								_sceneChanged = false;
+	TurboGameLevelState					_levelState;
 
 };
 

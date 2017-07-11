@@ -17,8 +17,8 @@ namespace Turbo
 		//	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 		//	virtual std::string Title() = 0;
 
-		//	virtual std::shared_ptr<ITurboGameState> State() = 0;
-		//	virtual void State(std::shared_ptr<ITurboGameState> state) = 0;
+		//	virtual std::shared_ptr<ITurboGameState> GameState() = 0;
+		//	virtual void GameState(std::shared_ptr<ITurboGameState> gameState) = 0;
 
 		//	virtual std::shared_ptr<ITurboGameLevel> Level() = 0;
 

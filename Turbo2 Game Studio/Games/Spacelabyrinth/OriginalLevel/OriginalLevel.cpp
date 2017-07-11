@@ -6,6 +6,7 @@
 #include <OriginalLevel.h>
 #include <OriginalPlayer.h>
 #include <TurboGameState.h>
+#include <TurboSceneMaterial.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -23,16 +24,16 @@ OriginalLevel::~OriginalLevel()
 
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 
-std::shared_ptr<ITurboGameState> OriginalLevel::State()
+std::shared_ptr<ITurboGameState> OriginalLevel::GameState()
 {
-	std::shared_ptr<ITurboGameState> state = std::shared_ptr<ITurboGameState>(new TurboGameState());
-	state->SaveString("LevelInfo", "level info");
-	return state;
+	std::shared_ptr<ITurboGameState> gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
+	gameState->SaveString("LevelInfo", "level info");
+	return gameState;
 }
 
-void OriginalLevel::State(std::shared_ptr<ITurboGameState> state)
+void OriginalLevel::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
-	state->LoadString("LevelInfo");
+	gameState->LoadString("LevelInfo");
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
@@ -48,8 +49,30 @@ void OriginalLevel::Initialize()
 	cubicMaze->Cell(2, 2, 2)->FrontWall.PortalIndex = 1;
 
 
+	//	Create materials.
+	std::shared_ptr<ITurboSceneMaterial> cornerMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalCorner"));
+	std::shared_ptr<ITurboSceneMaterial> edgeMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalEdge"));
+
+	std::shared_ptr<ITurboSceneMaterial> wallMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalWall"));
+	std::shared_ptr<ITurboSceneMaterial> floorMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalFloor"));
+	std::shared_ptr<ITurboSceneMaterial> ceilingMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalCeiling"));
+
+	std::shared_ptr<ITurboSceneMaterial> entranceMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalEntrance"));
+	std::shared_ptr<ITurboSceneMaterial> entranceLockedMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalEntranceLocked"));
+	std::shared_ptr<ITurboSceneMaterial> entranceBackMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalEntranceBack"));
+
+	std::shared_ptr<ITurboSceneMaterial> exitMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalExitLocked"));
+	std::shared_ptr<ITurboSceneMaterial> exitLockedMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalExitLocked"));
+	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("OriginalExitBack"));
+
+
 	//	Build the scene.
-	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder());
+	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder(
+		cornerMaterial, edgeMaterial,
+		wallMaterial, wallMaterial, wallMaterial, wallMaterial,
+		floorMaterial, ceilingMaterial,
+		entranceMaterial, entranceLockedMaterial, entranceBackMaterial,
+		exitMaterial, exitLockedMaterial, exitBackMaterial));
 	_scene = sceneBuilder->BuildScene(cubicMaze);
 
 	//  Create the player

@@ -200,14 +200,37 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="..\..\Resources\Textures\IntroCeiling.bmp" />
-    <Image Include="..\..\Resources\Textures\IntroEdge.bmp" />
-    <Image Include="..\..\Resources\Textures\IntroEntrance.bmp" />
-    <Image Include="..\..\Resources\Textures\IntroFloor.bmp" />
-    <Image Include="..\..\Resources\Textures\IntroWall.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Ceiling.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Corner.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Edge.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Entrance.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00EntranceBack.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00EntranceLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Exit.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00ExitBack.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00ExitLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Floor.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Wall.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Ceiling.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Corner.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Edge.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Entrance.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04EntranceBack.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04EntranceLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Exit.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04ExitBack.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04ExitLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Floor.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Wall.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalCeiling.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalCorner.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalEntrance.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalEntranceBack.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalEntranceLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalExit.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalExitBack.bmp" />
+    <Image Include="..\..\Resources\Textures\OriginalExitLocked.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalFloor.bmp" />
     <Image Include="..\..\Resources\Textures\OriginalWall.bmp" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
@@ -235,6 +258,7 @@
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameRenderer.h" />
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameState.h" />
     <ClInclude Include="..\..\Library\TurboGame\TurboGameState.h" />
+    <ClInclude Include="..\..\Library\TurboGame\TurboGameTypes.h" />
     <ClInclude Include="..\..\Library\TurboGraphics\ITurboCanvas.h" />
     <ClInclude Include="..\..\Library\TurboGraphics\ITurboFont.h" />
     <ClInclude Include="..\..\Library\TurboGraphics\ITurboImage.h" />

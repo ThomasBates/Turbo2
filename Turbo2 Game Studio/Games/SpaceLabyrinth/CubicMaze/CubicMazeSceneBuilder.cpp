@@ -17,7 +17,40 @@
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-CubicMazeSceneBuilder::CubicMazeSceneBuilder()
+CubicMazeSceneBuilder::CubicMazeSceneBuilder(
+	std::shared_ptr<ITurboSceneMaterial> cornerMaterial,
+	std::shared_ptr<ITurboSceneMaterial> edgeMaterial,
+
+	std::shared_ptr<ITurboSceneMaterial> leftWallMaterial,
+	std::shared_ptr<ITurboSceneMaterial> rightWallMaterial,
+	std::shared_ptr<ITurboSceneMaterial> frontWallMaterial,
+	std::shared_ptr<ITurboSceneMaterial> backWallMaterial,
+	std::shared_ptr<ITurboSceneMaterial> floorMaterial,
+	std::shared_ptr<ITurboSceneMaterial> ceilingMaterial,
+
+	std::shared_ptr<ITurboSceneMaterial> entranceMaterial,
+	std::shared_ptr<ITurboSceneMaterial> entranceLockedMaterial,
+	std::shared_ptr<ITurboSceneMaterial> entranceBackMaterial,
+	std::shared_ptr<ITurboSceneMaterial> exitMaterial,
+	std::shared_ptr<ITurboSceneMaterial> exitLockedMaterial,
+	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial) 
+	:
+	_cornerMaterial(cornerMaterial),
+	_edgeMaterial(edgeMaterial),
+
+	_leftWallMaterial(leftWallMaterial),
+	_rightWallMaterial(rightWallMaterial),
+	_frontWallMaterial(frontWallMaterial),
+	_backWallMaterial(backWallMaterial),
+	_floorMaterial(floorMaterial),
+	_ceilingMaterial(ceilingMaterial),
+
+	_entranceMaterial(entranceMaterial),
+	_entranceLockedaterial(entranceLockedMaterial),
+	_entranceBackMaterial(entranceBackMaterial),
+	_exitMaterial(exitMaterial),
+	_exitLockedMaterial(exitLockedMaterial),
+	_exitBackMaterial(exitBackMaterial)
 {
 }
 
@@ -45,121 +78,17 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 	std::shared_ptr<ITurboSceneMesh> edgeMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeEdgeMesh());
 	std::shared_ptr<ITurboSceneMesh> wallMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeWallMesh());
 
-	std::shared_ptr<ITurboSceneMaterial> cornerMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"OriginalCorner",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> edgeMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"OriginalEdge",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-
-	std::shared_ptr<ITurboSceneMaterial> wallMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"OriginalWall",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> entranceMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"IntroEntrance",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> exitMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"IntroWall",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> lockedExitMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"IntroEdge",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> lockedEntranceMaterial = lockedExitMaterial;
-	std::shared_ptr<ITurboSceneMaterial> entranceBackMaterial = lockedExitMaterial;
-	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial = lockedExitMaterial;
-
-	std::shared_ptr<ITurboSceneMaterial> floorMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"OriginalFloor",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-	std::shared_ptr<ITurboSceneMaterial> ceilingMaterial = 
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial(
-			TurboColor(0.5f, 0.5f, 0.5f, 1.0f),
-			TurboColor(0.8f, 0.8f, 0.8f, 1.0f),
-			TurboColor(0.3f, 0.3f, 0.3f, 1.0f),
-			1.0f,
-			"OriginalCeiling",
-			"StandardVertexShader",
-			"StandardPixelShader"));
-
-	std::shared_ptr<ITurboSceneMaterial> wallMaterials[CellWallTypeCount] =
+	std::shared_ptr<ITurboSceneMaterial> wallTypeMaterials[CellWallTypeCount] =
 	{
 		nullptr,
-		wallMaterial,
 		nullptr,
-		entranceMaterial,
-		lockedEntranceMaterial,
-		entranceBackMaterial,
-		exitMaterial,
-		lockedExitMaterial,
-		exitBackMaterial
-	};
-
-	std::shared_ptr<ITurboSceneMaterial> floorMaterials[CellWallTypeCount] =
-	{
 		nullptr,
-		floorMaterial,
-		nullptr,
-		entranceMaterial,
-		lockedEntranceMaterial,
-		entranceBackMaterial,
-		exitMaterial,
-		lockedExitMaterial,
-		exitBackMaterial
-	};
-
-	std::shared_ptr<ITurboSceneMaterial> ceilingMaterials[CellWallTypeCount] =
-	{
-		nullptr,
-		ceilingMaterial,
-		nullptr,
-		entranceMaterial,
-		lockedEntranceMaterial,
-		entranceBackMaterial,
-		exitMaterial,
-		lockedExitMaterial,
-		exitBackMaterial
+		_entranceMaterial,
+		_entranceLockedaterial,
+		_entranceBackMaterial,
+		_exitMaterial,
+		_exitLockedMaterial,
+		_exitBackMaterial
 	};
 
 
@@ -167,22 +96,22 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 	for (int h = 0; h <= size.H; h++)
 	for (int d = 0; d <= size.D; d++)
 	{
-		BuildCorner(cubicMaze, scene, w, h, d, cornerMesh, cornerMaterial);
+		BuildCorner(cubicMaze, scene, w, h, d, cornerMesh, _cornerMaterial);
 
-		BuildWEdge(cubicMaze, scene, w, h, d, edgeMesh, edgeMaterial);
-		BuildHEdge(cubicMaze, scene, w, h, d, edgeMesh, edgeMaterial);
-		BuildDEdge(cubicMaze, scene, w, h, d, edgeMesh, edgeMaterial);
+		BuildWEdge(cubicMaze, scene, w, h, d, edgeMesh, _edgeMaterial);
+		BuildHEdge(cubicMaze, scene, w, h, d, edgeMesh, _edgeMaterial);
+		BuildDEdge(cubicMaze, scene, w, h, d, edgeMesh, _edgeMaterial);
 
 		if ((w < size.W) && (h < size.H) && (d < size.D))
 		{
 			CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-			BuildRightWall(	scene, w, h, d, wallMesh, wallMaterials[(int)cell->RightWall.Type]);
-			BuildLeftWall(	scene, w, h, d, wallMesh, wallMaterials[(int)cell->LeftWall.Type]);
-			BuildTopWall(	scene, w, h, d, wallMesh, ceilingMaterials[(int)cell->TopWall.Type]);
-			BuildBottomWall(scene, w, h, d, wallMesh, floorMaterials[(int)cell->BottomWall.Type]);
-			BuildBackWall(	scene, w, h, d, wallMesh, wallMaterials[(int)cell->BackWall.Type]);
-			BuildFrontWall(	scene, w, h, d, wallMesh, wallMaterials[(int)cell->FrontWall.Type]);
+			BuildRightWall(	scene, w, h, d, wallMesh, (cell->RightWall.Type  == Wall) ? _rightWallMaterial : wallTypeMaterials[(int)cell->RightWall.Type]);
+			BuildLeftWall(	scene, w, h, d, wallMesh, (cell->LeftWall.Type   == Wall) ? _leftWallMaterial  : wallTypeMaterials[(int)cell->LeftWall.Type]);
+			BuildTopWall(	scene, w, h, d, wallMesh, (cell->TopWall.Type    == Wall) ? _ceilingMaterial   : wallTypeMaterials[(int)cell->TopWall.Type]);
+			BuildBottomWall(scene, w, h, d, wallMesh, (cell->BottomWall.Type == Wall) ? _floorMaterial     : wallTypeMaterials[(int)cell->BottomWall.Type]);
+			BuildBackWall(	scene, w, h, d, wallMesh, (cell->BackWall.Type   == Wall) ? _backWallMaterial  : wallTypeMaterials[(int)cell->BackWall.Type]);
+			BuildFrontWall(	scene, w, h, d, wallMesh, (cell->FrontWall.Type  == Wall) ? _frontWallMaterial : wallTypeMaterials[(int)cell->FrontWall.Type]);
 		}
 	}
 }

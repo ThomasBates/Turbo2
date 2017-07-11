@@ -10,7 +10,7 @@ namespace Turbo
 {
 	namespace Scene
 	{
-		typedef struct {
+		struct NavigationInfo {
 			double	Time;
 			double	DeltaTime;
 			bool	Pointer;
@@ -30,8 +30,8 @@ namespace Turbo
 			bool	RollRight;
 			bool	Pause;
 			bool	Restart;
-		}	NavigationInfo;
-	
+		};
+
 		struct TurboSceneVertex
 		{
 			TurboVector3D Position;

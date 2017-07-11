@@ -10,9 +10,6 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 {
 	*pPortalIndex = 0;
 
-	const double buffer = 0.25;
-	const double bounciness = 0.25;
-
 	double deltaTime = navInfo.DeltaTime;
 
 	//  Player-Maze Interactions
@@ -42,7 +39,6 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 		oldLocation, 
 		oldPosition, 
 		newPosition, 
-		buffer,
 		&portalIndex,
 		&isLeaving,
 		&isTouching,
@@ -97,7 +93,6 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 					testLocation,
 					oldPosition, 
 					newPosition, 
-					buffer,
 					&portalIndex,
 					&isLeaving,
 					&isTouching,
@@ -109,6 +104,7 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navIn
 
 	if (isTouching)
 	{
+		//	bounciness constant?
 		TurboVector3D v = velocity * 0.75;
 		TurboVector3D n = -normal * (-normal * v);
 		TurboVector3D t = v - n;
@@ -126,7 +122,6 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 	CubicMazeLocation location,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -172,7 +167,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Left Wall --------------------------------------------------------------
 	IsTouchingLeftWall(
-		cell->LeftWall, cellFromPoint, celltoPoint, buffer, 
+		cell->LeftWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -203,7 +198,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Right Wall -------------------------------------------------------------
 	IsTouchingRightWall(
-		cell->RightWall, cellFromPoint, celltoPoint, buffer,
+		cell->RightWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -234,7 +229,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Top Wall ---------------------------------------------------------------
 	IsTouchingTopWall(
-		cell->TopWall, cellFromPoint, celltoPoint, buffer,
+		cell->TopWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -265,7 +260,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Bottom Wall ----------------------------------------------------------------
 	IsTouchingBottomWall(
-		cell->BottomWall, cellFromPoint, celltoPoint, buffer,
+		cell->BottomWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -296,7 +291,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Front Wall -----------------------------------------------------------------
 	IsTouchingFrontWall(
-		cell->FrontWall, cellFromPoint, celltoPoint, buffer,
+		cell->FrontWall, cellFromPoint, celltoPoint, 
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -327,7 +322,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 
 	//	Back Wall ------------------------------------------------------------------
 	IsTouchingBackWall(
-		cell->BackWall, cellFromPoint, celltoPoint, buffer,
+		cell->BackWall, cellFromPoint, celltoPoint, 
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
 	if (portalIndex > 0)
@@ -379,7 +374,6 @@ void CubicMazeObjectInteractions::IsTouchingRightWall(
 	CubicMazeCellWall cellWall, 
 	TurboVector3D fromPoint, 
 	TurboVector3D toPoint, 
-	double buffer, 
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -400,9 +394,9 @@ void CubicMazeObjectInteractions::IsTouchingRightWall(
 
 	if ((fromPoint.X <= toPoint.X) &&	//	moving in +X direction
 		(fromPoint.X <= min.X) &&		//	fromPoint has not entered wall
-		(toPoint.X + buffer >= min.X))	//	toPoint has entered buffer zone
+		(toPoint.X + _hBuffer >= min.X))	//	toPoint has entered buffer zone
 	{
-		double factor = (min.X - buffer - fromPoint.X) / (toPoint.X - fromPoint.X);
+		double factor = (min.X - _hBuffer - fromPoint.X) / (toPoint.X - fromPoint.X);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(-1.0, 0.0, 0.0);
@@ -418,8 +412,8 @@ void CubicMazeObjectInteractions::IsTouchingRightWall(
 			}
 		}
 
-		if ((pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer) &&
-			(pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer))
+		if ((pContact->Y >= min.Y - _vBuffer) && (pContact->Y <= max.Y + _vBuffer) &&
+			(pContact->Z >= min.Z - _hBuffer) && (pContact->Z <= max.Z + _hBuffer))
 		{
 			if (cellWall.Type == None)
 			{
@@ -442,7 +436,6 @@ void CubicMazeObjectInteractions::IsTouchingLeftWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -463,9 +456,9 @@ void CubicMazeObjectInteractions::IsTouchingLeftWall(
 
 	if ((fromPoint.X >= toPoint.X) &&	//	moving in -X direction
 		(fromPoint.X >= max.X) &&		//	fromPoint has not entered wall
-		(toPoint.X - buffer <= max.X))	//	toPoint has entered buffer zone
+		(toPoint.X - _hBuffer <= max.X))	//	toPoint has entered buffer zone
 	{
-		double factor = (max.X + buffer - fromPoint.X) / (toPoint.X - fromPoint.X);
+		double factor = (max.X + _hBuffer - fromPoint.X) / (toPoint.X - fromPoint.X);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(1.0, 0.0, 0.0);
@@ -481,8 +474,8 @@ void CubicMazeObjectInteractions::IsTouchingLeftWall(
 			}
 		}
 
-		if ((pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer) &&
-			(pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer))
+		if ((pContact->Y >= min.Y - _vBuffer) && (pContact->Y <= max.Y + _vBuffer) &&
+			(pContact->Z >= min.Z - _hBuffer) && (pContact->Z <= max.Z + _hBuffer))
 		{
 			if (cellWall.Type == None)
 			{
@@ -505,7 +498,6 @@ void CubicMazeObjectInteractions::IsTouchingBottomWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -526,9 +518,9 @@ void CubicMazeObjectInteractions::IsTouchingBottomWall(
 
 	if ((fromPoint.Y >= toPoint.Y) &&	//	moving in -Y direction
 		(fromPoint.Y >= max.Y) &&		//	fromPoint has not entered wall
-		(toPoint.Y - buffer <= max.Y))	//	toPoint has entered buffer zone
+		(toPoint.Y - _vBuffer <= max.Y))	//	toPoint has entered buffer zone
 	{
-		double factor = (max.Y + buffer - fromPoint.Y) / (toPoint.Y - fromPoint.Y);
+		double factor = (max.Y + _vBuffer - fromPoint.Y) / (toPoint.Y - fromPoint.Y);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(0.0, 1.0, 0.0);
@@ -544,8 +536,8 @@ void CubicMazeObjectInteractions::IsTouchingBottomWall(
 			}
 		}
 
-		if ((pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer) &&
-			(pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer))
+		if ((pContact->Z >= min.Z - _hBuffer) && (pContact->Z <= max.Z + _hBuffer) &&
+			(pContact->X >= min.X - _hBuffer) && (pContact->X <= max.X + _hBuffer))
 		{
 			if (cellWall.Type == None)
 			{
@@ -568,7 +560,6 @@ void CubicMazeObjectInteractions::IsTouchingTopWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -589,9 +580,9 @@ void CubicMazeObjectInteractions::IsTouchingTopWall(
 
 	if ((fromPoint.Y <= toPoint.Y) &&	//	moving in +Y direction
 		(fromPoint.Y <= min.Y) &&		//	fromPoint has not entered wall
-		(toPoint.Y + buffer >= min.Y))	//	toPoint has entered buffer zone
+		(toPoint.Y + _vBuffer >= min.Y))	//	toPoint has entered buffer zone
 	{
-		double factor = (min.Y - buffer - fromPoint.Y) / (toPoint.Y - fromPoint.Y);
+		double factor = (min.Y - _vBuffer - fromPoint.Y) / (toPoint.Y - fromPoint.Y);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(0.0, -1.0, 0.0);
@@ -607,8 +598,8 @@ void CubicMazeObjectInteractions::IsTouchingTopWall(
 			}
 		}
 
-		if ((pContact->Z >= min.Z - buffer) && (pContact->Z <= max.Z + buffer) &&
-			(pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer))
+		if ((pContact->Z >= min.Z - _hBuffer) && (pContact->Z <= max.Z + _hBuffer) &&
+			(pContact->X >= min.X - _hBuffer) && (pContact->X <= max.X + _hBuffer))
 		{
 			if (cellWall.Type == None)
 			{
@@ -631,7 +622,6 @@ void CubicMazeObjectInteractions::IsTouchingFrontWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -652,9 +642,9 @@ void CubicMazeObjectInteractions::IsTouchingFrontWall(
 
 	if ((fromPoint.Z >= toPoint.Z) &&	//	moving in -Z direction
 		(fromPoint.Z >= max.Z) &&		//	fromPoint has not entered wall
-		(toPoint.Z - buffer <= max.Z))	//	toPoint has entered buffer zone
+		(toPoint.Z - _hBuffer <= max.Z))	//	toPoint has entered buffer zone
 	{
-		double factor = (max.Z + buffer - fromPoint.Z) / (toPoint.Z - fromPoint.Z);
+		double factor = (max.Z + _hBuffer - fromPoint.Z) / (toPoint.Z - fromPoint.Z);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(0.0, 0.0, 1.0);
@@ -670,8 +660,8 @@ void CubicMazeObjectInteractions::IsTouchingFrontWall(
 			}
 		}
 
-		if ((pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer) &&
-			(pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer))
+		if ((pContact->X >= min.X - _hBuffer) && (pContact->X <= max.X + _hBuffer) &&
+			(pContact->Y >= min.Y - _vBuffer) && (pContact->Y <= max.Y + _vBuffer))
 		{
 			if (cellWall.Type == None)
 			{
@@ -694,7 +684,6 @@ void CubicMazeObjectInteractions::IsTouchingBackWall(
 	CubicMazeCellWall cellWall,
 	TurboVector3D fromPoint,
 	TurboVector3D toPoint,
-	double buffer,
 	int *pPortalIndex,
 	bool *pIsLeaving,
 	bool *pIsTouching,
@@ -715,9 +704,9 @@ void CubicMazeObjectInteractions::IsTouchingBackWall(
 
 	if ((fromPoint.Z <= toPoint.Z) &&	//	moving in +Z direction
 		(fromPoint.Z <= min.Z) &&		//	fromPoint has not entered wall
-		(toPoint.Z + buffer >= min.Z))	//	toPoint has entered buffer zone
+		(toPoint.Z + _hBuffer >= min.Z))	//	toPoint has entered buffer zone
 	{
-		double factor = (min.Z - buffer - fromPoint.Z) / (toPoint.Z - fromPoint.Z);
+		double factor = (min.Z - _hBuffer - fromPoint.Z) / (toPoint.Z - fromPoint.Z);
 
 		*pContact = fromPoint + (toPoint - fromPoint) * factor;
 		*pNormal = TurboVector3D(0.0, 0.0, -1.0);
@@ -733,8 +722,8 @@ void CubicMazeObjectInteractions::IsTouchingBackWall(
 			}
 		}
 
-		if ((pContact->X >= min.X - buffer) && (pContact->X <= max.X + buffer) &&
-			(pContact->Y >= min.Y - buffer) && (pContact->Y <= max.Y + buffer))
+		if ((pContact->X >= min.X - _hBuffer) && (pContact->X <= max.X + _hBuffer) &&
+			(pContact->Y >= min.Y - _vBuffer) && (pContact->Y <= max.Y + _vBuffer))
 		{
 			if (cellWall.Type == None)
 			{

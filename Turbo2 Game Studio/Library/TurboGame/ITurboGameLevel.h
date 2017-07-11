@@ -3,9 +3,11 @@
 
 #include <pch.h>
 
-#include <ITurboGameState.h>
 #include <ITurboGameController.h>
+#include <ITurboGameState.h>
 #include <ITurboScene.h>
+
+#include <TurboGameTypes.h>
 
 namespace Turbo
 {
@@ -17,8 +19,11 @@ namespace Turbo
 			//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 			virtual std::string Title() = 0;
 
-			virtual std::shared_ptr<ITurboGameState> State() = 0;
-			virtual void State(std::shared_ptr<ITurboGameState> state) = 0;
+			virtual std::shared_ptr<ITurboGameState> GameState() = 0;
+			virtual void GameState(std::shared_ptr<ITurboGameState> gameState) = 0;
+
+			virtual TurboGameLevelState LevelState() = 0;
+			virtual void LevelState(TurboGameLevelState levelState) = 0;
 
 			virtual std::shared_ptr<ITurboScene> Scene() = 0;
 			virtual std::shared_ptr<ITurboSceneObject> Player() = 0;

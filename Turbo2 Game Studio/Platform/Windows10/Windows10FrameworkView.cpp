@@ -137,7 +137,7 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::OnSuspending(Object^ se
 		// Process lifetime management may terminate suspended apps at any time, so it is
 		// good practice to save any state that will allow the app to restart where it left off.
 
-		std::shared_ptr<ITurboGameState> gameState = _game->State();
+		std::shared_ptr<ITurboGameState> gameState = _game->GameState();
 		_ioService->SaveGameState(gameState);
 
 		// If your application uses video memory allocations that are easy to re-create,
@@ -155,7 +155,7 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::OnResuming(Object^ send
 	// does not occur if the app was previously terminated.
 
 	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
-	_game->State(gameState);
+	_game->GameState(gameState);
 }
 
 //	Window event handlers ----------------------------------------------------------------------------------------------

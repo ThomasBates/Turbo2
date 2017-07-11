@@ -472,6 +472,9 @@
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneSpotLight.h">
       <Filter>Library\TurboScene</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Library\TurboGame\TurboGameTypes.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -491,9 +494,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Resources\Textures\IntroWall.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="..\..\Resources\Textures\OriginalWall.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
@@ -509,16 +509,88 @@
     <Image Include="..\..\Resources\Textures\OriginalFloor.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="..\..\Resources\Textures\IntroFloor.bmp">
+    <Image Include="..\..\Resources\Textures\Level00Wall.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="..\..\Resources\Textures\IntroCeiling.bmp">
+    <Image Include="..\..\Resources\Textures\Level00Ceiling.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="..\..\Resources\Textures\IntroEdge.bmp">
+    <Image Include="..\..\Resources\Textures\Level00Corner.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="..\..\Resources\Textures\IntroEntrance.bmp">
+    <Image Include="..\..\Resources\Textures\Level00Edge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Floor.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Exit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00ExitBack.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00ExitLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Entrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00EntranceBack.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00EntranceLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Ceiling.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Corner.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Edge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Entrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04EntranceBack.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04EntranceLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Exit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04ExitBack.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04ExitLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Floor.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level04Wall.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalExitLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalEntrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalEntranceBack.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalEntranceLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalExit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\OriginalExitBack.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>

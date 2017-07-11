@@ -28,6 +28,8 @@ namespace Turbo
 				std::string textureName,
 				std::string vertexShaderName,
 				std::string pixelShaderName);
+			TurboSceneMaterial(
+				std::string textureName);
 
 			//  ITurboSceneObjectMaterial Properties ---------------------------------------------------------------------------
 			virtual TurboColor MeshColor() { return _meshColor; }
