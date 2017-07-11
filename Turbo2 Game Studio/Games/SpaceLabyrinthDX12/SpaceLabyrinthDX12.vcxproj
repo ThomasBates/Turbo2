@@ -210,7 +210,13 @@
     <Image Include="..\..\Resources\Textures\Level00ExitBack.bmp" />
     <Image Include="..\..\Resources\Textures\Level00ExitLocked.bmp" />
     <Image Include="..\..\Resources\Textures\Level00Floor.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Text00.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Text02.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Text03.bmp" />
+    <Image Include="..\..\Resources\Textures\Level00Text04.bmp" />
     <Image Include="..\..\Resources\Textures\Level00Wall.bmp" />
+    <Image Include="..\..\Resources\Textures\Level01Text01.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Ceiling.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Corner.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Edge.bmp" />

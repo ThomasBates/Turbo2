@@ -9,7 +9,6 @@
 #include <OriginalLevel.h>
 
 //	2017-06-07
-//	TODO:	Instructions for users.
 //	TODO:	Key(s) to unlock exit in level 0-4.
 //	TODO:	Hazard(s) in level 0-4?
 //	TODO:	GameState.
@@ -27,6 +26,7 @@
 //	2017-07-05:	Unlock doors on accomplishments.
 //	2017-07-06: Improved navigation in tiered mazes.
 //	2017-07-07:	Artwork for Textures.
+//	2017-07-10:	Instructions for users.
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 

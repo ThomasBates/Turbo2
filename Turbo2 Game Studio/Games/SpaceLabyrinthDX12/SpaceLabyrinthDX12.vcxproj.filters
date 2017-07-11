@@ -593,5 +593,23 @@
     <Image Include="..\..\Resources\Textures\OriginalExitBack.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text01.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text00.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text04.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text02.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text03.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level01Text01.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

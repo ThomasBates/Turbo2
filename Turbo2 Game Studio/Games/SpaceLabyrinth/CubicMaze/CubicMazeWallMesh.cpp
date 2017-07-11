@@ -20,10 +20,10 @@ CubicMazeWallMesh::CubicMazeWallMesh()
 
 
 	TurboVector3D normal = TurboVector3D(-1.0f, 0.0f, 0.0f);
-	AddVertex(TurboVector3D(left__, bottom, front_), normal, TurboVector2D(1.0f, 0.0f));
-	AddVertex(TurboVector3D(left__, top___, front_), normal, TurboVector2D(1.0f, 1.0f));
-	AddVertex(TurboVector3D(left__, top___, back__), normal, TurboVector2D(0.0f, 1.0f));
-	AddVertex(TurboVector3D(left__, bottom, back__), normal, TurboVector2D(0.0f, 0.0f));
+	AddVertex(TurboVector3D(left__, bottom, front_), normal, TurboVector2D(0.0f, 0.0f));
+	AddVertex(TurboVector3D(left__, top___, front_), normal, TurboVector2D(0.0f, 1.0f));
+	AddVertex(TurboVector3D(left__, top___, back__), normal, TurboVector2D(1.0f, 1.0f));
+	AddVertex(TurboVector3D(left__, bottom, back__), normal, TurboVector2D(1.0f, 0.0f));
 
 	normal = TurboVector3D(1.0f, 0.0f, 0.0f);
 	AddVertex(TurboVector3D(right_, bottom, front_), normal, TurboVector2D(0.0f, 0.0f));

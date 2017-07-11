@@ -41,28 +41,23 @@ private:
 	std::shared_ptr<ITurboSceneMaterial> _floorMaterial;
 	std::shared_ptr<ITurboSceneMaterial> _ceilingMaterial;
 
-	std::shared_ptr<ITurboSceneMaterial> _entranceMaterial;
-	std::shared_ptr<ITurboSceneMaterial> _entranceLockedaterial;
-	std::shared_ptr<ITurboSceneMaterial> _entranceBackMaterial;
-	std::shared_ptr<ITurboSceneMaterial> _exitMaterial;
-	std::shared_ptr<ITurboSceneMaterial> _exitLockedMaterial;
-	std::shared_ptr<ITurboSceneMaterial> _exitBackMaterial;
+	std::shared_ptr<ITurboSceneMaterial> _wallTypeMaterials[CellWallTypeCount];
 
 	//	Local Support Methods ------------------------------------------------------------------------------------------
 	void BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> cubicMaze);
 
 	void BuildCorner(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
 	
-	void BuildWEdge(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildHEdge(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildDEdge(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildWEdge(       std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildHEdge(       std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildDEdge(       std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
 	
-	void BuildLeftWall(  std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildRightWall( std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildTopWall(   std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildBackWall(  std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
-	void BuildFrontWall( std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildLeftWall(    std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildRightWall(   std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildTopWall(     std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildBottomWall(  std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildBackWall(    std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	void BuildFrontWall(   std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
 
 	bool CellHasLeftWall(  std::shared_ptr<CubicMaze> cubicMaze, int w, int h, int d);
 	bool CellHasRightWall( std::shared_ptr<CubicMaze> cubicMaze, int w, int h, int d);

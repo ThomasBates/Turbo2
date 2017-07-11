@@ -63,6 +63,7 @@ void Level0Player::Update(NavigationInfo navInfo)
 	if (navInfo.MoveUp)		velocity += _placement->Up()    * moveSpeed;
 	if (navInfo.MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo.MoveBack)	velocity += _placement->Back()  * moveSpeed;
+	//if (navInfo.Pointer)	velocity -= _placement->Back()  * moveSpeed;
 
 	_placement->Velocity(velocity);
 

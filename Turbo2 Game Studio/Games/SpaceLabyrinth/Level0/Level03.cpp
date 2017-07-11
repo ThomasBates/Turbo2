@@ -74,7 +74,7 @@ void Level03::Initialize()
 	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
 
 	//	This is easier for now.
-	_scene->LightHack(true);
+	_scene->LightHack(false);
 
 	//	set player Placement as camera Placement.
 	_scene->CameraPlacement(_player->Placement());

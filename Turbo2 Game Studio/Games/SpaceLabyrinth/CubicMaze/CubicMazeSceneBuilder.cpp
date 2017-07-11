@@ -33,7 +33,7 @@ CubicMazeSceneBuilder::CubicMazeSceneBuilder(
 	std::shared_ptr<ITurboSceneMaterial> entranceBackMaterial,
 	std::shared_ptr<ITurboSceneMaterial> exitMaterial,
 	std::shared_ptr<ITurboSceneMaterial> exitLockedMaterial,
-	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial) 
+	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial)
 	:
 	_cornerMaterial(cornerMaterial),
 	_edgeMaterial(edgeMaterial),
@@ -43,15 +43,15 @@ CubicMazeSceneBuilder::CubicMazeSceneBuilder(
 	_frontWallMaterial(frontWallMaterial),
 	_backWallMaterial(backWallMaterial),
 	_floorMaterial(floorMaterial),
-	_ceilingMaterial(ceilingMaterial),
-
-	_entranceMaterial(entranceMaterial),
-	_entranceLockedaterial(entranceLockedMaterial),
-	_entranceBackMaterial(entranceBackMaterial),
-	_exitMaterial(exitMaterial),
-	_exitLockedMaterial(exitLockedMaterial),
-	_exitBackMaterial(exitBackMaterial)
+	_ceilingMaterial(ceilingMaterial)
 {
+	_wallTypeMaterials[CubicMazeCellWallType::Entrance] = entranceMaterial;
+	_wallTypeMaterials[CubicMazeCellWallType::EntranceLocked] = entranceLockedMaterial;
+	_wallTypeMaterials[CubicMazeCellWallType::EntranceBack] = entranceBackMaterial;
+	_wallTypeMaterials[CubicMazeCellWallType::Exit] = exitMaterial;
+	_wallTypeMaterials[CubicMazeCellWallType::ExitLocked] = exitLockedMaterial;
+	_wallTypeMaterials[CubicMazeCellWallType::ExitBack] = exitBackMaterial;
+
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
@@ -78,20 +78,6 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 	std::shared_ptr<ITurboSceneMesh> edgeMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeEdgeMesh());
 	std::shared_ptr<ITurboSceneMesh> wallMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeWallMesh());
 
-	std::shared_ptr<ITurboSceneMaterial> wallTypeMaterials[CellWallTypeCount] =
-	{
-		nullptr,
-		nullptr,
-		nullptr,
-		_entranceMaterial,
-		_entranceLockedaterial,
-		_entranceBackMaterial,
-		_exitMaterial,
-		_exitLockedMaterial,
-		_exitBackMaterial
-	};
-
-
 	for (int w = 0; w <= size.W; w++)
 	for (int h = 0; h <= size.H; h++)
 	for (int d = 0; d <= size.D; d++)
@@ -104,14 +90,12 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 
 		if ((w < size.W) && (h < size.H) && (d < size.D))
 		{
-			CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
-
-			BuildRightWall(	scene, w, h, d, wallMesh, (cell->RightWall.Type  == Wall) ? _rightWallMaterial : wallTypeMaterials[(int)cell->RightWall.Type]);
-			BuildLeftWall(	scene, w, h, d, wallMesh, (cell->LeftWall.Type   == Wall) ? _leftWallMaterial  : wallTypeMaterials[(int)cell->LeftWall.Type]);
-			BuildTopWall(	scene, w, h, d, wallMesh, (cell->TopWall.Type    == Wall) ? _ceilingMaterial   : wallTypeMaterials[(int)cell->TopWall.Type]);
-			BuildBottomWall(scene, w, h, d, wallMesh, (cell->BottomWall.Type == Wall) ? _floorMaterial     : wallTypeMaterials[(int)cell->BottomWall.Type]);
-			BuildBackWall(	scene, w, h, d, wallMesh, (cell->BackWall.Type   == Wall) ? _backWallMaterial  : wallTypeMaterials[(int)cell->BackWall.Type]);
-			BuildFrontWall(	scene, w, h, d, wallMesh, (cell->FrontWall.Type  == Wall) ? _frontWallMaterial : wallTypeMaterials[(int)cell->FrontWall.Type]);
+			BuildRightWall( cubicMaze, scene, w, h, d, wallMesh, _rightWallMaterial);
+			BuildLeftWall(	cubicMaze, scene, w, h, d, wallMesh, _leftWallMaterial);
+			BuildTopWall(	cubicMaze, scene, w, h, d, wallMesh, _ceilingMaterial);
+			BuildBottomWall(cubicMaze, scene, w, h, d, wallMesh, _floorMaterial);
+			BuildBackWall(	cubicMaze, scene, w, h, d, wallMesh, _backWallMaterial);
+			BuildFrontWall(	cubicMaze, scene, w, h, d, wallMesh, _frontWallMaterial);
 		}
 	}
 }
@@ -238,8 +222,16 @@ void CubicMazeSceneBuilder::BuildDEdge(std::shared_ptr<CubicMaze> cubicMaze, std
 	scene->AddSceneObject(sceneObject);
 }
 
-void CubicMazeSceneBuilder::BuildLeftWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildLeftWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->LeftWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->LeftWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -255,10 +247,20 @@ void CubicMazeSceneBuilder::BuildLeftWall(std::shared_ptr<ITurboScene> scene, in
 		-d * CELLSIZE);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->LeftWall.SceneObject = sceneObject.get();
 }
 
-void CubicMazeSceneBuilder::BuildRightWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildRightWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->RightWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->RightWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -274,10 +276,20 @@ void CubicMazeSceneBuilder::BuildRightWall(std::shared_ptr<ITurboScene> scene, i
 		-d * CELLSIZE);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->RightWall.SceneObject = sceneObject.get();
 }
 
-void CubicMazeSceneBuilder::BuildTopWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildTopWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->TopWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->TopWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -293,10 +305,20 @@ void CubicMazeSceneBuilder::BuildTopWall(std::shared_ptr<ITurboScene> scene, int
 		-d * CELLSIZE);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->TopWall.SceneObject = sceneObject.get();
 }
 
-void CubicMazeSceneBuilder::BuildBottomWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildBottomWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->BottomWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->BottomWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -312,10 +334,20 @@ void CubicMazeSceneBuilder::BuildBottomWall(std::shared_ptr<ITurboScene> scene, 
 		-d * CELLSIZE);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->BottomWall.SceneObject = sceneObject.get();
 }
 
-void CubicMazeSceneBuilder::BuildBackWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildBackWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->BackWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->BackWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -331,10 +363,20 @@ void CubicMazeSceneBuilder::BuildBackWall(std::shared_ptr<ITurboScene> scene, in
 		-d * CELLSIZE + CELLHALF);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->BackWall.SceneObject = sceneObject.get();
 }
 
-void CubicMazeSceneBuilder::BuildFrontWall(std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
+void CubicMazeSceneBuilder::BuildFrontWall(std::shared_ptr<CubicMaze> cubicMaze, std::shared_ptr<ITurboScene> scene, int w, int h, int d, std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material)
 {
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
+
+	if (cell->FrontWall.Type != CubicMazeCellWallType::Wall)
+	{
+		material = _wallTypeMaterials[cell->FrontWall.Type];
+	}
+
+	//	If there is no material, the wall will be invisible. This is not necessarily an error.
 	if (material == nullptr)
 	{
 		return;
@@ -350,6 +392,8 @@ void CubicMazeSceneBuilder::BuildFrontWall(std::shared_ptr<ITurboScene> scene, i
 		-d * CELLSIZE - CELLHALF);
 
 	scene->AddSceneObject(sceneObject);
+
+	cell->FrontWall.SceneObject = sceneObject.get();
 }
 
 bool CubicMazeSceneBuilder::CellHasLeftWall(std::shared_ptr<CubicMaze> cubicMaze, int w, int h, int d)
@@ -363,10 +407,10 @@ bool CubicMazeSceneBuilder::CellHasLeftWall(std::shared_ptr<CubicMaze> cubicMaze
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->LeftWall.Type == None) ||
-		(pCell->LeftWall.Type == InvisibleWall))
+	if ((cell->LeftWall.Type == None) ||
+		(cell->LeftWall.Type == InvisibleWall))
 	{
 		return false;
 	}
@@ -385,10 +429,10 @@ bool CubicMazeSceneBuilder::CellHasRightWall(std::shared_ptr<CubicMaze> cubicMaz
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->RightWall.Type == None) ||
-		(pCell->RightWall.Type == InvisibleWall))
+	if ((cell->RightWall.Type == None) ||
+		(cell->RightWall.Type == InvisibleWall))
 	{
 		return false;
 	}
@@ -407,10 +451,10 @@ bool CubicMazeSceneBuilder::CellHasTopWall(std::shared_ptr<CubicMaze> cubicMaze,
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->TopWall.Type == None) ||
-		(pCell->TopWall.Type == InvisibleWall))
+	if ((cell->TopWall.Type == None) ||
+		(cell->TopWall.Type == InvisibleWall))
 	{
 		return false;
 	}
@@ -429,10 +473,10 @@ bool CubicMazeSceneBuilder::CellHasBottomWall(std::shared_ptr<CubicMaze> cubicMa
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->BottomWall.Type == None) ||
-		(pCell->BottomWall.Type == InvisibleWall))
+	if ((cell->BottomWall.Type == None) ||
+		(cell->BottomWall.Type == InvisibleWall))
 	{
 		return false;
 	}
@@ -451,10 +495,10 @@ bool CubicMazeSceneBuilder::CellHasFrontWall(std::shared_ptr<CubicMaze> cubicMaz
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->FrontWall.Type == None) ||
-		(pCell->FrontWall.Type == InvisibleWall))
+	if ((cell->FrontWall.Type == None) ||
+		(cell->FrontWall.Type == InvisibleWall))
 	{
 		return false;
 	}
@@ -473,10 +517,10 @@ bool CubicMazeSceneBuilder::CellHasBackWall(std::shared_ptr<CubicMaze> cubicMaze
 		return false;
 	}
 
-	CubicMazeCell *pCell = cubicMaze->Cell(w, h, d);
+	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((pCell->BackWall.Type == None) ||
-		(pCell->BackWall.Type == InvisibleWall))
+	if ((cell->BackWall.Type == None) ||
+		(cell->BackWall.Type == InvisibleWall))
 	{
 		return false;
 	}

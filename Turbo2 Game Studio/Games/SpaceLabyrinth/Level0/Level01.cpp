@@ -68,12 +68,14 @@ void Level01::Initialize()
 		exitMaterial, exitLockedMaterial, exitBackMaterial));
 	_scene = sceneBuilder->BuildScene(_maze);
 
+	_maze->Cell(2, 0, 2)->FrontWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level01Text01")));
+
 	//  Create the player
 	_player = std::shared_ptr<ITurboSceneObject>(new Level0Player());
 	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
 
 	//	This is easier for now.
-	_scene->LightHack(true);
+	_scene->LightHack(false);
 
 	//	set player Placement as camera Placement.
 	_scene->CameraPlacement(_player->Placement());

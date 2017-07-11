@@ -266,6 +266,29 @@ std::shared_ptr<ITurboScene> Level0::BuildScene(std::shared_ptr<CubicMaze> cubic
 	}
 
 	std::shared_ptr<ITurboScene> scene = _sceneBuilder->BuildScene(cubicMaze);
+
+	cubicMaze->Cell(4, 0, 3)->FrontWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Text00")));
+
+	if (_level01Unlocked)
+	{
+		cubicMaze->Cell(0, 0, 4)->LeftWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Text01")));
+	}
+
+	if (_level02Unlocked)
+	{
+		cubicMaze->Cell(4, 0, 7)->FrontWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Text02")));
+	}
+
+	if (_level03Unlocked)
+	{
+		cubicMaze->Cell(7, 2, 3)->RightWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Text03")));
+	}
+
+	if (_level04Unlocked)
+	{
+		cubicMaze->Cell(3, 0, 0)->BackWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Text04")));
+	}
+
 	return scene;
 }
 

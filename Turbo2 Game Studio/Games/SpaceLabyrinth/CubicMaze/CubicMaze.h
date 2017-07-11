@@ -1,6 +1,10 @@
 
 #pragma once
 
+#include <ITurboSceneObject.h>
+
+using namespace Turbo::Scene;
+
 /*
 struct MazeWalls
 {
@@ -53,6 +57,7 @@ enum CubicMazeType
 struct CubicMazeCellWall
 {
 	CubicMazeCellWallType Type;
+	ITurboSceneObject *SceneObject;
 	int PortalIndex;
 };
 
@@ -68,7 +73,7 @@ struct CubicMazeCell
 
 	CubicMazeCell()
 	{
-		Initialize(None);
+		Initialize(CubicMazeCellWallType::None);
 	}
 
 	CubicMazeCell(CubicMazeCellWallType cellWallType)
@@ -84,6 +89,13 @@ struct CubicMazeCell
 		BottomWall.Type = cellWallType;
 		FrontWall.Type = cellWallType;
 		BackWall.Type = cellWallType;
+
+		LeftWall.SceneObject = NULL;
+		RightWall.SceneObject = NULL;
+		TopWall.SceneObject = NULL;
+		BottomWall.SceneObject = NULL;
+		FrontWall.SceneObject = NULL;
+		BackWall.SceneObject = NULL;
 
 		LeftWall.PortalIndex = 0;
 		RightWall.PortalIndex = 0;
