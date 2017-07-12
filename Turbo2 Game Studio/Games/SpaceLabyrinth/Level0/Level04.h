@@ -15,26 +15,13 @@ using namespace Turbo::Scene;
 
 class Level04 : public ITurboGameLevel
 {
-private:
-	std::shared_ptr<ITurboDebug>		_debug;
-	std::shared_ptr<CubicMaze>			_maze;
-	std::shared_ptr<ITurboScene>		_scene;
-	std::shared_ptr<ITurboSceneObject>	_player;
-	TurboGameLevelState					_levelState;
-
-	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
-
-	bool	_sceneChanged;
-	int		_pointer;
-	int		_pointerX;
-	int		_pointerY;
-
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	Level04(std::shared_ptr<ITurboDebug> debug) :
 		_debug(debug),
 		_levelState(TurboGameLevelState::Initializing)
-	{}
+	{
+	}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
@@ -54,5 +41,26 @@ public:
 	virtual void Initialize();
 	virtual void Finalize() {}
 	virtual void Update(NavigationInfo navInfo);
+
+private:
+	std::shared_ptr<ITurboDebug>		_debug;
+	std::shared_ptr<CubicMaze>			_maze;
+	std::shared_ptr<ITurboScene>		_scene;
+	std::shared_ptr<ITurboSceneObject>	_player;
+	std::shared_ptr<ITurboSceneObject>	_key;
+	TurboGameLevelState					_levelState;
+
+	std::shared_ptr<ICubicMazeSceneBuilder> _sceneBuilder;
+	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
+
+	bool	_exitLocked = true;
+
+	bool	_sceneChanged;
+	int		_pointer;
+	int		_pointerX;
+	int		_pointerY;
+
+	//	Local Methods --------------------------------------------------------------------------------------------------
+	std::shared_ptr<ITurboScene> BuildScene(std::shared_ptr<CubicMaze> cubicMaze);
 };
 

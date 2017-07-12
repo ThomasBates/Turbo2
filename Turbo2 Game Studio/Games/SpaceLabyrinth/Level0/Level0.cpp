@@ -87,7 +87,7 @@ void Level0::Initialize()
 	_scene->LightHack(false);
 
 	//	Place the player
-	_player->Placement()->GoTo(8, 0, -6);
+	_player->Placement()->GoTo(8, 0, -4);
 
 	//  Create NPC's and obstacles ...
 	//  ...
@@ -173,6 +173,11 @@ void Level0::Update(NavigationInfo navInfo)
 			_scene->CameraPlacement(_player->Placement());
 			_sceneChanged = true;
 			break;
+		}
+
+		if ((_subLevel != nullptr) && (_subLevel->SceneChanged()))
+		{
+			_sceneChanged = true;
 		}
 
 		return;
