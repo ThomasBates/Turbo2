@@ -620,5 +620,8 @@
     <Image Include="..\..\Resources\Textures\Level04Text01.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
+    <Image Include="..\..\Resources\Textures\Level04Hazard.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

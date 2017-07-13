@@ -227,6 +227,7 @@
     <Image Include="..\..\Resources\Textures\Level04ExitBack.bmp" />
     <Image Include="..\..\Resources\Textures\Level04ExitLocked.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Floor.bmp" />
+    <Image Include="..\..\Resources\Textures\Level04Hazard.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Key.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Text01.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Text02.bmp" />

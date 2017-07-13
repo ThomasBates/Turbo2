@@ -6,14 +6,17 @@ using namespace Turbo::Game;
 using namespace Turbo::Scene;
 
 
-void CubicMazeObjectInteractions::ProcessObjectInteractions(NavigationInfo navInfo, int *pPortalIndex)
+void CubicMazeObjectInteractions::ProcessObjectInteractions(
+	NavigationInfo navInfo, 
+	std::shared_ptr<ITurboSceneObject> sceneObject, 
+	int *pPortalIndex)
 {
 	*pPortalIndex = 0;
 
 	double deltaTime = navInfo.DeltaTime;
 
 	//  Player-Maze Interactions
-	std::shared_ptr<ITurboScenePlacement> placement = _player->Placement();
+	std::shared_ptr<ITurboScenePlacement> placement = sceneObject->Placement();
 	TurboVector3D velocity = placement->Velocity();
 	TurboVector3D angularVelocity = placement->AngularVelocity();
 	TurboVector3D oldPosition = placement->Position();

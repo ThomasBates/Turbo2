@@ -58,7 +58,7 @@ private:
 	bool	_level01Unlocked = true;
 	bool	_level02Unlocked = false;
 	bool	_level03Unlocked = false;
-	bool	_level04Unlocked = false;
+	bool	_level04Unlocked = !false;
 
 	int		_pointer;
 	int		_pointerX;

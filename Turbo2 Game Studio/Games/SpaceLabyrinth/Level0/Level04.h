@@ -48,12 +48,14 @@ private:
 	std::shared_ptr<ITurboScene>		_scene;
 	std::shared_ptr<ITurboSceneObject>	_player;
 	std::shared_ptr<ITurboSceneObject>	_key;
+	std::shared_ptr<ITurboSceneObject>	_hazard;
 	TurboGameLevelState					_levelState;
 
 	std::shared_ptr<ICubicMazeSceneBuilder> _sceneBuilder;
 	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
 
-	bool	_exitLocked = true;
+	bool	_drawKey = true;
+	bool	_drawHazard = true;
 
 	bool	_sceneChanged;
 	int		_pointer;

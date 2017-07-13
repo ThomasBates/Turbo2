@@ -9,8 +9,8 @@
 #include <OriginalLevel.h>
 
 //	2017-06-07
-//	TODO:	Hazard(s) in level 0-4?
 //	TODO:	GameState.
+//	TODO:	Sound effects.
 //	TODO:	Object interaction at edges with no walls.
 //	TODO:	All lighted first time through. Then dark. Then hazards.
 //	TODO:	Lights implemented properly.
@@ -27,6 +27,7 @@
 //	2017-07-07:	Artwork for Textures.
 //	2017-07-10:	Instructions for users.
 //	2017-07-11:	Key(s) to unlock exit in level 0-4.
+//	2017-07-12:	Hazard(s) in level 0-4
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 

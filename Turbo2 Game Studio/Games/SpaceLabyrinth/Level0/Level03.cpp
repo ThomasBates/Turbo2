@@ -84,7 +84,7 @@ void Level03::Initialize()
 
 	//LoadLevel();
 
-	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, _player, 0.25, 0.25, 0.25));
+	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
 }
 
 void Level03::Update(NavigationInfo navInfo)
@@ -99,7 +99,7 @@ void Level03::Update(NavigationInfo navInfo)
 
 	//  Check for collisions
 	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
 
 	if (portalIndex > 0)
 	{

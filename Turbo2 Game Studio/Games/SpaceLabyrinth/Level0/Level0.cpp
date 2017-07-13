@@ -94,7 +94,7 @@ void Level0::Initialize()
 
 	_scene->CameraPlacement(_player->Placement());
 
-	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, _player, 0.25, 0.25, 0.25));
+	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
 }
 
 void Level0::Update(NavigationInfo navInfo)
@@ -135,6 +135,8 @@ void Level0::Update(NavigationInfo navInfo)
 			_subLevel->Finalize();
 			_subLevel = nullptr;
 			_subLevelIndex = 0;
+			_scene = BuildScene(_maze);
+			_scene->CameraPlacement(_player->Placement());
 			_sceneChanged = true;
 			break;
 
@@ -197,7 +199,7 @@ void Level0::Update(NavigationInfo navInfo)
 
 	//  Check for collisions
 	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
 
 	//	Share the placement object so there is continuity of motion when going through the portals.
 	//	Move the player by the amount of offset between levels, plus 1m to jump past the gap in the portal.

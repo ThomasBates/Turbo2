@@ -82,19 +82,27 @@ void Level04::Initialize()
 	//	set player Placement as camera Placement.
 	_scene->CameraPlacement(_player->Placement());
 
-	//  Create NPC's and obstacles ...
-	_key = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
-		std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
-		std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Key"))));
-	_key->Placement()->Move(2, -4, -2);
-	_key->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
-	_scene->AddSceneObject(_key);
+	////  Create NPC's and obstacles ...
+	//_key = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
+	//	std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
+	//	std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Key"))));
+	//_key->Placement()->Move(2, -4, -2);
+	//_key->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+	//_scene->AddSceneObject(_key);
 
-	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, _player, 0.25, 0.25, 0.25));
+	//_hazard = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
+	//	std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
+	//	std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Hazard"))));
+	//_hazard->Placement()->Move(0, 0, -4);
+	//_hazard->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+	//_scene->AddSceneObject(_hazard);
+
+	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
 }
 
 void Level04::Update(NavigationInfo navInfo)
 {
+	int portalIndex = 0;
 	_sceneChanged = false;
 
 	//  Update player
@@ -110,16 +118,34 @@ void Level04::Update(NavigationInfo navInfo)
 		TurboVector3D playerPosition = _player->Placement()->Position();
 		if ((keyPosition - playerPosition).Length() < 0.25)
 		{
-			_exitLocked = false;
+			_drawKey = false;
 			_key = nullptr;
 			_scene = BuildScene(_maze);
 			_sceneChanged = true;
 		}
 	}
 
+	if (_hazard != nullptr)
+	{
+		NavigationInfo hazardNavInfo;
+		hazardNavInfo.Time = navInfo.Time;
+		hazardNavInfo.DeltaTime = navInfo.DeltaTime;
+
+		//_hazard->Update(hazardNavInfo);
+		_hazard->Placement()->Rotate(_hazard->Placement()->AngularVelocity() * hazardNavInfo.DeltaTime);
+		_hazard->Placement()->Velocity(_hazard->Placement()->Velocity().Normalize());
+		_objectInteractions->ProcessObjectInteractions(hazardNavInfo, _hazard, &portalIndex);
+
+		TurboVector3D hazardPosition = _hazard->Placement()->Position();
+		TurboVector3D playerPosition = _player->Placement()->Position();
+		if ((hazardPosition - playerPosition).Length() < 0.25)
+		{
+			_levelState = TurboGameLevelState::Failed;
+		}
+	}
+
 	//  Check for collisions
-	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
 
 	if (portalIndex > 0)
 	{
@@ -137,7 +163,9 @@ void Level04::Update(NavigationInfo navInfo)
 
 std::shared_ptr<ITurboScene> Level04::BuildScene(std::shared_ptr<CubicMaze> cubicMaze)
 {
-	if (_exitLocked)
+
+	//  Create NPC's and obstacles ...
+	if (_drawKey)
 	{
 		_maze->Cell(0, 0, 2)->FrontWall.Type = ExitLocked;
 		_maze->Cell(0, 0, 2)->FrontWall.PortalIndex = 0;
@@ -153,13 +181,31 @@ std::shared_ptr<ITurboScene> Level04::BuildScene(std::shared_ptr<CubicMaze> cubi
 	//	This is easier for now.
 	scene->LightHack(false);
 
-	if (_exitLocked)
+	if (_drawKey)
 	{
+		_key = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
+			std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
+			std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Key"))));
+		_key->Placement()->Move(2, -4, -2);
+		_key->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+		scene->AddSceneObject(_key);
+
 		cubicMaze->Cell(0, 0, 2)->LeftWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Text01")));
 	}
 	else
 	{
 		cubicMaze->Cell(0, 0, 2)->LeftWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Text02")));
+	}
+
+	if (_drawHazard)
+	{
+		_hazard = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
+			std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
+			std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Hazard"))));
+		_hazard->Placement()->Move(0, 0, -4);
+		_hazard->Placement()->Velocity(TurboVector3D(1, 1, 1).Normalize());
+		_hazard->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+		scene->AddSceneObject(_hazard);
 	}
 
 	return scene;
