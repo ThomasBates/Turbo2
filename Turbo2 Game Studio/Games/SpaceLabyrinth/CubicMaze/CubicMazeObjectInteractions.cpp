@@ -8,8 +8,9 @@ using namespace Turbo::Scene;
 
 void CubicMazeObjectInteractions::ProcessObjectInteractions(
 	NavigationInfo navInfo, 
-	std::shared_ptr<ITurboSceneObject> sceneObject, 
-	int *pPortalIndex)
+	std::shared_ptr<ITurboSceneObject> sceneObject,
+	int *pPortalIndex,
+	bool isPlayer)
 {
 	*pPortalIndex = 0;
 
@@ -41,12 +42,14 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 	IsTouchingCellWall(
 		oldLocation, 
 		oldPosition, 
-		newPosition, 
+		newPosition,
 		&portalIndex,
 		&isLeaving,
 		&isTouching,
 		&contact, 
-		&normal);
+		&normal,
+		sceneObject,
+		isPlayer);
 
 	//	If we've entered a door, none of the rest matters.
 	if (portalIndex > 0)
@@ -95,12 +98,14 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 				IsTouchingCellWall(
 					testLocation,
 					oldPosition, 
-					newPosition, 
+					newPosition,
 					&portalIndex,
 					&isLeaving,
 					&isTouching,
 					&contact, 
-					&normal);
+					&normal,
+					sceneObject,
+					isPlayer);
 			}
 		}
 	}
@@ -114,6 +119,8 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 		velocity = t - n * 0.5;
 
 		newPosition = contact + velocity * deltaTime;
+
+		//sceneObject->PlaySound(1);
 	}
 
 	placement->Velocity(velocity);
@@ -129,7 +136,9 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 	bool *pIsLeaving,
 	bool *pIsTouching,
 	TurboVector3D *pContact,
-	TurboVector3D *pNormal)
+	TurboVector3D *pNormal,
+	std::shared_ptr<ITurboSceneObject> sceneObject,
+	bool isPlayer)
 {
 	*pPortalIndex = 0;
 	*pIsLeaving = false;
@@ -166,6 +175,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 	bool isTouching;
 	TurboVector3D contact;
 	TurboVector3D normal;
+	ITurboSceneObject* touchingSceneObject = NULL;
 
 
 	//	Left Wall --------------------------------------------------------------
@@ -173,10 +183,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->LeftWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->LeftWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -195,6 +207,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->LeftWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
@@ -204,10 +217,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->RightWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->RightWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -226,6 +241,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->RightWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
@@ -235,10 +251,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->TopWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->TopWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -257,6 +275,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->TopWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
@@ -266,10 +285,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->BottomWall, cellFromPoint, celltoPoint,
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->BottomWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -288,6 +309,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->BottomWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
@@ -297,10 +319,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->FrontWall, cellFromPoint, celltoPoint, 
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->FrontWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -319,6 +343,7 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->FrontWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
@@ -328,10 +353,12 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 		cell->BackWall, cellFromPoint, celltoPoint, 
 		&portalIndex, &isLeaving, &isTouching, &contact, &normal);
 
-	if (portalIndex > 0)
+	if ((isPlayer) && (portalIndex > 0))
 	{
 		*pPortalIndex = portalIndex;
 		*pIsTouching = true;
+		sceneObject->HitSound(cell->BackWall.SceneObject->HitSound());
+		sceneObject->PlaySound(1);
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: portal " << portalIndex << '\n';
 		return;
 	}
@@ -350,14 +377,22 @@ void CubicMazeObjectInteractions::IsTouchingCellWall(
 			nearestDistance = distance;
 			nearestContact = contact;
 			nearestNormal = normal;
+			touchingSceneObject = cell->BackWall.SceneObject;
 		}
 		*pIsTouching = true;
 	}
 
+	//	----------------------------------------------------------------------------
 	if (*pIsTouching)
 	{
 		*pContact = nearestContact + cellCenter;
 		*pNormal = nearestNormal;
+
+		if ((isPlayer) && (touchingSceneObject != NULL))
+		{
+			sceneObject->HitSound(touchingSceneObject->HitSound());
+			sceneObject->PlaySound(1);
+		}
 
 		_debug->Send(debugInformation, debugInteractions) << "Testing Cell: touching\n";
 	}

@@ -24,6 +24,7 @@ namespace Turbo
 				virtual void SaveGameState(std::shared_ptr<ITurboGameState> programState);
 				virtual std::shared_ptr<ITurboGameState> LoadGameState();
 
+				virtual std::wstring GetFullPath(std::wstring filename);
 				virtual std::vector<byte> ReadData(const std::wstring &filename);
 				virtual uint32 WriteData(const std::wstring &filename, std::vector<byte> fileData);
 
@@ -31,9 +32,8 @@ namespace Turbo
 				virtual Concurrency::task<uint32> WriteDataAsync(const std::wstring &filename, std::vector<byte> fileData);
 
 			private:
-				std::wstring GetFullPath(LPCWSTR filename);
-
 				std::shared_ptr<ITurboDebug> _debug;
+				WAVEFORMATEX _waveFormat;
 			};
 		}	//	namespace Turbo::Platform::Windows10
 	}	//	namespace Turbo::Platform

@@ -5,6 +5,7 @@
 #include <ITurboGame.h>
 #include <ITurboGameIOService.h>
 #include <ITurboGameRenderer.h>
+#include <ITurboGameAudio.h>
 
 using namespace Platform;
 using namespace Windows::ApplicationModel;
@@ -29,7 +30,8 @@ namespace Turbo
 				Windows10FrameworkView(
 					std::shared_ptr<ITurboGame> game, 
 					std::shared_ptr<ITurboGameIOService> ioService,
-					std::shared_ptr<ITurboGameRenderer> renderer);
+					std::shared_ptr<ITurboGameRenderer> renderer,
+					std::shared_ptr<ITurboGameAudio> audio);
 
 			public:
 				//	Constructors ---------------------------------------------------------------------------------------
@@ -62,6 +64,7 @@ namespace Turbo
 				std::shared_ptr<ITurboGame>				_game;
 				std::shared_ptr<ITurboGameIOService>	_ioService;
 				std::shared_ptr<ITurboGameRenderer>		_renderer;
+				std::shared_ptr<ITurboGameAudio>		_audio;
 				std::shared_ptr<ITurboGameController>	_controller;
 
 				bool _windowClosed;

@@ -293,6 +293,11 @@ void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObjec
 
 	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
 
+	if (mesh == nullptr)
+	{
+		return;
+	}
+
 	//  Already loaded this mesh? don't reload it.
 	if (_sceneObjectMeshOffsets.find(mesh) != _sceneObjectMeshOffsets.end())
 	{
@@ -500,7 +505,19 @@ void DirectX12Renderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene>
 
 void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-	std::string textureName = sceneObject->Material()->Texture()->Name();
+	std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
+	if (material == nullptr)
+	{
+		return;
+	}
+
+	std::shared_ptr<ITurboSceneTexture> texture = material->Texture();
+	if (texture == nullptr)
+	{
+		return;
+	}
+
+	std::string textureName = texture->Name();
 
 	//  Already loaded this texture? don't reload it.
 	if (_sceneObjectTextureOffsets.find(textureName) != _sceneObjectTextureOffsets.end())
@@ -900,6 +917,11 @@ void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboScene> scene)
 void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+
+	if (mesh == nullptr)
+	{
+		return;
+	}
 
 	D3D12_VERTEX_BUFFER_VIEW *pVertexBufferView = &_sceneVertexBufferViews[mesh];
 	D3D12_INDEX_BUFFER_VIEW *pIndexBufferView = &_sceneIndexBufferViews[mesh];

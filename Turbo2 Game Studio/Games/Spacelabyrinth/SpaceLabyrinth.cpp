@@ -5,12 +5,12 @@
 #include <pch.h>
 
 #include <SpaceLabyrinth.h>
-#include <Level0.h>
-#include <OriginalLevel.h>
+#include <Level00.h>
+#include <Level00Player.h>
+//#include <OriginalLevel.h>
 
 //	2017-06-07
 //	TODO:	GameState.
-//	TODO:	Sound effects.
 //	TODO:	Object interaction at edges with no walls.
 //	TODO:	All lighted first time through. Then dark. Then hazards.
 //	TODO:	Lights implemented properly.
@@ -28,6 +28,11 @@
 //	2017-07-10:	Instructions for users.
 //	2017-07-11:	Key(s) to unlock exit in level 0-4.
 //	2017-07-12:	Hazard(s) in level 0-4
+//	2017-08-16:	Sound effects.
+
+
+//	https://docs.microsoft.com/en-us/windows/uwp/gaming/
+//	
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -87,8 +92,7 @@ std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
 
 void SpaceLabyrinth::Initialize()
 {
-	//_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
-	//_level->Initialize();	//	Build scene and players
+	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player());
 }
 
 void SpaceLabyrinth::Finalize()
@@ -113,8 +117,7 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		//_level = std::unique_ptr<ITurboGameLevel>(new OriginalLevel());
-		_level = std::unique_ptr<ITurboGameLevel>(new Level0(_debug));
+		_level = std::unique_ptr<ITurboGameLevel>(new Level00(_debug, _player));
 		_level->Initialize();
 		_sceneChanged = true;
 	}

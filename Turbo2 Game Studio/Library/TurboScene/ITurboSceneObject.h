@@ -4,6 +4,8 @@
 #include <ITurboSceneMaterial.h>
 #include <ITurboSceneMesh.h>
 #include <ITurboScenePlacement.h>
+#include <ITurboSceneSoundEffect.h>
+
 #include <TurboSceneTypes.h>
 
 namespace Turbo
@@ -20,6 +22,9 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboSceneMaterial> Material() = 0;
 			virtual void Material(std::shared_ptr<ITurboSceneMaterial> material) = 0;
 
+			virtual std::shared_ptr<ITurboSceneSoundEffect> HitSound() = 0;
+			virtual void HitSound(std::shared_ptr<ITurboSceneSoundEffect> hitSound) = 0;
+
 			virtual std::shared_ptr<ITurboSceneLight> Light() = 0;
 			virtual void Light(std::shared_ptr<ITurboSceneLight> light) = 0;
 
@@ -31,6 +36,7 @@ namespace Turbo
 			//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
 			virtual void Update(NavigationInfo navInfo) = 0;
 			virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal) = 0;
+			virtual void PlaySound(float volume) = 0;
 		};
 	}
 }

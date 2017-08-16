@@ -15,28 +15,32 @@ using namespace Windows::System;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
 
+using namespace Turbo::Platform::Windows10;
+
 // The DirectX 12 Application template is documented at http://go.microsoft.com/fwlink/?LinkID=613670&clcid=0x409
 
-Turbo::Platform::Windows10::Windows10FrameworkView::Windows10FrameworkView() :
+Windows10FrameworkView::Windows10FrameworkView() :
 	_windowClosed(false),
 	_windowVisible(true)
 {
 }
 
-Turbo::Platform::Windows10::Windows10FrameworkView::Windows10FrameworkView(
+Windows10FrameworkView::Windows10FrameworkView(
 	std::shared_ptr<ITurboGame> game,
 	std::shared_ptr<ITurboGameIOService> ioService,
-	std::shared_ptr<ITurboGameRenderer> renderer) :
+	std::shared_ptr<ITurboGameRenderer> renderer,
+	std::shared_ptr<ITurboGameAudio> audio) :
 	_game(game),
 	_ioService(ioService),
 	_renderer(renderer),
+	_audio(audio),
 	_windowClosed(false),
 	_windowVisible(true)
 {
 }
 
 // The first method called when the IFrameworkView is being created.
-void Turbo::Platform::Windows10::Windows10FrameworkView::Initialize(CoreApplicationView^ applicationView)
+void Windows10FrameworkView::Initialize(CoreApplicationView^ applicationView)
 {
 	// Register event handlers for app lifecycle. This example includes Activated, so that we
 	// can make the CoreWindow active and start rendering on the window.
@@ -51,7 +55,7 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::Initialize(CoreApplicat
 }
 
 // Called when the CoreWindow object is created (or re-created).
-void Turbo::Platform::Windows10::Windows10FrameworkView::SetWindow(CoreWindow^ window)
+void Windows10FrameworkView::SetWindow(CoreWindow^ window)
 {
 	window->SizeChanged += 
 		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &Windows10FrameworkView::OnWindowSizeChanged);
@@ -75,14 +79,14 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::SetWindow(CoreWindow^ w
 }
 
 // Initializes scene resources, or loads a previously saved app state.
-void Turbo::Platform::Windows10::Windows10FrameworkView::Load(String^ entryPoint)
+void Windows10FrameworkView::Load(String^ entryPoint)
 {
 	_controller = std::shared_ptr<ITurboGameController>(new Windows10GameController());
 	_game->Initialize();	//	Create level, create & draw static scene
 }
 
 // This method is called after the window becomes active.
-void Turbo::Platform::Windows10::Windows10FrameworkView::Run()
+void Windows10FrameworkView::Run()
 {
 	while (!_windowClosed)
 	{
@@ -93,13 +97,18 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::Run()
 			//	Update the scene
 			NavigationInfo navInfo = _controller->GetNavigationInfo();
 			_game->Update(navInfo);
+
 			if (_game->SceneChanged())
 			{
 				_renderer->LoadSceneResources(_game->Scene());
+				_audio->LoadSceneResources(_game->Scene());
 			}
 
 			//	Render the Scene
 			_renderer->RenderScene(_game->Scene());
+
+			//	Play audio
+			_audio->PlaySounds(_game->Scene());
 		}
 		else
 		{
@@ -111,20 +120,20 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::Run()
 // Required for IFrameworkView.
 // Terminate events do not cause Uninitialize to be called. It will be called if your IFrameworkView
 // class is torn down while the app is in the foreground.
-void Turbo::Platform::Windows10::Windows10FrameworkView::Uninitialize()
+void Windows10FrameworkView::Uninitialize()
 {
 }
 
 // Application lifecycle event handlers.
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
+void Windows10FrameworkView::OnActivated(CoreApplicationView^ applicationView, IActivatedEventArgs^ args)
 {
 	// Run() won't start until the CoreWindow is activated.
 	CoreWindow::GetForCurrentThread()->Activate();
 }
 
 // Notifies the app that it is being suspended.
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnSuspending(Object^ sender, SuspendingEventArgs^ args)
+void Windows10FrameworkView::OnSuspending(Object^ sender, SuspendingEventArgs^ args)
 {
 	// Save app state asynchronously after requesting a deferral. Holding a deferral
 	// indicates that the application is busy performing suspending operations. Be
@@ -148,7 +157,7 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::OnSuspending(Object^ se
 }
 
 // Notifes the app that it is no longer suspended.
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnResuming(Object^ sender, Object^ args)
+void Windows10FrameworkView::OnResuming(Object^ sender, Object^ args)
 {
 	// Restore any data or state that was unloaded on suspend. By default, data
 	// and state are persisted when resuming from suspend. Note that this event
@@ -160,34 +169,34 @@ void Turbo::Platform::Windows10::Windows10FrameworkView::OnResuming(Object^ send
 
 //	Window event handlers ----------------------------------------------------------------------------------------------
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
+void Windows10FrameworkView::OnWindowSizeChanged(CoreWindow^ sender, WindowSizeChangedEventArgs^ args)
 {
 	_renderer->UpdateDisplayInformation();
 }
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
+void Windows10FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args)
 {
 	_windowVisible = args->Visible;
 }
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
+void Windows10FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
 {
 	_windowClosed = true;
 }
 
 //	DisplayInformation event handlers ----------------------------------------------------------------------------------
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnDpiChanged(DisplayInformation^ sender, Object^ args)
+void Windows10FrameworkView::OnDpiChanged(DisplayInformation^ sender, Object^ args)
 {
 	_renderer->UpdateDisplayInformation();
 }
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
+void Windows10FrameworkView::OnOrientationChanged(DisplayInformation^ sender, Object^ args)
 {
 	_renderer->UpdateDisplayInformation();
 }
 
-void Turbo::Platform::Windows10::Windows10FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
+void Windows10FrameworkView::OnDisplayContentsInvalidated(DisplayInformation^ sender, Object^ args)
 {
 	_renderer->UpdateDisplayInformation();
 }

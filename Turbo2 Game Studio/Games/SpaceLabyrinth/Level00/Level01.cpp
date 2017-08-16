@@ -4,10 +4,11 @@
 #include <CubicMazeSceneBuilder.h>
 #include <CubicMazeFactory.h>
 #include <Level01.h>
-#include <Level0Player.h>
+#include <Level01MotionEffects.h>
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
 #include <TurboScenePointLight.h>
+#include <TurboSceneSoundEffect.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -67,12 +68,14 @@ void Level01::Initialize()
 		entranceMaterial, entranceLockedMaterial, entranceBackMaterial,
 		exitMaterial, exitLockedMaterial, exitBackMaterial));
 	_scene = sceneBuilder->BuildScene(_maze);
+	_scene->AddSceneObject(_player);
 
 	_maze->Cell(2, 0, 2)->FrontWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level01Text01")));
+	_maze->Cell(2, 0, 2)->RightWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new Level0Player());
-	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance")));
 
 	//	This is easier for now.
 	_scene->LightHack(false);
@@ -85,9 +88,12 @@ void Level01::Initialize()
 
 	//LoadLevel();
 
+	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new Level01MotionEffects());
 	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
 
 	_levelState = TurboGameLevelState::Running;
+
+	//_player->PlaySound(1);
 }
 
 void Level01::Update(NavigationInfo navInfo)
@@ -96,25 +102,21 @@ void Level01::Update(NavigationInfo navInfo)
 
 	//  Update player
 	_player->Update(navInfo);
-
-	//  Limit motion to horizontal plane for this level
-	TurboVector3D velocity = _player->Placement()->Velocity();
-	velocity.Y = 0;
-	_player->Placement()->Velocity(velocity);
+	_motionEffects->ProcessMotionEffects(navInfo, _player, true);
 
 	//  Update NPC's and obstacles
 	//  ...
 
 	//  Check for collisions
 	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex, true);
 
 	if (portalIndex == 1)
 	{
 		_levelState = TurboGameLevelState::Completed;
 	}
 
-	_scene->CameraPlacement(_player->Placement());
+	//_scene->CameraPlacement(_player->Placement());
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------

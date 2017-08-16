@@ -14,6 +14,7 @@
 #include <TurboSceneObject.h>
 #include <TurboSceneMesh.h>
 #include <TurboSceneMaterial.h>
+#include <TurboSceneSoundEffect.h>
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -72,11 +73,12 @@ std::shared_ptr<ITurboScene> CubicMazeSceneBuilder::BuildScene(std::shared_ptr<C
 void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> cubicMaze)
 {
 	CubicMazeLocation size = cubicMaze->Size();
-	//CubicMazeCellArray3D mazeArray = cubicMaze->MazeArray();
 
 	std::shared_ptr<ITurboSceneMesh> cornerMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh());
 	std::shared_ptr<ITurboSceneMesh> edgeMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeEdgeMesh());
 	std::shared_ptr<ITurboSceneMesh> wallMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeWallMesh());
+
+	_defaultSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Wall"));
 
 	for (int w = 0; w <= size.W; w++)
 	for (int h = 0; h <= size.H; h++)
@@ -239,8 +241,8 @@ void CubicMazeSceneBuilder::BuildLeftWall(std::shared_ptr<CubicMaze> cubicMaze, 
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, 180.0, 0.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE - CELLHALF,
 		-h * CELLSIZE,
@@ -268,8 +270,8 @@ void CubicMazeSceneBuilder::BuildRightWall(std::shared_ptr<CubicMaze> cubicMaze,
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, 0.0, 0.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE + CELLHALF,
 		-h * CELLSIZE,
@@ -297,8 +299,8 @@ void CubicMazeSceneBuilder::BuildTopWall(std::shared_ptr<CubicMaze> cubicMaze, s
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, 0.0, 90.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE,
 		-h * CELLSIZE + CELLHALF,
@@ -326,8 +328,8 @@ void CubicMazeSceneBuilder::BuildBottomWall(std::shared_ptr<CubicMaze> cubicMaze
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, 0.0, -90.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE,
 		-h * CELLSIZE - CELLHALF,
@@ -355,8 +357,8 @@ void CubicMazeSceneBuilder::BuildBackWall(std::shared_ptr<CubicMaze> cubicMaze, 
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, -90.0, 0.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE,
 		-h * CELLSIZE,
@@ -384,8 +386,8 @@ void CubicMazeSceneBuilder::BuildFrontWall(std::shared_ptr<CubicMaze> cubicMaze,
 
 	std::shared_ptr<ITurboSceneObject> sceneObject = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(mesh, material));
 
+	sceneObject->HitSound(_defaultSound);
 	sceneObject->Placement()->Rotate(0.0, 90.0, 0.0);
-
 	sceneObject->Placement()->Move(
 		+w * CELLSIZE,
 		-h * CELLSIZE,

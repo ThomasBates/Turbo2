@@ -6,6 +6,7 @@
 #include <CubicMazeObjectInteractions.h>
 #include <ITurboDebug.h>
 #include <ITurboGameLevel.h>
+#include <ITurboGameMotionEffects.h>
 #include <ITurboSceneBuilder.h>
 
 using namespace Turbo::Core::Debug;
@@ -13,28 +14,17 @@ using namespace Turbo::Game;
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-class Level03 : public ITurboGameLevel
+class Level04 : public ITurboGameLevel
 {
-private:
-	std::shared_ptr<ITurboDebug>		_debug;
-	std::shared_ptr<CubicMaze>			_maze;
-	std::shared_ptr<ITurboScene>		_scene;
-	std::shared_ptr<ITurboSceneObject>	_player;
-	TurboGameLevelState					_levelState;
-
-	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
-
-	bool	_sceneChanged;
-	int		_pointer;
-	int		_pointerX;
-	int		_pointerY;
-
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
-	Level03(std::shared_ptr<ITurboDebug> debug) :
+	Level04(std::shared_ptr<ITurboDebug> debug,
+			std::shared_ptr<ITurboSceneObject> player) :
 		_debug(debug),
+		_player(player),
 		_levelState(TurboGameLevelState::Initializing)
-	{}
+	{
+	}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
@@ -54,5 +44,29 @@ public:
 	virtual void Initialize();
 	virtual void Finalize() {}
 	virtual void Update(NavigationInfo navInfo);
+
+private:
+	std::shared_ptr<ITurboDebug>		_debug;
+	std::shared_ptr<ITurboSceneObject>	_player;
+	std::shared_ptr<CubicMaze>			_maze;
+	std::shared_ptr<ITurboScene>		_scene;
+	std::shared_ptr<ITurboSceneObject>	_key;
+	std::shared_ptr<ITurboSceneObject>	_hazard;
+	TurboGameLevelState					_levelState;
+
+	std::shared_ptr<ICubicMazeSceneBuilder> _sceneBuilder;
+	std::shared_ptr<ITurboGameMotionEffects> _motionEffects;
+	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
+
+	bool	_drawKey = true;
+	bool	_drawHazard = true;
+
+	bool	_sceneChanged;
+	int		_pointer;
+	int		_pointerX;
+	int		_pointerY;
+
+	//	Local Methods --------------------------------------------------------------------------------------------------
+	std::shared_ptr<ITurboScene> BuildScene(std::shared_ptr<CubicMaze> cubicMaze);
 };
 

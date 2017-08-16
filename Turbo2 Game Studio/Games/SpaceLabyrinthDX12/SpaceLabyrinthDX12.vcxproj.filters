@@ -78,7 +78,10 @@
     <Filter Include="Library\TurboCore\TurboDebug">
       <UniqueIdentifier>{1c685eb6-ebcf-4f2f-82e0-20a7ee7ef59a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Games\SpaceLabyrinth\Level0">
+    <Filter Include="Resources\Sounds">
+      <UniqueIdentifier>{3dae82f3-6b5e-41b4-9012-b7d48f1dc1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\SpaceLabyrinth\Level00">
       <UniqueIdentifier>{1e0f0038-cdc3-4e86-80ad-bcbfad42a6d8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -193,32 +196,56 @@
     <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.cpp">
       <Filter>Library\TurboCore\TurboDebug</Filter>
     </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level0Player.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level01.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
     <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.cpp">
       <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level02.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level03.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level0\Level04.cpp">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Platform\Windows10\Windows10DebugFileLogger.cpp">
       <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneSoundEffect.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level01.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level02.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level03.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level04.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level00.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level00CubicMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level00Player.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\Windows10\Windows10Audio.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\DirectX12\XAudio2Audio.cpp">
+      <Filter>Platform\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Platform\DirectX12\XAudio2AudioTest.cpp">
+      <Filter>Platform\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
+      <Filter>Library\TurboGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level02MotionEffects.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level03MotionEffects.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level01MotionEffects.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -424,18 +451,6 @@
     <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugTypes.h">
       <Filter>Library\TurboCore\TurboDebug</Filter>
     </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0CubicMazeFactory.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level0Player.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level01.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStreamBuf.h">
       <Filter>Library\TurboCore\TurboDebug</Filter>
     </ClInclude>
@@ -444,15 +459,6 @@
     </ClInclude>
     <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeObjectInteractions.h">
       <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level02.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level03.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level0\Level04.h">
-      <Filter>Games\SpaceLabyrinth\Level0</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Platform\Windows10\Windows10DebugFileLogger.h">
       <Filter>Platform\Windows10</Filter>
@@ -474,6 +480,60 @@
     </ClInclude>
     <ClInclude Include="..\..\Library\TurboGame\TurboGameTypes.h">
       <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\ITurboSceneSoundEffect.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneSoundEffect.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level04.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level01.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level02.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level03.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level00.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level00CubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level00Player.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGameAudio.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\Windows10\Windows10Audio.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\DirectX12\XAudio2Audio.h">
+      <Filter>Platform\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Platform\DirectX12\XAudio2AudioTest.h">
+      <Filter>Platform\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboGame\ITurboGameMotionEffects.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboGame\TurboGameMotionEffects.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level01MotionEffects.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level02MotionEffects.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level03MotionEffects.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -623,5 +683,28 @@
     <Image Include="..\..\Resources\Textures\Level04Hazard.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\Resources\Sounds\Complete.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Entrance.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Exit.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Fail.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Key.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Locked.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="..\..\Resources\Sounds\Wall.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
   </ItemGroup>
 </Project>

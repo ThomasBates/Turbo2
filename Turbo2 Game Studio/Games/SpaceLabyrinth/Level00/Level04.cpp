@@ -7,11 +7,12 @@
 #include <CubicMazeSceneObject.h>
 
 #include <Level04.h>
-#include <Level0Player.h>
+#include <Level03MotionEffects.h>
 #include <OriginalPlayer.h>
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
 #include <TurboScenePointLight.h>
+#include <TurboSceneSoundEffect.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -37,7 +38,7 @@ void Level04::GameState(std::shared_ptr<ITurboGameState> gameState)
 void Level04::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Cube));
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(CubicMazeType::Cube));
 	_maze = mazeFactory->MakeMaze(3, 3, 3);
 
 	//	Create the exit.
@@ -73,8 +74,8 @@ void Level04::Initialize()
 	_scene = BuildScene(_maze);
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());
-	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance")));
 
 	//	This is easier for now.
 	_scene->LightHack(false);
@@ -97,7 +98,12 @@ void Level04::Initialize()
 	//_hazard->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
 	//_scene->AddSceneObject(_hazard);
 
+	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new Level03MotionEffects());
 	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
+
+	_levelState = TurboGameLevelState::Running;
+
+	//_player->PlaySound(1);
 }
 
 void Level04::Update(NavigationInfo navInfo)
@@ -107,6 +113,7 @@ void Level04::Update(NavigationInfo navInfo)
 
 	//  Update player
 	_player->Update(navInfo);
+	_motionEffects->ProcessMotionEffects(navInfo, _player, true);
 
 	//  Update NPC's and obstacles
 	if (_key != nullptr)
@@ -122,6 +129,9 @@ void Level04::Update(NavigationInfo navInfo)
 			_key = nullptr;
 			_scene = BuildScene(_maze);
 			_sceneChanged = true;
+
+			_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Key")));
+			_player->PlaySound(1);
 		}
 	}
 
@@ -134,18 +144,21 @@ void Level04::Update(NavigationInfo navInfo)
 		//_hazard->Update(hazardNavInfo);
 		_hazard->Placement()->Rotate(_hazard->Placement()->AngularVelocity() * hazardNavInfo.DeltaTime);
 		_hazard->Placement()->Velocity(_hazard->Placement()->Velocity().Normalize());
-		_objectInteractions->ProcessObjectInteractions(hazardNavInfo, _hazard, &portalIndex);
+		_objectInteractions->ProcessObjectInteractions(hazardNavInfo, _hazard, &portalIndex, false);
 
 		TurboVector3D hazardPosition = _hazard->Placement()->Position();
 		TurboVector3D playerPosition = _player->Placement()->Position();
 		if ((hazardPosition - playerPosition).Length() < 0.25)
 		{
 			_levelState = TurboGameLevelState::Failed;
+
+			_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Fail")));
+			_player->PlaySound(1);
 		}
 	}
 
 	//  Check for collisions
-	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex, true);
 
 	if (portalIndex > 0)
 	{
@@ -177,6 +190,7 @@ std::shared_ptr<ITurboScene> Level04::BuildScene(std::shared_ptr<CubicMaze> cubi
 	}
 
 	std::shared_ptr<ITurboScene> scene = _sceneBuilder->BuildScene(cubicMaze);
+	scene->AddSceneObject(_player);
 
 	//	This is easier for now.
 	scene->LightHack(false);
@@ -187,14 +201,17 @@ std::shared_ptr<ITurboScene> Level04::BuildScene(std::shared_ptr<CubicMaze> cubi
 			std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
 			std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Key"))));
 		_key->Placement()->Move(2, -4, -2);
+		//_key->Placement()->Move(2, 0, 0);
 		_key->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
 		scene->AddSceneObject(_key);
 
 		cubicMaze->Cell(0, 0, 2)->LeftWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Text01")));
+		cubicMaze->Cell(0, 0, 2)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked")));
 	}
 	else
 	{
 		cubicMaze->Cell(0, 0, 2)->LeftWall.SceneObject->Material(std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level04Text02")));
+		cubicMaze->Cell(0, 0, 2)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
 	}
 
 	if (_drawHazard)

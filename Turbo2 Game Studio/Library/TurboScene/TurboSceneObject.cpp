@@ -35,4 +35,13 @@ bool Turbo::Scene::TurboSceneObject::IsTouching(TurboVector3D oldPosition, Turbo
 	return false;
 }
 
+void Turbo::Scene::TurboSceneObject::PlaySound(float volume)
+{
+	if (_hitSound != nullptr)
+	{
+		_hitSound->Volume(volume);
+		_hitSound->PlaySound(true);
+	}
+}
+
 //  ITurboSceneObject Methods ------------------------------------------------------------------------------------------

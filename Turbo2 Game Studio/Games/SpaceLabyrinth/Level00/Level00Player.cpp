@@ -5,31 +5,31 @@
 #include <ITurboScenePlacement.h>
 #include <TurboScenePlacement.h>
 
-#include <OriginalPlayer.h>
+#include <Level00Player.h>
 
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-OriginalPlayer::OriginalPlayer()
+Level00Player::Level00Player()
 {
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
-void OriginalPlayer::Update(NavigationInfo navInfo)
+void Level00Player::Update(NavigationInfo navInfo)
 {
 	const double cMoveAccelleration = 2.0f;
 	const double cRotateAccelleration = 45.0f;
 	const double cFrictionFactor = 2.0f;
 
-	const double cHoverFrequency = 2.0f;
-	const double cHoverMagnitude = 0.05f;
-	const double cGravityFactor = 0.0f;
-	const double cSelfRightingSpeed = 0.0f;
+//	const double cHoverFrequency = 2.0f;
+//	const double cHoverMagnitude = 0.05f;
+//	const double cGravityFactor = 0.0f;
+//	const double cSelfRightingSpeed = 0.0f;
 
-//	const double cHoverFrequency = 0.0f;
-//	const double cHoverMagnitude = 0.0f;
-//	const double cGravityFactor = 9.8f;
-//	const double cSelfRightingSpeed = 3000.0f;
+	const double cHoverFrequency = 0.0f;
+	const double cHoverMagnitude = 0.0f;
+	const double cGravityFactor = 9.8f;
+	const double cSelfRightingSpeed = 3000.0f;
 
 	double deltaTime = navInfo.DeltaTime;
 	double time = navInfo.Time;
@@ -38,6 +38,7 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 
 	TurboVector3D velocity = _placement->Velocity();
 
+/*
 	//	If no movement inputs, slow down, hover, and fall (if enabled).
 	if (!(navInfo.MoveLeft ||
 		navInfo.MoveRight ||
@@ -55,6 +56,7 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 
 	//  gravity
 	velocity.Y -= deltaTime * cGravityFactor;
+*/
 
 	//	Handle keyboard movement inputs.
 	if (navInfo.MoveLeft)	velocity -= _placement->Right() * moveSpeed;
@@ -70,6 +72,7 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 
+/*
 	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
 	if (!(navInfo.Pointer ||
 		navInfo.PitchFore ||
@@ -86,6 +89,7 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 		angularVelocity.X = _placement->Back().Y * cSelfRightingSpeed * deltaTime;
 		angularVelocity.Z = -_placement->Right().Y * cSelfRightingSpeed * deltaTime;
 	}
+*/
 
 	//	Handle mouse direction inputs
 	if (navInfo.Pointer && _lastNavInfo.Pointer)
@@ -97,8 +101,6 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 		angularVelocity.Y = -dx / deltaTime;
 	}
 
-	_lastNavInfo = navInfo;
-
 	//	Handle keyboard direction inputs.
 	if (navInfo.PitchFore)	angularVelocity.X -= rotateSpeed;
 	if (navInfo.PitchBack)	angularVelocity.X += rotateSpeed;
@@ -108,9 +110,11 @@ void OriginalPlayer::Update(NavigationInfo navInfo)
 	if (navInfo.RollLeft)	angularVelocity.Z += rotateSpeed;
 
 	_placement->AngularVelocity(angularVelocity);
+
+	_lastNavInfo = navInfo;
 }
 
-void OriginalPlayer::PlaySound(float volume)
+void Level00Player::PlaySound(float volume)
 {
 	if (_hitSound != nullptr)
 	{

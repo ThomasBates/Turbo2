@@ -1,40 +1,26 @@
 
+#pragma once
+
 #include <pch.h>
+#include <TurboGameMotionEffects.h>
 
-#include <ITurboSceneObject.h>
-#include <ITurboScenePlacement.h>
-#include <TurboScenePlacement.h>
+using namespace Turbo::Game;
 
-#include <Level0Player.h>
+//  Constructors & Destructors -----------------------------------------------------------------------------------------
 
-using namespace Turbo::Math;
-using namespace Turbo::Scene;
+//  ITurboGameState Properties -----------------------------------------------------------------------------------------
 
-Level0Player::Level0Player()
+//  ITurboGameState Methods --------------------------------------------------------------------------------------------
+
+void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
 {
-	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
-}
-
-void Level0Player::Update(NavigationInfo navInfo)
-{
-	const double cMoveAccelleration = 2.0f;
-	const double cRotateAccelleration = 45.0f;
-	const double cFrictionFactor = 2.0f;
-
-	//const double cHoverFrequency = 2.0f;
-	//const double cHoverMagnitude = 0.05f;
-	//const double cGravityFactor = 0.0f;
-	//const double cSelfRightingSpeed = 0.0f;
-
-	const double cHoverFrequency = 0.0f;
-	const double cHoverMagnitude = 0.0f;
-	const double cGravityFactor = 9.8f;
-	const double cSelfRightingSpeed = 3000.0f;
 
 	double deltaTime = navInfo.DeltaTime;
 	double time = navInfo.Time;
 
-	double moveSpeed = cMoveAccelleration * deltaTime;
+	double moveSpeed = _moveAccelleration * deltaTime;
+
+	std::shared_ptr<ITurboScenePlacement> _placement = sceneObject->Placement();
 
 	TurboVector3D velocity = _placement->Velocity();
 
@@ -47,15 +33,16 @@ void Level0Player::Update(NavigationInfo navInfo)
 		navInfo.MoveBack))
 	{
 		//  air friction decay
-		velocity -= velocity * cFrictionFactor * deltaTime;
+		velocity -= velocity * _frictionFactor * deltaTime;
 
 		//  hover
-		velocity += _placement->Up() * cos(time * cHoverFrequency) * cHoverMagnitude * deltaTime;
+		velocity += _placement->Up() * cos(time * _hoverFrequency) * _hoverMagnitude * deltaTime;
 	}
 
 	//  gravity
-	velocity.Y -= deltaTime * cGravityFactor;
+	velocity.Y -= deltaTime * _gravityFactor;
 
+/*
 	//	Handle keyboard movement inputs.
 	if (navInfo.MoveLeft)	velocity -= _placement->Right() * moveSpeed;
 	if (navInfo.MoveRight)	velocity += _placement->Right() * moveSpeed;
@@ -63,11 +50,10 @@ void Level0Player::Update(NavigationInfo navInfo)
 	if (navInfo.MoveUp)		velocity += _placement->Up()    * moveSpeed;
 	if (navInfo.MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo.MoveBack)	velocity += _placement->Back()  * moveSpeed;
-	//if (navInfo.Pointer)	velocity -= _placement->Back()  * moveSpeed;
-
+*/
 	_placement->Velocity(velocity);
 
-	double rotateSpeed = cRotateAccelleration * deltaTime;
+	double rotateSpeed = _rotateAccelleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 
@@ -84,10 +70,11 @@ void Level0Player::Update(NavigationInfo navInfo)
 		angularVelocity -= angularVelocity * 1.0f * deltaTime;
 
 		//  self-righting
-		angularVelocity.X = _placement->Back().Y * cSelfRightingSpeed * deltaTime;
-		angularVelocity.Z = -_placement->Right().Y * cSelfRightingSpeed * deltaTime;
+		angularVelocity.X = _placement->Back().Y * _selfRightingSpeed * deltaTime;
+		angularVelocity.Z = -_placement->Right().Y * _selfRightingSpeed * deltaTime;
 	}
 
+/*
 	//	Handle mouse direction inputs
 	if (navInfo.Pointer && _lastNavInfo.Pointer)
 	{
@@ -98,8 +85,6 @@ void Level0Player::Update(NavigationInfo navInfo)
 		angularVelocity.Y = -dx / deltaTime;
 	}
 
-	_lastNavInfo = navInfo;
-
 	//	Handle keyboard direction inputs.
 	if (navInfo.PitchFore)	angularVelocity.X -= rotateSpeed;
 	if (navInfo.PitchBack)	angularVelocity.X += rotateSpeed;
@@ -107,6 +92,9 @@ void Level0Player::Update(NavigationInfo navInfo)
 	if (navInfo.YawLeft)	angularVelocity.Y += rotateSpeed;
 	if (navInfo.RollRight)	angularVelocity.Z -= rotateSpeed;
 	if (navInfo.RollLeft)	angularVelocity.Z += rotateSpeed;
+*/
 
 	_placement->AngularVelocity(angularVelocity);
+
+	_lastNavInfo = navInfo;
 }

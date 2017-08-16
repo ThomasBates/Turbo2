@@ -1,11 +1,11 @@
 
 #include <pch.h>
 
-#include <Level0CubicMazeFactory.h>
+#include <Level00CubicMazeFactory.h>
 
 //  ICubicMazeFactory Methods ------------------------------------------------------------------------------------------
 
-std::shared_ptr<CubicMaze> Level0CubicMazeFactory::MakeMaze(int width, int height, int depth)
+std::shared_ptr<CubicMaze> Level00CubicMazeFactory::MakeMaze(int width, int height, int depth)
 {
 	std::shared_ptr<CubicMaze> cubicMaze = std::shared_ptr<CubicMaze>(new CubicMaze(8, 3, 8));
 	CubicMazeLocation	size = cubicMaze->Size();

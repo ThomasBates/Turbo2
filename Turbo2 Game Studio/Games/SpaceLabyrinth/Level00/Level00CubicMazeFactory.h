@@ -3,7 +3,7 @@
 
 #include <ICubicMazeFactory.h>
 
-class Level0CubicMazeFactory: public ICubicMazeFactory
+class Level00CubicMazeFactory: public ICubicMazeFactory
 {
 public:
 	//	ICubicMazeFactory Methods --------------------------------------------------------------------------------------

@@ -5,9 +5,12 @@
 #include <Windows10DebugFileLogger.h>
 
 #include <DirectX12Renderer.h>
+#include <XAudio2Audio.h>
+#include <XAudio2AudioTest.h>
 
 #include <Windows10GameApplication.h>
 #include <Windows10IOService.h>
+#include <Windows10Audio.h>
 #include <Windows10Platform.h>
 
 #include <SpaceLabyrinth.h>
@@ -28,7 +31,8 @@ int main(Platform::Array<Platform::String^>^)
 	
 	std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new Windows10IOService(debug));
 	std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new DirectX12Renderer(debug, ioService));
-	std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new Windows10GameApplication(debug, ioService, renderer));
+	std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new XAudio2Audio(debug, ioService));
+	std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new Windows10GameApplication(debug, ioService, renderer, audio));
 
 	std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new SpaceLabyrinth(debug));
 

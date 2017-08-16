@@ -38,6 +38,7 @@ public:
 
 private:
 	std::shared_ptr<ITurboDebug>		_debug;
+	std::shared_ptr<ITurboSceneObject>	_player;
 	std::shared_ptr<ITurboGameLevel>	_level = nullptr;
 	bool								_sceneChanged = false;
 	TurboGameLevelState					_levelState;

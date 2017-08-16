@@ -3,12 +3,13 @@
 
 #include <CubicMazeSceneBuilder.h>
 #include <CubicMazeFactory.h>
-#include <Level03.h>
-#include <Level0Player.h>
+#include <Level02.h>
+#include <Level02MotionEffects.h>
 #include <OriginalPlayer.h>
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
 #include <TurboScenePointLight.h>
+#include <TurboSceneSoundEffect.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -16,14 +17,14 @@ using namespace Turbo::Scene;
 
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 
-std::shared_ptr<ITurboGameState> Level03::GameState()
+std::shared_ptr<ITurboGameState> Level02::GameState()
 {
 	std::shared_ptr<ITurboGameState> gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
 	gameState->SaveString("LevelInfo", "level info");
 	return gameState;
 }
 
-void Level03::GameState(std::shared_ptr<ITurboGameState> gameState)
+void Level02::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
 	gameState->LoadString("LevelInfo");
 }
@@ -31,16 +32,22 @@ void Level03::GameState(std::shared_ptr<ITurboGameState> gameState)
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 
-void Level03::Initialize()
+void Level02::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Cube));
+	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Layered));
 	_maze = mazeFactory->MakeMaze(3, 3, 3);
 
+	//	Create the passages between layers.
+	_maze->Cell(2, 0, 0)->BottomWall.Type = None;
+	_maze->Cell(2, 1, 0)->TopWall.Type = None;
+	_maze->Cell(0, 1, 2)->BottomWall.Type = None;
+	_maze->Cell(0, 2, 2)->TopWall.Type = None;
+
 	//	Create the exit.
-	_maze->Cell(2, 2, 2)->FrontWall.Type = EntranceBack;
-	_maze->Cell(0, 0, 0)->LeftWall.Type = Exit;
-	_maze->Cell(0, 0, 0)->LeftWall.PortalIndex = 1;
+	_maze->Cell(0, 0, 2)->LeftWall.Type = EntranceBack;
+	_maze->Cell(2, 2, 0)->BackWall.Type = Exit;
+	_maze->Cell(2, 2, 0)->BackWall.PortalIndex = 1;
 
 
 	//	Create materials.
@@ -68,10 +75,13 @@ void Level03::Initialize()
 		entranceMaterial, entranceLockedMaterial, entranceBackMaterial,
 		exitMaterial, exitLockedMaterial, exitBackMaterial));
 	_scene = sceneBuilder->BuildScene(_maze);
+	_scene->AddSceneObject(_player);
+
+	_maze->Cell(2, 2, 0)->BackWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
 
 	//  Create the player
-	_player = std::shared_ptr<ITurboSceneObject>(new OriginalPlayer());
-	_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
+	//_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance")));
 
 	//	This is easier for now.
 	_scene->LightHack(false);
@@ -84,22 +94,26 @@ void Level03::Initialize()
 
 	//LoadLevel();
 
+	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new Level02MotionEffects(_maze));
 	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
+
+	//_player->PlaySound(1);
 }
 
-void Level03::Update(NavigationInfo navInfo)
+void Level02::Update(NavigationInfo navInfo)
 {
 	_sceneChanged = false;
 
 	//  Update player
 	_player->Update(navInfo);
+	_motionEffects->ProcessMotionEffects(navInfo, _player, true);
 
 	//  Update NPC's and obstacles
 	//  ...
 
 	//  Check for collisions
 	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex, true);
 
 	if (portalIndex > 0)
 	{

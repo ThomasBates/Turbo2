@@ -31,6 +31,8 @@ public:
 
 private:
 
+	std::shared_ptr<ITurboSceneSoundEffect> _defaultSound;
+
 	std::shared_ptr<ITurboSceneMaterial> _cornerMaterial;
 	std::shared_ptr<ITurboSceneMaterial> _edgeMaterial;
 

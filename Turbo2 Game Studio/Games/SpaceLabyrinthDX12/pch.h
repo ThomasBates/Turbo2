@@ -20,3 +20,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <xaudio2.h>
+#include <xaudio2fx.h>
+#include <mfapi.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+#include <minwinbase.h>

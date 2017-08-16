@@ -1,5 +1,7 @@
 #include <pch.h>
+
 #include <Windows10IOService.h>
+#include <Windows10Helpers.h>
 
 using namespace Concurrency;
 using namespace Microsoft::WRL;
@@ -9,26 +11,25 @@ using namespace Windows::Storage;
 using namespace Windows::Storage::Streams;
 
 using namespace Turbo::Core::Debug;
+using namespace Turbo::Platform::Windows10;
 
-Turbo::Platform::Windows10::Windows10IOService::Windows10IOService(std::shared_ptr<ITurboDebug> debug) :
+Windows10IOService::Windows10IOService(std::shared_ptr<ITurboDebug> debug) :
 	_debug(debug)
 {
 }
 
-void Turbo::Platform::Windows10::Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> programState)
+void Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> programState)
 {
 }
 
-std::shared_ptr<ITurboGameState> Turbo::Platform::Windows10::Windows10IOService::LoadGameState()
+std::shared_ptr<ITurboGameState> Windows10IOService::LoadGameState()
 {
 	return std::shared_ptr<ITurboGameState>();
 }
 
-std::vector<byte> Turbo::Platform::Windows10::Windows10IOService::ReadData(const std::wstring &filename)
+std::vector<byte> Windows10IOService::ReadData(const std::wstring &filename)
 {
-	LPCWSTR filename2 = filename.c_str();
-	std::wstring fullPath = GetFullPath(filename2);
-	LPCWSTR fullFileName = fullPath.c_str();
+	std::wstring fullPath = GetFullPath(filename);
 
 	CREATEFILE2_EXTENDED_PARAMETERS extendedParams = {};
 	extendedParams.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
@@ -40,7 +41,7 @@ std::vector<byte> Turbo::Platform::Windows10::Windows10IOService::ReadData(const
 
 	Wrappers::FileHandle file(
 		CreateFile2(
-			fullFileName, 
+			fullPath.c_str(),
 			GENERIC_READ, 
 			FILE_SHARE_READ, 
 			OPEN_EXISTING, 
@@ -81,12 +82,12 @@ std::vector<byte> Turbo::Platform::Windows10::Windows10IOService::ReadData(const
 	return outputBuffer;
 }
 
-uint32 Turbo::Platform::Windows10::Windows10IOService::WriteData(const std::wstring &filename, std::vector<byte> fileData)
+uint32 Windows10IOService::WriteData(const std::wstring &filename, std::vector<byte> fileData)
 {
 	return 0;
 }
 
-task<std::vector<byte>> Turbo::Platform::Windows10::Windows10IOService::ReadDataAsync(const std::wstring &filename)
+task<std::vector<byte>> Windows10IOService::ReadDataAsync(const std::wstring &filename)
 {
 	auto folder = Package::Current->InstalledLocation;
 
@@ -102,13 +103,12 @@ task<std::vector<byte>> Turbo::Platform::Windows10::Windows10IOService::ReadData
 	});
 }
 
-task<uint32> Turbo::Platform::Windows10::Windows10IOService::WriteDataAsync(const std::wstring &filename, std::vector<byte> fileData)
+task<uint32> Windows10IOService::WriteDataAsync(const std::wstring &filename, std::vector<byte> fileData)
 {
 	return task<uint32>();
 }
 
-
-std::wstring Turbo::Platform::Windows10::Windows10IOService::GetFullPath(LPCWSTR filename)
+std::wstring Windows10IOService::GetFullPath(std::wstring filename)
 {
 	WCHAR path[512];
 	UINT pathSize = _countof(path);
