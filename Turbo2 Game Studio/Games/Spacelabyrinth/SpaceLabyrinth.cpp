@@ -12,7 +12,9 @@
 //	2017-06-07
 //	TODO:	GameState.
 //	TODO:	Object interaction at edges with no walls.
-//	TODO:	All lighted first time through. Then dark. Then hazards.
+//	TODO:	On gravity levels, keep player upright. (Rotate around level z-axis, not player z-axis.)
+//	TODO:	Interact with "menu" items (Cross-hairs and select button or something similar.)
+//	TODO:	Inverted mouse control.
 //	TODO:	Lights implemented properly.
 
 //	DONE:
@@ -29,10 +31,69 @@
 //	2017-07-11:	Key(s) to unlock exit in level 0-4.
 //	2017-07-12:	Hazard(s) in level 0-4
 //	2017-08-16:	Sound effects.
+//	2017-08-31:	Game Order (e.g. All lighted first time through. Then keys, Then hazards. Then dark. etc.)
+
+
+/*	Game Order (e.g. All lighted first time through. Then dark. Then hazards. etc.)
+	Notes
+	-	possible variations from one "level" to the next:
+		-	no gravity on all sublevels, and main level.
+		-	different textures.
+		-	keys on all sublevels.
+		-	hazards on all sublevels.
+		-	multiple hazards on sublevels.
+		-	lights out in sublevels and main level.
+		-	still keys, then moving keys.
+		-	still hazards, then moving hazards.
+		-	larger mazes.
+
+	-	future development
+		-	paint
+		-	bombs
+		-	smart keys
+		-	smart hazards
+		-	timers
+		-	HUD?
+
+	Round 1	- white walls
+			- gravity in main level and sublevels 1 and 2, not 3 and 4.
+			- no keys.
+			- no hazards.
+			- lights on.
+
+	Round 2 + castle walls
+			+ no gravity
+			+ static keys
+			- no hazards
+			- lights on
+
+	Round 3	- castle walls
+			- no gravity
+			+ moving keys
+			+ static hazards
+			- lights on
+
+	Round 4	- castle walls
+			- no gravity
+			+ moving keys
+			+ moving hazards
+			+ lights off
+
+	Round 5	- other walls?
+			- no gravity
+			- moving keys
+			- moving hazards
+			- lights off
+			+ 4x4x4 mazes.
+
+	Round 6	- wall panels to choose options?
+*/
 
 
 //	https://docs.microsoft.com/en-us/windows/uwp/gaming/
-//	
+
+//	Terminal 26 - THE POWER FOR GAME DEVELOPERS WITH LOW POLY 3D MODELS AND TEXTURES
+//	http://www.terminal26.de/e_index.php
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -79,12 +140,7 @@ std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
 
 std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
 {
-	if (_level == nullptr)
-	{
-		return nullptr;
-	}
-
-	return _level->Player();
+	return _player;
 }
 
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------

@@ -86,7 +86,8 @@ void XAudio2Audio::CreateDeviceDependentResources()
 
 void XAudio2Audio::ReleaseSceneResources()
 {
-
+	_sceneSoundEffectFormat.clear();
+	_sceneSoundEffectBuffer.clear();
 }
 
 //	Scene Sound Effect Resources ---------------------------------------------------------------------------------------
@@ -97,9 +98,6 @@ void XAudio2Audio::CreateSceneSoundEffectResources(std::shared_ptr<ITurboScene> 
 	{
 		return;
 	}
-
-	//	Prepare data structures.
-	_sceneSoundEffectResources.clear();
 
 	auto sceneObjects = scene->SceneObjects();
 
@@ -131,16 +129,16 @@ void XAudio2Audio::LoadSceneObjectSoundEffects(std::shared_ptr<ITurboSceneObject
 
 	std::string soundName = hitSound->Name();
 
+	LoadSoundEffectData(soundName);
+}
+
+bool XAudio2Audio::LoadSoundEffectData(std::string soundName)
+{
 	//  Already loaded this texture? don't reload it.
-	if (_sceneSoundEffectOffsets.find(soundName) != _sceneSoundEffectOffsets.end())
+	if (_sceneSoundEffectFormat.find(soundName) != _sceneSoundEffectFormat.end())
 	{
-		return;
+		return true;
 	}
-
-	int soundEffectOffset = _sceneSoundEffectOffsets.size();
-	_sceneSoundEffectOffsets[soundName] = soundEffectOffset;
-
-	std::vector<unsigned char> soundData;
 
 	//	How to: Load Audio Data Files in XAudio2
 	//	https://msdn.microsoft.com/library/windows/desktop/ee415781
@@ -152,18 +150,9 @@ void XAudio2Audio::LoadSceneObjectSoundEffects(std::shared_ptr<ITurboSceneObject
 	WAVEFORMATEXTENSIBLE* pFormat = &_sceneSoundEffectFormat[soundName];
 	XAUDIO2_BUFFER*       pBuffer = &_sceneSoundEffectBuffer[soundName];
 
-	LoadSoundEffectData(soundName, pFormat, pBuffer);
-}
-
-bool XAudio2Audio::LoadSoundEffectData(std::string soundName, WAVEFORMATEXTENSIBLE* pFormat, XAUDIO2_BUFFER* pBuffer)
-{
-	//std::vector<byte> fileData = _ioService->ReadData(ToWString(soundName + ".wav"));
+	//	2.	Open the audio file with CreateFile. 
 	std::wstring fileName = _ioService->GetFullPath(ToWString(soundName + ".wav"));
 
-	//	How to: Load Audio Data Files in XAudio2
-	//	https://msdn.microsoft.com/library/windows/desktop/ee415781
-
-	//	2.	Open the audio file with CreateFile. 
 	CREATEFILE2_EXTENDED_PARAMETERS extendedParams = {};
 	extendedParams.dwSize = sizeof(CREATEFILE2_EXTENDED_PARAMETERS);
 	extendedParams.dwFileAttributes = FILE_ATTRIBUTE_NORMAL;
@@ -278,8 +267,10 @@ void XAudio2Audio::PlaySceneObjectSoundEffects(std::shared_ptr<ITurboSceneObject
 	
 	std::string soundName = sound->Name();
 
+	LoadSoundEffectData(soundName);
+
 	//	sound name not found?
-	if (_sceneSoundEffectOffsets.find(soundName) == _sceneSoundEffectOffsets.end())
+	if (_sceneSoundEffectFormat.find(soundName) == _sceneSoundEffectFormat.end())
 	{
 		return;
 	}

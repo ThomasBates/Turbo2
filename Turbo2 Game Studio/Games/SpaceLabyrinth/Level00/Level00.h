@@ -3,6 +3,7 @@
 
 #include <pch.h>
 
+#include <ICubicMazeFactory.h>
 #include <ICubicMazeSceneBuilder.h>
 #include <ITurboDebug.h>
 #include <ITurboGameLevel.h>
@@ -10,6 +11,8 @@
 #include <ITurboSceneBuilder.h>
 
 #include <CubicMazeObjectInteractions.h>
+#include <Level00Helper.h>
+#include <Level00Types.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -21,11 +24,7 @@ class Level00 : public ITurboGameLevel
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	Level00(std::shared_ptr<ITurboDebug> debug,
-			std::shared_ptr<ITurboSceneObject> player) :
-		_debug(debug),
-		_player(player)
-	{
-	}
+		std::shared_ptr<ITurboSceneObject> player);
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Intro Level"; }
@@ -56,20 +55,23 @@ private:
 	TurboGameLevelState					_levelState;
 	bool								_sceneChanged;
 
-	std::shared_ptr<ICubicMazeSceneBuilder> _sceneBuilder;
-	std::shared_ptr<ITurboGameMotionEffects> _motionEffects;
-	std::shared_ptr<CubicMazeObjectInteractions> _objectInteractions;
+	std::shared_ptr<ICubicMazeFactory>				_mazeFactory;
+	std::shared_ptr<ICubicMazeSceneBuilder>			_sceneBuilder;
+	std::shared_ptr<ICubicMazeSceneBuilder>			_previewSceneBuilder;
+	std::shared_ptr<ITurboGameMotionEffects>		_motionEffects;
+	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
+	std::shared_ptr<Level00Helper>					_helper;
+	Level00MazeOptions								_mazeOptions;
+	Level00MazeOptions								_previewMazeOptions;
+	Level00UserOptions								_userOptions;
 
 	bool	_level01Unlocked = true;
 	bool	_level02Unlocked = false;
 	bool	_level03Unlocked = false;
 	bool	_level04Unlocked = false;
 
-	int		_pointer;
-	int		_pointerX;
-	int		_pointerY;
-
 	//	Local Methods --------------------------------------------------------------------------------------------------
-	std::shared_ptr<ITurboScene> BuildScene(std::shared_ptr<CubicMaze> cubicMaze);
+	void UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBuilder, Level00MazeOptions* mazeOptions);
+	void BuildScene();
 };
 

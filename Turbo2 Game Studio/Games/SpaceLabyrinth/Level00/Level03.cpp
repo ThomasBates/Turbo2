@@ -1,20 +1,43 @@
 
 #include <pch.h>
 
-#include <CubicMazeSceneBuilder.h>
-#include <CubicMazeFactory.h>
 #include <Level03.h>
-#include <Level03MotionEffects.h>
-#include <OriginalPlayer.h>
+
+#include <ICubicMazeSceneBuilder.h>
+#include <CubicMazeCornerMesh.h>
+#include <CubicMazeFactory.h>
+#include <CubicMazeMotionEffects_WithoutGravity.h>
+#include <CubicMazeObjectInteractions.h>
+#include <CubicMazeSceneObject.h>
+
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
-#include <TurboScenePointLight.h>
 #include <TurboSceneSoundEffect.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
+//	Constructors and Destructors ---------------------------------------------------------------------------------------
+
+Level03::Level03(
+	std::shared_ptr<ITurboDebug> debug,
+	std::shared_ptr<ITurboSceneObject> player,
+	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
+	Level00MazeOptions mazeOptions,
+	Level00UserOptions userOptions) :
+	_debug(debug),
+	_player(player),
+	_sceneBuilder(sceneBuilder),
+	_mazeOptions(mazeOptions),
+	_userOptions(userOptions),
+	_levelState(TurboGameLevelState::Initializing)
+{
+	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(CubicMazeType::Cube));
+	_objectInteractions = std::shared_ptr<ICubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug));
+}
+
+//	Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 
 std::shared_ptr<ITurboGameState> Level03::GameState()
@@ -35,89 +58,75 @@ void Level03::GameState(std::shared_ptr<ITurboGameState> gameState)
 void Level03::Initialize()
 {
 	//	Create the maze.
-	std::shared_ptr<ICubicMazeFactory> mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(Cube));
-	_maze = mazeFactory->MakeMaze(3, 3, 3);
+	_maze = _mazeFactory->MakeMaze(_mazeOptions.MazeSize, _mazeOptions.MazeSize, _mazeOptions.MazeSize);
+	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new CubicMazeMotionEffects_WithoutGravity());
+
+	_helper = std::shared_ptr<Level00Helper>(new Level00Helper(
+		_player, _maze, _motionEffects, _sceneBuilder, _objectInteractions,
+		&_mazeOptions, &_keys, &_hazards));
+
 
 	//	Create the exit.
-	_maze->Cell(2, 2, 2)->FrontWall.Type = EntranceBack;
-	_maze->Cell(0, 0, 0)->LeftWall.Type = Exit;
-	_maze->Cell(0, 0, 0)->LeftWall.PortalIndex = 1;
+	_entranceLocation = CubicMazeLocation(2, 2, 2);
+	_exitLocation = CubicMazeLocation(0, 0, 0);
+
+	_maze->Cell(_entranceLocation)->FrontWall.Type = EntranceBack;
 
 
-	//	Create materials.
-	std::shared_ptr<ITurboSceneMaterial> cornerMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Corner"));
-	std::shared_ptr<ITurboSceneMaterial> edgeMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Edge"));
-
-	std::shared_ptr<ITurboSceneMaterial> wallMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Wall"));
-	std::shared_ptr<ITurboSceneMaterial> floorMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Floor"));
-	std::shared_ptr<ITurboSceneMaterial> ceilingMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Ceiling"));
-
-	std::shared_ptr<ITurboSceneMaterial> entranceMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Entrance"));
-	std::shared_ptr<ITurboSceneMaterial> entranceLockedMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00EntranceLocked"));
-	std::shared_ptr<ITurboSceneMaterial> entranceBackMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00EntranceBack"));
-
-	std::shared_ptr<ITurboSceneMaterial> exitMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00Exit"));
-	std::shared_ptr<ITurboSceneMaterial> exitLockedMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00ExitLocked"));
-	std::shared_ptr<ITurboSceneMaterial> exitBackMaterial = std::shared_ptr<ITurboSceneMaterial>(new TurboSceneMaterial("Level00ExitBack"));
+	//	Create NPC's and obstacles
+	CubicMazeLocation firstKeyLocation = CubicMazeLocation(0, _mazeOptions.MazeSize - 1, 0);
+	_helper->CreateKeys(&firstKeyLocation, "Key");
+	_helper->CreateHazards(&_exitLocation, "Hazard");
 
 
 	//	Build the scene.
-	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder(
-		cornerMaterial, edgeMaterial,
-		wallMaterial, wallMaterial, wallMaterial, wallMaterial,
-		floorMaterial, ceilingMaterial,
-		entranceMaterial, entranceLockedMaterial, entranceBackMaterial,
-		exitMaterial, exitLockedMaterial, exitBackMaterial));
-	_scene = sceneBuilder->BuildScene(_maze);
-	_scene->AddSceneObject(_player);
+	BuildScene();
 
-	_maze->Cell(0, 0, 0)->LeftWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
-
-	//  Create the player
-	//_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboScenePointLight(TurboVector3D(0, 0, 0), TurboColor(1, 1, 1), 1, 1, 1)));
-	//_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance")));
-
-	//	This is easier for now.
-	_scene->LightHack(false);
-
-	//	set player Placement as camera Placement.
-	_scene->CameraPlacement(_player->Placement());
-
-	//  Create NPC's and obstacles ...
-	//  ...
-
-	//LoadLevel();
-
-	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new Level03MotionEffects());
-	_objectInteractions = std::shared_ptr<CubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug, _maze, 0.25, 0.25, 0.25));
-
-	//_player->PlaySound(1);
+	_levelState = TurboGameLevelState::Running;
 }
 
 void Level03::Update(NavigationInfo navInfo)
 {
 	_sceneChanged = false;
 
-	//  Update player
-	_player->Update(navInfo);
-	_motionEffects->ProcessMotionEffects(navInfo, _player, true);
+	bool rebuildScene = _helper->Update(&navInfo, &_levelState);
 
-	//  Update NPC's and obstacles
-	//  ...
-
-	//  Check for collisions
-	int portalIndex;
-	_objectInteractions->ProcessObjectInteractions(navInfo, _player, &portalIndex, true);
-
-	if (portalIndex > 0)
+	if (rebuildScene)
 	{
-		if (portalIndex == 1)
-		{
-			_levelState = TurboGameLevelState::Completed;
-		}
+		BuildScene();
 	}
-
-	_scene->CameraPlacement(_player->Placement());
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
+//  Local Methods ------------------------------------------------------------------------------------------------------
+
+void Level03::BuildScene()
+{
+	bool exitLocked = _keys.size() > _mazeOptions.KeyCount - _mazeOptions.RequiredKeyCount;
+
+	if (exitLocked)
+	{
+		_maze->Cell(_exitLocation)->LeftWall.Type = ExitLocked;
+		_maze->Cell(_exitLocation)->LeftWall.PortalIndex = 0;
+	}
+	else
+	{
+		_maze->Cell(_exitLocation)->LeftWall.Type = Exit;
+		_maze->Cell(_exitLocation)->LeftWall.PortalIndex = 1;
+	}
+
+	_scene = _helper->BuildScene();
+
+	if (exitLocked)
+	{
+		_maze->Cell(_exitLocation)->LeftWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked")));
+	}
+	else
+	{
+		_maze->Cell(_exitLocation)->LeftWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
+	}
+
+	_sceneChanged = true;
+}
+
+//  Local Methods ------------------------------------------------------------------------------------------------------

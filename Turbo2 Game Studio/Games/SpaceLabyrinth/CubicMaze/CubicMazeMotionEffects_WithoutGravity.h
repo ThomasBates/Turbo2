@@ -8,11 +8,11 @@ namespace Turbo
 {
 	namespace Game
 	{
-		class Level03MotionEffects : public ITurboGameMotionEffects
+		class CubicMazeMotionEffects_WithoutGravity : public ITurboGameMotionEffects
 		{
 		public:
 			//  Constructors & Destructors -----------------------------------------------------------------------------
-			Level03MotionEffects();
+			CubicMazeMotionEffects_WithoutGravity();
 
 			//  ITurboGameMotionEffects Properties ---------------------------------------------------------------------
 

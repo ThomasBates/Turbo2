@@ -4,6 +4,7 @@
 #include <pch.h>
 
 #include <CubicMaze.h>
+#include <ICubicMazeObjectInteractions.h>
 #include <ITurboDebug.h>
 #include <ITurboGameLevel.h>
 #include <ITurboSceneBuilder.h>
@@ -13,21 +14,32 @@ using namespace Turbo::Game;
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-class CubicMazeObjectInteractions
+struct InputArguments
+{
+	std::shared_ptr<CubicMaze> maze;
+	std::shared_ptr<ITurboSceneObject> sceneObject;
+	bool isPlayer;
+	TurboVector3D fromPoint;
+	TurboVector3D toPoint;
+	CubicMazeLocation location;
+	CubicMazeCellWall cellWall;
+};
+
+struct OutputArguments
+{
+	int portalIndex;
+	bool isLeaving;
+	bool isTouching;
+	TurboVector3D contact;
+	TurboVector3D normal;
+};
+
+class CubicMazeObjectInteractions : public ICubicMazeObjectInteractions
 {
 public:
 	//	Constructors ---------------------------------------------------------------------------------------------------
-	CubicMazeObjectInteractions(
-		std::shared_ptr<ITurboDebug> debug,
-		std::shared_ptr<CubicMaze> maze,
-		double hBuffer,
-		double vBuffer,
-		double bounciness) :
-		_debug(debug),
-		_maze(maze),
-		_hBuffer(hBuffer),
-		_vBuffer(vBuffer),
-		_bounciness(bounciness)
+	CubicMazeObjectInteractions(std::shared_ptr<ITurboDebug> debug) :
+		_debug(debug)
 	{
 	}
 
@@ -35,26 +47,37 @@ public:
 
 
 	//	Methods --------------------------------------------------------------------------------------------------------
-	void ProcessObjectInteractions(
+	virtual void ProcessObjectInteractions(
 		NavigationInfo navInfo, 
+		std::shared_ptr<CubicMaze> maze,
 		std::shared_ptr<ITurboSceneObject> sceneObject,
-		int *pPortalIndex,
-		bool isPlayer);
+		bool isPlayer,
+		int *pPortalIndex);
 
 private:
-	void IsTouchingCellWall(	CubicMazeLocation location, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer);
-	void IsTouchingRightWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
-	void IsTouchingLeftWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
-	void IsTouchingBottomWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
-	void IsTouchingTopWall(		CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
-	void IsTouchingFrontWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
-	void IsTouchingBackWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingCellWall(	InputArguments in, OutputArguments *pOut);
+	void IsTouchingRightWall(	InputArguments in, OutputArguments *pOut);
+	void IsTouchingLeftWall(	InputArguments in, OutputArguments *pOut);
+	void IsTouchingBottomWall(	InputArguments in, OutputArguments *pOut);
+	void IsTouchingTopWall(		InputArguments in, OutputArguments *pOut);
+	void IsTouchingFrontWall(	InputArguments in, OutputArguments *pOut);
+	void IsTouchingBackWall(	InputArguments in, OutputArguments *pOut);
+
+/*
+	void IsTouchingCellWall(	CubicMazeLocation location, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal, std::shared_ptr<ITurboSceneObject> sceneObject);
+	void IsTouchingRightWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingLeftWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingBottomWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingTopWall(		CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingFrontWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+	void IsTouchingBackWall(	CubicMazeCellWall cellWall, TurboVector3D fromPoint, TurboVector3D toPoint, bool isPlayer, int *pPortalIndex, bool *pIsLeaving, bool *pIsTouching, TurboVector3D *pContact, TurboVector3D *pNormal);
+*/
 
 	std::shared_ptr<ITurboDebug>		_debug;
-	std::shared_ptr<CubicMaze>			_maze;
-	double								_hBuffer;
-	double								_vBuffer;
-	double								_bounciness;
+
+	const double	_hBuffer	= 0.25;
+	const double	_vBuffer	= 0.25;
+	const double	_bounciness	= 0.25;
 
 };
 

@@ -5,33 +5,15 @@
 
 using namespace Turbo::Scene;
 
-/*
-struct MazeWalls
+enum CubicMazeCellWallSide
 {
-	bool right : 1;
-	bool bottom : 1;
-	bool front : 1;
-	bool used : 1;
-
-	MazeWalls()
-	{
-		Initialize(false);
-	}
-
-	MazeWalls(bool isOn)
-	{
-		Initialize(isOn);
-	}
-
-	void Initialize(bool isOn)
-	{
-		right = isOn;
-		bottom = isOn;
-		front = isOn;
-		used = isOn;
-	}
+	Right,
+	Left,
+	Top,
+	Bottom,
+	Back,
+	Front
 };
-*/
 
 enum CubicMazeCellWallType 
 { 

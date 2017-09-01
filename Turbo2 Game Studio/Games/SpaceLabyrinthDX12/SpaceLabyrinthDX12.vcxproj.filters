@@ -238,14 +238,29 @@
     <ClCompile Include="..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
       <Filter>Library\TurboGame</Filter>
     </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level00\Level02MotionEffects.cpp">
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Castle.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level00Helper.cpp">
       <Filter>Games\SpaceLabyrinth\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level00\Level03MotionEffects.cpp">
-      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSignMesh.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\SpaceLabyrinth\Level00\Level01MotionEffects.cpp">
-      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Metal.cpp">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -526,14 +541,38 @@
     <ClInclude Include="..\..\Library\TurboGame\TurboGameMotionEffects.h">
       <Filter>Library\TurboGame</Filter>
     </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level00\Level01MotionEffects.h">
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\ICubicMazeObjectInteractions.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\ICubicMazeMotionEffects.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Laboratory.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Castle.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeMotionEffects_WithGravity.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level00Types.h">
       <Filter>Games\SpaceLabyrinth\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level00\Level02MotionEffects.h">
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level00Helper.h">
       <Filter>Games\SpaceLabyrinth\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\SpaceLabyrinth\Level00\Level03MotionEffects.h">
-      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSignMesh.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Metal.h">
+      <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -554,124 +593,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Resources\Textures\OriginalWall.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalCeiling.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalCorner.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalEdge.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalFloor.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Wall.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Ceiling.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Corner.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Edge.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Floor.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Exit.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00ExitBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00ExitLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Entrance.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00EntranceBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00EntranceLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Ceiling.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Corner.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Edge.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Entrance.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04EntranceBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04EntranceLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Exit.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04ExitBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04ExitLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Floor.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Wall.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalExitLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalEntrance.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalEntranceBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalEntranceLocked.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalExit.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\OriginalExitBack.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Text01.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Text00.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Text04.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Text02.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level00Text03.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
     <Image Include="..\..\Resources\Textures\Level01Text01.bmp">
-      <Filter>Resources\Textures</Filter>
-    </Image>
-    <Image Include="..\..\Resources\Textures\Level04Key.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="..\..\Resources\Textures\Level04Text02.bmp">
@@ -680,7 +602,109 @@
     <Image Include="..\..\Resources\Textures\Level04Text01.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
-    <Image Include="..\..\Resources\Textures\Level04Hazard.bmp">
+    <Image Include="..\..\Resources\Textures\LaboratoryCeiling.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryCorner.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryEdge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryEntrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryExit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryFloor.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryWall.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text00.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text01.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text02.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text03.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleCeiling.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleCorner.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleEdge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleEntrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleExit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleFloor.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleWall.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text04R4.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text04R1.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text04R2.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level00Text04R3.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Hazard.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Key.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\CastleLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\LaboratoryLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level01Text00.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalWall.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalCeiling.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalCorner.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalEdge.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalEntrance.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalExit.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalFloor.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\MetalLocked.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>

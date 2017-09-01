@@ -2,14 +2,14 @@
 #pragma once
 
 #include <pch.h>
-#include <Level02MotionEffects.h>
+#include <CubicMazeMotionEffects_WithGravity.h>
 #include <TurboGameMotionEffects.h>
 
 using namespace Turbo::Game;
 
 //  Constructors & Destructors -----------------------------------------------------------------------------------------
 
-Level02MotionEffects::Level02MotionEffects(std::shared_ptr<CubicMaze> maze) :
+CubicMazeMotionEffects_WithGravity::CubicMazeMotionEffects_WithGravity(std::shared_ptr<CubicMaze> maze) :
 	_maze(maze)
 {
 	_baseMotionEffects = std::shared_ptr<ITurboGameMotionEffects>(new TurboGameMotionEffects(
@@ -26,7 +26,7 @@ Level02MotionEffects::Level02MotionEffects(std::shared_ptr<CubicMaze> maze) :
 
 //  ITurboGameState Methods --------------------------------------------------------------------------------------------
 
-void Level02MotionEffects::ProcessMotionEffects(NavigationInfo navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
+void CubicMazeMotionEffects_WithGravity::ProcessMotionEffects(NavigationInfo navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
 {
 	_baseMotionEffects->ProcessMotionEffects(navInfo, sceneObject, isPlayer);
 

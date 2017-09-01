@@ -61,7 +61,6 @@ namespace Turbo
 				ComPtr<IXAudio2>							_XAudio2;
 				IXAudio2MasteringVoice*						_pMasterVoice = NULL;
 
-				std::map<std::string, int>					_sceneSoundEffectOffsets;
 				std::map<std::string, std::vector<byte>>	_sceneSoundEffectResources;
 
 				std::map<std::string, WAVEFORMATEXTENSIBLE>	_sceneSoundEffectFormat;
@@ -74,7 +73,7 @@ namespace Turbo
 				void CreateSceneSoundEffectResources(std::shared_ptr<ITurboScene> scene);
 				void LoadSceneObjectTreeSoundEffects(std::shared_ptr<ITurboSceneObject> sceneObject);
 				void LoadSceneObjectSoundEffects(std::shared_ptr<ITurboSceneObject> sceneObject);
-				bool LoadSoundEffectData(std::string soundName, WAVEFORMATEXTENSIBLE* pFormat, XAUDIO2_BUFFER* pBuffer);
+				bool LoadSoundEffectData(std::string soundName);
 
 				void PlaySceneSoundEffects(std::shared_ptr<ITurboScene> scene);
 				void PlaySceneObjectTreeSoundEffects(std::shared_ptr<ITurboSceneObject> sceneObject);

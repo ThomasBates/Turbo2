@@ -8,6 +8,7 @@ namespace Turbo
 		{
 			Initializing,
 			Running,
+			Failing,
 			Failed,
 			Completed,
 			LevelStateCount

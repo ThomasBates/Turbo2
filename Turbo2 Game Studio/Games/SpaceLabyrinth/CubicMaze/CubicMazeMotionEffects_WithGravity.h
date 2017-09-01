@@ -9,11 +9,11 @@ namespace Turbo
 {
 	namespace Game
 	{
-		class Level02MotionEffects : public ITurboGameMotionEffects
+		class CubicMazeMotionEffects_WithGravity : public ITurboGameMotionEffects
 		{
 		public:
 			//  Constructors & Destructors -----------------------------------------------------------------------------
-			Level02MotionEffects(std::shared_ptr<CubicMaze> maze);
+			CubicMazeMotionEffects_WithGravity(std::shared_ptr<CubicMaze> maze);
 
 			//  ITurboGameMotionEffects Properties ---------------------------------------------------------------------
 
