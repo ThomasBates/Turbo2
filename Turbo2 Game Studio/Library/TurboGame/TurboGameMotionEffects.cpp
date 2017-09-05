@@ -70,9 +70,10 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo navInfo, std::s
 		angularVelocity -= angularVelocity * 1.0f * deltaTime;
 
 		//  self-righting
-		angularVelocity.X = _placement->Back().Y * _selfRightingSpeed * deltaTime;
-		angularVelocity.Z = -_placement->Right().Y * _selfRightingSpeed * deltaTime;
+		angularVelocity.X =  _placement->Back().Y  * _selfRightingSpeed * deltaTime;
 	}
+	//	keeping this outside of the "if" keeps the player from turning on its side while looking around.
+	angularVelocity.Z = -_placement->Right().Y * _selfRightingSpeed * 10 * deltaTime;
 
 /*
 	//	Handle mouse direction inputs
