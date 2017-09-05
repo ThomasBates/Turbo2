@@ -24,8 +24,7 @@ public:
 	Level04(std::shared_ptr<ITurboDebug> debug,
 		std::shared_ptr<ITurboSceneObject> player,
 		std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
-		Level00MazeOptions mazeOptions,
-		Level00UserOptions userOptions);
+		Level00MazeOptions mazeOptions);
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
@@ -55,7 +54,6 @@ private:
 	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
 	std::shared_ptr<Level00Helper>					_helper;
 	Level00MazeOptions								_mazeOptions;
-	Level00UserOptions								_userOptions;
 
 	//	Property Fields ------------------------------------------------------------------------------------------------
 	TurboGameLevelState								_levelState;

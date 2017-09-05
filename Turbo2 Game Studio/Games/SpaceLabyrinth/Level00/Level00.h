@@ -24,7 +24,8 @@ class Level00 : public ITurboGameLevel
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	Level00(std::shared_ptr<ITurboDebug> debug,
-		std::shared_ptr<ITurboSceneObject> player);
+		std::shared_ptr<ITurboSceneObject> player,
+		Level00UserOptions* userOptions);
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Intro Level"; }
@@ -63,7 +64,7 @@ private:
 	std::shared_ptr<Level00Helper>					_helper;
 	Level00MazeOptions								_mazeOptions;
 	Level00MazeOptions								_previewMazeOptions;
-	Level00UserOptions								_userOptions;
+	Level00UserOptions*								_userOptions;
 
 	bool	_level01Unlocked = true;
 	bool	_level02Unlocked = false;

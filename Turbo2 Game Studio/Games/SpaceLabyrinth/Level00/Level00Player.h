@@ -3,6 +3,7 @@
 #include <pch.h>
 
 #include <ITurboSceneObject.h>
+#include <Level00Types.h>
 
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
@@ -10,7 +11,7 @@ using namespace Turbo::Scene;
 class Level00Player : public ITurboSceneObject
 {
 public:
-	Level00Player();
+	Level00Player(Level00UserOptions* userOptions);
 
 	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
 	virtual	std::shared_ptr<ITurboSceneMesh> Mesh() { return _mesh; }
@@ -41,6 +42,7 @@ private:
 	std::shared_ptr<ITurboScenePlacement>			_placement;
 	std::shared_ptr<ITurboSceneLight>				_light;
 	std::vector<std::shared_ptr<ITurboSceneObject>> _childSceneObjects;
+	Level00UserOptions*								_userOptions;
 
 	NavigationInfo _lastNavInfo;
 };

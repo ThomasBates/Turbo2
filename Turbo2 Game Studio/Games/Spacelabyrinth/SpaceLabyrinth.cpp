@@ -12,9 +12,7 @@
 //	2017-06-07
 //	TODO:	GameState.
 //	TODO:	Object interaction at edges with no walls.
-//	TODO:	On gravity levels, keep player upright. (Rotate around level z-axis, not player z-axis.)
 //	TODO:	Interact with "menu" items (Cross-hairs and select button or something similar.)
-//	TODO:	Inverted mouse control.
 //	TODO:	Lights implemented properly.
 
 //	DONE:
@@ -32,6 +30,8 @@
 //	2017-07-12:	Hazard(s) in level 0-4
 //	2017-08-16:	Sound effects.
 //	2017-08-31:	Game Order (e.g. All lighted first time through. Then keys, Then hazards. Then dark. etc.)
+//	2017-09-04:	On gravity levels, keep player upright. (Rotate around level z-axis, not player z-axis.)
+//	2017-09-04:	Inverted mouse control.
 
 
 /*	Game Order (e.g. All lighted first time through. Then dark. Then hazards. etc.)
@@ -148,7 +148,7 @@ std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
 
 void SpaceLabyrinth::Initialize()
 {
-	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player());
+	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player(&_userOptions));
 }
 
 void SpaceLabyrinth::Finalize()
@@ -173,7 +173,8 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		_level = std::unique_ptr<ITurboGameLevel>(new Level00(_debug, _player));
+		_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
+		_level = std::unique_ptr<ITurboGameLevel>(new Level00(_debug, _player, &_userOptions));
 		_level->Initialize();
 		_sceneChanged = true;
 	}

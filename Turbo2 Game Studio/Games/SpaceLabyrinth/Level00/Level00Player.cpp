@@ -10,7 +10,8 @@
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-Level00Player::Level00Player()
+Level00Player::Level00Player(Level00UserOptions* userOptions) :
+	_userOptions(userOptions)
 {
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
@@ -97,8 +98,16 @@ void Level00Player::Update(NavigationInfo navInfo)
 		double dx = navInfo.PointerX - _lastNavInfo.PointerX;
 		double dy = navInfo.PointerY - _lastNavInfo.PointerY;
 
-		angularVelocity.X = -dy / deltaTime;
-		angularVelocity.Y = -dx / deltaTime;
+		if (_userOptions->InvertedMouse)
+		{
+			angularVelocity.X = 0.08 * dy / deltaTime;
+			angularVelocity.Y = 0.08 * dx / deltaTime;
+		}
+		else
+		{
+			angularVelocity.X = -1.00 * dy / deltaTime;
+			angularVelocity.Y = -1.00 * dx / deltaTime;
+		}
 	}
 
 	//	Handle keyboard direction inputs.

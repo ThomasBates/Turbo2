@@ -6,6 +6,7 @@
 #include <ITurboDebug.h>
 #include <ITurboGame.h>
 #include <ITurboGameLevel.h>
+#include <Level00Types.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -42,6 +43,6 @@ private:
 	std::shared_ptr<ITurboGameLevel>	_level = nullptr;
 	bool								_sceneChanged = false;
 	TurboGameLevelState					_levelState;
-
+	Level00UserOptions					_userOptions;
 };
 

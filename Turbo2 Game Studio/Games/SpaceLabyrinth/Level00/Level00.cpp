@@ -26,9 +26,13 @@ using namespace Turbo::Scene;
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
-Level00::Level00(std::shared_ptr<ITurboDebug> debug, std::shared_ptr<ITurboSceneObject> player) :
+Level00::Level00(
+	std::shared_ptr<ITurboDebug> debug, 
+	std::shared_ptr<ITurboSceneObject> player,
+	Level00UserOptions* userOptions) :
 	_debug(debug),
-	_player(player)
+	_player(player),
+	_userOptions(userOptions)
 {
 	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new Level00CubicMazeFactory());
 	_objectInteractions = std::shared_ptr<ICubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug));
@@ -198,7 +202,7 @@ void Level00::Update(NavigationInfo navInfo)
 	{
 	case 1:
 		_player->Placement()->Move(0, 0, 10 - 1);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level01(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
+		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level01(_debug, _player, _sceneBuilder, _mazeOptions));
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
@@ -206,7 +210,7 @@ void Level00::Update(NavigationInfo navInfo)
 
 	case 2:
 		_player->Placement()->Move(-10 + 1, 0, 10);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level02(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
+		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level02(_debug, _player, _sceneBuilder, _mazeOptions));
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
@@ -214,7 +218,7 @@ void Level00::Update(NavigationInfo navInfo)
 
 	case 3:
 		_player->Placement()->Move(-10, 0, 1);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level03(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
+		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level03(_debug, _player, _sceneBuilder, _mazeOptions));
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
@@ -222,7 +226,7 @@ void Level00::Update(NavigationInfo navInfo)
 
 	case 4:
 		_player->Placement()->Move(-1, 0, 0);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions, _userOptions));
+		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;

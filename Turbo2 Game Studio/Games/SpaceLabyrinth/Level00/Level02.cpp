@@ -24,13 +24,11 @@ Level02::Level02(
 	std::shared_ptr<ITurboDebug> debug,
 	std::shared_ptr<ITurboSceneObject> player,
 	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
-	Level00MazeOptions mazeOptions,
-	Level00UserOptions userOptions) :
+	Level00MazeOptions mazeOptions) :
 	_debug(debug),
 	_player(player),
 	_sceneBuilder(sceneBuilder),
 	_mazeOptions(mazeOptions),
-	_userOptions(userOptions),
 	_levelState(TurboGameLevelState::Initializing)
 {
 	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(CubicMazeType::Layered));
