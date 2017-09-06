@@ -67,9 +67,7 @@ private:
 	bool											_exitUnlocked;
 
 	CubicMazeLocation								_entranceLocation;
-	TurboVector3D									_entrancePosition;
 	CubicMazeLocation								_exitLocation;
-	TurboVector3D									_exitPosition;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void BuildScene();

@@ -125,9 +125,16 @@ void Level00Player::Update(NavigationInfo navInfo)
 
 void Level00Player::PlaySound(float volume)
 {
-	if (_hitSound != nullptr)
+	if (_hitSound == nullptr)
 	{
-		_hitSound->Volume(volume);
-		_hitSound->PlaySound(true);
+		return;
 	}
+
+	if (!_userOptions->SoundEffectsOn)
+	{
+		return;
+	}
+
+	_hitSound->Volume(volume);
+	_hitSound->PlaySound(true);
 }

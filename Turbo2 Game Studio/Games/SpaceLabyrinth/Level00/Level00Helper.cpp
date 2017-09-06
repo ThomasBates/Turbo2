@@ -182,7 +182,7 @@ void Level00Helper::CreateSign(std::shared_ptr<ITurboScene> scene, CubicMazeLoca
 
 }
 
-bool Level00Helper::Update(NavigationInfo * navInfo, TurboGameLevelState * levelState)
+bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelState)
 {
 	bool rebuildScene = false;
 

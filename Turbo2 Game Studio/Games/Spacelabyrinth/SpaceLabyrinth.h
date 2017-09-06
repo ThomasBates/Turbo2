@@ -43,6 +43,6 @@ private:
 	std::shared_ptr<ITurboGameLevel>	_level = nullptr;
 	bool								_sceneChanged = false;
 	TurboGameLevelState					_levelState;
-	Level00UserOptions					_userOptions;
+	Level00UserOptions					_userOptions = { false, true };
 };
 

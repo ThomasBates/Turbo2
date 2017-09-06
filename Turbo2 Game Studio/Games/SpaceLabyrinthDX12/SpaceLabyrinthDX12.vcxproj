@@ -230,6 +230,10 @@
     <Image Include="..\..\Resources\Textures\Level04Text01.bmp" />
     <Image Include="..\..\Resources\Textures\Level04Text02.bmp" />
     <Image Include="..\..\Resources\Textures\CastleWall.bmp" />
+    <Image Include="..\..\Resources\Textures\Level05Text00.bmp" />
+    <Image Include="..\..\Resources\Textures\Level05Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\Level05Text10.bmp" />
+    <Image Include="..\..\Resources\Textures\Level05Text11.bmp" />
     <Image Include="..\..\Resources\Textures\MetalCeiling.bmp" />
     <Image Include="..\..\Resources\Textures\MetalCorner.bmp" />
     <Image Include="..\..\Resources\Textures\MetalEdge.bmp" />
@@ -347,6 +351,8 @@
     <ClInclude Include="..\SpaceLabyrinth\Level00\Level04.h" />
     <ClInclude Include="..\SpaceLabyrinth\Level00\Level00CubicMazeFactory.h" />
     <ClInclude Include="..\SpaceLabyrinth\Level00\Level00Player.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level05.h" />
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level05CubicMazeFactory.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.h" />
     <ClInclude Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.h" />
     <ClInclude Include="..\Spacelabyrinth\SpaceLabyrinth.h" />
@@ -408,6 +414,8 @@
     <ClCompile Include="..\SpaceLabyrinth\Level00\Level04.cpp" />
     <ClCompile Include="..\SpaceLabyrinth\Level00\Level00CubicMazeFactory.cpp" />
     <ClCompile Include="..\SpaceLabyrinth\Level00\Level00Player.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level05.cpp" />
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level05CubicMazeFactory.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalLevel.cpp" />
     <ClCompile Include="..\Spacelabyrinth\OriginalLevel\OriginalPlayer.cpp" />
     <ClCompile Include="..\Spacelabyrinth\SpaceLabyrinth.cpp" />

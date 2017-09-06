@@ -17,14 +17,15 @@ using namespace Turbo::Game;
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-class Level01 : public ITurboGameLevel
+class Level05 : public ITurboGameLevel
 {
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
-	Level01(std::shared_ptr<ITurboDebug> debug,
+	Level05(std::shared_ptr<ITurboDebug> debug,
 		std::shared_ptr<ITurboSceneObject> player,
 		std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
-		Level00MazeOptions mazeOptions);
+		Level00MazeOptions mazeOptions,
+		Level00UserOptions* userOptions);
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
@@ -54,6 +55,7 @@ private:
 	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
 	std::shared_ptr<Level00Helper>					_helper;
 	Level00MazeOptions								_mazeOptions;
+	Level00UserOptions*								_userOptions;
 
 	//	Property Fields ------------------------------------------------------------------------------------------------
 	TurboGameLevelState								_levelState;
@@ -68,6 +70,8 @@ private:
 
 	CubicMazeLocation								_entranceLocation;
 	CubicMazeLocation								_exitLocation;
+	CubicMazeLocation								_invertedMouseLocation;
+	CubicMazeLocation								_soundEffectsOnLocation;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void BuildScene();

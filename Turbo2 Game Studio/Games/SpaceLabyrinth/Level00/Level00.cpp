@@ -6,6 +6,7 @@
 #include <Level02.h>
 #include <Level03.h>
 #include <Level04.h>
+#include <Level05.h>
 #include <Level00CubicMazeFactory.h>
 #include <CubicMazeMotionEffects_WithGravity.h>
 #include <CubicMazeSceneBuilder_Castle.h>
@@ -148,14 +149,17 @@ void Level00::Update(NavigationInfo navInfo)
 				_player->Placement()->Move(1, dY, -10);
 				_level02Unlocked = true;
 				break;
+			
 			case 2:
 				_player->Placement()->Move(10, dY, -9);
 				_level03Unlocked = true;
 				break;
+			
 			case 3:
 				_player->Placement()->Move(9, dY, 0);
 				_level04Unlocked = true;
 				break;
+			
 			case 4:
 				_player->Placement()->Move(0, dY, -1);
 				_level02Unlocked = false;
@@ -165,6 +169,10 @@ void Level00::Update(NavigationInfo navInfo)
 				_previewMazeOptions.LevelRound++;
 				UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
 				UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
+				break;
+			
+			case 5:
+				_player->Placement()->Move(6, dY, -8);
 				break;
 			}
 
@@ -227,6 +235,14 @@ void Level00::Update(NavigationInfo navInfo)
 	case 4:
 		_player->Placement()->Move(-1, 0, 0);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
+		_subLevel->Initialize();
+		_subLevelIndex = portalIndex;
+		_sceneChanged = true;
+		break;
+
+	case 5:
+		_player->Placement()->Move(-6, 0, 8 - 1);
+		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level05(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
@@ -340,6 +356,9 @@ void Level00::BuildScene()
 		_maze->Cell(3, 0, 0)->LeftWall.PortalIndex = 0;
 	}
 
+	_maze->Cell(4, 0, 4)->BackWall.Type = CubicMazeCellWallType::Entrance;
+	_maze->Cell(4, 0, 4)->BackWall.PortalIndex = 5;
+
 	_scene = _sceneBuilder->BuildScene(_maze);
 	_scene->AddSceneObject(_player);
 	_scene->CameraPlacement(_player->Placement());
@@ -429,6 +448,8 @@ void Level00::BuildScene()
 	{
 		_maze->Cell(3, 0, 0)->LeftWall.SceneObject->HitSound(lockedSound);
 	}
+
+	_maze->Cell(4, 0, 4)->BackWall.SceneObject->HitSound(entranceSound);
 }
 
 //  Local Methods ------------------------------------------------------------------------------------------------------

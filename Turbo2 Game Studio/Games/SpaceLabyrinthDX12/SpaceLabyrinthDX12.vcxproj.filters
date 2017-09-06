@@ -262,6 +262,12 @@
     <ClCompile Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Metal.cpp">
       <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level05.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SpaceLabyrinth\Level00\Level05CubicMazeFactory.cpp">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -574,6 +580,12 @@
     <ClInclude Include="..\SpaceLabyrinth\CubicMaze\CubicMazeSceneBuilder_Metal.h">
       <Filter>Games\SpaceLabyrinth\CubicMaze</Filter>
     </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level05.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SpaceLabyrinth\Level00\Level05CubicMazeFactory.h">
+      <Filter>Games\SpaceLabyrinth\Level00</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -705,6 +717,18 @@
       <Filter>Resources\Textures</Filter>
     </Image>
     <Image Include="..\..\Resources\Textures\MetalLocked.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level05Text11.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level05Text00.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level05Text01.bmp">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="..\..\Resources\Textures\Level05Text10.bmp">
       <Filter>Resources\Textures</Filter>
     </Image>
   </ItemGroup>

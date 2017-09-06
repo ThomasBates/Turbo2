@@ -6,10 +6,10 @@
 struct Level00MazeOptions
 {
 	int		LevelRound;
-	int		MazeSize;
-	int		KeyCount;
-	int		RequiredKeyCount;
-	int		HazardCount;
+	UINT	MazeSize;
+	UINT	KeyCount;
+	UINT	RequiredKeyCount;
+	UINT	HazardCount;
 	bool	MovingKeys;
 	bool	MovingHazards;
 	bool	LightsOn;
@@ -19,4 +19,5 @@ struct Level00MazeOptions
 struct Level00UserOptions
 {
 	bool	InvertedMouse;
+	bool	SoundEffectsOn;
 };
