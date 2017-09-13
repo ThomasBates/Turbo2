@@ -11,7 +11,11 @@
 
 //	2017-06-07
 //	TODO:	GameState.
-//	TODO:	Object interaction at edges with no walls.
+//	TODO:	portal sound only when portalling.
+//	TODO:	key & hazard interactions.
+//	TODO:	Numbered Levels
+//	TODO:	Sound effect when falling->landing.
+//	TODO:	Different wall hit sound with different textures.
 //	TODO:	Lights implemented properly.
 
 //	DONE:
@@ -32,6 +36,7 @@
 //	2017-09-04:	On gravity levels, keep player upright. (Rotate around level z-axis, not player z-axis.)
 //	2017-09-04:	Inverted mouse control.
 //	2017-09-05:	Interact with "menu" items (Cross-hairs and select button or something similar.)
+//	2017-09-12:	Object interaction at edges with no walls.
 
 
 /*	Game Order (e.g. All lighted first time through. Then dark. Then hazards. etc.)

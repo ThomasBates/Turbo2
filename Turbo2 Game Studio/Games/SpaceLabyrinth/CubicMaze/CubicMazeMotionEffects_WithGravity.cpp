@@ -41,7 +41,7 @@ void CubicMazeMotionEffects_WithGravity::ProcessMotionEffects(NavigationInfo nav
 	//	If there's no bottom, or the player is above the middle of the cell, allow gravity.
 	//	Otherwise, stay in the middle of the cell.
 	double middleY = round(position.Y * 0.5) * 2.0;
-	if ((cell->BottomWall.Type != CubicMazeCellWallType::None) && (position.Y <= middleY))
+	if ((cell != NULL) && (cell->BottomWall.Type != CubicMazeCellWallType::None) && (position.Y <= middleY))
 	{
 		//  Limit motion to horizontal plane for this level
 		TurboVector3D velocity = sceneObject->Placement()->Velocity();

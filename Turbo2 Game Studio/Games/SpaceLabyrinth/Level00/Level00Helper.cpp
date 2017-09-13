@@ -210,6 +210,21 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 	_player->Update(*navInfo);
 	_motionEffects->ProcessMotionEffects(*navInfo, _player, true);
 
+	//	Just a precaution in case the player leaves the boundary of the maze.
+	//	If so, force a restart of the maze.
+	TurboVector3D position = _player->Placement()->Position();
+	CubicMazeLocation size = _maze->Size();
+	if ((position.X < -CELLHALF + WALLHALF) ||
+		(position.X > size.W * CELLSIZE - CELLHALF - WALLHALF) ||
+		(position.Y > CELLHALF - WALLHALF) ||
+		(position.Y < size.H * -CELLSIZE + CELLHALF + WALLHALF) ||
+		(position.Z > CELLHALF - WALLHALF) ||
+		(position.Z < size.D * -CELLSIZE + CELLHALF + WALLHALF))
+	{
+		*levelState = TurboGameLevelState::Failed;
+		return rebuildScene;
+	}
+
 	//  Update NPC's and obstacles
 	bool hit = UpdateKeys(&npcNavInfo, "Key", true);
 	if (hit)
