@@ -91,7 +91,7 @@ void Turbo::Platform::Windows10::Windows10Platform::Finalize()
 #pragma endregion
 #pragma region Local Support Methods
 
-void Turbo::Platform::Windows10::Windows10Platform::SaveGameState(std::shared_ptr<ITurboGameState> programState)
+void Turbo::Platform::Windows10::Windows10Platform::SaveGameState(std::shared_ptr<ITurboGameState> gameState)
 {
 
 }

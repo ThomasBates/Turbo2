@@ -11,7 +11,7 @@ namespace Turbo
 		{
 		public:
 			//	ITurboGameIOService Methods --------------------------------------------------------------------------------
-			virtual void SaveGameState(std::shared_ptr<ITurboGameState> programState) = 0;
+			virtual void SaveGameState(std::shared_ptr<ITurboGameState> gameState) = 0;
 			virtual std::shared_ptr<ITurboGameState> LoadGameState() = 0;
 
 			virtual std::wstring GetFullPath(std::wstring filename) = 0;

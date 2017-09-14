@@ -4,13 +4,12 @@
 
 #include <pch.h>
 
+#include <TurboGameState.h>
 #include <SpaceLabyrinth.h>
 #include <Level00.h>
 #include <Level00Player.h>
-//#include <OriginalLevel.h>
 
 //	2017-06-07
-//	TODO:	GameState.
 //	TODO:	portal sound only when portalling.
 //	TODO:	key & hazard interactions.
 //	TODO:	Numbered Levels
@@ -37,6 +36,7 @@
 //	2017-09-04:	Inverted mouse control.
 //	2017-09-05:	Interact with "menu" items (Cross-hairs and select button or something similar.)
 //	2017-09-12:	Object interaction at edges with no walls.
+//	2017-09-13:	GameState.
 
 
 /*	Game Order (e.g. All lighted first time through. Then dark. Then hazards. etc.)
@@ -112,25 +112,50 @@ SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug) :
 
 std::shared_ptr<ITurboGameState> SpaceLabyrinth::GameState()
 {
-	if (_level == nullptr)
+	std::shared_ptr<ITurboGameState> gameState = nullptr;
+
+	if (_level != nullptr)
 	{
-		return nullptr;
+		gameState = _level->GameState();
 	}
 
-	std::shared_ptr<ITurboGameState> gameState = _level->GameState();
-	gameState->SaveString("ProgramInfo", "project info");
+	if (gameState == nullptr)
+	{
+		gameState = _gameState;
+	}
+
+	if (gameState == nullptr)
+	{
+		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
+	}
+
+	gameState->SaveString("SpaceLabyrinth.ProgramInfo", "project info");
+
+	gameState->SaveBoolean("User.InvertedMouse", _userOptions.InvertedMouse);
+	gameState->SaveBoolean("User.SoundEffectsOn", _userOptions.SoundEffectsOn);
+
 	return gameState;
 }
 
 void SpaceLabyrinth::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
-	if (_level == nullptr)
+	_gameState = gameState;
+
+	if (gameState == nullptr)
 	{
 		return;
 	}
 
-	gameState->LoadString("ProgramInfo");
-	_level->GameState(gameState);
+	gameState->LoadString("SpaceLabyrinth.ProgramInfo");
+
+	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse");
+	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn");
+
+
+	if (_level != nullptr)
+	{
+		_level->GameState(gameState);
+	}
 }
 
 std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
@@ -178,8 +203,9 @@ void SpaceLabyrinth::Update(NavigationInfo navInfo)
 			_level = nullptr;
 		}
 
-		_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
+		//_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
 		_level = std::unique_ptr<ITurboGameLevel>(new Level00(_debug, _player, &_userOptions));
+		_level->GameState(_gameState);
 		_level->Initialize();
 		_sceneChanged = true;
 	}

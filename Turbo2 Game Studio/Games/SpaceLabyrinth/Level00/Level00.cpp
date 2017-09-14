@@ -44,14 +44,51 @@ Level00::Level00(
 
 std::shared_ptr<ITurboGameState> Level00::GameState()
 {
-	std::shared_ptr<ITurboGameState> gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
-	gameState->SaveString("LevelInfo", "level info");
+	std::shared_ptr<ITurboGameState> gameState = nullptr;
+
+	if (_subLevel != nullptr)
+	{
+		gameState = _subLevel->GameState();
+	}
+
+	if (gameState == nullptr)
+	{
+		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
+	}
+
+	gameState->SaveInteger("Level00.LevelRound", _mazeOptions.LevelRound);
+
+	gameState->SaveBoolean("Level00.Level02Unlocked", _level02Unlocked);
+	gameState->SaveBoolean("Level00.Level03Unlocked", _level03Unlocked);
+	gameState->SaveBoolean("Level00.Level04Unlocked", _level04Unlocked);
+
 	return gameState;
 }
 
 void Level00::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
-	gameState->LoadString("LevelInfo");
+	_gameState = gameState;
+
+	if (gameState == nullptr)
+	{
+		return;
+	}
+
+	_mazeOptions.LevelRound = gameState->LoadInteger("Level00.LevelRound");
+	if (_mazeOptions.LevelRound < 1)
+	{
+		_mazeOptions.LevelRound = 1;
+	}
+	
+	_level01Unlocked = true;
+	_level02Unlocked = gameState->LoadBoolean("Level00.Level02Unlocked");
+	_level03Unlocked = gameState->LoadBoolean("Level00.Level03Unlocked");
+	_level04Unlocked = gameState->LoadBoolean("Level00.Level04Unlocked");
+
+	if (_subLevel != nullptr)
+	{
+		_subLevel->GameState(gameState);
+	}
 }
 
 std::shared_ptr<ITurboScene> Level00::Scene()
@@ -77,8 +114,8 @@ void Level00::Initialize()
 		_player, _maze, _motionEffects, _sceneBuilder, _objectInteractions,
 		&_mazeOptions, NULL, NULL));
 
-	_mazeOptions.LevelRound = 1;
-	_previewMazeOptions.LevelRound = 2;
+	//_mazeOptions.LevelRound = 1;
+	_previewMazeOptions.LevelRound = _mazeOptions.LevelRound + 1;
 	UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
 	UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
 
@@ -211,42 +248,35 @@ void Level00::Update(NavigationInfo navInfo)
 	case 1:
 		_player->Placement()->Move(0, 0, 10 - 1);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level01(_debug, _player, _sceneBuilder, _mazeOptions));
-		_subLevel->Initialize();
-		_subLevelIndex = portalIndex;
-		_sceneChanged = true;
 		break;
 
 	case 2:
 		_player->Placement()->Move(-10 + 1, 0, 10);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level02(_debug, _player, _sceneBuilder, _mazeOptions));
-		_subLevel->Initialize();
-		_subLevelIndex = portalIndex;
-		_sceneChanged = true;
 		break;
 
 	case 3:
 		_player->Placement()->Move(-10, 0, 1);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level03(_debug, _player, _sceneBuilder, _mazeOptions));
-		_subLevel->Initialize();
-		_subLevelIndex = portalIndex;
-		_sceneChanged = true;
 		break;
 
 	case 4:
 		_player->Placement()->Move(-1, 0, 0);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
-		_subLevel->Initialize();
-		_subLevelIndex = portalIndex;
-		_sceneChanged = true;
 		break;
 
 	case 5:
 		_player->Placement()->Move(-6, 0, 8 - 1);
 		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level05(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
+		break;
+	}
+
+	if (_subLevel != nullptr)
+	{
+		_subLevel->GameState(_gameState);
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
-		break;
 	}
 }
 

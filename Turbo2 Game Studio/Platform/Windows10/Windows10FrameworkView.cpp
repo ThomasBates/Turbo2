@@ -82,6 +82,10 @@ void Windows10FrameworkView::SetWindow(CoreWindow^ window)
 void Windows10FrameworkView::Load(String^ entryPoint)
 {
 	_controller = std::shared_ptr<ITurboGameController>(new Windows10GameController());
+
+	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
+	_game->GameState(gameState);
+
 	_game->Initialize();	//	Create level, create & draw static scene
 }
 

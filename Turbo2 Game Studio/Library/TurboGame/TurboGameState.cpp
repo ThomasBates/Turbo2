@@ -31,17 +31,17 @@ std::vector<std::string> Turbo::Game::TurboGameState::Keys()
 //  ITurboGameState Methods --------------------------------------------------------------------------------------------
 void Turbo::Game::TurboGameState::SaveBoolean(std::string key, bool value)
 {
-
+	_map[key] = std::to_string(value);
 }
 
 void Turbo::Game::TurboGameState::SaveInteger(std::string key, int value)
 {
-
+	_map[key] = std::to_string(value);
 }
 
 void Turbo::Game::TurboGameState::SaveFloat(std::string key, float value)
 {
-
+	_map[key] = std::to_string(value);
 }
 
 void Turbo::Game::TurboGameState::SaveVector(std::string key, TurboVector3D value)
@@ -51,22 +51,37 @@ void Turbo::Game::TurboGameState::SaveVector(std::string key, TurboVector3D valu
 
 void Turbo::Game::TurboGameState::SaveString(std::string key, std::string value)
 {
-	_map.insert(KeyValue(key, value));
+	_map[key] = value;
+
+	//_map.insert(KeyValue(key, value));
 }
 
 bool Turbo::Game::TurboGameState::LoadBoolean(std::string key)
 {
-	return false;
+	int test = LoadInteger(key);
+	return test != 0;
 }
 
 int Turbo::Game::TurboGameState::LoadInteger(std::string key)
 {
-	return 0;
+	//	key not in map?
+	if (_map.find(key) == _map.end())
+	{
+		return 0;
+	}
+
+	return std::stoi(_map[key]);
 }
 
 float Turbo::Game::TurboGameState::LoadFloat(std::string key)
 {
-	return 0.0;
+	//	key not in map?
+	if (_map.find(key) == _map.end())
+	{
+		return 0.0;
+	}
+
+	return std::stof(_map[key]);
 }
 
 TurboVector3D Turbo::Game::TurboGameState::LoadVector(std::string key)

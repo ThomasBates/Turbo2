@@ -62,6 +62,7 @@ private:
 	std::shared_ptr<ITurboGameMotionEffects>		_motionEffects;
 	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
 	std::shared_ptr<Level00Helper>					_helper;
+	std::shared_ptr<ITurboGameState>				_gameState;
 	Level00MazeOptions								_mazeOptions;
 	Level00MazeOptions								_previewMazeOptions;
 	Level00UserOptions*								_userOptions;

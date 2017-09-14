@@ -43,7 +43,7 @@ namespace Turbo
 				//  Local Support Methods --------------------------------------------------------------------------------------
 				std::shared_ptr<ITurboGameRenderer> GetSceneRenderer();
 
-				void SaveGameState(std::shared_ptr<ITurboGameState> programState);
+				void SaveGameState(std::shared_ptr<ITurboGameState> gameState);
 				std::shared_ptr<ITurboGameState> LoadGameState();
 			};
 		}

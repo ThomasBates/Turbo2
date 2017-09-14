@@ -1,5 +1,10 @@
 #include <pch.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <Windows.h>
 
+#include <TurboGameState.h>
 #include <Windows10IOService.h>
 #include <Windows10Helpers.h>
 
@@ -18,13 +23,48 @@ Windows10IOService::Windows10IOService(std::shared_ptr<ITurboDebug> debug) :
 {
 }
 
-void Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> programState)
+void Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> gameState)
 {
+	char* configFilePath = GetConfigFilePath();
+
+	std::ofstream out(configFilePath, std::ios::out);
+	if (out)
+	{
+		std::vector<std::string> keys = gameState->Keys();
+		for (const auto& key : keys)
+		{
+			std::string value = gameState->LoadString(key);
+			out << key << "=" << value << '\n';
+		}
+		out.close();
+	}
 }
 
 std::shared_ptr<ITurboGameState> Windows10IOService::LoadGameState()
 {
-	return std::shared_ptr<ITurboGameState>();
+	std::shared_ptr<ITurboGameState> gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
+
+	char* configFilePath = GetConfigFilePath();
+
+	std::ifstream in(configFilePath);
+	if (in)
+	{
+		std::string line;
+		while (std::getline(in, line))
+		{
+			std::istringstream in(line);
+			std::string key;
+			if (std::getline(in, key, '='))
+			{
+				std::string value;
+				if (std::getline(in, value))
+				{
+					gameState->SaveString(key, value);
+				}
+			}
+		}
+	}
+	return gameState;
 }
 
 std::vector<byte> Windows10IOService::ReadData(const std::wstring &filename)
@@ -129,4 +169,57 @@ std::wstring Windows10IOService::GetFullPath(std::wstring filename)
 	std::wstring pathString = path;
 	pathString = pathString + filename;
 	return pathString;
+}
+
+char* Windows10IOService::GetConfigFilePath()
+{
+	if (_configFilePath[0] == 0)
+	{
+		//	Get Local Folder
+		String^ localfolderS = Windows::Storage::ApplicationData::Current->LocalFolder->Path;
+		//	convert folder name from wchar to ascii
+		std::wstring localFolderW(localfolderS->Begin());
+		std::string localFolderA(localFolderW.begin(), localFolderW.end());
+		const char* localFolder = localFolderA.c_str();
+
+		TCHAR moduleFileNameT[MAX_PATH];
+		GetModuleFileName(NULL, moduleFileNameT, MAX_PATH);
+		//	convert folder name from wchar to ascii
+		std::wstring moduleFileNameW(moduleFileNameT);
+		std::string moduleFileNameA(moduleFileNameW.begin(), moduleFileNameW.end());
+		const char *moduleFileName = moduleFileNameA.c_str();
+
+		char fileDir[MAX_PATH] = {};
+		char fileName[MAX_PATH] = {};
+		char fileExt[MAX_PATH] = {};
+		DecomposePath(moduleFileName, fileDir, fileName, fileExt);
+
+
+		snprintf(_configFilePath, MAX_PATH, "%s\\%s.config", localFolder, fileName);
+	}
+
+	return _configFilePath;
+}
+
+void Windows10IOService::DecomposePath(const char *filePath, char *fileDir, char *fileName, char *fileExt)
+{
+#if defined _WIN32
+	const char *lastSeparator = strrchr(filePath, '\\');
+#else
+	const char *lastSeparator = strrchr(filePath, '/');
+#endif
+
+	const char *lastDot = strrchr(filePath, '.');
+	const char *endOfPath = filePath + strlen(filePath);
+	const char *startOfName = lastSeparator ? lastSeparator + 1 : filePath;
+	const char *startOfExt = lastDot > startOfName ? lastDot : endOfPath;
+
+	if (fileDir)
+		_snprintf_s(fileDir, MAX_PATH, _TRUNCATE, "%.*s", startOfName - filePath, filePath);
+
+	if (fileName)
+		_snprintf_s(fileName, MAX_PATH, _TRUNCATE, "%.*s", startOfExt - startOfName, startOfName);
+
+	if (fileExt)
+		_snprintf_s(fileExt, MAX_PATH, _TRUNCATE, "%s", startOfExt);
 }
