@@ -6,6 +6,51 @@ using namespace Turbo::Game;
 using namespace Turbo::Scene;
 
 
+void CubicMazeObjectInteractions::ProcessKeyHazardInteractions(
+	NavigationInfo navInfo, 
+	std::shared_ptr<ITurboSceneObject> sceneObject, 
+	std::vector<std::shared_ptr<ITurboSceneObject>>* keys, 
+	std::vector<std::shared_ptr<ITurboSceneObject>>* hazards)
+{
+	std::shared_ptr<ITurboScenePlacement> placement = sceneObject->Placement();
+	TurboVector3D objectPosition = placement->Position();
+	TurboVector3D velocity = placement->Velocity();
+
+	for (auto& key : *keys)
+	{
+		TurboVector3D keyPosition = key->Placement()->Position();
+		TurboVector3D direction = objectPosition - keyPosition;
+
+		if (direction.Length() >= 0.25)
+		{
+			continue;
+		}
+
+		TurboVector3D normal = direction.Normalize();
+		TurboVector3D n = -normal * abs(-normal * velocity);
+		velocity = velocity - n * 2;
+
+		placement->Velocity(velocity);
+	}
+	
+	for (auto& hazard : *hazards)
+	{
+		TurboVector3D hazardPosition = hazard->Placement()->Position();
+		TurboVector3D direction = objectPosition - hazardPosition;
+
+		if (direction.Length() >= 0.25)
+		{
+			continue;
+		}
+
+		TurboVector3D normal = direction.Normalize();
+		TurboVector3D n = -normal * abs(-normal * velocity);
+		velocity = velocity - n * 2;
+
+		placement->Velocity(velocity);
+	}
+}
+
 void CubicMazeObjectInteractions::ProcessObjectInteractions(
 	NavigationInfo navInfo,
 	std::shared_ptr<CubicMaze> maze,
@@ -53,10 +98,6 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 	if ((!output.isTouching) && (output.isLeaving))
 	{
 		CubicMazeCell *cell = maze->Cell(input.location);
-
-		//  Test the edges of the cell that are in the direction of travel.
-
-
 
 		//	Test the adjacent cells that are in the direction of travel.
 		int w1 = 0, w2 = 0;

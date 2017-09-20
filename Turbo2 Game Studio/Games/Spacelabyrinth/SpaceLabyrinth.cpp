@@ -11,7 +11,6 @@
 
 //	2017-06-07
 //	TODO:	portal sound only when portalling.
-//	TODO:	key & hazard interactions.
 //	TODO:	Numbered Levels
 //	TODO:	Sound effect when falling->landing.
 //	TODO:	Different wall hit sound with different textures.
@@ -37,6 +36,7 @@
 //	2017-09-05:	Interact with "menu" items (Cross-hairs and select button or something similar.)
 //	2017-09-12:	Object interaction at edges with no walls.
 //	2017-09-13:	GameState.
+//	2017-09-19:	Key & hazard interactions.
 
 
 /*	Game Order (e.g. All lighted first time through. Then dark. Then hazards. etc.)

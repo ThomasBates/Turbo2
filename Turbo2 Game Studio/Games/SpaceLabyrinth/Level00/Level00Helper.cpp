@@ -48,7 +48,7 @@ void Level00Helper::CreateKeys(CubicMazeLocation* firstKeyLocation, std::string 
 			key->Placement()->Move(RandomPosition());
 		}
 
-		key->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+		key->Placement()->AngularVelocity(RandomAngularVelocity());
 
 		if (_mazeOptions->MovingKeys)
 		{
@@ -81,7 +81,7 @@ void Level00Helper::CreateHazards(CubicMazeLocation* firstHazardLocation, std::s
 			hazard->Placement()->Move(RandomPosition());
 		}
 
-		hazard->Placement()->AngularVelocity(TurboVector3D(30, 30, 30));
+		hazard->Placement()->AngularVelocity(RandomAngularVelocity());
 
 		if (_mazeOptions->MovingHazards)
 		{
@@ -237,7 +237,6 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 	{
 		*levelState = TurboGameLevelState::Failing;
 		_failTime = navInfo->Time;
-		//_player->Placement()->Velocity(-_player->Placement()->Velocity());
 	}
 
 	//  Check for collisions
@@ -273,6 +272,8 @@ bool Level00Helper::UpdateKeys(NavigationInfo * navInfo, std::string keyHitSound
 			key->Placement()->Velocity(key->Placement()->Velocity().Normalize());
 
 			_motionEffects->ProcessMotionEffects(*navInfo, key, false);
+
+			_objectInteractions->ProcessKeyHazardInteractions(*navInfo, key, _keys, _hazards);
 
 			_objectInteractions->ProcessObjectInteractions(*navInfo, _maze, key, false, &portalIndex);
 		}
@@ -315,6 +316,8 @@ bool Level00Helper::UpdateHazards(NavigationInfo* navInfo, std::string hazardHit
 			hazard->Placement()->Velocity(hazard->Placement()->Velocity().Normalize());
 
 			_motionEffects->ProcessMotionEffects(*navInfo, hazard, false);
+
+			_objectInteractions->ProcessKeyHazardInteractions(*navInfo, hazard, _keys, _hazards);
 
 			_objectInteractions->ProcessObjectInteractions(*navInfo, _maze, hazard, false, &portalIndex);
 		}
@@ -361,6 +364,14 @@ TurboVector3D Level00Helper::RandomDirection()
 		rand() * 2.0 / RAND_MAX - 1.0,
 		rand() * 2.0 / RAND_MAX - 1.0,
 		rand() * 2.0 / RAND_MAX - 1.0).Normalize();
+}
+
+TurboVector3D Level00Helper::RandomAngularVelocity()
+{
+	return TurboVector3D(
+		rand() % 60 - 30,
+		rand() % 60 - 30,
+		rand() % 60 - 30);
 }
 
 //  Private Methods ----------------------------------------------------------------------------------------------------

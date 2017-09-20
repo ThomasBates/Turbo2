@@ -72,5 +72,6 @@ private:
 	TurboVector3D Position(CubicMazeLocation * location);
 	TurboVector3D RandomPosition();
 	TurboVector3D RandomDirection();
+	TurboVector3D RandomAngularVelocity();
 };
 
