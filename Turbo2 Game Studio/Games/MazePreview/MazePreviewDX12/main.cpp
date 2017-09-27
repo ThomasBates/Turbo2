@@ -13,7 +13,7 @@
 #include <Windows10Audio.h>
 #include <Windows10Platform.h>
 
-#include <SpaceLabyrinth.h>
+#include <MazePreview.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::DirectX12;
@@ -34,7 +34,7 @@ int main(Platform::Array<Platform::String^>^)
 	std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new XAudio2Audio(debug, ioService));
 	std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new Windows10GameApplication(debug, ioService, renderer, audio));
 
-	std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new SpaceLabyrinth(debug));
+	std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new MazePreview(debug));
 
 	return application->Run(game);
 }

@@ -1,11 +1,11 @@
 //  ============================================================================
-//  SpaceLabyrinth.cpp
+//  MazePreview.cpp
 //  ============================================================================
 
 #include <pch.h>
 
 #include <TurboGameState.h>
-#include <SpaceLabyrinth.h>
+#include <MazePreview.h>
 #include <Level00.h>
 #include <Level00Player.h>
 
@@ -102,7 +102,7 @@
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug) :
+MazePreview::MazePreview(std::shared_ptr<ITurboDebug> debug) :
 	_debug(debug)
 {
 }
@@ -110,7 +110,7 @@ SpaceLabyrinth::SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug) :
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 
-std::shared_ptr<ITurboGameState> SpaceLabyrinth::GameState()
+std::shared_ptr<ITurboGameState> MazePreview::GameState()
 {
 	std::shared_ptr<ITurboGameState> gameState = nullptr;
 
@@ -129,7 +129,7 @@ std::shared_ptr<ITurboGameState> SpaceLabyrinth::GameState()
 		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
 	}
 
-	gameState->SaveString("SpaceLabyrinth.ProgramInfo", "project info");
+	gameState->SaveString("MazePreview.ProgramInfo", "project info");
 
 	gameState->SaveBoolean("User.InvertedMouse", _userOptions.InvertedMouse);
 	gameState->SaveBoolean("User.SoundEffectsOn", _userOptions.SoundEffectsOn);
@@ -137,7 +137,7 @@ std::shared_ptr<ITurboGameState> SpaceLabyrinth::GameState()
 	return gameState;
 }
 
-void SpaceLabyrinth::GameState(std::shared_ptr<ITurboGameState> gameState)
+void MazePreview::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
 	_gameState = gameState;
 
@@ -146,7 +146,7 @@ void SpaceLabyrinth::GameState(std::shared_ptr<ITurboGameState> gameState)
 		return;
 	}
 
-	gameState->LoadString("SpaceLabyrinth.ProgramInfo");
+	gameState->LoadString("MazePreview.ProgramInfo");
 
 	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse");
 	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn");
@@ -158,7 +158,7 @@ void SpaceLabyrinth::GameState(std::shared_ptr<ITurboGameState> gameState)
 	}
 }
 
-std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
+std::shared_ptr<ITurboScene> MazePreview::Scene()
 {
 	if (_level == nullptr)
 	{
@@ -168,7 +168,7 @@ std::shared_ptr<ITurboScene> SpaceLabyrinth::Scene()
 	return _level->Scene();
 }
 
-std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
+std::shared_ptr<ITurboSceneObject> MazePreview::Player()
 {
 	return _player;
 }
@@ -176,12 +176,12 @@ std::shared_ptr<ITurboSceneObject> SpaceLabyrinth::Player()
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 
-void SpaceLabyrinth::Initialize()
+void MazePreview::Initialize()
 {
 	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player(&_userOptions));
 }
 
-void SpaceLabyrinth::Finalize()
+void MazePreview::Finalize()
 {
 	if (_level != nullptr)
 	{
@@ -190,7 +190,7 @@ void SpaceLabyrinth::Finalize()
 	}
 }
 
-void SpaceLabyrinth::Update(NavigationInfo navInfo)
+void MazePreview::Update(NavigationInfo navInfo)
 {
 	//  Beef this up with multiple levels and state logic.
 	_sceneChanged = false;

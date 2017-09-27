@@ -221,6 +221,7 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 		(position.Z > CELLHALF - WALLHALF) ||
 		(position.Z < size.D * -CELLSIZE + CELLHALF + WALLHALF))
 	{
+		//	TODO: Place player in the middle of the nearest valid cell.
 		*levelState = TurboGameLevelState::Failed;
 		return rebuildScene;
 	}

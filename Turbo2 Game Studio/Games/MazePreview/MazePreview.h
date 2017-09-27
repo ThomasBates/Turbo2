@@ -12,11 +12,11 @@ using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 using namespace Turbo::Scene;
 
-class SpaceLabyrinth: public ITurboGame
+class MazePreview: public ITurboGame
 {
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
-	SpaceLabyrinth(std::shared_ptr<ITurboDebug> debug);
+	MazePreview(std::shared_ptr<ITurboDebug> debug);
 
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Space Labyrinth"; }

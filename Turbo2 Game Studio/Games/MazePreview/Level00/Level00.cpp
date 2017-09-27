@@ -18,8 +18,6 @@
 #include <TurboSceneAmbientLight.h>
 #include <TurboSceneMaterial.h>
 #include <TurboSceneSoundEffect.h>
-#include <OriginalPlayer.h>
-#include <OriginalLevel.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
