@@ -72,16 +72,16 @@ void Level00::GameState(std::shared_ptr<ITurboGameState> gameState)
 		return;
 	}
 
-	_mazeOptions.LevelRound = gameState->LoadInteger("Level00.LevelRound");
+	_mazeOptions.LevelRound = gameState->LoadInteger("Level00.LevelRound", 1);
 	if (_mazeOptions.LevelRound < 1)
 	{
 		_mazeOptions.LevelRound = 1;
 	}
 	
 	_level01Unlocked = true;
-	_level02Unlocked = gameState->LoadBoolean("Level00.Level02Unlocked");
-	_level03Unlocked = gameState->LoadBoolean("Level00.Level03Unlocked");
-	_level04Unlocked = gameState->LoadBoolean("Level00.Level04Unlocked");
+	_level02Unlocked = gameState->LoadBoolean("Level00.Level02Unlocked", false);
+	_level03Unlocked = gameState->LoadBoolean("Level00.Level03Unlocked", false);
+	_level04Unlocked = gameState->LoadBoolean("Level00.Level04Unlocked", false);
 
 	if (_subLevel != nullptr)
 	{

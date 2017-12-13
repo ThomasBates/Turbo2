@@ -47,7 +47,7 @@ std::shared_ptr<ITurboGameState> Level02::GameState()
 
 void Level02::GameState(std::shared_ptr<ITurboGameState> gameState)
 {
-	gameState->LoadString("LevelInfo");
+	gameState->LoadString("LevelInfo", "");
 }
 
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------

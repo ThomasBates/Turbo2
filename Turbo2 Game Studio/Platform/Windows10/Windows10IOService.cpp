@@ -33,7 +33,7 @@ void Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> gameStat
 		std::vector<std::string> keys = gameState->Keys();
 		for (const auto& key : keys)
 		{
-			std::string value = gameState->LoadString(key);
+			std::string value = gameState->LoadString(key, "");
 			out << key << "=" << value << '\n';
 		}
 		out.close();

@@ -146,10 +146,10 @@ void MazePreview::GameState(std::shared_ptr<ITurboGameState> gameState)
 		return;
 	}
 
-	gameState->LoadString("MazePreview.ProgramInfo");
+	gameState->LoadString("MazePreview.ProgramInfo", "");
 
-	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse");
-	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn");
+	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse", false);
+	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn", true);
 
 
 	if (_level != nullptr)

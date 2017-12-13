@@ -281,14 +281,14 @@ void DirectX12Renderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> 
 		LoadSceneObjectVertices(sceneObject);
 	}
 
-	_sceneObjectCount = _sceneObjectOffsets.size();
-	_sceneObjectMeshCount = _sceneObjectMeshOffsets.size();
+	_sceneObjectCount = (UINT)_sceneObjectOffsets.size();
+	_sceneObjectMeshCount = (UINT)_sceneObjectMeshOffsets.size();
 }
 
 void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
 
-	int sceneObjectOffset = _sceneObjectOffsets.size();
+	UINT sceneObjectOffset = (UINT)_sceneObjectOffsets.size();
 	_sceneObjectOffsets[sceneObject] = sceneObjectOffset;
 
 	std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
@@ -304,7 +304,7 @@ void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObjec
 		return;
 	}
 
-	int meshOffset = _sceneObjectMeshOffsets.size();
+	UINT meshOffset = (UINT)_sceneObjectMeshOffsets.size();
 	_sceneObjectMeshOffsets[mesh] = meshOffset;
 
 	std::vector<ShaderVertex> vertexList;
@@ -313,7 +313,7 @@ void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObjec
 	LoadVertexData(mesh, &vertexList, &indexList);
 
 	//  Load mesh vertices ---------------------------------------------------------------------------------------------
-	UINT vertexBufferSize = vertexList.size() * sizeof(vertexList[0]);
+	UINT vertexBufferSize = (UINT)(vertexList.size() * sizeof(vertexList[0]));
 
 	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -381,12 +381,12 @@ void DirectX12Renderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObjec
 	}
 
 	//	Load mesh indices ----------------------------------------------------------------------------------------------
-	UINT indexBufferSize = indexList.size() * sizeof(indexList[0]);
+	UINT indexBufferSize = (UINT)(indexList.size() * sizeof(indexList[0]));
 
 	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
-	ComPtr<ID3D12Resource> indexTargetResource;
-	ComPtr<ID3D12Resource> indexSourceResource;
+	ComPtr<ID3D12Resource> indexTargetResource = nullptr;
+	ComPtr<ID3D12Resource> indexSourceResource = nullptr;
 
 	//  indexTargetResource represents an allocated space in GPU memory
 	//	for holding the index data.
@@ -500,7 +500,7 @@ void DirectX12Renderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene>
 		LoadSceneObjectTextures(sceneObject);
 	}
 
-	_sceneObjectTextureCount = _sceneObjectTextureOffsets.size();
+	_sceneObjectTextureCount = (UINT)_sceneObjectTextureOffsets.size();
 }
 
 void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
@@ -525,7 +525,7 @@ void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
 		return;
 	}
 
-	int textureOffset = _sceneObjectTextureOffsets.size();
+	UINT textureOffset = (UINT)_sceneObjectTextureOffsets.size();
 	_sceneObjectTextureOffsets[textureName] = textureOffset;
 
 	D3D12_RESOURCE_DESC textureResourceDesc = {};
@@ -533,8 +533,8 @@ void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
 
 	LoadTextureData(textureName, &textureResourceDesc, &textureData);
 
-	ComPtr<ID3D12Resource> textureTargetResource;
-	ComPtr<ID3D12Resource> textureSourceResource;
+	ComPtr<ID3D12Resource> textureTargetResource = nullptr;
+	ComPtr<ID3D12Resource> textureSourceResource = nullptr;
 
 	//  textureTargetResource represents an allocated space in GPU memory
 	//	for holding the texture data.
@@ -685,7 +685,7 @@ void DirectX12Renderer::CreateCBVDescriptors()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cbvCpuHandle(
 		_cbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	for (int n = 0; n < 1 + c_frameCount * _sceneObjectCount; n++)
+	for (UINT n = 0; n < 1 + c_frameCount * _sceneObjectCount; n++)
 	{
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
 		cbvDesc.BufferLocation = cbvGpuAddress;
@@ -716,7 +716,7 @@ void DirectX12Renderer::CreateSRVDescriptors()
 	for (auto &sceneTextureOffset : _sceneObjectTextureOffsets)
 	{
 		std::string textureName = sceneTextureOffset.first;
-		int textureOffset = sceneTextureOffset.second;
+		UINT textureOffset = sceneTextureOffset.second;
 		auto sceneTextureTargetResource = _sceneTextureTargetResources[textureName];
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE srvCpuHandle(
@@ -839,7 +839,7 @@ void DirectX12Renderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> c
 	XMMATRIX lookAtRH = XMMatrixLookAtRH(eyePosition, focusPosition, upDirection);
 	XMMATRIX transpose = XMMatrixTranspose(lookAtRH);
 
-	XMVECTOR determinant; // = XMMatrixDeterminant(transpose);
+	XMVECTOR determinant = XMMatrixDeterminant(transpose);
 	XMMATRIX inverse = XMMatrixInverse(&determinant, lookAtRH);
 
 	XMStoreFloat4x4(&_constantBufferData->View, transpose);
@@ -882,6 +882,7 @@ void DirectX12Renderer::InitializeRendering()
 	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = _deviceResources->GetDepthStencilView();
 //	_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
 	_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::MidnightBlue, 0, nullptr);
+//	_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::Yellow, 0, nullptr);
 	_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
@@ -932,10 +933,10 @@ void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> s
 	// Prepare to pass the updated model matrix to the shader.
 	TurboMatrix4x4 transform = sceneObject->Placement()->Transform();
 	DirectX::XMMATRIX model = DirectX::XMMATRIX(
-		transform.M11, transform.M12, transform.M13, transform.M14,
-		transform.M21, transform.M22, transform.M23, transform.M24,
-		transform.M31, transform.M32, transform.M33, transform.M34,
-		transform.M41, transform.M42, transform.M43, transform.M44);
+		(float)transform.M11, (float)transform.M12, (float)transform.M13, (float)transform.M14,
+		(float)transform.M21, (float)transform.M22, (float)transform.M23, (float)transform.M24,
+		(float)transform.M31, (float)transform.M32, (float)transform.M33, (float)transform.M34,
+		(float)transform.M41, (float)transform.M42, (float)transform.M43, (float)transform.M44);
 
 	//  Transpose because DirectX (and Wikipedia, apparently) 
 	//	uses a transposed version compared to what I'm used to.
@@ -954,7 +955,7 @@ void DirectX12Renderer::PopulateCommandList(std::shared_ptr<ITurboSceneObject> s
 	int srvOffset = _sceneObjectTextureOffsets[textureName];
 	int srvIndex = 1 + c_frameCount * _sceneObjectCount + srvOffset;
 
-	int indexCount = sceneObject->Mesh()->Triangles().size() * 3;
+	UINT indexCount = (UINT)(sceneObject->Mesh()->Triangles().size() * 3);
 
 	//	Create handles for root signature arguments.
 	CD3DX12_GPU_DESCRIPTOR_HANDLE cbvGpuHandle(

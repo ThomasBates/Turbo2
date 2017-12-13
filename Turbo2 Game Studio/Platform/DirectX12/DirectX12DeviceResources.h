@@ -67,21 +67,21 @@ namespace Turbo
 				UINT											m_currentFrame;
 
 				// Direct3D objects.
-				Microsoft::WRL::ComPtr<ID3D12Device>			m_d3dDevice;
-				Microsoft::WRL::ComPtr<IDXGIFactory4>			m_dxgiFactory;
-				Microsoft::WRL::ComPtr<IDXGISwapChain3>			m_swapChain;
+				Microsoft::WRL::ComPtr<ID3D12Device>			m_d3dDevice = nullptr;
+				Microsoft::WRL::ComPtr<IDXGIFactory4>			m_dxgiFactory = nullptr;
+				Microsoft::WRL::ComPtr<IDXGISwapChain3>			m_swapChain = nullptr;
 				Microsoft::WRL::ComPtr<ID3D12Resource>			m_renderTargets[c_frameCount];
-				Microsoft::WRL::ComPtr<ID3D12Resource>			m_depthStencil;
-				Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>	m_rtvHeap;
-				Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>	m_dsvHeap;
+				Microsoft::WRL::ComPtr<ID3D12Resource>			m_depthStencil = nullptr;
+				Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>	m_rtvHeap = nullptr;
+				Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>	m_dsvHeap = nullptr;
 				UINT											m_rtvDescriptorSize;
-				Microsoft::WRL::ComPtr<ID3D12CommandQueue>		m_commandQueue;
+				Microsoft::WRL::ComPtr<ID3D12CommandQueue>		m_commandQueue = nullptr;
 				Microsoft::WRL::ComPtr<ID3D12CommandAllocator>	m_commandAllocators[c_frameCount];
 				D3D12_VIEWPORT									m_screenViewport;
 				bool											m_deviceRemoved;
 
 				// CPU/GPU Synchronization.
-				Microsoft::WRL::ComPtr<ID3D12Fence>				m_fence;
+				Microsoft::WRL::ComPtr<ID3D12Fence>				m_fence = nullptr;
 				UINT64											m_fenceValues[c_frameCount];
 				HANDLE											m_fenceEvent;
 

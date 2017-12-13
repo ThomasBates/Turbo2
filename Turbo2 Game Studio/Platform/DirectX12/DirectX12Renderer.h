@@ -42,12 +42,12 @@ namespace Turbo
 				// Constant buffers must be 256-byte aligned.
 				static const UINT c_alignedConstantBufferSize = (sizeof(SceneConstantBuffer) + 255) & ~255;
 
-				std::shared_ptr<ITurboDebug>				_debug;
-				std::shared_ptr<ITurboGameIOService>		_ioService;
+				std::shared_ptr<ITurboDebug>				_debug = nullptr;
+				std::shared_ptr<ITurboGameIOService>		_ioService = nullptr;
 
 				// Cached pointer to device resources.
-				std::shared_ptr<DeviceResources>			_deviceResources;
-				ID3D12Device*								_device;
+				std::shared_ptr<DeviceResources>			_deviceResources = nullptr;
+				ID3D12Device*								_device = NULL;
 
 
 				std::map<std::shared_ptr<ITurboSceneMesh>, ComPtr<ID3D12Resource>>		_sceneVertexTargetResources;
@@ -61,26 +61,26 @@ namespace Turbo
 				std::map<std::string, ComPtr<ID3D12Resource>>							_sceneTextureTargetResources;
 				std::map<std::string, ComPtr<ID3D12Resource>>							_sceneTextureSourceResources;
 
-				std::map<std::shared_ptr<ITurboSceneObject>, int>						_sceneObjectOffsets;
-				int																		_sceneObjectCount;
-				std::map<std::shared_ptr<ITurboSceneMesh>, int>							_sceneObjectMeshOffsets;
-				int																		_sceneObjectMeshCount;
-				std::map<std::string, int>												_sceneObjectTextureOffsets;
-				int																		_sceneObjectTextureCount;
+				std::map<std::shared_ptr<ITurboSceneObject>, UINT>						_sceneObjectOffsets;
+				UINT																	_sceneObjectCount;
+				std::map<std::shared_ptr<ITurboSceneMesh>, UINT>						_sceneObjectMeshOffsets;
+				UINT																	_sceneObjectMeshCount;
+				std::map<std::string, UINT>												_sceneObjectTextureOffsets;
+				UINT																	_sceneObjectTextureCount;
 
 
-				ComPtr<ID3D12GraphicsCommandList>	_commandList;
-				ComPtr<ID3D12RootSignature>			_rootSignature;
-				ComPtr<ID3D12PipelineState>			_pipelineState;
+				ComPtr<ID3D12GraphicsCommandList>	_commandList = nullptr;
+				ComPtr<ID3D12RootSignature>			_rootSignature = nullptr;
+				ComPtr<ID3D12PipelineState>			_pipelineState = nullptr;
 
-				ComPtr<ID3D12DescriptorHeap>		_cbvSrvDescriptorHeap;
+				ComPtr<ID3D12DescriptorHeap>		_cbvSrvDescriptorHeap = nullptr;
 				UINT								_cbvSrvDescriptorSize;
-				ComPtr<ID3D12DescriptorHeap>		_samplerDescriptorHeap;
+				ComPtr<ID3D12DescriptorHeap>		_samplerDescriptorHeap = nullptr;
 
-				ComPtr<ID3D12Resource>				_constantBufferTargetResource;
-				SceneObjectConstantBuffer*			_constantBufferMappedResource;
-				SceneLightConstantBuffer*			_constantBufferLightData;
-				SceneConstantBuffer*				_constantBufferData;
+				ComPtr<ID3D12Resource>				_constantBufferTargetResource = nullptr;
+				SceneObjectConstantBuffer*			_constantBufferMappedResource = NULL;
+				SceneLightConstantBuffer*			_constantBufferLightData = NULL;
+				SceneConstantBuffer*				_constantBufferData = NULL;
 
 
 				D3D12_RECT							_scissorRect;

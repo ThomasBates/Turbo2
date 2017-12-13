@@ -27,11 +27,11 @@ namespace Turbo
 			virtual void SaveVector(std::string key, TurboVector3D value);
 			virtual void SaveString(std::string key, std::string value);
 
-			virtual bool LoadBoolean(std::string key);
-			virtual int LoadInteger(std::string key);
-			virtual float LoadFloat(std::string key);
-			virtual TurboVector3D LoadVector(std::string key);
-			virtual std::string LoadString(std::string key);
+			virtual bool LoadBoolean(std::string key, bool defaultValue);
+			virtual int LoadInteger(std::string key, int defaultValue);
+			virtual float LoadFloat(std::string key, float defaultValue);
+			virtual TurboVector3D LoadVector(std::string key, TurboVector3D defaultValue);
+			virtual std::string LoadString(std::string key, std::string defaultValue);
 
 		private:
 			std::map<std::string, std::string> _map;
