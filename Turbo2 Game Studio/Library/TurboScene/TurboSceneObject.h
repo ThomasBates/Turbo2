@@ -14,6 +14,9 @@ namespace Turbo
 			TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh);
 
 			//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
+			virtual SceneObjectPrimitiveType PrimitiveType() { return _primitiveType; }
+			virtual void PrimitiveType(SceneObjectPrimitiveType primitiveType) { _primitiveType = primitiveType; }
+
 			virtual	std::shared_ptr<ITurboSceneMesh> Mesh() { return _mesh; }
 			virtual void Mesh(std::shared_ptr<ITurboSceneMesh> mesh) { _mesh = mesh; }
 
@@ -37,6 +40,7 @@ namespace Turbo
 			virtual void PlaySound(float volume);
 
 		private:
+			SceneObjectPrimitiveType						_primitiveType;
 			std::shared_ptr<ITurboSceneMesh>				_mesh;
 			std::shared_ptr<ITurboSceneMaterial>			_material;
 			std::shared_ptr<ITurboSceneSoundEffect>			_hitSound;

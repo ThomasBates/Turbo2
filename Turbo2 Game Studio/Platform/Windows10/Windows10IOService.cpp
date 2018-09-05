@@ -25,6 +25,11 @@ Windows10IOService::Windows10IOService(std::shared_ptr<ITurboDebug> debug) :
 
 void Windows10IOService::SaveGameState(std::shared_ptr<ITurboGameState> gameState)
 {
+	if (gameState == nullptr)
+	{
+		return;
+	}
+
 	char* configFilePath = GetConfigFilePath();
 
 	std::ofstream out(configFilePath, std::ios::out);

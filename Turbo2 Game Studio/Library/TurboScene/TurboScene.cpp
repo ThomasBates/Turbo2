@@ -24,6 +24,16 @@ void Turbo::Scene::TurboScene::AddSceneObject(std::shared_ptr<ITurboSceneObject>
 	_sceneObjects.push_back(sceneObject);
 }
 
+void Turbo::Scene::TurboScene::AddSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite)
+{
+	_sceneSprites.push_back(sceneSprite);
+}
+
+void Turbo::Scene::TurboScene::AddSceneText(std::shared_ptr<ITurboSceneText> sceneText)
+{
+	_sceneTexts.push_back(sceneText);
+}
+
 //  ITurboScene Methods ------------------------------------------------------------------------------------------------
 //  Local Support Methods ----------------------------------------------------------------------------------------------
 

@@ -104,12 +104,12 @@ void Level01::BuildScene()
 
 	if (exitLocked)
 	{
-		_maze->Cell(_exitLocation)->RightWall.Type = ExitLocked;
+		_maze->Cell(_exitLocation)->RightWall.Type = CubicMazeCellWallType::ExitLocked;
 		_maze->Cell(_exitLocation)->RightWall.PortalIndex = 0;
 	}
 	else
 	{
-		_maze->Cell(_exitLocation)->RightWall.Type = Exit;
+		_maze->Cell(_exitLocation)->RightWall.Type = CubicMazeCellWallType::Exit;
 		_maze->Cell(_exitLocation)->RightWall.PortalIndex = 1;
 	}
 

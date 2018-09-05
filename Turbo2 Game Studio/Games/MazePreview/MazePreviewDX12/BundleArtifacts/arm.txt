@@ -1,0 +1,2 @@
+MainPackage=D:\Development\Turbo2 - DEV\Turbo2 Game Studio\Games\MazePreview\MazePreviewDX12\ARM\Release\MazePreviewDX12\MazePreviewDX12_0.1.6.0_ARM.appx
+SymbolPackage=D:\Development\Turbo2 - DEV\Turbo2 Game Studio\Games\MazePreview\MazePreviewDX12\AppPackages\MazePreviewUWP\MazePreviewDX12_0.1.6.0_Test\MazePreviewDX12_0.1.6.0_ARM.appxsym

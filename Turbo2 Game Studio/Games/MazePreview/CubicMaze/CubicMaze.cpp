@@ -78,7 +78,7 @@ void CubicMaze::AllocateMazeArray()
 				}
 
 				for (int k = 0; k < _size.D; k++)
-					_mazeArray[i][j][k] = CubicMazeCell(None);
+					_mazeArray[i][j][k] = CubicMazeCell(CubicMazeCellWallType::None);
 
 			}
 		}
@@ -111,6 +111,6 @@ void CubicMaze::ClearMazeArray()
 	for (int i = 0; i < _size.W; i++)
 	for (int j = 0; j < _size.H; j++)
 	for (int k = 0; k < _size.D; k++)
-		_mazeArray[i][j][k].Initialize(None);
+		_mazeArray[i][j][k].Initialize(CubicMazeCellWallType::None);
 }
 

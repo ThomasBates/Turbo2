@@ -14,6 +14,7 @@ CubicMazeSceneObject::CubicMazeSceneObject(std::shared_ptr<ITurboSceneMesh> mesh
 {
 	Mesh(mesh);
 	Material(material);
+	PrimitiveType(SceneObjectPrimitiveType::Mesh);
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------

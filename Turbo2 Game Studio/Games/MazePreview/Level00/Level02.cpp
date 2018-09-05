@@ -64,10 +64,10 @@ void Level02::Initialize()
 		&_mazeOptions, &_keys, &_hazards));
 
 	//	Create the passages between layers.
-	_maze->Cell(2, 0, 0)->BottomWall.Type = None;
-	_maze->Cell(2, 1, 0)->TopWall.Type = None;
-	_maze->Cell(0, 1, 2)->BottomWall.Type = None;
-	_maze->Cell(0, 2, 2)->TopWall.Type = None;
+	_maze->Cell(2, 0, 0)->BottomWall.Type = CubicMazeCellWallType::None;
+	_maze->Cell(2, 1, 0)->TopWall.Type = CubicMazeCellWallType::None;
+	_maze->Cell(0, 1, 2)->BottomWall.Type = CubicMazeCellWallType::None;
+	_maze->Cell(0, 2, 2)->TopWall.Type = CubicMazeCellWallType::None;
 
 	//	Create the exit.
 	_entranceLocation = CubicMazeLocation(0, 0, 2);
@@ -109,12 +109,12 @@ void Level02::BuildScene()
 
 	if (exitLocked)
 	{
-		_maze->Cell(_exitLocation)->BackWall.Type = ExitLocked;
+		_maze->Cell(_exitLocation)->BackWall.Type = CubicMazeCellWallType::ExitLocked;
 		_maze->Cell(_exitLocation)->BackWall.PortalIndex = 0;
 	}
 	else
 	{
-		_maze->Cell(_exitLocation)->BackWall.Type = Exit;
+		_maze->Cell(_exitLocation)->BackWall.Type = CubicMazeCellWallType::Exit;
 		_maze->Cell(_exitLocation)->BackWall.PortalIndex = 1;
 	}
 

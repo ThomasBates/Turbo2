@@ -10,6 +10,7 @@ using namespace Windows::Graphics::Display;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml::Controls;
 
+using namespace Turbo::Platform::DirectX12;
 using namespace Turbo::Platform::Windows10;
 
 namespace DisplayMetrics
@@ -65,8 +66,8 @@ namespace ScreenRotation
 		);
 };
 
-// Constructor for DeviceResources.
-Turbo::Platform::DirectX12::DeviceResources::DeviceResources() :
+// Constructor for DirectX12DeviceResources.
+DirectX12DeviceResources::DirectX12DeviceResources() :
 	m_currentFrame(0),
 	m_screenViewport(),
 	m_rtvDescriptorSize(0),
@@ -86,12 +87,12 @@ Turbo::Platform::DirectX12::DeviceResources::DeviceResources() :
 }
 
 // Configures resources that don't depend on the Direct3D device.
-void Turbo::Platform::DirectX12::DeviceResources::CreateDeviceIndependentResources()
+void DirectX12DeviceResources::CreateDeviceIndependentResources()
 {
 }
 
 // Configures the Direct3D device, and stores handles to it and the device context.
-void Turbo::Platform::DirectX12::DeviceResources::CreateDeviceResources()
+void DirectX12DeviceResources::CreateDeviceResources()
 {
 #if defined(_DEBUG)
 	// If the project is in a debug build, enable debugging via SDK Layers.
@@ -157,7 +158,7 @@ void Turbo::Platform::DirectX12::DeviceResources::CreateDeviceResources()
 }
 
 // These resources need to be recreated every time the window size is changed.
-void Turbo::Platform::DirectX12::DeviceResources::CreateWindowSizeDependentResources()
+void DirectX12DeviceResources::CreateWindowSizeDependentResources()
 {
 	// Wait until all previous GPU work is complete.
 	WaitForGpu();
@@ -200,7 +201,7 @@ void Turbo::Platform::DirectX12::DeviceResources::CreateWindowSizeDependentResou
 			// If the device was removed for any reason, a new device and swap chain will need to be created.
 			m_deviceRemoved = true;
 
-			// Do not continue execution of this method. DeviceResources will be destroyed and re-created.
+			// Do not continue execution of this method. DirectX12DeviceResources will be destroyed and re-created.
 			return;
 		}
 		else
@@ -361,7 +362,7 @@ void Turbo::Platform::DirectX12::DeviceResources::CreateWindowSizeDependentResou
 }
 
 // Determine the dimensions of the render target and whether it will be scaled down.
-void Turbo::Platform::DirectX12::DeviceResources::UpdateRenderTargetSize()
+void DirectX12DeviceResources::UpdateRenderTargetSize()
 {
 	m_effectiveDpi = m_dpi;
 
@@ -389,14 +390,14 @@ void Turbo::Platform::DirectX12::DeviceResources::UpdateRenderTargetSize()
 }
 
 // This method is called when the CoreWindow is created (or re-created).
-void Turbo::Platform::DirectX12::DeviceResources::SetWindow(CoreWindow^ window)
+void DirectX12DeviceResources::SetWindow(CoreWindow^ window)
 {
 	m_window = window;
 
 	UpdateDisplayInformation();
 }
 
-void Turbo::Platform::DirectX12::DeviceResources::UpdateDisplayInformation()
+void DirectX12DeviceResources::UpdateDisplayInformation()
 {
 	DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 
@@ -409,7 +410,7 @@ void Turbo::Platform::DirectX12::DeviceResources::UpdateDisplayInformation()
 }
 
 // This method is called in the event handler for the SizeChanged event.
-void Turbo::Platform::DirectX12::DeviceResources::SetLogicalSize(Windows::Foundation::Size logicalSize)
+void DirectX12DeviceResources::SetLogicalSize(Windows::Foundation::Size logicalSize)
 {
 	if (m_logicalSize != logicalSize)
 	{
@@ -419,7 +420,7 @@ void Turbo::Platform::DirectX12::DeviceResources::SetLogicalSize(Windows::Founda
 }
 
 // This method is called in the event handler for the DpiChanged event.
-void Turbo::Platform::DirectX12::DeviceResources::SetDpi(float dpi)
+void DirectX12DeviceResources::SetDpi(float dpi)
 {
 	if (dpi != m_dpi)
 	{
@@ -433,7 +434,7 @@ void Turbo::Platform::DirectX12::DeviceResources::SetDpi(float dpi)
 }
 
 // This method is called in the event handler for the OrientationChanged event.
-void Turbo::Platform::DirectX12::DeviceResources::SetCurrentOrientation(DisplayOrientations currentOrientation)
+void DirectX12DeviceResources::SetCurrentOrientation(DisplayOrientations currentOrientation)
 {
 	if (m_currentOrientation != currentOrientation)
 	{
@@ -443,7 +444,7 @@ void Turbo::Platform::DirectX12::DeviceResources::SetCurrentOrientation(DisplayO
 }
 
 // This method is called in the event handler for the DisplayContentsInvalidated event.
-void Turbo::Platform::DirectX12::DeviceResources::ValidateDevice()
+void DirectX12DeviceResources::ValidateDevice()
 {
 	// The D3D Device is no longer valid if the default adapter changed since the device
 	// was created or if the device has been removed.
@@ -475,7 +476,7 @@ void Turbo::Platform::DirectX12::DeviceResources::ValidateDevice()
 }
 
 // Present the contents of the swap chain to the screen.
-void Turbo::Platform::DirectX12::DeviceResources::Present()
+void DirectX12DeviceResources::Present()
 {
 	// The first argument instructs DXGI to block until VSync, putting the application
 	// to sleep until the next VSync. This ensures we don't waste any cycles rendering
@@ -497,7 +498,7 @@ void Turbo::Platform::DirectX12::DeviceResources::Present()
 }
 
 // Wait for pending GPU work to complete.
-void Turbo::Platform::DirectX12::DeviceResources::WaitForGpu()
+void DirectX12DeviceResources::WaitForGpu()
 {
 	// Schedule a Signal command in the queue.
 	ThrowIfFailed(m_commandQueue->Signal(m_fence.Get(), m_fenceValues[m_currentFrame]));
@@ -511,7 +512,7 @@ void Turbo::Platform::DirectX12::DeviceResources::WaitForGpu()
 }
 
 // Prepare to render the next frame.
-void Turbo::Platform::DirectX12::DeviceResources::MoveToNextFrame()
+void DirectX12DeviceResources::MoveToNextFrame()
 {
 	// Schedule a Signal command in the queue.
 	const UINT64 currentFenceValue = m_fenceValues[m_currentFrame];
@@ -533,7 +534,7 @@ void Turbo::Platform::DirectX12::DeviceResources::MoveToNextFrame()
 
 // This method determines the rotation between the display device's native Orientation and the
 // current display orientation.
-DXGI_MODE_ROTATION Turbo::Platform::DirectX12::DeviceResources::ComputeDisplayRotation()
+DXGI_MODE_ROTATION DirectX12DeviceResources::ComputeDisplayRotation()
 {
 	DXGI_MODE_ROTATION rotation = DXGI_MODE_ROTATION_UNSPECIFIED;
 
@@ -588,7 +589,7 @@ DXGI_MODE_ROTATION Turbo::Platform::DirectX12::DeviceResources::ComputeDisplayRo
 
 // This method acquires the first available hardware adapter that supports Direct3D 12.
 // If no such adapter can be found, *ppAdapter will be set to nullptr.
-void Turbo::Platform::DirectX12::DeviceResources::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
+void DirectX12DeviceResources::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter)
 {
 	ComPtr<IDXGIAdapter1> adapter;
 	*ppAdapter = nullptr;

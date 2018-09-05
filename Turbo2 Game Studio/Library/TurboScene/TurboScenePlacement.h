@@ -52,9 +52,9 @@ namespace Turbo
 			virtual void Move(TurboVector3D velocity);
 			virtual void Rotate(double x, double y, double z);
 			virtual void Rotate(TurboVector3D angularVelocity);
-			virtual void RotateX(double x);
-			virtual void RotateY(double y);
-			virtual void RotateZ(double z);
+			virtual void RotateX(double degrees);
+			virtual void RotateY(double degrees);
+			virtual void RotateZ(double degrees);
 
 			//virtual void Transform(TurboMatrix4x4 transform);
 			//virtual std::shared_ptr<ITurboScenePlacement> Clone();

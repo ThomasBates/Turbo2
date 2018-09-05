@@ -9,6 +9,7 @@
 #include <Level05.h>
 #include <Level00CubicMazeFactory.h>
 #include <CubicMazeMotionEffects_WithGravity.h>
+#include <CubicMazeMotionEffects_WithoutGravity.h>
 #include <CubicMazeSceneBuilder_Castle.h>
 #include <CubicMazeSceneBuilder_Laboratory.h>
 #include <CubicMazeSceneBuilder_Metal.h>
@@ -107,6 +108,7 @@ void Level00::Initialize()
 	//	Create the maze.
 	_maze = _mazeFactory->MakeMaze(0, 0, 0);
 	_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new CubicMazeMotionEffects_WithGravity(_maze));
+	//_motionEffects = std::shared_ptr<ITurboGameMotionEffects>(new CubicMazeMotionEffects_WithoutGravity());
 
 	_helper = std::shared_ptr<Level00Helper>(new Level00Helper(
 		_player, _maze, _motionEffects, _sceneBuilder, _objectInteractions,
@@ -402,10 +404,11 @@ void Level00::BuildScene()
 	if (_mazeOptions.LevelRound == 1)
 	{
 		_helper->CreateSign(_scene, CubicMazeLocation(4, 0, 3), CubicMazeCellWallSide::Front, "Level00Text00");
+		_helper->CreateSign(_scene, CubicMazeLocation(0, -1, 4), CubicMazeCellWallSide::Front, "Level00Text01");
 
 		if (_level01Unlocked)
 		{
-			_helper->CreateSign(_scene, CubicMazeLocation(0, 0, 4), CubicMazeCellWallSide::Left, "Level00Text01");
+			_helper->CreateSign(_scene, CubicMazeLocation(0, 0, 4), CubicMazeCellWallSide::Left, "Level00Text00");
 		}
 
 		if (_level02Unlocked)

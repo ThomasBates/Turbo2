@@ -45,5 +45,14 @@ namespace Turbo
 			unsigned short Vertex2;
 			unsigned short Vertex3;
 		};
+
+		enum SceneObjectPrimitiveType
+		{
+			None,
+			Mesh,
+			Model,
+			Cube,
+			Sphere
+		};
 	}
 }

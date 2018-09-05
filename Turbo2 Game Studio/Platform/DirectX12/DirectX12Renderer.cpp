@@ -51,7 +51,7 @@ bool DirectX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 
 	if (_deviceResources == nullptr)
 	{
-		_deviceResources = std::make_shared<DeviceResources>();
+		_deviceResources = std::make_shared<DirectX12DeviceResources>();
 		_deviceResources->SetWindow(CoreWindow::GetForCurrentThread());
 		_device = _deviceResources->GetD3DDevice();
 	}

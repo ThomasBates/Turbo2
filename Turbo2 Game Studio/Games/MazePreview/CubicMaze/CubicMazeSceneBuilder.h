@@ -43,7 +43,7 @@ private:
 	std::shared_ptr<ITurboSceneMaterial> _floorMaterial;
 	std::shared_ptr<ITurboSceneMaterial> _ceilingMaterial;
 
-	std::shared_ptr<ITurboSceneMaterial> _wallTypeMaterials[CellWallTypeCount];
+	std::shared_ptr<ITurboSceneMaterial> _wallTypeMaterials[CubicMazeCellWallType::CellWallTypeCount];
 
 	//	Local Support Methods ------------------------------------------------------------------------------------------
 	void BuildSceneObjects(std::shared_ptr<ITurboScene> scene, std::shared_ptr<CubicMaze> cubicMaze);

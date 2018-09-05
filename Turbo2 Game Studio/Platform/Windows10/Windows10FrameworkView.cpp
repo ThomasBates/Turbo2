@@ -11,6 +11,7 @@ using namespace Windows::ApplicationModel::Core;
 using namespace Windows::ApplicationModel::Activation;
 using namespace Windows::UI::Core;
 using namespace Windows::UI::Input;
+using namespace Windows::UI::ViewManagement;
 using namespace Windows::System;
 using namespace Windows::Foundation;
 using namespace Windows::Graphics::Display;
@@ -57,7 +58,8 @@ void Windows10FrameworkView::Initialize(CoreApplicationView^ applicationView)
 // Called when the CoreWindow object is created (or re-created).
 void Windows10FrameworkView::SetWindow(CoreWindow^ window)
 {
-	window->SizeChanged += 
+	//	Window event handlers
+	window->SizeChanged +=
 		ref new TypedEventHandler<CoreWindow^, WindowSizeChangedEventArgs^>(this, &Windows10FrameworkView::OnWindowSizeChanged);
 
 	window->VisibilityChanged +=
@@ -66,6 +68,19 @@ void Windows10FrameworkView::SetWindow(CoreWindow^ window)
 	window->Closed += 
 		ref new TypedEventHandler<CoreWindow^, CoreWindowEventArgs^>(this, &Windows10FrameworkView::OnWindowClosed);
 
+	//	Dispatcher event handlers
+	auto dispatcher = CoreWindow::GetForCurrentThread()->Dispatcher;
+
+	dispatcher->AcceleratorKeyActivated +=
+		ref new TypedEventHandler<CoreDispatcher^, AcceleratorKeyEventArgs^>(this, &Windows10FrameworkView::OnAcceleratorKeyActivated);
+
+	//	Navigation event handlers
+	auto navigation = Windows::UI::Core::SystemNavigationManager::GetForCurrentView();
+
+	navigation->BackRequested +=
+		ref new EventHandler<BackRequestedEventArgs^>(this, &Windows10FrameworkView::OnBackRequested);
+
+	//	DisplayInformation event handlers
 	DisplayInformation^ currentDisplayInformation = DisplayInformation::GetForCurrentView();
 
 	currentDisplayInformation->DpiChanged +=
@@ -112,7 +127,7 @@ void Windows10FrameworkView::Run()
 			_renderer->RenderScene(_game->Scene());
 
 			//	Play audio
-			_audio->PlaySounds(_game->Scene());
+			//_audio->PlaySounds(_game->Scene());
 		}
 		else
 		{
@@ -186,6 +201,36 @@ void Windows10FrameworkView::OnVisibilityChanged(CoreWindow^ sender, VisibilityC
 void Windows10FrameworkView::OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args)
 {
 	_windowClosed = true;
+}
+
+//	Dispatcher event handlers ------------------------------------------------------------------------------------------
+
+void Windows10FrameworkView::OnAcceleratorKeyActivated(CoreDispatcher^ sender, AcceleratorKeyEventArgs^ args)
+{
+	if (args->EventType == CoreAcceleratorKeyEventType::SystemKeyDown
+		&& args->VirtualKey == VirtualKey::Enter
+		&& args->KeyStatus.IsMenuKeyDown
+		&& !args->KeyStatus.WasKeyDown)
+	{
+		// Implements the classic ALT+ENTER fullscreen toggle
+		auto view = ApplicationView::GetForCurrentView();
+
+		if (view->IsFullScreenMode)
+			view->ExitFullScreenMode();
+		else
+			view->TryEnterFullScreenMode();
+
+		args->Handled = true;
+	}
+}
+
+//	Navigation event handlers ------------------------------------------------------------------------------------------
+
+void Windows10FrameworkView::OnBackRequested(Object^ sender, BackRequestedEventArgs^ args)
+{
+	// UWP on Xbox One triggers a back request whenever the B button is pressed
+	// which can result in the app being suspended if unhandled
+	args->Handled = true;
 }
 
 //	DisplayInformation event handlers ----------------------------------------------------------------------------------

@@ -46,7 +46,7 @@ namespace Turbo
 				std::shared_ptr<ITurboGameIOService>		_ioService = nullptr;
 
 				// Cached pointer to device resources.
-				std::shared_ptr<DeviceResources>			_deviceResources = nullptr;
+				std::shared_ptr<DirectX12DeviceResources>	_deviceResources = nullptr;
 				ID3D12Device*								_device = NULL;
 
 

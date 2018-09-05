@@ -1,0 +1,775 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>141d76ac-19f5-45bf-bf8a-34e92c5f4afe</UniqueIdentifier>
+      <Extensions>bmp;dds;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+    <Filter Include="Games">
+      <UniqueIdentifier>{e28097b4-04b7-45ee-97f2-619a0293a46e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\MazePreview">
+      <UniqueIdentifier>{514839ed-4471-492f-81b3-b28256215665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\MazePreview\Level00">
+      <UniqueIdentifier>{b6d411ec-922e-4aa9-91d3-b96b8a57f12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Games\MazePreview\CubicMaze">
+      <UniqueIdentifier>{3c803c65-e8b4-43f4-8b2b-45b6215495f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{37a96985-8a22-4470-b6e1-ac74ff4875b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboCore">
+      <UniqueIdentifier>{f651c6b2-6c29-4b0c-9754-47121a6002b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboCore\TurboDebug">
+      <UniqueIdentifier>{055429a6-9a34-4cb6-9225-60ffeca6e2f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboGame">
+      <UniqueIdentifier>{7af2d90d-57ed-4030-b3d5-f1cd168c7ee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboGraphics">
+      <UniqueIdentifier>{b4313144-ab23-4221-a48c-baa41f846839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboMath">
+      <UniqueIdentifier>{9d3909e5-1e2c-4ad8-ae20-c2064686f08d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\TurboScene">
+      <UniqueIdentifier>{7a8f1842-2f18-4a7c-90f6-51fbe2f463c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{11bda0e2-e3d7-4e13-9199-cabb904e67e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Textures">
+      <UniqueIdentifier>{f5e3a06e-54ff-47a4-aa24-a8b17eeeecda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Fonts">
+      <UniqueIdentifier>{cdb7691d-3863-4125-bad7-d52a8b65cd77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{5ff9276b-2fcd-45f5-9c9f-184901bfd5d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\Windows10">
+      <UniqueIdentifier>{1ab56a98-979d-4038-9fbb-bbcb0d6215d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\DirectX12TK">
+      <UniqueIdentifier>{edfcd0f1-e64f-48b8-87ee-1ca5ed1dc5ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\XAudio2">
+      <UniqueIdentifier>{8a80a4f8-c239-40d8-af38-6cf25c4be9d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Sounds">
+      <UniqueIdentifier>{c85a0650-584e-4a9a-83f1-857b16d652ad}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="..\MazePreview.cpp">
+      <Filter>Games\MazePreview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level00.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level00CubicMazeFactory.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level00Helper.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level00Player.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level01.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level02.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level03.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level04.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level05.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Level00\Level05CubicMazeFactory.cpp">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMaze.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeCornerMesh.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeEdgeMesh.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeFactory.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeMotionEffects.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeObjectInteractions.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSceneBuilder.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSceneBuilder_Castle.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSceneBuilder_Metal.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSceneObject.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeSignMesh.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CubicMaze\CubicMazeWallMesh.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboScene.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneMaterial.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneMesh.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneObject.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboScenePixelShader.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboScenePlacement.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneSoundEffect.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneTexture.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneVertexShader.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboMath\TurboMatrix4x4.cpp">
+      <Filter>Library\TurboMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboMath\TurboVector2D.cpp">
+      <Filter>Library\TurboMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboMath\TurboVector3D.cpp">
+      <Filter>Library\TurboMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboGraphics\TurboBitmap.cpp">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboGraphics\TurboCanvasRGB24.cpp">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboGraphics\TurboCanvasRGBA32.cpp">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
+      <Filter>Library\TurboGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboGame\TurboGameState.cpp">
+      <Filter>Library\TurboGame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebug.cpp">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.cpp">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneSprite.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneFont.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneText.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\XAudio2\XAudio2Audio.cpp">
+      <Filter>Platform\XAudio2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10GameApplication.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10GameController.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10IOService.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10NavigationControl.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10DebugFileLogger.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10FrameworkView.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\Windows10\Windows10FrameworkViewSource.cpp">
+      <Filter>Platform\Windows10</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\DirectX12TK\DirectX12TKRenderer.cpp">
+      <Filter>Platform\DirectX12TK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\DirectX12TK\DirectX12TKDeviceResources.cpp">
+      <Filter>Platform\DirectX12TK</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGame.cpp" />
+    <ClCompile Include="..\MazeTest.cpp">
+      <Filter>Games\MazePreview</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MazeTestLevel.cpp">
+      <Filter>Games\MazePreview</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="..\MazePreview.h">
+      <Filter>Games\MazePreview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level00.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level00CubicMazeFactory.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level00Helper.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level00Player.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level00Types.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level01.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level02.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level03.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level04.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level05.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Level00\Level05CubicMazeFactory.h">
+      <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMaze.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeCornerMesh.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeEdgeMesh.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeFactory.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeMotionEffects.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeMotionEffects_WithGravity.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeObjectInteractions.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSceneBuilder.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSceneBuilder_Castle.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSceneBuilder_Laboratory.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSceneBuilder_Metal.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSceneObject.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeSignMesh.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\CubicMazeWallMesh.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\ICubicMazeFactory.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\ICubicMazeMotionEffects.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\ICubicMazeObjectInteractions.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CubicMaze\ICubicMazeSceneBuilder.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboScene.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneBuilder.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneMaterial.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneMesh.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneObject.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboScenePixelShader.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboScenePlacement.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneSoundEffect.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneTexture.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneVertexShader.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboScene.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneAmbientLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneDirectionalLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneMaterial.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneMesh.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneObject.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboScenePixelShader.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboScenePlacement.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboScenePointLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneSoundEffect.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneSpotLight.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneTexture.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneTypes.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneVertexShader.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboMath\TurboMatrix4x4.h">
+      <Filter>Library\TurboMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboMath\TurboVector2D.h">
+      <Filter>Library\TurboMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboMath\TurboVector3D.h">
+      <Filter>Library\TurboMath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\ITurboCanvas.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\ITurboFont.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\ITurboImage.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\TurboBitmap.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\TurboCanvasRGB24.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\TurboCanvasRGBA32.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGraphics\TurboColor.h">
+      <Filter>Library\TurboGraphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGame.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameApplication.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameAudio.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameController.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameIOService.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameLevel.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameMotionEffects.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameRenderer.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameState.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\TurboGameMotionEffects.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\TurboGameState.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\TurboGameTypes.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\xIAnimate.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\xIGameObject.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\xIMaterial.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboGame\xIProgram.h">
+      <Filter>Library\TurboGame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\ITurboDebug.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\ITurboDebugLogger.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebug.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebugStream.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebugStreamBuf.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboCore\TurboDebug\TurboDebugTypes.h">
+      <Filter>Library\TurboCore\TurboDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneSprite.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneSprite.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneFont.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneFont.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\TurboSceneText.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Library\TurboScene\ITurboSceneText.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\XAudio2\XAudio2Audio.h">
+      <Filter>Platform\XAudio2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10GameApplication.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10GameController.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10Helpers.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10IOService.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10NavigationControl.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10Timer.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10DebugFileLogger.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10FrameworkView.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\Windows10\Windows10FrameworkViewSource.h">
+      <Filter>Platform\Windows10</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\DirectX12TK\DirectX12TKDeviceResources.h">
+      <Filter>Platform\DirectX12TK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\DirectX12TK\DirectX12TKRenderer.h">
+      <Filter>Platform\DirectX12TK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\DirectX12TK\d3dx12.h">
+      <Filter>Platform\DirectX12TK</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGame.h" />
+    <ClInclude Include="..\MazeTest.h">
+      <Filter>Games\MazePreview</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MazeTestLevel.h">
+      <Filter>Games\MazePreview</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\WideLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Resources\Textures\_sunset.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\_earth.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\_cat.dds">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleFloor.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleLocked.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleWall.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Hazard.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Key.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryCeiling.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryCorner.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryEdge.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryEntrance.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryExit.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryFloor.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryLocked.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\LaboratoryWall.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text00.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text01.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text02.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text03.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text04R1.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text04R2.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text04R3.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level00Text04R4.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level01Text00.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level01Text01.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level04Text01.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level04Text02.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level05Text00.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level05Text01.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level05Text10.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\Level05Text11.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalCeiling.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalCorner.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalEdge.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalEntrance.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalExit.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalFloor.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalLocked.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\MetalWall.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleCeiling.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleCorner.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleEdge.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleEntrance.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+    <Image Include="Resources\Textures\CastleExit.DDS">
+      <Filter>Resources\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MazePreviewDXTK12_TemporaryKey.pfx" />
+    <None Include="Resources\Fonts\SegoeUI_16_B.font">
+      <Filter>Resources\Fonts</Filter>
+    </None>
+    <None Include="Resources\Fonts\CourierNew_32.font">
+      <Filter>Resources\Fonts</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\Sounds\Locked.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Wall.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Complete.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Entrance.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Exit.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Fail.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+    <Media Include="Resources\Sounds\Key.wav">
+      <Filter>Resources\Sounds</Filter>
+    </Media>
+  </ItemGroup>
+</Project>

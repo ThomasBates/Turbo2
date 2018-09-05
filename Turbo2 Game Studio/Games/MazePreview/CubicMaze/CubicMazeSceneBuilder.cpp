@@ -99,6 +99,7 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 			BuildBackWall(	cubicMaze, scene, w, h, d, wallMesh, _backWallMaterial);
 			BuildFrontWall(	cubicMaze, scene, w, h, d, wallMesh, _frontWallMaterial);
 		}
+		//return;
 	}
 }
 
@@ -411,8 +412,8 @@ bool CubicMazeSceneBuilder::CellHasLeftWall(std::shared_ptr<CubicMaze> cubicMaze
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->LeftWall.Type == None) ||
-		(cell->LeftWall.Type == InvisibleWall))
+	if ((cell->LeftWall.Type == CubicMazeCellWallType::None) ||
+		(cell->LeftWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}
@@ -433,8 +434,8 @@ bool CubicMazeSceneBuilder::CellHasRightWall(std::shared_ptr<CubicMaze> cubicMaz
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->RightWall.Type == None) ||
-		(cell->RightWall.Type == InvisibleWall))
+	if ((cell->RightWall.Type == CubicMazeCellWallType::None) ||
+		(cell->RightWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}
@@ -455,8 +456,8 @@ bool CubicMazeSceneBuilder::CellHasTopWall(std::shared_ptr<CubicMaze> cubicMaze,
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->TopWall.Type == None) ||
-		(cell->TopWall.Type == InvisibleWall))
+	if ((cell->TopWall.Type == CubicMazeCellWallType::None) ||
+		(cell->TopWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}
@@ -477,8 +478,8 @@ bool CubicMazeSceneBuilder::CellHasBottomWall(std::shared_ptr<CubicMaze> cubicMa
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->BottomWall.Type == None) ||
-		(cell->BottomWall.Type == InvisibleWall))
+	if ((cell->BottomWall.Type == CubicMazeCellWallType::None) ||
+		(cell->BottomWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}
@@ -499,8 +500,8 @@ bool CubicMazeSceneBuilder::CellHasFrontWall(std::shared_ptr<CubicMaze> cubicMaz
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->FrontWall.Type == None) ||
-		(cell->FrontWall.Type == InvisibleWall))
+	if ((cell->FrontWall.Type == CubicMazeCellWallType::None) ||
+		(cell->FrontWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}
@@ -521,8 +522,8 @@ bool CubicMazeSceneBuilder::CellHasBackWall(std::shared_ptr<CubicMaze> cubicMaze
 
 	CubicMazeCell *cell = cubicMaze->Cell(w, h, d);
 
-	if ((cell->BackWall.Type == None) ||
-		(cell->BackWall.Type == InvisibleWall))
+	if ((cell->BackWall.Type == CubicMazeCellWallType::None) ||
+		(cell->BackWall.Type == CubicMazeCellWallType::InvisibleWall))
 	{
 		return false;
 	}

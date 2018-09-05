@@ -81,6 +81,9 @@
     <Filter Include="Games\MazePreview\Level00">
       <UniqueIdentifier>{1e0f0038-cdc3-4e86-80ad-bcbfad42a6d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\XAudio2">
+      <UniqueIdentifier>{2df1e91c-9a48-4644-ad76-2f48d2c524f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -151,9 +154,6 @@
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10NavigationControl.cpp">
       <Filter>Platform\Windows10</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Platform\Windows10\Windows10Platform.cpp">
-      <Filter>Platform\Windows10</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10GameApplication.cpp">
       <Filter>Platform\Windows10</Filter>
     </ClCompile>
@@ -220,12 +220,6 @@
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10Audio.cpp">
       <Filter>Platform\Windows10</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Platform\DirectX12\XAudio2Audio.cpp">
-      <Filter>Platform\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Platform\DirectX12\XAudio2AudioTest.cpp">
-      <Filter>Platform\DirectX12</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
       <Filter>Library\TurboGame</Filter>
     </ClCompile>
@@ -258,6 +252,12 @@
     </ClCompile>
     <ClCompile Include="..\Level00\Level05CubicMazeFactory.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\XAudio2\XAudio2Audio.cpp">
+      <Filter>Platform\XAudio2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Platform\XAudio2\XAudio2AudioTest.cpp">
+      <Filter>Platform\XAudio2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -380,9 +380,6 @@
       <Filter>Platform\Windows10</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10NavigationControl.h">
-      <Filter>Platform\Windows10</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Platform\Windows10\Windows10Platform.h">
       <Filter>Platform\Windows10</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameApplication.h">
@@ -520,12 +517,6 @@
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10Audio.h">
       <Filter>Platform\Windows10</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Platform\DirectX12\XAudio2Audio.h">
-      <Filter>Platform\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Platform\DirectX12\XAudio2AudioTest.h">
-      <Filter>Platform\DirectX12</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\Library\TurboGame\ITurboGameMotionEffects.h">
       <Filter>Library\TurboGame</Filter>
     </ClInclude>
@@ -570,6 +561,12 @@
     </ClInclude>
     <ClInclude Include="..\Level00\Level05CubicMazeFactory.h">
       <Filter>Games\MazePreview\Level00</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\XAudio2\XAudio2Audio.h">
+      <Filter>Platform\XAudio2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Platform\XAudio2\XAudio2AudioTest.h">
+      <Filter>Platform\XAudio2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

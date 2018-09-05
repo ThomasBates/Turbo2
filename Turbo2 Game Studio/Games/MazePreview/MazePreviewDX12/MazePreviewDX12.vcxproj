@@ -151,31 +151,31 @@
     <AppxPackageDir>D:\Development\Turbo2 - DEV\Turbo2 Game Studio\Games\MazePreview\MazePreviewDX12\AppPackages\MazePreviewUWP\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|Win32'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|x64'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|ARM'">
-    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..;..\CubicMaze;..\Level00;..\OriginalLevel;..\..\..\Library\TurboCore\TurboDebug;..\..\..\Library\TurboGame;..\..\..\Library\TurboGraphics;..\..\..\Library\TurboMath;..\..\..\Library\TurboScene;..\..\..\Platform\DirectX12;..\..\..\Platform\DirectX12\Shaders;..\..\..\Platform\XAudio2;..\..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
@@ -416,8 +416,6 @@
     <ClInclude Include="..\..\..\Platform\DirectX12\DirectX12DeviceResources.h" />
     <ClInclude Include="..\..\..\Platform\DirectX12\DirectX12Renderer.h" />
     <ClInclude Include="..\..\..\Platform\DirectX12\Shaders\DirectX12ShaderStructures.h" />
-    <ClInclude Include="..\..\..\Platform\DirectX12\XAudio2Audio.h" />
-    <ClInclude Include="..\..\..\Platform\DirectX12\XAudio2AudioTest.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10Audio.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10DebugFileLogger.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10FrameworkView.h" />
@@ -427,8 +425,9 @@
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10Helpers.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10IOService.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10NavigationControl.h" />
-    <ClInclude Include="..\..\..\Platform\Windows10\Windows10Platform.h" />
     <ClInclude Include="..\..\..\Platform\Windows10\Windows10Timer.h" />
+    <ClInclude Include="..\..\..\Platform\XAudio2\XAudio2Audio.h" />
+    <ClInclude Include="..\..\..\Platform\XAudio2\XAudio2AudioTest.h" />
     <ClInclude Include="..\CubicMaze\CubicMaze.h" />
     <ClInclude Include="..\CubicMaze\CubicMazeCornerMesh.h" />
     <ClInclude Include="..\CubicMaze\CubicMazeEdgeMesh.h" />
@@ -484,8 +483,6 @@
     <ClCompile Include="..\..\..\Library\TurboScene\TurboSceneVertexShader.cpp" />
     <ClCompile Include="..\..\..\Platform\DirectX12\DirectX12DeviceResources.cpp" />
     <ClCompile Include="..\..\..\Platform\DirectX12\DirectX12Renderer.cpp" />
-    <ClCompile Include="..\..\..\Platform\DirectX12\XAudio2Audio.cpp" />
-    <ClCompile Include="..\..\..\Platform\DirectX12\XAudio2AudioTest.cpp" />
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10Audio.cpp" />
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10DebugFileLogger.cpp" />
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10FrameworkView.cpp" />
@@ -494,7 +491,8 @@
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10GameController.cpp" />
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10IOService.cpp" />
     <ClCompile Include="..\..\..\Platform\Windows10\Windows10NavigationControl.cpp" />
-    <ClCompile Include="..\..\..\Platform\Windows10\Windows10Platform.cpp" />
+    <ClCompile Include="..\..\..\Platform\XAudio2\XAudio2Audio.cpp" />
+    <ClCompile Include="..\..\..\Platform\XAudio2\XAudio2AudioTest.cpp" />
     <ClCompile Include="..\CubicMaze\CubicMaze.cpp" />
     <ClCompile Include="..\CubicMaze\CubicMazeCornerMesh.cpp" />
     <ClCompile Include="..\CubicMaze\CubicMazeEdgeMesh.cpp" />

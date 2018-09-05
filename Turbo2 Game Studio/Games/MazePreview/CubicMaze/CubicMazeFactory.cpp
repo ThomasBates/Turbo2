@@ -10,8 +10,8 @@
 CubicMazeFactory::CubicMazeFactory(CubicMazeType cubicMazeType) :
 	_cubicMazeType(cubicMazeType)
 {
-	if (_cubicMazeType == Unknown)
-		_cubicMazeType = Cube;
+	if (_cubicMazeType == CubicMazeType::Unknown)
+		_cubicMazeType = CubicMazeType::Cube;
 }
 
 
@@ -70,13 +70,13 @@ std::shared_ptr<CubicMaze> CubicMazeFactory::MakeMaze(int width, int height, int
 	////	--------------	//
 	////	Now trace maze	//
 	////	--------------	//
-	//cubicMaze->Cell(location, CubicMazeCell(Wall));
+	//cubicMaze->Cell(location, CubicMazeCell(CubicMazeCellWallType::Wall));
 	//cubicMaze->Cell(location)->Used = true;
 	//++count;
 
 	for (int h = 0; h < size.H; h++)
 	{
-		cubicMaze->Cell(0, h, 0, CubicMazeCell(Wall));
+		cubicMaze->Cell(0, h, 0, CubicMazeCell(CubicMazeCellWallType::Wall));
 		cubicMaze->Cell(0, h, 0)->Used = true;
 		++count;
 
@@ -188,7 +188,7 @@ bool CubicMazeFactory::Move(CubicMazeDirection mask, std::shared_ptr<CubicMaze> 
 	}
 
 	CubicMazeCell *oldCell = cubicMaze->Cell(*location);
-	CubicMazeCell newCell = CubicMazeCell(Wall);
+	CubicMazeCell newCell = CubicMazeCell(CubicMazeCellWallType::Wall);
 	newCell.Used = true;
 
 	//	Move location in the determined direction.
@@ -196,38 +196,38 @@ bool CubicMazeFactory::Move(CubicMazeDirection mask, std::shared_ptr<CubicMaze> 
 	if (direction.left)
 	{
 		--location->W;
-		oldCell->LeftWall.Type = None;
-		newCell.RightWall.Type = None;
+		oldCell->LeftWall.Type = CubicMazeCellWallType::None;
+		newCell.RightWall.Type = CubicMazeCellWallType::None;
 	}
 	else if (direction.up)
 	{
 		--location->H;
-		oldCell->TopWall.Type = None;
-		newCell.BottomWall.Type = None;
+		oldCell->TopWall.Type = CubicMazeCellWallType::None;
+		newCell.BottomWall.Type = CubicMazeCellWallType::None;
 	}
 	else if (direction.back)
 	{
 		--location->D;
-		oldCell->BackWall.Type = None;
-		newCell.FrontWall.Type = None;
+		oldCell->BackWall.Type = CubicMazeCellWallType::None;
+		newCell.FrontWall.Type = CubicMazeCellWallType::None;
 	}
 	else if (direction.right)
 	{
 		++location->W;
-		oldCell->RightWall.Type = None;
-		newCell.LeftWall.Type = None;
+		oldCell->RightWall.Type = CubicMazeCellWallType::None;
+		newCell.LeftWall.Type = CubicMazeCellWallType::None;
 	}
 	else if (direction.down)
 	{
 		++location->H;
-		oldCell->BottomWall.Type = None;
-		newCell.TopWall.Type = None;
+		oldCell->BottomWall.Type = CubicMazeCellWallType::None;
+		newCell.TopWall.Type = CubicMazeCellWallType::None;
 	}
 	else if (direction.front)
 	{
 		++location->D;
-		oldCell->FrontWall.Type = None;
-		newCell.BackWall.Type = None;
+		oldCell->FrontWall.Type = CubicMazeCellWallType::None;
+		newCell.BackWall.Type = CubicMazeCellWallType::None;
 	}
 
 	cubicMaze->Cell(*location, newCell);

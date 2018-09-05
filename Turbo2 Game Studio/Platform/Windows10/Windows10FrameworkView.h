@@ -55,6 +55,12 @@ namespace Turbo
 				void OnVisibilityChanged(CoreWindow^ sender, VisibilityChangedEventArgs^ args);
 				void OnWindowClosed(CoreWindow^ sender, CoreWindowEventArgs^ args);
 
+				//	Dispatcher event handlers --------------------------------------------------------------------------
+				void OnAcceleratorKeyActivated(CoreDispatcher^ sender, AcceleratorKeyEventArgs^ args);
+
+				//	Navigation event handlers --------------------------------------------------------------------------
+				void OnBackRequested(Object^ sender, BackRequestedEventArgs^ args);
+
 				//	DisplayInformation event handlers ------------------------------------------------------------------
 				void OnDpiChanged(DisplayInformation^ sender, Object^ args);
 				void OnOrientationChanged(DisplayInformation^ sender, Object^ args);

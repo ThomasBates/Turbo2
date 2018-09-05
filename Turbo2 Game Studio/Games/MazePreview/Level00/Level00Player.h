@@ -3,6 +3,7 @@
 #include <pch.h>
 
 #include <ITurboSceneObject.h>
+#include <TurboSceneTypes.h>
 #include <Level00Types.h>
 
 using namespace Turbo::Math;
@@ -14,6 +15,9 @@ public:
 	Level00Player(Level00UserOptions* userOptions);
 
 	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
+	virtual SceneObjectPrimitiveType PrimitiveType() { return SceneObjectPrimitiveType::None; }
+	virtual void PrimitiveType(SceneObjectPrimitiveType primitivetype) {}
+
 	virtual	std::shared_ptr<ITurboSceneMesh> Mesh() { return _mesh; }
 	virtual void Mesh(std::shared_ptr<ITurboSceneMesh> mesh) { _mesh = mesh; }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/main_page_sample_time"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/instructionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimary"
+        android:textAlignment="center"
+        android:paddingTop="20dp"
+        android:text="@string/main_page_log_prompt"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/logEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:hint="Enter Activity"
+        android:inputType="text|textMultiLine|textCapSentences"
+        android:selectAllOnFocus="true"
+        android:paddingStart="20dp"
+        android:paddingEnd="0dp"
+        android:textSize="20sp"
+        android:drawableEnd="@drawable/unfold">
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/main_page_save_button"
+        android:textAllCaps="false"
+        android:textSize="20sp" />
+
+</LinearLayout>

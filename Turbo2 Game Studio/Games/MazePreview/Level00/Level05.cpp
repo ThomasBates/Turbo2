@@ -126,13 +126,13 @@ void Level05::Update(NavigationInfo navInfo)
 
 void Level05::BuildScene()
 {
-	_maze->Cell(_invertedMouseLocation)->BackWall.Type = Exit;
+	_maze->Cell(_invertedMouseLocation)->BackWall.Type = CubicMazeCellWallType::Exit;
 	_maze->Cell(_invertedMouseLocation)->BackWall.PortalIndex = 1;
 
-	_maze->Cell(_soundEffectsOnLocation)->BackWall.Type = Exit;
+	_maze->Cell(_soundEffectsOnLocation)->BackWall.Type = CubicMazeCellWallType::Exit;
 	_maze->Cell(_soundEffectsOnLocation)->BackWall.PortalIndex = 2;
 
-	_maze->Cell(_exitLocation)->FrontWall.Type = Exit;
+	_maze->Cell(_exitLocation)->FrontWall.Type = CubicMazeCellWallType::Exit;
 	_maze->Cell(_exitLocation)->FrontWall.PortalIndex = 3;
 
 

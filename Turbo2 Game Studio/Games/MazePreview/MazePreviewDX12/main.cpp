@@ -11,12 +11,12 @@
 #include <Windows10GameApplication.h>
 #include <Windows10IOService.h>
 #include <Windows10Audio.h>
-#include <Windows10Platform.h>
 
 #include <MazePreview.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::DirectX12;
+using namespace Turbo::Platform::XAudio2;
 using namespace Turbo::Platform::Windows10;
 
 //  The main function is only used to initialize our IFrameworkView class.

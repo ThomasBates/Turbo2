@@ -119,12 +119,12 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 			if ((dw == 0) && (dh == 0) && (dd == 0))	continue;
 
 			//	Don't try a neighboring cell if there is a wall in that direction.
-			if ((dw < 0) && (cell->LeftWall.Type	!= None)) continue;
-			if ((dw > 0) && (cell->RightWall.Type	!= None)) continue;
-			if ((dh < 0) && (cell->TopWall.Type		!= None)) continue;
-			if ((dh > 0) && (cell->BottomWall.Type	!= None)) continue;
-			if ((dd < 0) && (cell->BackWall.Type	!= None)) continue;
-			if ((dd > 0) && (cell->FrontWall.Type	!= None)) continue;
+			if ((dw < 0) && (cell->LeftWall.Type	!= CubicMazeCellWallType::None)) continue;
+			if ((dw > 0) && (cell->RightWall.Type	!= CubicMazeCellWallType::None)) continue;
+			if ((dh < 0) && (cell->TopWall.Type		!= CubicMazeCellWallType::None)) continue;
+			if ((dh > 0) && (cell->BottomWall.Type	!= CubicMazeCellWallType::None)) continue;
+			if ((dd < 0) && (cell->BackWall.Type	!= CubicMazeCellWallType::None)) continue;
+			if ((dd > 0) && (cell->FrontWall.Type	!= CubicMazeCellWallType::None)) continue;
 
 			InputArguments testInput = input;
 			testInput.location = CubicMazeLocation(
@@ -576,7 +576,7 @@ bool CubicMazeObjectInteractions::IsTouchingLeftSide(InputArguments* input, Outp
 		if ((output->contact.Y >= min.Y) && (output->contact.Y <= max.Y) &&
 			(output->contact.Z >= min.Z) && (output->contact.Z <= max.Z))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Left:  leaving\n";
@@ -619,7 +619,7 @@ bool CubicMazeObjectInteractions::IsTouchingRightSide(InputArguments* input, Out
 		if ((output->contact.Y >= min.Y) && (output->contact.Y <= max.Y) &&
 			(output->contact.Z >= min.Z) && (output->contact.Z <= max.Z))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Right:  leaving\n";
@@ -662,7 +662,7 @@ bool CubicMazeObjectInteractions::IsTouchingTopSide(InputArguments* input, Outpu
 		if ((output->contact.Z >= min.Z) && (output->contact.Z <= max.Z) &&
 			(output->contact.X >= min.X) && (output->contact.X <= max.X))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Top:  leaving\n";
@@ -706,7 +706,7 @@ bool CubicMazeObjectInteractions::IsTouchingBottomSide(InputArguments* input, Ou
 		if ((output->contact.Z >= min.Z) && (output->contact.Z <= max.Z) &&
 			(output->contact.X >= min.X) && (output->contact.X <= max.X))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Bottom:  leaving\n";
@@ -749,7 +749,7 @@ bool CubicMazeObjectInteractions::IsTouchingBackSide(InputArguments* input, Outp
 		if ((output->contact.X >= min.X) && (output->contact.X <= max.X) &&
 			(output->contact.Y >= min.Y) && (output->contact.Y <= max.Y))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Back:  leaving\n";
@@ -792,7 +792,7 @@ bool CubicMazeObjectInteractions::IsTouchingFrontSide(InputArguments* input, Out
 		if ((output->contact.X >= min.X) && (output->contact.X <= max.X) &&
 			(output->contact.Y >= min.Y) && (output->contact.Y <= max.Y))
 		{
-			if (input->cellWall.Type == None)
+			if (input->cellWall.Type == CubicMazeCellWallType::None)
 			{
 				output->isLeaving = true;
 				_debug->Send(debugInformation, debugInteractions) << "Front:  leaving\n";
