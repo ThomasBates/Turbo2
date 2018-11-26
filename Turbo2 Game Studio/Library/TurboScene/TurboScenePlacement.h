@@ -24,6 +24,7 @@ namespace Turbo
 
 		public:
 			TurboScenePlacement();
+			virtual ~TurboScenePlacement() {};
 
 			//  ITurboScenePlacement Properties --------------------------------------------------------------------------------
 			virtual TurboMatrix4x4	Transform() { return _transform; }

@@ -11,6 +11,7 @@ namespace Turbo
 		public:
 			//  Constructors ---------------------------------------------------------------------------------------------------
 			TurboScenePixelShader(std::string name);
+			virtual ~TurboScenePixelShader() {};
 
 			//  ITurboScenePixelShader Properties ------------------------------------------------------------------------------
 			virtual std::string Name() { return _name; }

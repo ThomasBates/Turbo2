@@ -11,6 +11,7 @@ namespace Turbo
 		public:
 			//  Constructors ---------------------------------------------------------------------------------------------------
 			TurboSceneTexture(std::string name);
+			virtual ~TurboSceneTexture() {};
 
 			//  ITurboSceneObjectTexture Properties ----------------------------------------------------------------------------
 			virtual std::string Name() { return _name; }

@@ -8,7 +8,7 @@
 
 Turbo::Scene::TurboSceneObject::TurboSceneObject()
 {
-	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
+    _placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
 Turbo::Scene::TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)

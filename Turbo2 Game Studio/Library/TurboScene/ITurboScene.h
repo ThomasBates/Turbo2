@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pch.h>
+
 #include <ITurboSceneLight.h>
 #include <ITurboSceneObject.h>
 #include <ITurboSceneSprite.h>

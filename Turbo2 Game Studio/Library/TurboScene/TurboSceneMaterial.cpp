@@ -1,6 +1,8 @@
 
 #include <pch.h>
 
+#include <memory>
+
 #include <TurboSceneMaterial.h>
 #include <TurboSceneTexture.h>
 #include <TurboScenePixelShader.h>

@@ -1,7 +1,6 @@
 
-#pragma once
-
 #include <pch.h>
+
 #include <TurboGameMotionEffects.h>
 
 using namespace Turbo::Game;
@@ -18,7 +17,7 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo navInfo, std::s
 	double deltaTime = navInfo.DeltaTime;
 	double time = navInfo.Time;
 
-	double moveSpeed = _moveAccelleration * deltaTime;
+	//  double moveSpeed = _moveAccelleration * deltaTime;
 
 	std::shared_ptr<ITurboScenePlacement> _placement = sceneObject->Placement();
 
@@ -53,7 +52,7 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo navInfo, std::s
 */
 	_placement->Velocity(velocity);
 
-	double rotateSpeed = _rotateAccelleration * deltaTime;
+	//  double rotateSpeed = _rotateAccelleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 

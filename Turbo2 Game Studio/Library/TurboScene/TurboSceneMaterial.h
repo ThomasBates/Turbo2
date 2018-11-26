@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pch.h>
+
 #include <ITurboSceneMaterial.h>
 #include <ITurboScenePixelShader.h>
 #include <ITurboSceneVertexShader.h>
