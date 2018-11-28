@@ -7,7 +7,6 @@ android_ndk_import_module_native_app_glue()
 add_library(AndroidNDK
   STATIC
     ../../../Platform/AndroidNDK/AndroidNDKGameApplication.cpp
-    ../../../Platform/AndroidNDK/AndroidNDKGameEngine.cpp
     ../../../Platform/AndroidNDK/AndroidNDKRenderer.cpp
     ../../../Platform/AndroidNDK/gestureDetector.cpp
     ../../../Platform/AndroidNDK/gl3stub.cpp
