@@ -53,25 +53,26 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
         {
             // Drawing is throttled to the screen update rate, so there
             // is no need to do timing here.
+            UpdateFPS();
+
             DrawFrame();
 
-//            //	Update the scene
-//            NavigationInfo navInfo = _controller->GetNavigationInfo();
-//            game->Update(navInfo);
-//
-//            if (game->SceneChanged())
-//            {
-//                _renderer->LoadSceneResources(game->Scene());
-////                _audio->LoadSceneResources(game->Scene());
-//            }
-//
-//            //	Render the Scene
-//            _renderer->RenderScene(game->Scene());
-//
-//            //	Play audio
-////            _audio->PlaySounds(game->Scene());
+            //	Update the scene
+            NavigationInfo navInfo = {};// = _controller->GetNavigationInfo();
+            navInfo.Time = _performance_monitor.GetCurrentTime();
+            game->Update(navInfo);
 
+            if (game->SceneChanged())
+            {
+                _renderer->LoadSceneResources(game->Scene());
+//                _audio->LoadSceneResources(game->Scene());
+            }
 
+            //	Render the Scene
+            _renderer->RenderScene(game->Scene());
+
+            //	Play audio
+//            _audio->PlaySounds(game->Scene());
         }
     }
 
@@ -133,11 +134,6 @@ bool AndroidNDKGameApplication::ProcessEvents()
  */
 void AndroidNDKGameApplication::DrawFrame()
 {
-    float fps;
-    if (_performance_monitor.Update(fps))
-    {
-        UpdateFPS(fps);
-    }
     double dTime = _performance_monitor.GetCurrentTime();
     renderer_.Update(dTime);
 
@@ -438,16 +434,20 @@ void AndroidNDKGameApplication::ShowUI()
     return;
 }
 
-void AndroidNDKGameApplication::UpdateFPS(float fps)
+void AndroidNDKGameApplication::UpdateFPS()
 {
-    JNIEnv* jni;
-    _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
+    float fps;
+    if (_performance_monitor.Update(fps))
+    {
+        JNIEnv *jni;
+        _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
 
-    // Default class retrieval
-    jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
-    jmethodID methodID = jni->GetMethodID(clazz, "updateFPS", "(F)V");
-    jni->CallVoidMethod(_android_app->activity->clazz, methodID, fps);
+        // Default class retrieval
+        jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
+        jmethodID methodID = jni->GetMethodID(clazz, "updateFPS", "(F)V");
+        jni->CallVoidMethod(_android_app->activity->clazz, methodID, fps);
 
-    _android_app->activity->vm->DetachCurrentThread();
+        _android_app->activity->vm->DetachCurrentThread();
+    }
     return;
 }

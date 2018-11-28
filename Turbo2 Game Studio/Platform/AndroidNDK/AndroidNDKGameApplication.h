@@ -91,7 +91,7 @@ namespace Turbo
 
                 bool ProcessEvents();
 
-                void UpdateFPS(float fps);
+                void UpdateFPS();
                 void ShowUI();
                 void TransformPosition(ndk_helper::Vec2& vec);
                 //  From AndroidNDKGameEngine  -----------------------------------------------------

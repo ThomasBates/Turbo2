@@ -115,9 +115,9 @@ class AndroidNDKRenderer : public ITurboGameRenderer
   virtual ~AndroidNDKRenderer();
 
     //	ITurboGameRenderer Methods -----------------------------------------------------------------------------
-    virtual void UpdateDisplayInformation() {}
-    virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene) {return false;}
-    virtual bool RenderScene(std::shared_ptr<ITurboScene> scene) {return false;}
+    virtual void UpdateDisplayInformation();
+    virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene);
+    virtual bool RenderScene(std::shared_ptr<ITurboScene> scene);
 
   void Init(const int32_t numX, const int32_t numY, const int32_t numZ);
   void Render();

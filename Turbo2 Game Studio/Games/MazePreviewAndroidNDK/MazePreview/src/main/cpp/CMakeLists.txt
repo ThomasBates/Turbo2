@@ -37,6 +37,7 @@ add_subdirectory(${turboSrc} ${turboBin})
 add_library(${PROJECT_NAME}
   SHARED
     android_main.cpp
+	TeapotGame.cpp
 	TeapotScene.cpp
 )
 

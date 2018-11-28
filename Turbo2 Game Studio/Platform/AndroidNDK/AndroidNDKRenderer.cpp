@@ -41,11 +41,32 @@ AndroidNDKRenderer::AndroidNDKRenderer()
 //--------------------------------------------------------------------------------
 AndroidNDKRenderer::~AndroidNDKRenderer() { Unload(); }
 
+//	ITurboGameRenderer Methods ---------------------------------------------------------------------
+
+void AndroidNDKRenderer::UpdateDisplayInformation()
+{
+
+}
+
+bool AndroidNDKRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
+{
+    //Init(8,8,8);
+    //Bind(&_tap_camera);
+
+    return true;
+}
+
+bool AndroidNDKRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
+{
+    return false;
+}
+
 //--------------------------------------------------------------------------------
 // Init
 //--------------------------------------------------------------------------------
 void AndroidNDKRenderer::Init(const int32_t numX, const int32_t numY,
-                              const int32_t numZ) {
+                              const int32_t numZ)
+{
     if (ndk_helper::GLContext::GetInstance()->GetGLVersion() >= 3.0) {
         geometry_instancing_support_ = true;
     } else if (ndk_helper::GLContext::GetInstance()->CheckExtension(
@@ -242,7 +263,8 @@ void AndroidNDKRenderer::Unload() {
 //--------------------------------------------------------------------------------
 // Update
 //--------------------------------------------------------------------------------
-void AndroidNDKRenderer::Update(float fTime) {
+void AndroidNDKRenderer::Update(float fTime)
+{
     const float CAM_X = 0.f;
     const float CAM_Y = 0.f;
     const float CAM_Z = 2000.f;
