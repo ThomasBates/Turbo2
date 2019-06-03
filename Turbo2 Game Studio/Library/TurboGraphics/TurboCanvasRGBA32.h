@@ -16,14 +16,16 @@ namespace Turbo
 			TurboColor	_color;
 
 		public:
+			virtual ~TurboGraphicObjectRGBA32() {}
+
 			//  Property Accessor Methods
 			virtual	TurboColor	GetColor() { return _color; }
 			virtual	void	SetColor(TurboColor color) { _color = color; }
 
 			//  Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue);
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue);
 			virtual	void	SetRGB(float red, float green, float blue);
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha);
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 			virtual void	SetRGBA(float red, float green, float blue, float alpha);
 		};
 
@@ -33,14 +35,16 @@ namespace Turbo
 			TurboGraphicObjectRGBA32 _go;
 			int		_style;
 		public:
+			virtual ~TurboBrushRGBA32() {}
+
 			//  IGraphicObject Property Accessor Methods
 			virtual	TurboColor	GetColor() { return _go.GetColor(); }
 			virtual	void	SetColor(TurboColor color) { _go.SetColor(color); }
 
 			//  IGraphicObject Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue) { _go.SetRGB(red, green, blue); }
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue) { _go.SetRGB(red, green, blue); }
 			virtual	void	SetRGB(float red, float green, float blue) { _go.SetRGB(red, green, blue); }
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha) { _go.SetRGBA(red, green, blue, alpha); }
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) { _go.SetRGBA(red, green, blue, alpha); }
 			virtual	void	SetRGBA(float red, float green, float blue, float alpha) { _go.SetRGBA(red, green, blue, alpha); }
 
 			//  IBrush Property Accessor Methods
@@ -55,14 +59,16 @@ namespace Turbo
 			int		_width;
 			int		_style;
 		public:
+			virtual ~TurboPenRGBA32() {}
+
 			//  IGraphicObject Property Accessor Methods
 			virtual	TurboColor	GetColor() { return _go.GetColor(); }
 			virtual	void	SetColor(TurboColor color) { _go.SetColor(color); }
 
 			//  IGraphicObject Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue) { _go.SetRGB(red, green, blue); }
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue) { _go.SetRGB(red, green, blue); }
 			virtual	void	SetRGB(float red, float green, float blue) { _go.SetRGB(red, green, blue); }
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha) { _go.SetRGBA(red, green, blue, alpha); }
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) { _go.SetRGBA(red, green, blue, alpha); }
 			virtual	void	SetRGBA(float red, float green, float blue, float alpha) { _go.SetRGBA(red, green, blue, alpha); }
 
 			//  IPen Property Accessor Methods
@@ -87,7 +93,7 @@ namespace Turbo
 			//  Constructors & Destructors
 			TurboCanvasRGBA32();
 			TurboCanvasRGBA32(int width, int height);
-			~TurboCanvasRGBA32();
+			virtual ~TurboCanvasRGBA32();
 
 			//  Property Accessor Methods
 			virtual void*	Data() { return (void*)_data; }

@@ -31,7 +31,7 @@ Turbo::Graphics::TurboBitmap::~TurboBitmap()
 void Turbo::Graphics::TurboBitmap::Data(void* data)
 {
 	_bmpFile = 0;
-	_data = (byte*)data;
+	_data = (unsigned char*)data;
 	if (_data)
 		_bmpFile = (BmpFile*)(_data + 2);
 }
@@ -125,8 +125,8 @@ void Turbo::Graphics::TurboBitmap::DrawBitmapSimple()
 {
 	_canvas->Clear();
 
-	byte *pixelData = ((byte*)_bmpFile) + _bmpFile->header.offset - 2;
-	byte *firstPixel = pixelData;
+	unsigned char *pixelData = ((unsigned char*)_bmpFile) + _bmpFile->header.offset - 2;
+	unsigned char *firstPixel = pixelData;
 
 	int pixelSize = _bmpFile->info.bitDepth / 8;
 	int realWidth = (_bmpFile->info.width * pixelSize);
@@ -140,7 +140,7 @@ void Turbo::Graphics::TurboBitmap::DrawBitmapSimple()
 	{
 		int yy = _bmpFile->info.height - 1 - y;
 
-		byte *rgb = pixelData + yy * realWidth + x * pixelSize;
+		unsigned char *rgb = pixelData + yy * realWidth + x * pixelSize;
 
 		if (pixelSize == 3)
 		{

@@ -9,10 +9,6 @@ Turbo::Game::TurboGameState::TurboGameState()
 {
 }
 
-Turbo::Game::TurboGameState::~TurboGameState()
-{
-}
-
 //  ITurboGameState Properties -----------------------------------------------------------------------------------------
 
 std::vector<std::string> Turbo::Game::TurboGameState::Keys()

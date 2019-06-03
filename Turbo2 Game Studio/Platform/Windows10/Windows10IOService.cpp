@@ -72,7 +72,7 @@ std::shared_ptr<ITurboGameState> Windows10IOService::LoadGameState()
 	return gameState;
 }
 
-std::vector<byte> Windows10IOService::ReadData(const std::wstring &filename)
+std::vector<unsigned char> Windows10IOService::ReadData(const std::wstring &filename)
 {
 	std::wstring fullPath = GetFullPath(filename);
 
@@ -112,7 +112,7 @@ std::vector<byte> Windows10IOService::ReadData(const std::wstring &filename)
 		throw std::exception();
 	}
 
-	std::vector<byte> outputBuffer = std::vector<byte>(fileInfo.EndOfFile.LowPart);
+	std::vector<unsigned char> outputBuffer = std::vector<unsigned char>(fileInfo.EndOfFile.LowPart);
 
 	if (!ReadFile(
 		file.Get(), 
@@ -127,31 +127,31 @@ std::vector<byte> Windows10IOService::ReadData(const std::wstring &filename)
 	return outputBuffer;
 }
 
-uint32 Windows10IOService::WriteData(const std::wstring &filename, std::vector<byte> fileData)
+int Windows10IOService::WriteData(const std::wstring &filename, std::vector<unsigned char> fileData)
 {
 	return 0;
 }
 
-task<std::vector<byte>> Windows10IOService::ReadDataAsync(const std::wstring &filename)
-{
-	auto folder = Package::Current->InstalledLocation;
+//task<std::vector<unsigned char>> Windows10IOService::ReadDataAsync(const std::wstring &filename)
+//{
+//	auto folder = Package::Current->InstalledLocation;
+//
+//	return create_task(folder->GetFileAsync(StringReference((wchar_t*)filename.c_str()))).then([=](StorageFile^ file)
+//	{
+//		return FileIO::ReadBufferAsync(file);
+//	}).then([](IBuffer^ fileBuffer) -> std::vector<unsigned char>
+//	{
+//		std::vector<unsigned char> returnBuffer;
+//		returnBuffer.resize(fileBuffer->Length);
+//		DataReader::FromBuffer(fileBuffer)->ReadBytes(ArrayReference<unsigned char>(returnBuffer.data(), fileBuffer->Length));
+//		return returnBuffer;
+//	});
+//}
 
-	return create_task(folder->GetFileAsync(StringReference((wchar_t*)filename.c_str()))).then([=](StorageFile^ file)
-	{
-		return FileIO::ReadBufferAsync(file);
-	}).then([](IBuffer^ fileBuffer) -> std::vector<byte>
-	{
-		std::vector<byte> returnBuffer;
-		returnBuffer.resize(fileBuffer->Length);
-		DataReader::FromBuffer(fileBuffer)->ReadBytes(ArrayReference<byte>(returnBuffer.data(), fileBuffer->Length));
-		return returnBuffer;
-	});
-}
-
-task<uint32> Windows10IOService::WriteDataAsync(const std::wstring &filename, std::vector<byte> fileData)
-{
-	return task<uint32>();
-}
+//task<uint32> Windows10IOService::WriteDataAsync(const std::wstring &filename, std::vector<unsigned char> fileData)
+//{
+//	return task<uint32>();
+//}
 
 std::wstring Windows10IOService::GetFullPath(std::wstring filename)
 {

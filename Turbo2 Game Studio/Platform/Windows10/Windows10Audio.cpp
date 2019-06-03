@@ -170,7 +170,7 @@ void Windows10Audio::LoadSceneObjectSoundEffects(std::shared_ptr<ITurboSceneObje
 
 void Windows10Audio::LoadSoundEffectData(std::string soundName, std::vector<unsigned char>* soundData)
 {
-	//std::vector<byte> fileData = _ioService->ReadData(ToWString(soundName + ".wav"));
+	//std::vector<unsigned char> fileData = _ioService->ReadData(ToWString(soundName + ".wav"));
 }
 
 //	Rendering Support Methods ------------------------------------------------------------------------------------------

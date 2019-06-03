@@ -83,11 +83,11 @@ void Level04::Initialize()
 	_levelState = TurboGameLevelState::Running;
 }
 
-void Level04::Update(NavigationInfo navInfo)
+void Level04::Update(NavigationInfo* navInfo)
 {
 	_sceneChanged = false;
 
-	bool rebuildScene = _helper->Update(&navInfo, &_levelState);
+	bool rebuildScene = _helper->Update(navInfo, &_levelState);
 
 	if (rebuildScene)
 	{

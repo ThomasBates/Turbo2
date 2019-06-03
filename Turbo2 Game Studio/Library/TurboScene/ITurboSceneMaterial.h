@@ -17,8 +17,8 @@ namespace Turbo
 		class ITurboSceneMaterial
 		{
 		public:
-			virtual TurboColor MeshColor() = 0;
-			virtual void MeshColor(TurboColor meshColor) = 0;
+			virtual TurboColor AmbientColor() = 0;
+			virtual void AmbientColor(TurboColor ambientColor) = 0;
 
 			virtual TurboColor DiffuseColor() = 0;
 			virtual void DiffuseColor(TurboColor diffuseColor) = 0;

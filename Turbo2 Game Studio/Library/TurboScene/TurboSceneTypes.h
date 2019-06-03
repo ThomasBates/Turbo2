@@ -30,6 +30,7 @@ namespace Turbo
 			bool	RollRight;
 			bool	Pause;
 			bool	Restart;
+			bool	Terminate;
 		};
 
 		struct TurboSceneVertex

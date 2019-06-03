@@ -36,7 +36,9 @@ namespace Turbo
 				//	ITurboGameRenderer Methods -------------------------------------------------------------------------
 				virtual void UpdateDisplayInformation();
 				virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene);
+				virtual void ReleaseSceneResources();
 				virtual bool RenderScene(std::shared_ptr<ITurboScene> scene);
+				virtual void Reset();
 
 			private:
 				// Constant buffers must be 256-byte aligned.
@@ -67,7 +69,7 @@ namespace Turbo
 				UINT																	_sceneObjectMeshCount;
 				std::map<std::string, UINT>												_sceneObjectTextureOffsets;
 				UINT																	_sceneObjectTextureCount;
-
+				bool																	_sceneResourcesLoaded;
 
 				ComPtr<ID3D12GraphicsCommandList>	_commandList = nullptr;
 				ComPtr<ID3D12RootSignature>			_rootSignature = nullptr;
@@ -92,7 +94,6 @@ namespace Turbo
 				//const UINT64 TexturePixelSize = 4U;
 
 				//	Local Support Methods --------------------------------------------------------------------------------------
-				void ReleaseSceneResources();
 				void CreateRootSignature();
 				void CreatePipelineStateObject();
 				void CreateCommandList();

@@ -21,7 +21,7 @@
 //}
 
 
-void Turbo::Graphics::TurboGraphicObjectRGB24::SetRGB(byte red, byte green, byte blue)
+void Turbo::Graphics::TurboGraphicObjectRGB24::SetRGB(unsigned char red, unsigned char green, unsigned char blue)
 {
 	_color = TurboColor(
 		red * 1.0 / 255.0,
@@ -39,7 +39,7 @@ void Turbo::Graphics::TurboGraphicObjectRGB24::SetRGB(float red, float green, fl
 		1.0);
 }
 
-void Turbo::Graphics::TurboGraphicObjectRGB24::SetRGBA(byte red, byte green, byte blue, byte alpha)
+void Turbo::Graphics::TurboGraphicObjectRGB24::SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha)
 {
 	_color = TurboColor(
 		red * 1.0 / 255.0,

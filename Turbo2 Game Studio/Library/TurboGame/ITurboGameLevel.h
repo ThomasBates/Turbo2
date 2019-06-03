@@ -33,7 +33,7 @@ namespace Turbo
 			//	ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 			virtual void	Initialize() = 0;
 			virtual void	Finalize() = 0;
-			virtual void	Update(NavigationInfo navInfo) = 0;
+			virtual void	Update(NavigationInfo* navInfo) = 0;
 		};
 	}
 }

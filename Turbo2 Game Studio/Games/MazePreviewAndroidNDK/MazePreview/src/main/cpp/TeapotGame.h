@@ -35,7 +35,7 @@ public:
 	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();
 	virtual void Finalize() {}
-	virtual void Update(NavigationInfo navInfo);
+	virtual void Update(NavigationInfo* navInfo);
 
 private:
 	//	Injected Services ----------------------------------------------------------------------------------------------
@@ -46,6 +46,10 @@ private:
 	std::shared_ptr<ITurboSceneObject>	_player;
 	bool								_sceneChanged = false;
 	TurboGameLevelState					_levelState;
+
+	int32_t teapot_x_;
+	int32_t teapot_y_;
+	int32_t teapot_z_;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void BuildScene();

@@ -25,7 +25,9 @@ namespace Turbo
 				Windows10GameController();
 
 				//  ITurboGameController Methods -------------------------------------------------------------------------------
-				virtual NavigationInfo GetNavigationInfo();
+				virtual NavigationInfo* GetNavigationInfo();
+				virtual void Suspend() {};
+				virtual void Resume() {};
 
 			private:
 				Windows10NavigationControl^ _navigationControl;

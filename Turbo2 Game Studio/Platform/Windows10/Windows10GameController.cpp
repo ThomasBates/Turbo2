@@ -13,7 +13,7 @@ Turbo::Platform::Windows10::Windows10GameController::Windows10GameController()
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameController Methods ---------------------------------------------------------------------------------------
 
-NavigationInfo Turbo::Platform::Windows10::Windows10GameController::GetNavigationInfo()
+NavigationInfo* Turbo::Platform::Windows10::Windows10GameController::GetNavigationInfo()
 {
 	return _navigationControl->GetNavigationInfo();
 }

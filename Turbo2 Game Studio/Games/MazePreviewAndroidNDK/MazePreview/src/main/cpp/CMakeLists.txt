@@ -37,9 +37,10 @@ add_subdirectory(${turboSrc} ${turboBin})
 add_library(${PROJECT_NAME}
   SHARED
     android_main.cpp
-	TeapotGame.cpp
-	TeapotScene.cpp
-)
+		TeapotGame.cpp
+		TeapotMesh.cpp
+		TeapotPlayer.cpp
+        )
 
 set_target_properties(${PROJECT_NAME}
   PROPERTIES
@@ -56,6 +57,7 @@ set_target_properties(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
 		# ${CMAKE_CURRENT_SOURCE_DIR}
+		PUBLIC ${turboLibrary}/TurboCore/TurboDebug
 		PUBLIC ${turboLibrary}/TurboGame
 		PUBLIC ${turboLibrary}/TurboGraphics
 		PUBLIC ${turboLibrary}/TurboMath
@@ -66,7 +68,9 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     AndroidNDK
+	TurboCore
     TurboGame
-    TurboMath
+	TurboGraphics
+	TurboMath
     TurboScene
 )

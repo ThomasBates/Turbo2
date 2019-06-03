@@ -48,7 +48,7 @@ Turbo::Platform::Windows10::Windows10NavigationControl::Windows10NavigationContr
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  Public Access Methods ----------------------------------------------------------------------------------------------
 
-NavigationInfo Turbo::Platform::Windows10::Windows10NavigationControl::GetNavigationInfo()
+NavigationInfo* Turbo::Platform::Windows10::Windows10NavigationControl::GetNavigationInfo()
 {
 	//  Set TimeStamp for frame
 	_timer.Tick([&]()
@@ -57,7 +57,7 @@ NavigationInfo Turbo::Platform::Windows10::Windows10NavigationControl::GetNaviga
 		_navInfo.DeltaTime = _timer.GetElapsedSeconds();
 	});
 
-	return _navInfo;
+	return &_navInfo;
 }
 
 //  Public Access Methods ----------------------------------------------------------------------------------------------

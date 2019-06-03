@@ -19,7 +19,7 @@ namespace Turbo
 
 			//  ITurboGameMotionEffects Methods ------------------------------------------------------------------------
 			virtual void ProcessMotionEffects(
-				NavigationInfo navInfo,
+				NavigationInfo* navInfo,
 				std::shared_ptr<ITurboSceneObject> sceneObject,
 				bool isPlayer);
 

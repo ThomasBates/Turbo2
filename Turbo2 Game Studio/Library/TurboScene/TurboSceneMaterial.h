@@ -15,7 +15,7 @@ namespace Turbo
 		public:
 			//  Constructors and Destructors -----------------------------------------------------------------------------------
 			TurboSceneMaterial(
-				TurboColor meshColor,
+				TurboColor ambientColor,
 				TurboColor diffuseColor,
 				TurboColor specularColor,
 				float specularExponent,
@@ -23,7 +23,7 @@ namespace Turbo
 				std::shared_ptr<ITurboSceneVertexShader> vertexShader,
 				std::shared_ptr<ITurboScenePixelShader> pixelShader);
 			TurboSceneMaterial(
-				TurboColor meshColor,
+				TurboColor ambientColor,
 				TurboColor diffuseColor,
 				TurboColor specularColor,
 				float specularExponent,
@@ -32,10 +32,11 @@ namespace Turbo
 				std::string pixelShaderName);
 			TurboSceneMaterial(
 				std::string textureName);
+			virtual ~TurboSceneMaterial(){}
 
 			//  ITurboSceneObjectMaterial Properties ---------------------------------------------------------------------------
-			virtual TurboColor MeshColor() { return _meshColor; }
-			virtual void MeshColor(TurboColor meshColor) { _meshColor = meshColor; }
+			virtual TurboColor AmbientColor() { return _ambientColor; }
+			virtual void AmbientColor(TurboColor ambientColor) { _ambientColor = ambientColor; }
 
 			virtual TurboColor DiffuseColor() { return _diffuseColor; }
 			virtual void DiffuseColor(TurboColor diffuseColor) { _diffuseColor = diffuseColor; }
@@ -58,7 +59,7 @@ namespace Turbo
 			//  ITurboSceneObjectMaterial Methods ------------------------------------------------------------------------------
 
 		private:
-			TurboColor _meshColor;
+			TurboColor _ambientColor;
 			TurboColor _diffuseColor;
 			TurboColor _specularColor;
 			float _specularExponent;

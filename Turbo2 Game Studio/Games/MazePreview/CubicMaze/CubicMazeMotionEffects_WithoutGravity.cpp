@@ -25,7 +25,7 @@ CubicMazeMotionEffects_WithoutGravity::CubicMazeMotionEffects_WithoutGravity()
 
 //  ITurboGameState Methods --------------------------------------------------------------------------------------------
 
-void CubicMazeMotionEffects_WithoutGravity::ProcessMotionEffects(NavigationInfo navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
+void CubicMazeMotionEffects_WithoutGravity::ProcessMotionEffects(NavigationInfo* navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
 {
 	_baseMotionEffects->ProcessMotionEffects(navInfo, sceneObject, isPlayer);
 }

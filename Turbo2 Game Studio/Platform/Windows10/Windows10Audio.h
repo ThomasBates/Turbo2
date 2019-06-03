@@ -47,7 +47,7 @@ namespace Turbo
 				WAVEFORMATEX*								_sourceFormat;
 
 				std::map<std::string, int>					_sceneSoundEffectOffsets;
-				std::map<std::string, std::vector<byte>>	_sceneSoundEffectResources;
+				std::map<std::string, std::vector<unsigned char>>	_sceneSoundEffectResources;
 
 				//	Local Support Methods --------------------------------------------------------------------------------------
 				void CreateDeviceIndependentResources();

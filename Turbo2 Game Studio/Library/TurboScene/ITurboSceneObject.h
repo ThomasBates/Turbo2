@@ -39,7 +39,7 @@ namespace Turbo
 			virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() = 0;
 
 			//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
-			virtual void Update(NavigationInfo navInfo) = 0;
+			virtual void Update(NavigationInfo* navInfo) = 0;
 			virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal) = 0;
 			virtual void PlaySound(float volume) = 0;
 		};

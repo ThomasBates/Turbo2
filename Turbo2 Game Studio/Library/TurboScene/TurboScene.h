@@ -21,7 +21,7 @@ namespace Turbo
 		public:
 			//  Constructors and Destructors -----------------------------------------------------------------------------------
 			TurboScene();
-			~TurboScene();
+			virtual ~TurboScene();
 
 			//  ITurboScene Properties -----------------------------------------------------------------------------------------
 			virtual std::vector<std::shared_ptr<ITurboSceneObject>> SceneObjects() { return _sceneObjects; }

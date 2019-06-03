@@ -15,7 +15,7 @@ namespace Turbo
 		public:
 			//  Constructors & Destructors -------------------------------------------------------------------------------------
 			TurboGameState();
-			~TurboGameState();
+			virtual ~TurboGameState() {}
 
 			//  ITurboGameState Properties -------------------------------------------------------------------------------------
 			virtual std::vector<std::string> Keys();

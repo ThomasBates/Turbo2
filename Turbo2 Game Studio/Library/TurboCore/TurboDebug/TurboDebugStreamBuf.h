@@ -4,6 +4,7 @@
 #include <streambuf>
 
 #include <ITurboDebugLogger.h>
+#include <sstream>
 
 namespace Turbo
 {

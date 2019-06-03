@@ -14,6 +14,7 @@ namespace Turbo
 			//  Constructors and Destructors -----------------------------------------------------------------------------------
 			TurboSceneObject();
 			TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh);
+			virtual ~TurboSceneObject(){}
 
 			//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
 			virtual SceneObjectPrimitiveType PrimitiveType() { return _primitiveType; }
@@ -37,7 +38,7 @@ namespace Turbo
 			virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() { return _childSceneObjects; }
 
 			//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
-			virtual void Update(NavigationInfo navInfo) {}
+			virtual void Update(NavigationInfo* navInfo) {}
 			virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal);
 			virtual void PlaySound(float volume);
 

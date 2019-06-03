@@ -83,7 +83,7 @@ void Level05::Initialize()
 	_levelState = TurboGameLevelState::Running;
 }
 
-void Level05::Update(NavigationInfo navInfo)
+void Level05::Update(NavigationInfo* navInfo)
 {
 	_sceneChanged = false;
 

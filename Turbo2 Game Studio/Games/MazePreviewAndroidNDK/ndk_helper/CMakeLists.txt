@@ -5,23 +5,28 @@ include(AndroidNdkModules)
 android_ndk_import_module_native_app_glue()
 
 add_library(AndroidNDK
-  STATIC
-    ../../../Platform/AndroidNDK/AndroidNDKGameApplication.cpp
-    ../../../Platform/AndroidNDK/AndroidNDKRenderer.cpp
-    ../../../Platform/AndroidNDK/gestureDetector.cpp
-    ../../../Platform/AndroidNDK/gl3stub.cpp
-    ../../../Platform/AndroidNDK/GLContext.cpp
-    ../../../Platform/AndroidNDK/interpolator.cpp
-    ../../../Platform/AndroidNDK/JNIHelper.cpp
-    ../../../Platform/AndroidNDK/perfMonitor.cpp
-    ../../../Platform/AndroidNDK/sensorManager.cpp
-    ../../../Platform/AndroidNDK/shader.cpp
-    ../../../Platform/AndroidNDK/tapCamera.cpp
-    ../../../Platform/AndroidNDK/vecmath.cpp
-)
+        STATIC
+        ../../../Platform/AndroidNDK/AndroidGLRenderer.cpp
+        ../../../Platform/AndroidNDK/AndroidNDKAudio.cpp
+        ../../../Platform/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
+        ../../../Platform/AndroidNDK/AndroidNDKGameApplication.cpp
+        ../../../Platform/AndroidNDK/AndroidNDKGameController.cpp
+        ../../../Platform/AndroidNDK/AndroidNDKIOService.cpp
+        ../../../Platform/AndroidNDK/gestureDetector.cpp
+        ../../../Platform/AndroidNDK/gl3stub.cpp
+        ../../../Platform/AndroidNDK/GLContext.cpp
+        ../../../Platform/AndroidNDK/interpolator.cpp
+        ../../../Platform/AndroidNDK/JNIHelper.cpp
+        ../../../Platform/AndroidNDK/perfMonitor.cpp
+        ../../../Platform/AndroidNDK/sensorManager.cpp
+        ../../../Platform/AndroidNDK/shader.cpp
+        ../../../Platform/AndroidNDK/tapCamera.cpp
+        ../../../Platform/AndroidNDK/vecmath.cpp
+        )
 
 include_directories(../MazePreview/src/main/cpp)
 include_directories(../../../Platform/AndroidNDK/)
+include_directories(../../../Library/TurboCore/TurboDebug)
 include_directories(../../../Library/TurboGame)
 include_directories(../../../Library/TurboGraphics)
 include_directories(../../../Library/TurboMath)

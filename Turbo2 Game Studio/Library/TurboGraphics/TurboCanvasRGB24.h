@@ -21,9 +21,9 @@ namespace Turbo
 			virtual	void	SetColor(TurboColor color) { _color = color; }
 
 			//  Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue);
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue);
 			virtual	void	SetRGB(float red, float green, float blue);
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha);
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 			virtual void	SetRGBA(float red, float green, float blue, float alpha);
 		};
 
@@ -38,9 +38,9 @@ namespace Turbo
 			virtual	void	SetColor(TurboColor color) { _go.SetColor(color); }
 
 			//  IGraphicObject Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue) { _go.SetRGB(red, green, blue); }
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue) { _go.SetRGB(red, green, blue); }
 			virtual	void	SetRGB(float red, float green, float blue) { _go.SetRGB(red, green, blue); }
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha) { _go.SetRGBA(red, green, blue, alpha); }
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) { _go.SetRGBA(red, green, blue, alpha); }
 			virtual	void	SetRGBA(float red, float green, float blue, float alpha) { _go.SetRGBA(red, green, blue, alpha); }
 
 			//  IBrush Property Accessor Methods
@@ -60,9 +60,9 @@ namespace Turbo
 			virtual	void	SetColor(TurboColor color) { _go.SetColor(color); }
 
 			//  IGraphicObject Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue) { _go.SetRGB(red, green, blue); }
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue) { _go.SetRGB(red, green, blue); }
 			virtual	void	SetRGB(float red, float green, float blue) { _go.SetRGB(red, green, blue); }
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha) { _go.SetRGBA(red, green, blue, alpha); }
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) { _go.SetRGBA(red, green, blue, alpha); }
 			virtual	void	SetRGBA(float red, float green, float blue, float alpha) { _go.SetRGBA(red, green, blue, alpha); }
 
 			//  IPen Property Accessor Methods

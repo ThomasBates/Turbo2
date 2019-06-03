@@ -130,7 +130,7 @@ void Level00::Initialize()
 	//  ...
 }
 
-void Level00::Update(NavigationInfo navInfo)
+void Level00::Update(NavigationInfo* navInfo)
 {
 	_sceneChanged = false;
 

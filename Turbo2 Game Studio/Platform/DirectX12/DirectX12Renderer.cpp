@@ -77,35 +77,14 @@ bool DirectX12Renderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 	//	the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 	_deviceResources->WaitForGpu();
 
-	return true;
-}
-
-// Renders one frame using the vertex and pixel shaders.
-bool DirectX12Renderer::RenderScene(std::shared_ptr<ITurboScene> scene)
-{
-	auto commandQueue = _deviceResources->GetCommandQueue();
-	PIXBeginEvent(commandQueue, 0, L"Render");
-	{
-		UpdateProjectionMatrix();
-		UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
-
-		InitializeRendering();
-
-		PopulateCommandList(scene);
-
-		FinalizeRendering();
-	}
-	PIXEndEvent(commandQueue);
+	_sceneResourcesLoaded = true;
 
 	return true;
 }
-
-#pragma endregion
-#pragma region Local Support Methods -----------------------------------------------------------------------------------
 
 void DirectX12Renderer::ReleaseSceneResources()
 {
-	if (_deviceResources != nullptr) 
+	if (_deviceResources != nullptr)
 	{
 		_deviceResources->WaitForGpu();
 	}
@@ -143,7 +122,40 @@ void DirectX12Renderer::ReleaseSceneResources()
 	_cbvSrvDescriptorSize = 0;
 	_samplerDescriptorHeap = nullptr;
 
+	_sceneResourcesLoaded = false;
 }
+
+// Renders one frame using the vertex and pixel shaders.
+bool DirectX12Renderer::RenderScene(std::shared_ptr<ITurboScene> scene)
+{
+	if (!_sceneResourcesLoaded)
+	{
+		LoadSceneResources(scene);
+	}
+
+	auto commandQueue = _deviceResources->GetCommandQueue();
+	PIXBeginEvent(commandQueue, 0, L"Render");
+	{
+		UpdateProjectionMatrix();
+		UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
+
+		InitializeRendering();
+
+		PopulateCommandList(scene);
+
+		FinalizeRendering();
+	}
+	PIXEndEvent(commandQueue);
+
+	return true;
+}
+
+void DirectX12Renderer::Reset()
+{
+}
+
+#pragma endregion
+#pragma region Local Support Methods -----------------------------------------------------------------------------------
 
 void DirectX12Renderer::CreateRootSignature()
 {
@@ -189,8 +201,8 @@ void DirectX12Renderer::CreateRootSignature()
 
 void DirectX12Renderer::CreatePipelineStateObject()
 {
-	std::vector<byte> vertexShaderData = _ioService->ReadData(L"DX12VertexShader.cso");
-	std::vector<byte> pixelShaderData = _ioService->ReadData(L"DX12PixelShader.cso");
+	std::vector<unsigned char> vertexShaderData = _ioService->ReadData(L"DX12VertexShader.cso");
+	std::vector<unsigned char> pixelShaderData = _ioService->ReadData(L"DX12PixelShader.cso");
 
 
 	static const D3D12_INPUT_ELEMENT_DESC inputLayout[] =
@@ -599,7 +611,7 @@ void DirectX12Renderer::LoadTextureData(
 	std::vector<unsigned char> *textureData)
 {
 	std::shared_ptr<ITurboCanvas> canvas = std::shared_ptr<ITurboCanvas>(new TurboCanvasRGBA32());
-	std::vector<byte> fileData = _ioService->ReadData(ToWString(textureName + ".bmp"));
+	std::vector<unsigned char> fileData = _ioService->ReadData(ToWString(textureName + ".bmp"));
 	std::shared_ptr<ITurboImage> bitmap = std::shared_ptr<ITurboImage>(new TurboBitmap(canvas.get(), fileData.data()));
 	bitmap->Draw();
 

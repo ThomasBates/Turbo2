@@ -36,7 +36,7 @@ public:
 	virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() { return _childSceneObjects; };
 
 	//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
-	virtual void Update(NavigationInfo navInfo);
+	virtual void Update(NavigationInfo* navInfo);
 	virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal) { return false; };
 	virtual void PlaySound(float volume);
 

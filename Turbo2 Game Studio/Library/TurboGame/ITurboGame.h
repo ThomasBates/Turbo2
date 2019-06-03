@@ -4,8 +4,8 @@
 #include <pch.h>
 
 #include <ITurboGameLevel.h>
-#include <ITurboGameState.h>
-#include <ITurboGameController.h>
+//#include <ITurboGameState.h>
+//#include <ITurboGameController.h>
 
 namespace Turbo
 {
@@ -27,7 +27,7 @@ namespace Turbo
 		//	//	ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 		//	virtual void	Initialize() = 0;
 		//	virtual void	Finalize() = 0;
-		//	virtual void	Update(NavigationInfo navInfo) = 0;
+		//	virtual void	Update(NavigationInfo* navInfo) = 0;
 		};
 	}
 }

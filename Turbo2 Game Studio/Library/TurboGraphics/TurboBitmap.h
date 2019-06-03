@@ -81,7 +81,7 @@ namespace Turbo
 		class TurboBitmap : public ITurboImage
 		{
 		private:
-			byte*			_data;
+			unsigned char*			_data;
 			BmpFile*		_bmpFile;
 			ITurboCanvas*	_canvas;
 			int				_width;
@@ -95,7 +95,7 @@ namespace Turbo
 
 			//  Constructors
 			TurboBitmap(ITurboCanvas *canvas = 0, void *data = 0);
-			~TurboBitmap();
+			virtual ~TurboBitmap();
 
 			//  Property Accessor Methods
 			virtual	void*	Data() { return (void*)_data; }

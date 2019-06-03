@@ -71,7 +71,7 @@ namespace Turbo
 				XAUDIO2_BUFFER _buffer = { 0 };
 
 				std::map<std::string, int>					_sceneSoundEffectOffsets;
-				std::map<std::string, std::vector<byte>>	_sceneSoundEffectResources;
+				std::map<std::string, std::vector<unsigned char>>	_sceneSoundEffectResources;
 
 				std::map<std::string, WAVEFORMATEXTENSIBLE>	_sceneSoundEffectFormat;
 				std::map<std::string, XAUDIO2_BUFFER>		_sceneSoundEffectBuffer;

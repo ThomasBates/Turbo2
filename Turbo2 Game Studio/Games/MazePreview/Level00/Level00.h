@@ -44,7 +44,7 @@ public:
 	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();
 	virtual void Finalize() {}
-	virtual void Update(NavigationInfo navInfo);
+	virtual void Update(NavigationInfo* navInfo);
 
 private:
 	std::shared_ptr<ITurboDebug>		_debug;

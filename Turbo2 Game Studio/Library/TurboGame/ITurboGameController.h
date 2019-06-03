@@ -12,7 +12,9 @@ namespace Turbo
 		class ITurboGameController
 		{
 		public:
-			virtual NavigationInfo GetNavigationInfo() = 0;
+			virtual NavigationInfo* GetNavigationInfo() = 0;
+			virtual void Suspend() = 0;
+			virtual void Resume() = 0;
 		};
 	}
 }

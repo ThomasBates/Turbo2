@@ -7,6 +7,8 @@
 
 #include <TurboCanvasRGBA32.h>
 
+using namespace Turbo::Graphics;
+
 #define MIN(a,b)	((a)<(b)?(a):(b))
 #define MAX(a,b)	((a)>(b)?(a):(b))
 
@@ -20,7 +22,7 @@
 //}
 
 
-void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGB(byte red, byte green, byte blue)
+void TurboGraphicObjectRGBA32::SetRGB(unsigned char red, unsigned char green, unsigned char blue)
 {
 	_color = TurboColor(
 		red * 1.0 / 255.0,
@@ -29,7 +31,7 @@ void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGB(byte red, byte green, byt
 		1.0);
 }
 
-void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGB(float red, float green, float blue)
+void TurboGraphicObjectRGBA32::SetRGB(float red, float green, float blue)
 {
 	_color = TurboColor(
 		MIN(MAX(red, 0.0), 1.0),
@@ -38,7 +40,7 @@ void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGB(float red, float green, f
 		1.0);
 }
 
-void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGBA(byte red, byte green, byte blue, byte alpha)
+void TurboGraphicObjectRGBA32::SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha)
 {
 	_color = TurboColor(
 		red * 1.0 / 255.0,
@@ -47,7 +49,7 @@ void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGBA(byte red, byte green, by
 		alpha * 1.0 / 255.0);
 }
 
-void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGBA(float red, float green, float blue, float alpha)
+void TurboGraphicObjectRGBA32::SetRGBA(float red, float green, float blue, float alpha)
 {
 	_color = TurboColor(
 		MIN(MAX(red, 0.0), 1.0),
@@ -65,7 +67,7 @@ void Turbo::Graphics::TurboGraphicObjectRGBA32::SetRGBA(float red, float green, 
 //  Constructors & Destructors
 //  ============================================================================
 
-Turbo::Graphics::TurboCanvasRGBA32::TurboCanvasRGBA32()
+TurboCanvasRGBA32::TurboCanvasRGBA32()
 {
 	_data = 0;
 	_brush = new TurboBrushRGBA32();
@@ -74,7 +76,7 @@ Turbo::Graphics::TurboCanvasRGBA32::TurboCanvasRGBA32()
 	MoveTo(0, 0);
 }
 
-Turbo::Graphics::TurboCanvasRGBA32::TurboCanvasRGBA32(int width, int height)
+TurboCanvasRGBA32::TurboCanvasRGBA32(int width, int height)
 {
 	_data	= 0;
 	_width	= width;
@@ -92,7 +94,7 @@ Turbo::Graphics::TurboCanvasRGBA32::TurboCanvasRGBA32(int width, int height)
 	MoveTo(0, 0);
 }
 
-Turbo::Graphics::TurboCanvasRGBA32::~TurboCanvasRGBA32()
+TurboCanvasRGBA32::~TurboCanvasRGBA32()
 {
 	delete [] _data;
 }
@@ -101,7 +103,7 @@ Turbo::Graphics::TurboCanvasRGBA32::~TurboCanvasRGBA32()
 //  Property Accessor Methods
 //  ============================================================================
 
-void Turbo::Graphics::TurboCanvasRGBA32::Width(int width)
+void TurboCanvasRGBA32::Width(int width)
 {
 	if (width != _width)
 	{
@@ -118,7 +120,7 @@ void Turbo::Graphics::TurboCanvasRGBA32::Width(int width)
 	}
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::Height(int height)
+void TurboCanvasRGBA32::Height(int height)
 {
 	if (height != _height && height > 0)
 	{
@@ -140,13 +142,13 @@ void Turbo::Graphics::TurboCanvasRGBA32::Height(int height)
 //  ============================================================================
 
 /*
-void Turbo::Graphics::TurboCanvasRGBA32::GetSize(int *width, int *height)
+void TurboCanvasRGBA32::GetSize(int *width, int *height)
 {
 	*width	= _width;
 	*height	= _height;
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::SetSize(int width, int height)
+void TurboCanvasRGBA32::SetSize(int width, int height)
 {
 	if (_width	!= width ||
 		_height	!= height)
@@ -165,19 +167,19 @@ void Turbo::Graphics::TurboCanvasRGBA32::SetSize(int width, int height)
 	}
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::GetLocation(int *x, int *y)
+void TurboCanvasRGBA32::GetLocation(int *x, int *y)
 {
 	*x	= X;
 	*y	= Y;
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::SetLocation(int x, int y)
+void TurboCanvasRGBA32::SetLocation(int x, int y)
 {
 	MoveTo(x, y);
 }
 */
 
-void Turbo::Graphics::TurboCanvasRGBA32::SetPixel(int x, int y, TurboColor color)
+void TurboCanvasRGBA32::SetPixel(int x, int y, TurboColor color)
 {
 	if (x >= 0 && x < _width &&
 		y >= 0 && y < _height)
@@ -191,7 +193,7 @@ void Turbo::Graphics::TurboCanvasRGBA32::SetPixel(int x, int y, TurboColor color
 	}
 }
 
-Turbo::Graphics::TurboColor Turbo::Graphics::TurboCanvasRGBA32::GetPixel(int x, int y)
+TurboColor TurboCanvasRGBA32::GetPixel(int x, int y)
 {
 	TurboColor color = TurboColor();
 
@@ -209,13 +211,13 @@ Turbo::Graphics::TurboColor Turbo::Graphics::TurboCanvasRGBA32::GetPixel(int x, 
 	return color;
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::Clear()
+void TurboCanvasRGBA32::Clear()
 {
 	if (_data)
 		memset(_data, 0, _width * _height * 4);
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::Fill()
+void TurboCanvasRGBA32::Fill()
 {
 	TurboColor color = _brush->GetColor();
 	for (int offset = 0; offset < _width*_height*4; offset += 4)
@@ -227,13 +229,13 @@ void Turbo::Graphics::TurboCanvasRGBA32::Fill()
 	}
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::MoveTo(int x, int y)
+void TurboCanvasRGBA32::MoveTo(int x, int y)
 {
 	_x	= x;
 	_y	= y;
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::LineTo(int x, int y)
+void TurboCanvasRGBA32::LineTo(int x, int y)
 {
 	//int palette = AddColor(Pen.Color);
 	int yStep = 1;
@@ -298,30 +300,30 @@ void Turbo::Graphics::TurboCanvasRGBA32::LineTo(int x, int y)
 	_x = y;
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::CopyCanvas(ITurboCanvas *canvas, int left, int top, bool transparent)
+void TurboCanvasRGBA32::CopyCanvas(ITurboCanvas *canvas, int left, int top, bool transparent)
 {
 	canvas->CopyToBuffer(_data, _width, _height, left, top, transparent);
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::CopyToBuffer(void* buffer, bool transparent)
+void TurboCanvasRGBA32::CopyToBuffer(void* buffer, bool transparent)
 {
 	memcpy(buffer, _data, _width * _height * 4);
 }
 
-void Turbo::Graphics::TurboCanvasRGBA32::CopyToBuffer(void* buffer, int bufferWidth, int bufferHeight, int left, int top, bool transparent)
+void TurboCanvasRGBA32::CopyToBuffer(void* buffer, int bufferWidth, int bufferHeight, int left, int top, bool transparent)
 {
 	int xMin = MAX(0, -left);
 	int xMax = MIN(_width, bufferWidth - left) - 1;
 	int yMin = MAX(0, -top);
 	int yMax = MIN(_height, bufferHeight - top) - 1;
 
-	TurboColor color = TurboColor();
+	//TurboColor color = TurboColor();
 	//char *pcolor = (char*)(&color);
 
 	for (int y = yMin; y <= yMax; y++)
 	for (int x = xMin; x <= xMax; x++)
 	{
-		int offset = (x + y * _width) * 4;
+		//int offset = (x + y * _width) * 4;
 		//memcpy(pcolor, _data + offset, 4);
 
 		if (x >= 0 && x < bufferWidth &&

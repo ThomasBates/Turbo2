@@ -114,7 +114,7 @@ void Windows10FrameworkView::Run()
 			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
 
 			//	Update the scene
-			NavigationInfo navInfo = _controller->GetNavigationInfo();
+			NavigationInfo* navInfo = _controller->GetNavigationInfo();
 			_game->Update(navInfo);
 
 			if (_game->SceneChanged())

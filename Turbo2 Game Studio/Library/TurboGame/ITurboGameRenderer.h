@@ -15,7 +15,9 @@ namespace Turbo
 			//	ITurboGameRenderer Methods -----------------------------------------------------------------------------
 			virtual void UpdateDisplayInformation() = 0;
 			virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene) = 0;
+			virtual void ReleaseSceneResources() = 0;
 			virtual bool RenderScene(std::shared_ptr<ITurboScene> scene) = 0;
+			virtual void Reset() = 0;
 		};
 	}
 }

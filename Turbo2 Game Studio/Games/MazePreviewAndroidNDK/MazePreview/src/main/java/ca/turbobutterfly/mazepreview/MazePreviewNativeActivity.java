@@ -123,7 +123,6 @@ public class MazePreviewNativeActivity extends NativeActivity {
                 _popupWindow.update();
 
                 _label = (TextView)popupView.findViewById(R.id.textViewFPS);
-
             }});
     }
 

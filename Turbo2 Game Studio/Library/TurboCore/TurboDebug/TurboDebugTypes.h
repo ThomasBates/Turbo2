@@ -21,9 +21,9 @@ namespace Turbo
 			{
 				switch (severity)
 				{
-				case debugError:		return "Error";
-				case debugWarning:		return "Warning";
-				case debugInformation:	return "Information";
+					case debugError:		return "Error";
+					case debugWarning:		return "Warning";
+					case debugInformation:	return "Information";
 				}
 				return "Unknown Debug Severity";
 			}
@@ -32,6 +32,7 @@ namespace Turbo
 
 			enum TurboDebugCategory
 			{
+				debugStartup,
 				debugInteractions
 			};
 
@@ -39,7 +40,8 @@ namespace Turbo
 			{
 				switch (category)
 				{
-				case debugInteractions: return "Interactions";
+					case debugStartup: return "Startup";
+					case debugInteractions: return "Interactions";
 				}
 				return "Unknown Debug Category";
 			}

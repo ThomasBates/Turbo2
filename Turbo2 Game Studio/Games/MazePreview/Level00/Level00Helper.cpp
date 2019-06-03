@@ -193,8 +193,8 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 	//  Update player
 	if (*levelState == TurboGameLevelState::Failing)
 	{
-		_player->Update(*navInfo);
-		_motionEffects->ProcessMotionEffects(*navInfo, _player, true);
+		_player->Update(navInfo);
+		_motionEffects->ProcessMotionEffects(navInfo, _player, true);
 
 		UpdateKeys(&npcNavInfo, "Key", false);
 		UpdateHazards(&npcNavInfo, "Fail", false);
@@ -207,8 +207,8 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 		return rebuildScene;
 	}
 
-	_player->Update(*navInfo);
-	_motionEffects->ProcessMotionEffects(*navInfo, _player, true);
+	_player->Update(navInfo);
+	_motionEffects->ProcessMotionEffects(navInfo, _player, true);
 
 	//	Just a precaution in case the player leaves the boundary of the maze.
 	//	If so, force a restart of the maze.
@@ -242,7 +242,7 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 
 	//  Check for collisions
 	int portalIndex = 0;
-	_objectInteractions->ProcessObjectInteractions(*navInfo, _maze, _player, true, &portalIndex);
+	_objectInteractions->ProcessObjectInteractions(navInfo, _maze, _player, true, &portalIndex);
 
 	if (portalIndex == 1)
 	{
@@ -252,7 +252,7 @@ bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelSt
 	return rebuildScene;
 }
 
-bool Level00Helper::UpdateKeys(NavigationInfo * navInfo, std::string keyHitSoundName, bool doHitTest)
+bool Level00Helper::UpdateKeys(NavigationInfo* navInfo, std::string keyHitSoundName, bool doHitTest)
 {
 	if (_keys == NULL)
 	{
@@ -272,11 +272,11 @@ bool Level00Helper::UpdateKeys(NavigationInfo * navInfo, std::string keyHitSound
 		{
 			key->Placement()->Velocity(key->Placement()->Velocity().Normalize());
 
-			_motionEffects->ProcessMotionEffects(*navInfo, key, false);
+			_motionEffects->ProcessMotionEffects(navInfo, key, false);
 
-			_objectInteractions->ProcessKeyHazardInteractions(*navInfo, key, _keys, _hazards);
+			_objectInteractions->ProcessKeyHazardInteractions(navInfo, key, _keys, _hazards);
 
-			_objectInteractions->ProcessObjectInteractions(*navInfo, _maze, key, false, &portalIndex);
+			_objectInteractions->ProcessObjectInteractions(navInfo, _maze, key, false, &portalIndex);
 		}
 
 		if (doHitTest)
@@ -316,11 +316,11 @@ bool Level00Helper::UpdateHazards(NavigationInfo* navInfo, std::string hazardHit
 		{
 			hazard->Placement()->Velocity(hazard->Placement()->Velocity().Normalize());
 
-			_motionEffects->ProcessMotionEffects(*navInfo, hazard, false);
+			_motionEffects->ProcessMotionEffects(navInfo, hazard, false);
 
-			_objectInteractions->ProcessKeyHazardInteractions(*navInfo, hazard, _keys, _hazards);
+			_objectInteractions->ProcessKeyHazardInteractions(navInfo, hazard, _keys, _hazards);
 
-			_objectInteractions->ProcessObjectInteractions(*navInfo, _maze, hazard, false, &portalIndex);
+			_objectInteractions->ProcessObjectInteractions(navInfo, _maze, hazard, false, &portalIndex);
 		}
 
 		if (doHitTest)

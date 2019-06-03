@@ -61,7 +61,7 @@ namespace Turbo
 				ComPtr<IXAudio2>							_XAudio2;
 				IXAudio2MasteringVoice*						_pMasterVoice = NULL;
 
-				std::map<std::string, std::vector<byte>>	_sceneSoundEffectResources;
+				std::map<std::string, std::vector<unsigned char>>	_sceneSoundEffectResources;
 
 				std::map<std::string, WAVEFORMATEXTENSIBLE>	_sceneSoundEffectFormat;
 				std::map<std::string, XAUDIO2_BUFFER>		_sceneSoundEffectBuffer;

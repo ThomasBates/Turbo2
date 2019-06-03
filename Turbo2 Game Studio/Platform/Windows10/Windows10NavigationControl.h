@@ -26,7 +26,7 @@ namespace Turbo
 				Windows10NavigationControl();
 
 				//  Public Access Methods --------------------------------------------------------------------------------------
-				NavigationInfo GetNavigationInfo();
+				NavigationInfo* GetNavigationInfo();
 
 			private:
 				NavigationInfo _navInfo;

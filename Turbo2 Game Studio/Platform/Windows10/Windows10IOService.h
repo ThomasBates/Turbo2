@@ -25,11 +25,11 @@ namespace Turbo
 				virtual std::shared_ptr<ITurboGameState> LoadGameState();
 
 				virtual std::wstring GetFullPath(std::wstring filename);
-				virtual std::vector<byte> ReadData(const std::wstring &filename);
-				virtual uint32 WriteData(const std::wstring &filename, std::vector<byte> fileData);
+				virtual std::vector<unsigned char> ReadData(const std::wstring &filename);
+				virtual int WriteData(const std::wstring &filename, std::vector<unsigned char> fileData);
 
-				virtual Concurrency::task<std::vector<byte>> ReadDataAsync(const std::wstring &filename);
-				virtual Concurrency::task<uint32> WriteDataAsync(const std::wstring &filename, std::vector<byte> fileData);
+				//virtual Concurrency::task<std::vector<unsigned char>> ReadDataAsync(const std::wstring &filename);
+				//virtual Concurrency::task<uint32> WriteDataAsync(const std::wstring &filename, std::vector<unsigned char> fileData);
 
 			private:
 				std::shared_ptr<ITurboDebug> _debug;

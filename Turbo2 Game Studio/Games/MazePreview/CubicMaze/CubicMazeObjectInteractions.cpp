@@ -7,7 +7,7 @@ using namespace Turbo::Scene;
 
 
 void CubicMazeObjectInteractions::ProcessKeyHazardInteractions(
-	NavigationInfo navInfo, 
+	NavigationInfo* navInfo, 
 	std::shared_ptr<ITurboSceneObject> sceneObject, 
 	std::vector<std::shared_ptr<ITurboSceneObject>>* keys, 
 	std::vector<std::shared_ptr<ITurboSceneObject>>* hazards)
@@ -52,7 +52,7 @@ void CubicMazeObjectInteractions::ProcessKeyHazardInteractions(
 }
 
 void CubicMazeObjectInteractions::ProcessObjectInteractions(
-	NavigationInfo navInfo,
+	NavigationInfo* navInfo,
 	std::shared_ptr<CubicMaze> maze,
 	std::shared_ptr<ITurboSceneObject> sceneObject,
 	bool isPlayer,
@@ -60,7 +60,7 @@ void CubicMazeObjectInteractions::ProcessObjectInteractions(
 {
 	*pPortalIndex = 0;
 
-	double deltaTime = navInfo.DeltaTime;
+	double deltaTime = navInfo->DeltaTime;
 
 	//  Player-Maze Interactions
 	std::shared_ptr<ITurboScenePlacement> placement = sceneObject->Placement();

@@ -15,6 +15,7 @@ namespace Turbo
 			//	ITurboGameAudio Methods --------------------------------------------------------------------------------
 			virtual void UpdateAudioInformation() = 0;
 			virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene) = 0;
+			virtual void ReleaseSceneResources() = 0;
 			virtual bool PlaySounds(std::shared_ptr<ITurboScene> scene) = 0;
 		};
 	}

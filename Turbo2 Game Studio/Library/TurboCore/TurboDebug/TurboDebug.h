@@ -16,6 +16,7 @@ namespace Turbo
 			{
 			public:
 				TurboDebug(std::shared_ptr<ITurboDebugLogger> logger);
+				virtual ~TurboDebug(){}
 
 				virtual void Send(TurboDebugSeverity severity, TurboDebugCategory category, std::string message);
 				virtual TurboDebugStream& Send(TurboDebugSeverity severity, TurboDebugCategory category);

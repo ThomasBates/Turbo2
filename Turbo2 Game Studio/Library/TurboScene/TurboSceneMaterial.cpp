@@ -9,7 +9,7 @@
 #include <TurboSceneVertexShader.h>
 
 Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
-	TurboColor meshColor,
+	TurboColor ambientColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
 	float specularExponent,
@@ -17,7 +17,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	std::shared_ptr<ITurboSceneVertexShader> vertexShader,
 	std::shared_ptr<ITurboScenePixelShader> pixelShader)
 {
-	_meshColor = meshColor;
+	_ambientColor = ambientColor;
 	_diffuseColor = diffuseColor;
 	_specularColor = specularColor;
 	_specularExponent = specularExponent;
@@ -28,7 +28,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 }
 
 Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
-	TurboColor meshColor,
+	TurboColor ambientColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
 	float specularExponent,
@@ -36,7 +36,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	std::string vertexShaderName,
 	std::string pixelShaderName)
 {
-	_meshColor = meshColor;
+	_ambientColor = ambientColor;
 	_diffuseColor = diffuseColor;
 	_specularColor = specularColor;
 	_specularExponent = specularExponent;
@@ -49,7 +49,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::string textureName)
 {
 	//	Standard default values.
-	_meshColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);
+	_ambientColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);
 	_diffuseColor = TurboColor(0.8f, 0.8f, 0.8f, 1.0f);
 	_specularColor = TurboColor(0.3f, 0.3f, 0.3f, 1.0f);
 	_specularExponent = 1.0f;

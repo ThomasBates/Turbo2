@@ -16,20 +16,24 @@ namespace Turbo
 		class ITurboGraphicObject
 		{
 		public:
+			virtual ~ITurboGraphicObject() {}
+
 			//  Property Accessor Methods
 			virtual	TurboColor	GetColor() = 0;
 			virtual	void	SetColor(TurboColor color) = 0;
 
 			//  Public Access Methods
-			virtual	void	SetRGB(byte red, byte green, byte blue) = 0;
+			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue) = 0;
 			virtual	void	SetRGB(float red, float green, float blue) = 0;
-			virtual	void	SetRGBA(byte red, byte green, byte blue, byte alpha) = 0;
+			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) = 0;
 			virtual	void	SetRGBA(float red, float green, float blue, float alpha) = 0;
 		};
 
 		class ITurboBrush : public ITurboGraphicObject
 		{
 		public:
+			virtual ~ITurboBrush() {}
+
 			//  Property Accessor Methods
 			virtual	int		GetStyle() = 0;
 			virtual	void	SetStyle(int style) = 0;
@@ -38,6 +42,8 @@ namespace Turbo
 		class ITurboPen : public ITurboGraphicObject
 		{
 		public:
+			virtual ~ITurboPen() {}
+
 			//  Property Accessor Methods
 			virtual	int		Width() = 0;
 			virtual	void	Width(int width) = 0;
@@ -48,6 +54,8 @@ namespace Turbo
 		class ITurboCanvas
 		{
 		public:
+			virtual ~ITurboCanvas() {}
+
 			//  Property Accessor Methods
 			virtual void*	Data() = 0;
 			virtual void	Data(void* data) = 0;

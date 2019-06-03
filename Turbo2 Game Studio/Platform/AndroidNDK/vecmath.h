@@ -670,41 +670,25 @@ class Mat4 {
 
   Mat4& operator*=(const Mat4& rhs) {
     Mat4 ret;
-    ret.f_[0] = f_[0] * rhs.f_[0] + f_[4] * rhs.f_[1] + f_[8] * rhs.f_[2] +
-                f_[12] * rhs.f_[3];
-    ret.f_[1] = f_[1] * rhs.f_[0] + f_[5] * rhs.f_[1] + f_[9] * rhs.f_[2] +
-                f_[13] * rhs.f_[3];
-    ret.f_[2] = f_[2] * rhs.f_[0] + f_[6] * rhs.f_[1] + f_[10] * rhs.f_[2] +
-                f_[14] * rhs.f_[3];
-    ret.f_[3] = f_[3] * rhs.f_[0] + f_[7] * rhs.f_[1] + f_[11] * rhs.f_[2] +
-                f_[15] * rhs.f_[3];
+    ret.f_[0] = f_[0] * rhs.f_[0] + f_[4] * rhs.f_[1] + f_[8] * rhs.f_[2] + f_[12] * rhs.f_[3];
+    ret.f_[1] = f_[1] * rhs.f_[0] + f_[5] * rhs.f_[1] + f_[9] * rhs.f_[2] + f_[13] * rhs.f_[3];
+    ret.f_[2] = f_[2] * rhs.f_[0] + f_[6] * rhs.f_[1] + f_[10] * rhs.f_[2] + f_[14] * rhs.f_[3];
+    ret.f_[3] = f_[3] * rhs.f_[0] + f_[7] * rhs.f_[1] + f_[11] * rhs.f_[2] + f_[15] * rhs.f_[3];
 
-    ret.f_[4] = f_[0] * rhs.f_[4] + f_[4] * rhs.f_[5] + f_[8] * rhs.f_[6] +
-                f_[12] * rhs.f_[7];
-    ret.f_[5] = f_[1] * rhs.f_[4] + f_[5] * rhs.f_[5] + f_[9] * rhs.f_[6] +
-                f_[13] * rhs.f_[7];
-    ret.f_[6] = f_[2] * rhs.f_[4] + f_[6] * rhs.f_[5] + f_[10] * rhs.f_[6] +
-                f_[14] * rhs.f_[7];
-    ret.f_[7] = f_[3] * rhs.f_[4] + f_[7] * rhs.f_[5] + f_[11] * rhs.f_[6] +
-                f_[15] * rhs.f_[7];
+    ret.f_[4] = f_[0] * rhs.f_[4] + f_[4] * rhs.f_[5] + f_[8] * rhs.f_[6] + f_[12] * rhs.f_[7];
+    ret.f_[5] = f_[1] * rhs.f_[4] + f_[5] * rhs.f_[5] + f_[9] * rhs.f_[6] + f_[13] * rhs.f_[7];
+    ret.f_[6] = f_[2] * rhs.f_[4] + f_[6] * rhs.f_[5] + f_[10] * rhs.f_[6] + f_[14] * rhs.f_[7];
+    ret.f_[7] = f_[3] * rhs.f_[4] + f_[7] * rhs.f_[5] + f_[11] * rhs.f_[6] + f_[15] * rhs.f_[7];
 
-    ret.f_[8] = f_[0] * rhs.f_[8] + f_[4] * rhs.f_[9] + f_[8] * rhs.f_[10] +
-                f_[12] * rhs.f_[11];
-    ret.f_[9] = f_[1] * rhs.f_[8] + f_[5] * rhs.f_[9] + f_[9] * rhs.f_[10] +
-                f_[13] * rhs.f_[11];
-    ret.f_[10] = f_[2] * rhs.f_[8] + f_[6] * rhs.f_[9] + f_[10] * rhs.f_[10] +
-                 f_[14] * rhs.f_[11];
-    ret.f_[11] = f_[3] * rhs.f_[8] + f_[7] * rhs.f_[9] + f_[11] * rhs.f_[10] +
-                 f_[15] * rhs.f_[11];
+    ret.f_[8] = f_[0] * rhs.f_[8] + f_[4] * rhs.f_[9] + f_[8] * rhs.f_[10] + f_[12] * rhs.f_[11];
+    ret.f_[9] = f_[1] * rhs.f_[8] + f_[5] * rhs.f_[9] + f_[9] * rhs.f_[10] + f_[13] * rhs.f_[11];
+    ret.f_[10] = f_[2] * rhs.f_[8] + f_[6] * rhs.f_[9] + f_[10] * rhs.f_[10] + f_[14] * rhs.f_[11];
+    ret.f_[11] = f_[3] * rhs.f_[8] + f_[7] * rhs.f_[9] + f_[11] * rhs.f_[10] + f_[15] * rhs.f_[11];
 
-    ret.f_[12] = f_[0] * rhs.f_[12] + f_[4] * rhs.f_[13] + f_[8] * rhs.f_[14] +
-                 f_[12] * rhs.f_[15];
-    ret.f_[13] = f_[1] * rhs.f_[12] + f_[5] * rhs.f_[13] + f_[9] * rhs.f_[14] +
-                 f_[13] * rhs.f_[15];
-    ret.f_[14] = f_[2] * rhs.f_[12] + f_[6] * rhs.f_[13] + f_[10] * rhs.f_[14] +
-                 f_[14] * rhs.f_[15];
-    ret.f_[15] = f_[3] * rhs.f_[12] + f_[7] * rhs.f_[13] + f_[11] * rhs.f_[14] +
-                 f_[15] * rhs.f_[15];
+    ret.f_[12] = f_[0] * rhs.f_[12] + f_[4] * rhs.f_[13] + f_[8] * rhs.f_[14] + f_[12] * rhs.f_[15];
+    ret.f_[13] = f_[1] * rhs.f_[12] + f_[5] * rhs.f_[13] + f_[9] * rhs.f_[14] + f_[13] * rhs.f_[15];
+    ret.f_[14] = f_[2] * rhs.f_[12] + f_[6] * rhs.f_[13] + f_[10] * rhs.f_[14] + f_[14] * rhs.f_[15];
+    ret.f_[15] = f_[3] * rhs.f_[12] + f_[7] * rhs.f_[13] + f_[11] * rhs.f_[14] + f_[15] * rhs.f_[15];
 
     *this = ret;
     return *this;
