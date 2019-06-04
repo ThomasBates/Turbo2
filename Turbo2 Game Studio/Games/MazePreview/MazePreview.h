@@ -17,6 +17,7 @@ class MazePreview: public ITurboGame
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	MazePreview(std::shared_ptr<ITurboDebug> debug);
+	virtual ~MazePreview(){}
 
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Space Labyrinth"; }

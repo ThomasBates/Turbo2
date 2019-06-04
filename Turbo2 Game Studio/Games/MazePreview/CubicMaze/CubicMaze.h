@@ -166,7 +166,7 @@ private:
 public:
 	//	Constructors ---------------------------------------------------------------------------------------------------
 	CubicMaze(int width, int height, int depth);
-	~CubicMaze();
+	virtual ~CubicMaze();
 
 	//	Properties -----------------------------------------------------------------------------------------------------
 	//virtual CubicMazeCellArray3D MazeArray() { return _mazeArray; }

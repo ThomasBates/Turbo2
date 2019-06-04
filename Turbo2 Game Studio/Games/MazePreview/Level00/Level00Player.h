@@ -13,6 +13,7 @@ class Level00Player : public ITurboSceneObject
 {
 public:
 	Level00Player(Level00UserOptions* userOptions);
+	virtual ~Level00Player(){}
 
 	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
 	virtual SceneObjectPrimitiveType PrimitiveType() { return SceneObjectPrimitiveType::None; }

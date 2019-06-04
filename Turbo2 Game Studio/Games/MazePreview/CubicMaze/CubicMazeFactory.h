@@ -10,6 +10,7 @@ class CubicMazeFactory: public ICubicMazeFactory
 public:
 	//	Constructors ---------------------------------------------------------------------------------------------------
 	CubicMazeFactory(CubicMazeType cubicMazeType);
+	virtual ~CubicMazeFactory(){}
 
 	//	ICubicMazeFactory Methods --------------------------------------------------------------------------------------
 	virtual std::shared_ptr<CubicMaze> MakeMaze(int width, int height, int depth);

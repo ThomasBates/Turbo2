@@ -1,6 +1,4 @@
 
-#pragma once
-
 #include <pch.h>
 #include <CubicMazeMotionEffects.h>
 
@@ -20,7 +18,7 @@ void CubicMazeMotionEffects::ProcessMotionEffects(
 	double deltaTime = navInfo->DeltaTime;
 	double time = navInfo->Time;
 
-	double moveSpeed = _moveAccelleration * deltaTime;
+	//double moveSpeed = _moveAccelleration * deltaTime;
 
 	std::shared_ptr<ITurboScenePlacement> _placement = sceneObject->Placement();
 
@@ -55,7 +53,7 @@ void CubicMazeMotionEffects::ProcessMotionEffects(
 */
 	_placement->Velocity(velocity);
 
-	double rotateSpeed = _rotateAccelleration * deltaTime;
+	//double rotateSpeed = _rotateAccelleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 

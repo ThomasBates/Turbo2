@@ -11,6 +11,7 @@ namespace Turbo
 		public:
 			//  Constructors -------------------------------------------------------------------------------------------
 			TurboSceneSoundEffect(std::string name);
+			virtual ~TurboSceneSoundEffect(){}
 
 			//  ITurboSceneObjectSoundEffect Properties ----------------------------------------------------------------
 			virtual std::string Name() { return _name; }

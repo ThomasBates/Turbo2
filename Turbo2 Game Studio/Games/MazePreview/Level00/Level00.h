@@ -26,6 +26,7 @@ public:
 	Level00(std::shared_ptr<ITurboDebug> debug,
 		std::shared_ptr<ITurboSceneObject> player,
 		Level00UserOptions* userOptions);
+	virtual ~Level00(){}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Intro Level"; }

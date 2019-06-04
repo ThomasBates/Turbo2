@@ -11,7 +11,7 @@
 #include <AndroidNDKIOService.h>
 #include <AndroidNDKAudio.h>
 
-//#include <MazePreview.h>
+#include <MazePreview.h>
 #include <TeapotGame.h>
 
 using namespace Turbo::Core::Debug;
@@ -33,7 +33,8 @@ void android_main(android_app* app)
     std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new AndroidNDKAudio(debug, ioService));
 
     std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new AndroidNDKGameApplication(app, debug, controller, ioService, renderer, audio));
-    std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new TeapotGame());
+    //std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new TeapotGame());
+    std::shared_ptr<ITurboGame> game = std::shared_ptr<ITurboGame>(new MazePreview(debug));
 
     application->Run(game);
 }

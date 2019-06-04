@@ -151,31 +151,31 @@
     <AppxPackageDir>D:\Development\Turbo2 - DEV\Turbo2 Game Studio\Games\MazePreview\MazePreviewDX12\AppPackages\MazePreviewUWP\</AppxPackageDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|Win32'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|x64'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|ARM'">
-    <IncludePath>.;..\MazePreview;..\MazePreview\CubicMaze;..\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
+    <IncludePath>.;..\..\Games\MazePreview;..\..\Games\MazePreview\CubicMaze;..\..\Games\MazePreview\Level00;..\..\Library\TurboCore\TurboDebug;..\..\Library\TurboGame;..\..\Library\TurboGraphics;..\..\Library\TurboMath;..\..\Library\TurboScene;..\..\Platform\DirectX12;..\..\Platform\DirectX12\Shaders;..\..\Platform\XAudio2;..\..\Platform\Windows10;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
@@ -428,37 +428,39 @@
     <ClInclude Include="..\..\Platform\Windows10\Windows10Timer.h" />
     <ClInclude Include="..\..\Platform\XAudio2\XAudio2Audio.h" />
     <ClInclude Include="..\..\Platform\XAudio2\XAudio2AudioTest.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMaze.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeCornerMesh.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeEdgeMesh.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeFactory.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeObjectInteractions.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneObject.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSignMesh.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeWallMesh.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeFactory.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeMotionEffects.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h" />
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeSceneBuilder.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level00.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level00Helper.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level00Types.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level01.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level02.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level03.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level04.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level00CubicMazeFactory.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level00Player.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level05.h" />
-    <ClInclude Include="..\MazePreview\Level00\Level05CubicMazeFactory.h" />
-    <ClInclude Include="..\MazePreview\MazePreview.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMaze.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Flat.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneObject.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSignMesh.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeWallMesh.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeFactory.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeMotionEffects.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeSceneBuilder.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Helper.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Types.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level01.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level02.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level03.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level04.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00CubicMazeFactory.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Player.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level05.h" />
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level05CubicMazeFactory.h" />
+    <ClInclude Include="..\..\Games\MazePreview\MazePreview.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -493,32 +495,34 @@
     <ClCompile Include="..\..\Platform\Windows10\Windows10NavigationControl.cpp" />
     <ClCompile Include="..\..\Platform\XAudio2\XAudio2Audio.cpp" />
     <ClCompile Include="..\..\Platform\XAudio2\XAudio2AudioTest.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMaze.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeCornerMesh.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeEdgeMesh.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeFactory.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeObjectInteractions.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneObject.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSignMesh.cpp" />
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeWallMesh.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level00.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level00Helper.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level01.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level02.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level03.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level04.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level00CubicMazeFactory.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level00Player.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level05.cpp" />
-    <ClCompile Include="..\MazePreview\Level00\Level05CubicMazeFactory.cpp" />
-    <ClCompile Include="..\MazePreview\MazePreview.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMaze.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Flat.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneObject.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSignMesh.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeWallMesh.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00Helper.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level01.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level02.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level03.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level04.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00CubicMazeFactory.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00Player.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level05.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level05CubicMazeFactory.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\MazePreview.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

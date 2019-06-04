@@ -43,6 +43,7 @@ public:
 		_debug(debug)
 	{
 	}
+	virtual ~CubicMazeObjectInteractions(){}
 
 	//	Properties -----------------------------------------------------------------------------------------------------
 
@@ -91,7 +92,7 @@ private:
 	std::shared_ptr<ITurboDebug>		_debug;
 
 	const double	_buffer		= 0.25;
-	const double	_bounciness	= 0.25;
+//	const double	_bounciness	= 0.25;
 
 };
 

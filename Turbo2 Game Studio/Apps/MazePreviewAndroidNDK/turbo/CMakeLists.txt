@@ -5,10 +5,10 @@ cmake_minimum_required(VERSION 3.4.1)
 #android_ndk_import_module_native_app_glue()
 
 add_library(TurboCore
-  STATIC
-    ../../../Library/TurboCore/TurboDebug/TurboDebug.cpp
-    ../../../Library/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
-)
+        STATIC
+        ../../../Library/TurboCore/TurboDebug/TurboDebug.cpp
+        ../../../Library/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
+        )
 
 add_library(TurboGame
         STATIC
@@ -23,27 +23,27 @@ add_library(TurboGraphics
         )
 
 add_library(TurboMath
-  STATIC
-    ../../../Library/TurboMath/TurboMatrix4x4.cpp
-    ../../../Library/TurboMath/TurboVector2D.cpp
-    ../../../Library/TurboMath/TurboVector3D.cpp
-)
+        STATIC
+        ../../../Library/TurboMath/TurboMatrix4x4.cpp
+        ../../../Library/TurboMath/TurboVector2D.cpp
+        ../../../Library/TurboMath/TurboVector3D.cpp
+        )
 
 add_library(TurboScene
-  STATIC
-    ../../../Library/TurboScene/TurboScene.cpp
-    ../../../Library/TurboScene/TurboSceneFont.cpp
-    ../../../Library/TurboScene/TurboSceneMaterial.cpp
-    ../../../Library/TurboScene/TurboSceneMesh.cpp
-    ../../../Library/TurboScene/TurboSceneObject.cpp
-    ../../../Library/TurboScene/TurboScenePixelShader.cpp
-    ../../../Library/TurboScene/TurboScenePlacement.cpp
-    ../../../Library/TurboScene/TurboSceneSoundEffect.cpp
-    ../../../Library/TurboScene/TurboSceneSprite.cpp
-    ../../../Library/TurboScene/TurboSceneText.cpp
-    ../../../Library/TurboScene/TurboSceneTexture.cpp
-    ../../../Library/TurboScene/TurboSceneVertexShader.cpp
-)
+        STATIC
+        ../../../Library/TurboScene/TurboScene.cpp
+        ../../../Library/TurboScene/TurboSceneFont.cpp
+        ../../../Library/TurboScene/TurboSceneMaterial.cpp
+        ../../../Library/TurboScene/TurboSceneMesh.cpp
+        ../../../Library/TurboScene/TurboSceneObject.cpp
+        ../../../Library/TurboScene/TurboScenePixelShader.cpp
+        ../../../Library/TurboScene/TurboScenePlacement.cpp
+        ../../../Library/TurboScene/TurboSceneSoundEffect.cpp
+        ../../../Library/TurboScene/TurboSceneSprite.cpp
+        ../../../Library/TurboScene/TurboSceneText.cpp
+        ../../../Library/TurboScene/TurboSceneTexture.cpp
+        ../../../Library/TurboScene/TurboSceneVertexShader.cpp
+        )
 
 include_directories(../MazePreview/src/main/cpp)
 include_directories(../../../Library/TurboCore/TurboDebug)

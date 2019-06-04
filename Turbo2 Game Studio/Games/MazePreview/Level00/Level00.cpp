@@ -11,8 +11,10 @@
 #include <CubicMazeMotionEffects_WithGravity.h>
 #include <CubicMazeMotionEffects_WithoutGravity.h>
 #include <CubicMazeSceneBuilder_Castle.h>
+#include <CubicMazeSceneBuilder_Flat.h>
 #include <CubicMazeSceneBuilder_Laboratory.h>
 #include <CubicMazeSceneBuilder_Metal.h>
+#include <CubicMazeSceneBuilder_Random.h>
 #include <CubicMazeSceneObject.h>
 #include <CubicMazeSignMesh.h>
 #include <TurboGameState.h>
@@ -142,83 +144,86 @@ void Level00::Update(NavigationInfo* navInfo)
 
 		switch (levelState)
 		{
-		case TurboGameLevelState::Failed:
-			_player->Placement()->Reset();
+			default:
+				break;
 
-			//	Send player back to just outside the entrance to the failed level.
-			switch (_subLevelIndex)
-			{
-			case 1:
-				_player->Placement()->Move(0, 0, -8);
-				break;
-			case 2:
-				_player->Placement()->Move(8, 0, -14);
-				_player->Placement()->RotateY(-90);
-				break;
-			case 3:
-				_player->Placement()->Move(14, -4, -6);
-				_player->Placement()->RotateY(-180);
-				break;
-			case 4:
-				_player->Placement()->Move(6, 0, 0);
-				_player->Placement()->RotateY(-270);
-				break;
-			}
+			case TurboGameLevelState::Failed:
+				_player->Placement()->Reset();
 
-			_subLevel->Finalize();
-			_subLevel = nullptr;
-			_subLevelIndex = 0;
-			BuildScene();
-			_sceneChanged = true;
-			break;
+				//	Send player back to just outside the entrance to the failed level.
+				switch (_subLevelIndex)
+				{
+				case 1:
+					_player->Placement()->Move(0, 0, -8);
+					break;
+				case 2:
+					_player->Placement()->Move(8, 0, -14);
+					_player->Placement()->RotateY(-90);
+					break;
+				case 3:
+					_player->Placement()->Move(14, -4, -6);
+					_player->Placement()->RotateY(-180);
+					break;
+				case 4:
+					_player->Placement()->Move(6, 0, 0);
+					_player->Placement()->RotateY(-270);
+					break;
+				}
 
-		case TurboGameLevelState::Completed:
-			_player->Placement(_subLevel->Player()->Placement());
+				_subLevel->Finalize();
+				_subLevel = nullptr;
+				_subLevelIndex = 0;
+				BuildScene();
+				_sceneChanged = true;
+				break;
 
-			//	Center player vertically when they return to main level.
-			double fromY = _player->Placement()->Position().Y;
-			double toY = round(fromY * 0.5) * 2.0;
-			double dY = toY - fromY;
+			case TurboGameLevelState::Completed:
+				_player->Placement(_subLevel->Player()->Placement());
 
-			switch (_subLevelIndex)
-			{
-			case 1:
-				_player->Placement()->Move(1, dY, -10);
-				_level02Unlocked = true;
-				break;
-			
-			case 2:
-				_player->Placement()->Move(10, dY, -9);
-				_level03Unlocked = true;
-				break;
-			
-			case 3:
-				_player->Placement()->Move(9, dY, 0);
-				_level04Unlocked = true;
-				break;
-			
-			case 4:
-				_player->Placement()->Move(0, dY, -1);
-				_level02Unlocked = false;
-				_level03Unlocked = false;
-				_level04Unlocked = false;
-				_mazeOptions.LevelRound++;
-				_previewMazeOptions.LevelRound++;
-				UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
-				UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
-				break;
-			
-			case 5:
-				_player->Placement()->Move(6, dY, -8);
-				break;
-			}
+				//	Center player vertically when they return to main level.
+				double fromY = _player->Placement()->Position().Y;
+				double toY = round(fromY * 0.5) * 2.0;
+				double dY = toY - fromY;
 
-			_subLevel->Finalize();
-			_subLevel = nullptr;
-			_subLevelIndex = 0;
-  			BuildScene();
-			_sceneChanged = true;
-			break;
+				switch (_subLevelIndex)
+				{
+					case 1:
+						_player->Placement()->Move(1, dY, -10);
+						_level02Unlocked = true;
+						break;
+
+					case 2:
+						_player->Placement()->Move(10, dY, -9);
+						_level03Unlocked = true;
+						break;
+
+					case 3:
+						_player->Placement()->Move(9, dY, 0);
+						_level04Unlocked = true;
+						break;
+
+					case 4:
+						_player->Placement()->Move(0, dY, -1);
+						_level02Unlocked = false;
+						_level03Unlocked = false;
+						_level04Unlocked = false;
+						_mazeOptions.LevelRound++;
+						_previewMazeOptions.LevelRound++;
+						UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
+						UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
+						break;
+
+					case 5:
+						_player->Placement()->Move(6, dY, -8);
+						break;
+				}
+
+				_subLevel->Finalize();
+				_subLevel = nullptr;
+				_subLevelIndex = 0;
+				BuildScene();
+				_sceneChanged = true;
+				break;
 		}
 
 		if ((_subLevel != nullptr) && (_subLevel->SceneChanged()))
@@ -245,30 +250,30 @@ void Level00::Update(NavigationInfo* navInfo)
 	//	Move the player by the amount of offset between levels, plus 1m to jump past the gap in the portal.
 	switch (portalIndex)
 	{
-	case 1:
-		_player->Placement()->Move(0, 0, 10 - 1);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level01(_debug, _player, _sceneBuilder, _mazeOptions));
-		break;
+		case 1:
+			_player->Placement()->Move(0, 0, 10 - 1);
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level01(_debug, _player, _sceneBuilder, _mazeOptions));
+			break;
 
-	case 2:
-		_player->Placement()->Move(-10 + 1, 0, 10);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level02(_debug, _player, _sceneBuilder, _mazeOptions));
-		break;
+		case 2:
+			_player->Placement()->Move(-10 + 1, 0, 10);
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level02(_debug, _player, _sceneBuilder, _mazeOptions));
+			break;
 
-	case 3:
-		_player->Placement()->Move(-10, 0, 1);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level03(_debug, _player, _sceneBuilder, _mazeOptions));
-		break;
+		case 3:
+			_player->Placement()->Move(-10, 0, 1);
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level03(_debug, _player, _sceneBuilder, _mazeOptions));
+			break;
 
-	case 4:
-		_player->Placement()->Move(-1, 0, 0);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
-		break;
+		case 4:
+			_player->Placement()->Move(-1, 0, 0);
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
+			break;
 
-	case 5:
-		_player->Placement()->Move(-6, 0, 8 - 1);
-		_subLevel = std::shared_ptr<ITurboGameLevel>(new Level05(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
-		break;
+		case 5:
+			_player->Placement()->Move(-6, 0, 8 - 1);
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level05(_debug, _player, _sceneBuilder, _mazeOptions, _userOptions));
+			break;
 	}
 
 	if (_subLevel != nullptr)
@@ -287,57 +292,58 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 {
 	switch (mazeOptions->LevelRound)
 	{
-	case 1:
-		*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Laboratory());
-		mazeOptions->MazeSize = 3;
-		mazeOptions->KeyCount = 0;
-		mazeOptions->RequiredKeyCount = 0;
-		mazeOptions->HazardCount = 0;
-		mazeOptions->MovingKeys = false;
-		mazeOptions->MovingHazards = false;
-		mazeOptions->LightsOn = true;
-		break;
+		case 1:
+			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Laboratory());
+			mazeOptions->MazeSize = 3;
+			mazeOptions->KeyCount = 0;
+			mazeOptions->RequiredKeyCount = 0;
+			mazeOptions->HazardCount = 0;
+			mazeOptions->MovingKeys = false;
+			mazeOptions->MovingHazards = false;
+			mazeOptions->LightsOn = true;
+			break;
 
-	case 2:
-		*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
-		mazeOptions->MazeSize = 3;
-		mazeOptions->KeyCount = 1;
-		mazeOptions->RequiredKeyCount = 1;
-		mazeOptions->HazardCount = 0;
-		mazeOptions->MovingKeys = false;
-		mazeOptions->MovingHazards = false;
-		mazeOptions->LightsOn = true;
-		break;
-
-	case 3:
-		*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
-		mazeOptions->MazeSize = 3;
-		mazeOptions->KeyCount = 2;
-		mazeOptions->RequiredKeyCount = 1;
-		mazeOptions->HazardCount = 1;
-		mazeOptions->MovingKeys = true;
-		mazeOptions->MovingHazards = false;
-		mazeOptions->LightsOn = true;
-		break;
-
-	default:
-		if ((mazeOptions->LevelRound % 2) == 0)
-		{
+		case 2:
 			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
-		}
-		else
-		{
+			mazeOptions->MazeSize = 3;
+			mazeOptions->KeyCount = 1;
+			mazeOptions->RequiredKeyCount = 1;
+			mazeOptions->HazardCount = 0;
+			mazeOptions->MovingKeys = false;
+			mazeOptions->MovingHazards = false;
+			mazeOptions->LightsOn = true;
+			break;
+
+		case 3:
 			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
-		}
-		mazeOptions->MazeSize = 3;
-		mazeOptions->KeyCount = mazeOptions->LevelRound - 2;
-		mazeOptions->RequiredKeyCount = mazeOptions->LevelRound - 2;
-		mazeOptions->HazardCount = mazeOptions->LevelRound - 2;
-		mazeOptions->MovingKeys = true;
-		mazeOptions->MovingHazards = true;
-		mazeOptions->LightsOn = false;
-		break;
+			mazeOptions->MazeSize = 3;
+			mazeOptions->KeyCount = 2;
+			mazeOptions->RequiredKeyCount = 1;
+			mazeOptions->HazardCount = 1;
+			mazeOptions->MovingKeys = true;
+			mazeOptions->MovingHazards = false;
+			mazeOptions->LightsOn = true;
+			break;
+
+		default:
+			if ((mazeOptions->LevelRound % 2) == 0)
+			{
+				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
+			}
+			else
+			{
+				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
+			}
+			mazeOptions->MazeSize = 3;
+			mazeOptions->KeyCount = mazeOptions->LevelRound - 2;
+			mazeOptions->RequiredKeyCount = mazeOptions->LevelRound - 2;
+			mazeOptions->HazardCount = mazeOptions->LevelRound - 2;
+			mazeOptions->MovingKeys = true;
+			mazeOptions->MovingHazards = true;
+			mazeOptions->LightsOn = false;
+			break;
 	}
+	//*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
 }
 
 void Level00::BuildScene()
@@ -444,9 +450,15 @@ void Level00::BuildScene()
 	std::shared_ptr<ITurboSceneSoundEffect> entranceSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance"));
 	std::shared_ptr<ITurboSceneSoundEffect> lockedSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked"));
 
+	return;
+
 	if (_level01Unlocked)
 	{
-		_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(entranceSound);
+		//_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(entranceSound);
+		CubicMazeCell *cell = _maze->Cell(0,0,4);
+		CubicMazeCellWall *wall = &(cell->FrontWall);
+		ITurboSceneObject *sceneObject = wall->SceneObject;
+		sceneObject->HitSound(entranceSound);
 	}
 	else
 	{

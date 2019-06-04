@@ -11,6 +11,7 @@ class CubicMazeEdgeMesh : public TurboSceneMesh
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	CubicMazeEdgeMesh();
+	virtual ~CubicMazeEdgeMesh(){}
 
 	//  ITurboSceneMesh Properties -------------------------------------------------------------------------------------
 

@@ -7,6 +7,7 @@ namespace Turbo
 {
 	namespace Math
 	{
+		//	Get around circular includes.
 		struct TurboVector3D;
 
 		struct TurboMatrix4x4

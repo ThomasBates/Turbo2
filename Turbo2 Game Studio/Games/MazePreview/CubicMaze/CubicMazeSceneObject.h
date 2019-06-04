@@ -12,6 +12,7 @@ class CubicMazeSceneObject : public TurboSceneObject
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	CubicMazeSceneObject(std::shared_ptr<ITurboSceneMesh> mesh, std::shared_ptr<ITurboSceneMaterial> material);
+	virtual ~CubicMazeSceneObject(){}
 
 	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
 

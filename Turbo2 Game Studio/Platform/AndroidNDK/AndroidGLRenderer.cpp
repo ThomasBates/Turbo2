@@ -110,7 +110,7 @@ bool AndroidGLRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
     InitializeSceneResources();
 
     CreateSceneVertexResources(scene);
-    CreateSceneTextureResources(scene);
+    //CreateSceneTextureResources(scene);
 
     CreateShaders();
 
@@ -310,8 +310,8 @@ void AndroidGLRenderer::LoadVertexData(
 
     for (auto& meshTriangle : mesh->Triangles())
     {
-        indexList->push_back(meshTriangle.Vertex1);
         indexList->push_back(meshTriangle.Vertex2);
+        indexList->push_back(meshTriangle.Vertex1);
         indexList->push_back(meshTriangle.Vertex3);
     }
 }
@@ -721,8 +721,8 @@ void AndroidGLRenderer::UpdateProjectionMatrix()
     int32_t viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    const float CAM_NEAR = 5.f;
-    const float CAM_FAR = 10000.f;
+    const float CAM_NEAR = 0.5f;
+    const float CAM_FAR = 100.0f;
 
     float x = static_cast<float>(viewport[2]);
     float y = static_cast<float>(viewport[3]);

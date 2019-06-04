@@ -20,20 +20,20 @@ void Level00Player::Update(NavigationInfo* navInfo)
 {
 	const double cMoveAccelleration = 2.0f;
 	const double cRotateAccelleration = 45.0f;
-	const double cFrictionFactor = 2.0f;
+//	const double cFrictionFactor = 2.0f;
 
 //	const double cHoverFrequency = 2.0f;
 //	const double cHoverMagnitude = 0.05f;
 //	const double cGravityFactor = 0.0f;
 //	const double cSelfRightingSpeed = 0.0f;
 
-	const double cHoverFrequency = 0.0f;
-	const double cHoverMagnitude = 0.0f;
-	const double cGravityFactor = 9.8f;
-	const double cSelfRightingSpeed = 3000.0f;
+//	const double cHoverFrequency = 0.0f;
+//	const double cHoverMagnitude = 0.0f;
+//	const double cGravityFactor = 9.8f;
+//	const double cSelfRightingSpeed = 3000.0f;
 
 	double deltaTime = navInfo->DeltaTime;
-	double time = navInfo->Time;
+//	double time = navInfo->Time;
 
 	double moveSpeed = cMoveAccelleration * deltaTime;
 
@@ -63,7 +63,7 @@ void Level00Player::Update(NavigationInfo* navInfo)
 	if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
 	if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
 	if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
-	if (navInfo->MoveUp)		velocity += _placement->Up()    * moveSpeed;
+	if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
 	if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
 

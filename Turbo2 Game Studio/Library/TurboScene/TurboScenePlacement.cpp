@@ -1,6 +1,7 @@
 #include <pch.h>
 
 #include <TurboScenePlacement.h>
+#include <TurboMatrix4x4.h>
 
 using namespace Turbo::Math;
 using namespace Turbo::Scene;

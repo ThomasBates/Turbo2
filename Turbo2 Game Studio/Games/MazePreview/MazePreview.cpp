@@ -148,7 +148,7 @@ void MazePreview::GameState(std::shared_ptr<ITurboGameState> gameState)
 
 	gameState->LoadString("MazePreview.ProgramInfo", "");
 
-	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse", false);
+	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse", true);
 	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn", true);
 
 
@@ -204,7 +204,7 @@ void MazePreview::Update(NavigationInfo* navInfo)
 		}
 
 		//_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
-		_level = std::unique_ptr<ITurboGameLevel>(new Level00(_debug, _player, &_userOptions));
+		_level = std::shared_ptr<ITurboGameLevel>(new Level00(_debug, _player, &_userOptions));
 		_level->GameState(_gameState);
 		_level->Initialize();
 		_sceneChanged = true;

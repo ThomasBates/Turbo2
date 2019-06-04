@@ -88,9 +88,6 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\MazePreview.cpp">
-      <Filter>Games\MazePreview</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Library\TurboGame\TurboGameState.cpp">
       <Filter>Library\TurboGame</Filter>
     </ClCompile>
@@ -160,25 +157,25 @@
     <ClCompile Include="..\..\Platform\Windows10\Windows10IOService.cpp">
       <Filter>Platform\Windows10</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMaze.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMaze.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneObject.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneObject.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeWallMesh.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeWallMesh.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeCornerMesh.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeEdgeMesh.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeFactory.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebug.cpp">
@@ -187,7 +184,7 @@
     <ClCompile Include="..\..\Library\TurboCore\TurboDebug\TurboDebugMemoryLogger.cpp">
       <Filter>Library\TurboCore\TurboDebug</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeObjectInteractions.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Platform\Windows10\Windows10DebugFileLogger.cpp">
@@ -196,25 +193,25 @@
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneSoundEffect.cpp">
       <Filter>Library\TurboScene</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level01.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level01.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level02.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level02.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level03.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level03.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level04.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level04.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level00.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level00CubicMazeFactory.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00CubicMazeFactory.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level00Player.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00Player.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Platform\Windows10\Windows10Audio.cpp">
@@ -223,34 +220,34 @@
     <ClCompile Include="..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
       <Filter>Library\TurboGame</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level00Helper.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level00Helper.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSignMesh.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSignMesh.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level05.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level05.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
-    <ClCompile Include="..\MazePreview\Level00\Level05CubicMazeFactory.cpp">
+    <ClCompile Include="..\..\Games\MazePreview\Level00\Level05CubicMazeFactory.cpp">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Platform\XAudio2\XAudio2Audio.cpp">
@@ -259,12 +256,16 @@
     <ClCompile Include="..\..\Platform\XAudio2\XAudio2AudioTest.cpp">
       <Filter>Platform\XAudio2</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Games\MazePreview\MazePreview.cpp" />
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Flat.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.cpp">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="..\MazePreview.h">
-      <Filter>Games\MazePreview</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Library\TurboGame\TurboGameState.h">
       <Filter>Library\TurboGame</Filter>
     </ClInclude>
@@ -412,31 +413,31 @@
     <ClInclude Include="..\..\Library\TurboGraphics\TurboColor.h">
       <Filter>Library\TurboGraphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeFactory.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeFactory.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMaze.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMaze.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneObject.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneObject.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeWallMesh.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeWallMesh.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeCornerMesh.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeEdgeMesh.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeFactory.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeSceneBuilder.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeSceneBuilder.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\TurboCore\TurboDebug\ITurboDebug.h">
@@ -460,7 +461,7 @@
     <ClInclude Include="..\..\Library\TurboCore\TurboDebug\TurboDebugStream.h">
       <Filter>Library\TurboCore\TurboDebug</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeObjectInteractions.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Platform\Windows10\Windows10DebugFileLogger.h">
@@ -490,25 +491,25 @@
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneSoundEffect.h">
       <Filter>Library\TurboScene</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level04.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level04.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level01.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level01.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level02.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level02.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level03.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level03.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level00.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level00CubicMazeFactory.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00CubicMazeFactory.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level00Player.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Player.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Library\TurboGame\ITurboGameAudio.h">
@@ -523,43 +524,43 @@
     <ClInclude Include="..\..\Library\TurboGame\TurboGameMotionEffects.h">
       <Filter>Library\TurboGame</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\ICubicMazeMotionEffects.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeMotionEffects.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level00Types.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Types.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level00Helper.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level00Helper.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSignMesh.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSignMesh.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.h">
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Metal.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level05.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level05.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
-    <ClInclude Include="..\MazePreview\Level00\Level05CubicMazeFactory.h">
+    <ClInclude Include="..\..\Games\MazePreview\Level00\Level05CubicMazeFactory.h">
       <Filter>Games\MazePreview\Level00</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Platform\XAudio2\XAudio2Audio.h">
@@ -567,6 +568,13 @@
     </ClInclude>
     <ClInclude Include="..\..\Platform\XAudio2\XAudio2AudioTest.h">
       <Filter>Platform\XAudio2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Games\MazePreview\MazePreview.h" />
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Flat.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.h">
+      <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

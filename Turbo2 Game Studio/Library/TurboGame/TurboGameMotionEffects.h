@@ -30,6 +30,7 @@ namespace Turbo
 				_selfRightingSpeed(selfRightingSpeed)
 			{
 			}
+			virtual ~TurboGameMotionEffects(){}
 
 			//  ITurboGameMotionEffects Properties ---------------------------------------------------------------------
 

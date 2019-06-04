@@ -14,6 +14,7 @@ namespace Turbo
 		public:
 			//  Constructors & Destructors -----------------------------------------------------------------------------
 			CubicMazeMotionEffects_WithGravity(std::shared_ptr<CubicMaze> maze);
+			virtual ~CubicMazeMotionEffects_WithGravity(){}
 
 			//  ITurboGameMotionEffects Properties ---------------------------------------------------------------------
 

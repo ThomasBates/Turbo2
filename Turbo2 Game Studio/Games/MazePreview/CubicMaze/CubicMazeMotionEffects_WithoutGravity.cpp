@@ -1,6 +1,4 @@
 
-#pragma once
-
 #include <pch.h>
 #include <CubicMazeMotionEffects_WithoutGravity.h>
 #include <TurboGameMotionEffects.h>

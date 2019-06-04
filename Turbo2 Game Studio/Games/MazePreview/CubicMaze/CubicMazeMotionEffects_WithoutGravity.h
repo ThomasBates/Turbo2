@@ -13,6 +13,7 @@ namespace Turbo
 		public:
 			//  Constructors & Destructors -----------------------------------------------------------------------------
 			CubicMazeMotionEffects_WithoutGravity();
+			virtual ~CubicMazeMotionEffects_WithoutGravity(){}
 
 			//  ITurboGameMotionEffects Properties ---------------------------------------------------------------------
 

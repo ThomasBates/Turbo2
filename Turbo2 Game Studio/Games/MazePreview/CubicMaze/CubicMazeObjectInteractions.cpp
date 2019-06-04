@@ -433,12 +433,16 @@ void CubicMazeObjectInteractions::IsTouchingRightWall(InputArguments* input, Out
 	_debug->Send(debugInformation, debugInteractions) << "IsTouchingRightWall: min = " << min << ", max = " << max << "\n"; 
 
 	//	When the first of these functions returns true, then the method will return.
-	bool isTouching = 
+	bool isTouching =
 		IsTouchingLeftSide(input, output, min, max, true) ||
 		IsTouchingTopSide(input, output, min, max, false) ||
 		IsTouchingBottomSide(input, output, min, max, false) ||
 		IsTouchingFrontSide(input, output, min, max, false) ||
 		IsTouchingBackSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 void CubicMazeObjectInteractions::IsTouchingLeftWall(InputArguments* input, OutputArguments* output)
@@ -461,6 +465,10 @@ void CubicMazeObjectInteractions::IsTouchingLeftWall(InputArguments* input, Outp
 		IsTouchingBottomSide(input, output, min, max, false) ||
 		IsTouchingFrontSide(input, output, min, max, false) ||
 		IsTouchingBackSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 void CubicMazeObjectInteractions::IsTouchingBottomWall(InputArguments* input, OutputArguments* output)
@@ -483,6 +491,10 @@ void CubicMazeObjectInteractions::IsTouchingBottomWall(InputArguments* input, Ou
 		IsTouchingBackSide(input, output, min, max, false) ||
 		IsTouchingLeftSide(input, output, min, max, false) ||
 		IsTouchingRightSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 void CubicMazeObjectInteractions::IsTouchingTopWall(InputArguments* input, OutputArguments* output)
@@ -505,6 +517,10 @@ void CubicMazeObjectInteractions::IsTouchingTopWall(InputArguments* input, Outpu
 		IsTouchingBackSide(input, output, min, max, false) ||
 		IsTouchingLeftSide(input, output, min, max, false) ||
 		IsTouchingRightSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 void CubicMazeObjectInteractions::IsTouchingFrontWall(InputArguments* input, OutputArguments* output)
@@ -527,6 +543,10 @@ void CubicMazeObjectInteractions::IsTouchingFrontWall(InputArguments* input, Out
 		IsTouchingRightSide(input, output, min, max, false) ||
 		IsTouchingTopSide(input, output, min, max, false) ||
 		IsTouchingBottomSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 void CubicMazeObjectInteractions::IsTouchingBackWall(InputArguments* input, OutputArguments* output)
@@ -549,6 +569,10 @@ void CubicMazeObjectInteractions::IsTouchingBackWall(InputArguments* input, Outp
 		IsTouchingRightSide(input, output, min, max, false) ||
 		IsTouchingTopSide(input, output, min, max, false) ||
 		IsTouchingBottomSide(input, output, min, max, false);
+
+	//	Avoid build warning/error "unused variable 'isTouching'"
+	if (isTouching)
+		return;
 }
 
 bool CubicMazeObjectInteractions::IsTouchingLeftSide(InputArguments* input, OutputArguments* output, TurboVector3D min, TurboVector3D max, bool isWallSide)

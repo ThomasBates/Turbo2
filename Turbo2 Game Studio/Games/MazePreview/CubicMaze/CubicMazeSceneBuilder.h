@@ -25,6 +25,7 @@ public:
 		std::shared_ptr<ITurboSceneMaterial> exitMaterial,
 		std::shared_ptr<ITurboSceneMaterial> exitLockedMaterial,
 		std::shared_ptr<ITurboSceneMaterial> exitBackMaterial);
+	virtual ~CubicMazeSceneBuilder(){}
 
 	//  ITurboSceneBuilder Methods -------------------------------------------------------------------------------------
 	virtual std::shared_ptr<ITurboScene> BuildScene(std::shared_ptr<CubicMaze> cubicMaze);

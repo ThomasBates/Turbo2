@@ -26,10 +26,10 @@ Level03::Level03(
 	std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
 	Level00MazeOptions mazeOptions) :
 	_debug(debug),
-	_player(player),
 	_sceneBuilder(sceneBuilder),
 	_mazeOptions(mazeOptions),
-	_levelState(TurboGameLevelState::Initializing)
+	_levelState(TurboGameLevelState::Initializing),
+	_player(player)
 {
 	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new CubicMazeFactory(CubicMazeType::Cube));
 	_objectInteractions = std::shared_ptr<ICubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug));

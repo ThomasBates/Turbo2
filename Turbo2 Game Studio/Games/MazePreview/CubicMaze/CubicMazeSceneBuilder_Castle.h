@@ -9,6 +9,7 @@ class CubicMazeSceneBuilder_Castle : public ICubicMazeSceneBuilder
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	CubicMazeSceneBuilder_Castle();
+	virtual ~CubicMazeSceneBuilder_Castle(){}
 
 	//  ICubicMazeSceneBuilder Methods ---------------------------------------------------------------------------------
 	virtual std::shared_ptr<ITurboScene> BuildScene(std::shared_ptr<CubicMaze> cubicMaze);

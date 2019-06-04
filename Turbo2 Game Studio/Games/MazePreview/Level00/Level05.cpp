@@ -27,11 +27,11 @@ Level05::Level05(
 	Level00MazeOptions mazeOptions,
 	Level00UserOptions* userOptions) :
 	_debug(debug),
-	_player(player),
 	_sceneBuilder(sceneBuilder),
 	_mazeOptions(mazeOptions),
 	_userOptions(userOptions),
-	_levelState(TurboGameLevelState::Initializing)
+	_levelState(TurboGameLevelState::Initializing),
+	_player(player)
 {
 	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new Level05CubicMazeFactory());
 	_objectInteractions = std::shared_ptr<ICubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug));

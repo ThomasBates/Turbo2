@@ -530,6 +530,10 @@ void DirectX12Renderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
 	}
 
 	std::string textureName = texture->Name();
+	if (textureName.empty())
+	{
+		return;
+	}
 
 	//  Already loaded this texture? don't reload it.
 	if (_sceneObjectTextureOffsets.find(textureName) != _sceneObjectTextureOffsets.end())

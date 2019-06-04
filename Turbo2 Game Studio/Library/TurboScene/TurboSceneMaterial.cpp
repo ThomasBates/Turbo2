@@ -12,38 +12,28 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor ambientColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
-	float specularExponent,
-	std::shared_ptr<ITurboSceneTexture> texture,
-	std::shared_ptr<ITurboSceneVertexShader> vertexShader,
-	std::shared_ptr<ITurboScenePixelShader> pixelShader)
+	float specularExponent)
 {
 	_ambientColor = ambientColor;
 	_diffuseColor = diffuseColor;
 	_specularColor = specularColor;
 	_specularExponent = specularExponent;
 
-	_texture = texture;
-	_vertexShader = vertexShader;
-	_pixelShader = pixelShader;
+	_texture = nullptr;
+	_vertexShader = nullptr;
+	_pixelShader = nullptr;
 }
 
-Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
-	TurboColor ambientColor,
-	TurboColor diffuseColor,
-	TurboColor specularColor,
-	float specularExponent,
-	std::string textureName,
-	std::string vertexShaderName,
-	std::string pixelShaderName)
+Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::shared_ptr<ITurboSceneTexture> texture)
 {
-	_ambientColor = ambientColor;
-	_diffuseColor = diffuseColor;
-	_specularColor = specularColor;
-	_specularExponent = specularExponent;
+	_ambientColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);
+	_diffuseColor = TurboColor(0.8f, 0.8f, 0.8f, 1.0f);
+	_specularColor = TurboColor(0.3f, 0.3f, 0.3f, 1.0f);
+	_specularExponent = 1.0f;
 
-	_texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
-	_vertexShader = std::shared_ptr<ITurboSceneVertexShader>(new TurboSceneVertexShader(vertexShaderName));
-	_pixelShader = std::shared_ptr<ITurboScenePixelShader>(new TurboScenePixelShader(pixelShaderName));
+	_texture = texture;
+	_vertexShader = nullptr;
+	_pixelShader = nullptr;
 }
 
 Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::string textureName)

@@ -18,20 +18,9 @@ namespace Turbo
 				TurboColor ambientColor,
 				TurboColor diffuseColor,
 				TurboColor specularColor,
-				float specularExponent,
-				std::shared_ptr<ITurboSceneTexture> texture,
-				std::shared_ptr<ITurboSceneVertexShader> vertexShader,
-				std::shared_ptr<ITurboScenePixelShader> pixelShader);
-			TurboSceneMaterial(
-				TurboColor ambientColor,
-				TurboColor diffuseColor,
-				TurboColor specularColor,
-				float specularExponent,
-				std::string textureName,
-				std::string vertexShaderName,
-				std::string pixelShaderName);
-			TurboSceneMaterial(
-				std::string textureName);
+				float specularExponent);
+			TurboSceneMaterial(std::shared_ptr<ITurboSceneTexture> texture);
+			TurboSceneMaterial(std::string textureName);
 			virtual ~TurboSceneMaterial(){}
 
 			//  ITurboSceneObjectMaterial Properties ---------------------------------------------------------------------------

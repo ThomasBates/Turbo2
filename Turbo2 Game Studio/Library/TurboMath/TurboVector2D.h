@@ -31,5 +31,11 @@ namespace Turbo
 
 			double operator*(const TurboVector2D &v) const;   //  Dot product
 		};
+
+		inline std::ostream& operator<<(std::ostream& os, const TurboVector2D& v)
+		{
+			os << "(" << v.X << "," << v.Y << ")";
+			return os;
+		}
 	}
 }

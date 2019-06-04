@@ -25,6 +25,7 @@ public:
 		std::shared_ptr<ITurboSceneObject> player,
 		std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
 		Level00MazeOptions mazeOptions);
+	virtual ~Level04(){}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Original Level"; }
@@ -64,7 +65,7 @@ private:
 	std::shared_ptr<CubicMaze>						_maze;
 	std::vector<std::shared_ptr<ITurboSceneObject>>	_keys;
 	std::vector<std::shared_ptr<ITurboSceneObject>>	_hazards;
-	bool											_exitUnlocked;
+//	bool											_exitUnlocked;
 
 	CubicMazeLocation								_entranceLocation;
 	CubicMazeLocation								_exitLocation;
