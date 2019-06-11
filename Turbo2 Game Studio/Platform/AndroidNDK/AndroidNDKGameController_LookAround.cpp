@@ -3,20 +3,20 @@
 
 #include <sensorManager.h>
 
-#include <AndroidNDKGameController.h>
+#include <AndroidNDKGameController_LookAround.h>
 
 using namespace Turbo::Platform::AndroidNDK;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-AndroidNDKGameController::AndroidNDKGameController(
+AndroidNDKGameController_LookAround::AndroidNDKGameController_LookAround(
 		android_app* app,
 		std::shared_ptr<ITurboDebug> debug) :
 		_android_app(app),
 		_debug(debug)
 {
 	_android_app->controller = this;
-	_android_app->onInputEvent = AndroidNDKGameController::HandleInputEvents;
+	_android_app->onInputEvent = AndroidNDKGameController_LookAround::HandleInputEvents;
 
 	InitSensors();
 }
@@ -24,7 +24,7 @@ AndroidNDKGameController::AndroidNDKGameController(
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameController Methods ---------------------------------------------------------------------------------------
 
-NavigationInfo* AndroidNDKGameController::GetNavigationInfo()
+NavigationInfo* AndroidNDKGameController_LookAround::GetNavigationInfo()
 {
     ProcessEvents();
 
@@ -35,12 +35,12 @@ NavigationInfo* AndroidNDKGameController::GetNavigationInfo()
     return &_navInfo;
 }
 
-void AndroidNDKGameController::Suspend()
+void AndroidNDKGameController_LookAround::Suspend()
 {
     SuspendSensors();
 }
 
-void AndroidNDKGameController::Resume()
+void AndroidNDKGameController_LookAround::Resume()
 {
     ResumeSensors();
 }
@@ -51,12 +51,14 @@ void AndroidNDKGameController::Resume()
 /**
  * Process the next input event.
  */
-int32_t AndroidNDKGameController::HandleInputEvents(android_app* app, AInputEvent* event)
+int32_t AndroidNDKGameController_LookAround::HandleInputEvents(android_app* app, AInputEvent* event)
 {
-	AndroidNDKGameController* controller = (AndroidNDKGameController*)app->controller;
+	AndroidNDKGameController_LookAround* controller = (AndroidNDKGameController_LookAround*)app->controller;
 
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
 	{
+        controller->DebugLogEvent(event);
+
 		ndk_helper::GESTURE_STATE doubleTapState = controller->_doubletap_detector.Detect(event);
 		ndk_helper::GESTURE_STATE dragState      = controller->_drag_detector.Detect(event);
 		ndk_helper::GESTURE_STATE pinchState     = controller->_pinch_detector.Detect(event);
@@ -107,7 +109,7 @@ int32_t AndroidNDKGameController::HandleInputEvents(android_app* app, AInputEven
 //-------------------------------------------------------------------------
 // Sensor handlers
 //-------------------------------------------------------------------------
-void AndroidNDKGameController::InitSensors()
+void AndroidNDKGameController_LookAround::InitSensors()
 {
     _doubletap_detector.SetConfiguration(_android_app->config);
     _drag_detector.SetConfiguration(_android_app->config);
@@ -121,14 +123,14 @@ void AndroidNDKGameController::InitSensors()
     _sensor_event_queue = ASensorManager_createEventQueue(_sensor_manager, _android_app->looper, LOOPER_ID_USER, NULL, NULL);
 }
 
-bool AndroidNDKGameController::ProcessEvents()
+bool AndroidNDKGameController_LookAround::ProcessEvents()
 {
 	// Read all pending events.
 	int id;
 
 	//  If the timeout is zero, returns immediately without blocking.
 	//  If the timeout is negative, waits indefinitely until an event appears.
-	int timeout = IsRunning() ? 0 : -1;
+	int timeout = _isRunning ? 0 : -1;
 	int events;
 	android_poll_source* source;
 
@@ -156,7 +158,7 @@ bool AndroidNDKGameController::ProcessEvents()
 	return true;
 }
 
-void AndroidNDKGameController::ProcessSensors(int32_t id)
+void AndroidNDKGameController_LookAround::ProcessSensors(int32_t id)
 {
     // If a sensor has data, process it now.
     if (id == LOOPER_ID_USER)
@@ -171,7 +173,7 @@ void AndroidNDKGameController::ProcessSensors(int32_t id)
     }
 }
 
-void AndroidNDKGameController::ResumeSensors()
+void AndroidNDKGameController_LookAround::ResumeSensors()
 {
     // When our app gains focus, we start monitoring the accelerometer.
     if (_accelerometer_sensor != NULL)
@@ -182,12 +184,12 @@ void AndroidNDKGameController::ResumeSensors()
                                        (1000L / 60) * 1000);
     }
 
-	IsRunning(true);
+    _isRunning = true;
 }
 
-void AndroidNDKGameController::SuspendSensors()
+void AndroidNDKGameController_LookAround::SuspendSensors()
 {
-	IsRunning(false);
+	_isRunning = false;
 
     // When our app loses focus, we stop monitoring the accelerometer.
     // This is to avoid consuming battery while not being used.
@@ -197,12 +199,12 @@ void AndroidNDKGameController::SuspendSensors()
     }
 }
 
-void AndroidNDKGameController::DoubleTap()
+void AndroidNDKGameController_LookAround::DoubleTap()
 {
 	//_tap_camera.Reset(true);
 }
 
-void AndroidNDKGameController::StartDrag()
+void AndroidNDKGameController_LookAround::StartDrag()
 {
 	ndk_helper::Vec2 v;
 	_drag_detector.GetPointer(v);
@@ -214,7 +216,7 @@ void AndroidNDKGameController::StartDrag()
 //	_tap_camera.BeginDrag(v);
 }
 
-void AndroidNDKGameController::Drag()
+void AndroidNDKGameController_LookAround::Drag()
 {
 	ndk_helper::Vec2 v;
 	_drag_detector.GetPointer(v);
@@ -226,14 +228,14 @@ void AndroidNDKGameController::Drag()
 //	_tap_camera.Drag(v);
 }
 
-void AndroidNDKGameController::EndDrag()
+void AndroidNDKGameController_LookAround::EndDrag()
 {
     _navInfo.Pointer = false;
 
 	//_tap_camera.EndDrag();
 }
 
-void AndroidNDKGameController::StartPinch()
+void AndroidNDKGameController_LookAround::StartPinch()
 {
 //	ndk_helper::Vec2 v1;
 //	ndk_helper::Vec2 v2;
@@ -243,7 +245,7 @@ void AndroidNDKGameController::StartPinch()
 //	_tap_camera.BeginPinch(v1, v2);
 }
 
-void AndroidNDKGameController::Pinch()
+void AndroidNDKGameController_LookAround::Pinch()
 {
 //	ndk_helper::Vec2 v1;
 //	ndk_helper::Vec2 v2;
@@ -253,43 +255,74 @@ void AndroidNDKGameController::Pinch()
 //	_tap_camera.Pinch(v1, v2);
 }
 
-void AndroidNDKGameController::TransformPosition(ndk_helper::Vec2& vec)
+void AndroidNDKGameController_LookAround::DebugLogEvent(AInputEvent *event)
 {
-//	vec = ndk_helper::Vec2(2.0f, 2.0f) * vec /
-//		  ndk_helper::Vec2(_gl_context->GetScreenWidth(),
-//						   _gl_context->GetScreenHeight()) -
-//		  ndk_helper::Vec2(1.f, 1.f);
-//	vec = vec;
+	int32_t action = AMotionEvent_getAction(event);
+    int32_t index = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+	int32_t flags = action & AMOTION_EVENT_ACTION_MASK;
+    int32_t count = AMotionEvent_getPointerCount(event);
+    int32_t pointerID;
+    float x;
+    float y;
+
+	switch (flags)
+    {
+        case AMOTION_EVENT_ACTION_DOWN:
+            pointerID = AMotionEvent_getPointerId(event, index);
+            x = AMotionEvent_getX(event, index);
+            y = AMotionEvent_getY(event, index);
+
+            _debug->Send(debugDebug, debugController) 	<< "DOWN: "
+														<< "index = " << index << ", "
+														<< "id = " << pointerID << ", "
+														<< "at (" << x << ", " << y << "), "
+														<< "count = " << count << ".\n";
+            break;
+
+        case AMOTION_EVENT_ACTION_UP:
+            pointerID = AMotionEvent_getPointerId(event, index);
+            x = AMotionEvent_getX(event, index);
+            y = AMotionEvent_getY(event, index);
+
+            _debug->Send(debugDebug, debugController) 	<< "UP: "
+														<< "index = " << index << ", "
+														<< "id = " << pointerID << ", "
+														<< "at (" << x << ", " << y << "), "
+														<< "count = " << count << ".\n";
+            break;
+
+        case AMOTION_EVENT_ACTION_MOVE:
+            _debug->Send(debugDebug, debugController)	<< "MOVE: "
+														<< "count = " << count << ".\n";
+            break;
+
+        case AMOTION_EVENT_ACTION_POINTER_DOWN:
+            pointerID = AMotionEvent_getPointerId(event, index);
+            x = AMotionEvent_getX(event, index);
+            y = AMotionEvent_getY(event, index);
+
+            _debug->Send(debugDebug, debugController) 	<< "POINTER_DOWN: "
+														<< "index = " << index << ", "
+														<< "id = " << pointerID << ", "
+														<< "at (" << x << ", " << y << "), "
+														<< "count = " << count << ".\n";
+            break;
+
+        case AMOTION_EVENT_ACTION_POINTER_UP:
+            pointerID = AMotionEvent_getPointerId(event, index);
+            x = AMotionEvent_getX(event, index);
+            y = AMotionEvent_getY(event, index);
+
+            _debug->Send(debugDebug, debugController) 	<< "POINTER_UP: "
+														<< "index = " << index << ", "
+														<< "id = " << pointerID << ", "
+														<< "at (" << x << ", " << y << "), "
+														<< "count = " << count << ".\n";
+            break;
+
+        default:
+            _debug->Send(debugDebug, debugController) 	<< "action = " << flags << ", "
+														<< "count = " << count << ".\n";
+            break;
+    }
 }
-
-
-//bool AndroidNDKGameController::ProcessEvents()
-//{
-//    // Read all pending events.
-//    int id;
-//    int events;
-//    android_poll_source* source;
-//
-//    // If not animating, we will block forever waiting for events.
-//    // If animating, we loop until all events are read, then continue
-//    // to draw the next frame of animation.
-//    while ((id = ALooper_pollAll(HasFocus() ? 0 : -1, NULL, &events, (void**)&source)) >= 0)
-//    {
-//        // Process this event.
-//        if (source != NULL)
-//        {
-//            source->process(_android_app, source);
-//        }
-//
-//        ProcessSensors(id);
-//
-//        // Check if we are exiting.
-//        if (_android_app->destroyRequested != 0)
-//        {
-//            TermDisplay();
-//            return false;
-//        }
-//    }
-//
-//    return true;
-//}

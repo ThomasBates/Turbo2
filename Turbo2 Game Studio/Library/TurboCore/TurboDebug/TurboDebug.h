@@ -26,6 +26,7 @@ namespace Turbo
 
 			private:
 				TurboDebugStream _stream;
+				TurboDebugStream _nullStream;
 				std::shared_ptr<ITurboDebugLogger> _logger;
 			};
 		}

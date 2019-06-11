@@ -68,42 +68,15 @@ namespace Turbo
 				std::shared_ptr<ITurboGameAudio> _audio;
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
-
                 bool _hasFocus = false;
 
-                ndk_helper::DoubletapDetector _doubletap_detector;
-                ndk_helper::PinchDetector _pinch_detector;
-                ndk_helper::DragDetector _drag_detector;
-//                ndk_helper::TapCamera _tap_camera;
-//
-//                ASensorManager* _sensor_manager = NULL;
-//                const ASensor* _accelerometer_sensor = NULL;
-//                ASensorEventQueue* _sensor_event_queue = NULL;
-
-
-                bool ProcessEvents();
-				void DrawFrame(std::shared_ptr<ITurboGame> game);
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
-
-                //  From AndroidNDKGameEngine  -----------------------------------------------------
-                void InitDisplay(android_app* app);
-				void TermDisplay();
-//                void LoadResources();
-//                void UnloadResources();
-				void ResumeSensors();
-				void SuspendSensors();
+                void InitializeDisplay(android_app *app);
+				void TerminateDisplay();
+				void ReconfigureDisplay(android_app *app);
                 void TrimMemory();
-
-                bool HasFocus();
-                void HasFocus(bool hasFocus);
-
-//                void UpdatePosition(AInputEvent* event, int32_t index, float& x, float& y);
-//                void InitSensors();
-//                void ProcessSensors(int32_t id);
-//                void SuspendSensors();
-//                void ResumeSensors();
-
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
+                void ActivityConfigurationChanged(ANativeActivity *activity);
 
             };
 		}

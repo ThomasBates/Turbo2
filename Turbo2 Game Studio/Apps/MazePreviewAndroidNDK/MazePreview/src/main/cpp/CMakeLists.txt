@@ -122,7 +122,8 @@ add_library(AndroidNDK
 		${PlatformFolder}/AndroidNDK/AndroidNDKAudio.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKGameApplication.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameController.cpp
+		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_DualPads.cpp
+		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_LookAround.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKIOService.cpp
 		${PlatformFolder}/AndroidNDK/gestureDetector.cpp
 		${PlatformFolder}/AndroidNDK/gl3stub.cpp

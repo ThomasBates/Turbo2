@@ -67,6 +67,11 @@ void Level00Player::Update(NavigationInfo* navInfo)
 	if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
 
+	if (navInfo->MovePadActive)
+	{
+		velocity -= _placement->Back() * moveSpeed;// * navInfo->MovePadY;
+	}
+
 	_placement->Velocity(velocity);
 
 	double rotateSpeed = cRotateAccelleration * deltaTime;
@@ -107,6 +112,20 @@ void Level00Player::Update(NavigationInfo* navInfo)
 		{
 			angularVelocity.X = -1.00 * dy / deltaTime;
 			angularVelocity.Y = -1.00 * dx / deltaTime;
+		}
+	}
+
+	if (navInfo->LookPadActive)
+	{
+		if (_userOptions->InvertedMouse)
+		{
+			angularVelocity.X += rotateSpeed * navInfo->LookPadY;
+			angularVelocity.Y += rotateSpeed * navInfo->LookPadX;
+		}
+		else
+		{
+			angularVelocity.X -= rotateSpeed * navInfo->LookPadY;
+			angularVelocity.Y -= rotateSpeed * navInfo->LookPadX;
 		}
 	}
 

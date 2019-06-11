@@ -24,7 +24,10 @@
 #include "AndroidGLRenderer.h"
 #include "AndroidNDKHelpers.h"
 
+#include <chrono>
+#include <thread>
 #include <string.h>
+
 #include <ITurboCanvas.h>
 #include <TurboCanvasRGBA32.h>
 #include <ITurboImage.h>
@@ -50,18 +53,19 @@ AndroidGLRenderer::AndroidGLRenderer(
 
 AndroidGLRenderer::~AndroidGLRenderer()
 {
-    DeleteBuffers();
+    ReleaseSceneResources();
 }
 
 //	ITurboGameRenderer Methods ---------------------------------------------------------------------
 
 void AndroidGLRenderer::UpdateDisplayInformation()
 {
+//    ReleaseSceneResources();
+
     if (!_resources_initialized)
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         _gl_context->Init(_android_app->window);
-        //LoadResources();
-        //_renderer->ReleaseSceneResources();
         _resources_initialized = true;
     }
     else if(_android_app->window != _gl_context->GetANativeWindow())
@@ -69,12 +73,9 @@ void AndroidGLRenderer::UpdateDisplayInformation()
         // Re-initialize ANativeWindow.
         // On some devices, ANativeWindow is re-created when the app is resumed
         assert(_gl_context->GetANativeWindow());
-        //UnloadResources();
         ReleaseSceneResources();
         _gl_context->Invalidate();
-        //_android_app = app;
         _gl_context->Init(_android_app->window);
-        //LoadResources();
         _resources_initialized = true;
     }
     else
@@ -83,7 +84,6 @@ void AndroidGLRenderer::UpdateDisplayInformation()
         if (EGL_SUCCESS == _gl_context->Resume(_android_app->window))
         {
             ReleaseSceneResources();
-            //LoadResources();
         }
         else
         {
@@ -99,7 +99,9 @@ void AndroidGLRenderer::UpdateDisplayInformation()
     glDepthFunc(GL_LEQUAL);
 
     // Note that screen size might have been changed
-    glViewport(0, 0, _gl_context->GetScreenWidth(), _gl_context->GetScreenHeight());
+    int width = _gl_context->GetScreenWidth();
+    int height = _gl_context->GetScreenHeight();
+    glViewport(0, 0, width, height);
     //renderer_.UpdateViewport();
 }
 
@@ -161,7 +163,12 @@ bool AndroidGLRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
 
 void AndroidGLRenderer::Reset()
 {
+    ReleaseSceneResources();
 
+    //_gl_context->Suspend();
+    _gl_context->Invalidate();
+
+    _resources_initialized = false;
 }
 
 //  UpdateDisplayInformation  ------------------------------------------------------------------------------------------
@@ -660,9 +667,8 @@ bool AndroidGLRenderer::LoadShadersES3(
 
 void AndroidGLRenderer::DeleteBuffers()
 {
-    for (auto vertexBufferIterator = _sceneVertexBufferNames.begin(); vertexBufferIterator != _sceneVertexBufferNames.end(); )
+    for (auto& entry : _sceneVertexBufferNames)
     {
-        auto entry = *vertexBufferIterator;
         GLuint vertexBufferName = entry.second;
         if (vertexBufferName)
         {
@@ -671,16 +677,15 @@ void AndroidGLRenderer::DeleteBuffers()
     }
     _sceneVertexBufferNames.clear();
 
-    for (auto indexBufferIterator = _sceneIndexBufferNames.begin(); indexBufferIterator != _sceneIndexBufferNames.end(); )
+    for (auto& entry : _sceneIndexBufferNames)
     {
-        auto entry = *indexBufferIterator;
         GLuint indexBufferName = entry.second;
         if (indexBufferName)
         {
             glDeleteBuffers(1, &indexBufferName);
         }
     }
-    _sceneVertexBufferNames.clear();
+    _sceneIndexBufferNames.clear();
 
     if (_sceneUniformBufferName)
     {
@@ -760,14 +765,6 @@ void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> c
 //    _tap_camera.Update();
 //    _viewMatrix = _tap_camera.GetTransformMatrix() * _viewMatrix *
 //                  _tap_camera.GetRotationMatrix();
-}
-
-void AndroidGLRenderer::TransformPosition(ndk_helper::Vec2& vec)
-{
-    vec = ndk_helper::Vec2(2.0f, 2.0f) * vec /
-          ndk_helper::Vec2(_gl_context->GetScreenWidth(),
-                           _gl_context->GetScreenHeight()) -
-          ndk_helper::Vec2(1.f, 1.f);
 }
 
 

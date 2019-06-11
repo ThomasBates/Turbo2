@@ -246,6 +246,9 @@ void Level00::Update(NavigationInfo* navInfo)
 	int portalIndex;
 	_objectInteractions->ProcessObjectInteractions(navInfo, _maze, _player, true, &portalIndex);
 
+//	_player->Placement()->Reset();
+//	_player->Placement()->GoTo(8, 0, -4);
+
 	//	Share the player object so there is continuity of motion when going through the portals.
 	//	Move the player by the amount of offset between levels, plus 1m to jump past the gap in the portal.
 	switch (portalIndex)
@@ -343,7 +346,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 			mazeOptions->LightsOn = false;
 			break;
 	}
-	//*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
+	*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
 }
 
 void Level00::BuildScene()

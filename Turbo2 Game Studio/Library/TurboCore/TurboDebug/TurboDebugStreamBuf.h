@@ -49,7 +49,10 @@ namespace Turbo
 					{
 						if (c == '\n')
 						{
-							_logger->Log(_severity, _category, _message.str());
+							if (_logger != nullptr)
+							{
+								_logger->Log(_severity, _category, _message.str());
+							}
 							_message = std::stringstream();
 							return c;
 						}

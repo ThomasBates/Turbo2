@@ -18,11 +18,21 @@ void TurboDebug::Send(TurboDebugSeverity severity, TurboDebugCategory category, 
 		return;
 	}
 
+	if (category != debugController)
+	{
+		return;
+	}
+
 	_logger->Log(DebugSeverity(severity), DebugCategory(category), message);
 }
 
 TurboDebugStream& TurboDebug::Send(TurboDebugSeverity severity, TurboDebugCategory category)
 {
+	if (category != debugController)
+	{
+		return _nullStream;
+	}
+
 	_stream.Severity(DebugSeverity(severity));
 	_stream.Category(DebugCategory(category));
 

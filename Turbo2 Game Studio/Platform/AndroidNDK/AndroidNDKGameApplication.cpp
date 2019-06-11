@@ -2,29 +2,17 @@
 #include <pch.h>
 
 #include <AndroidNDKGameApplication.h>
-#include <AndroidNDKGameController.h>
+#include <AndroidNDKGameController_LookAround.h>
 #include "AndroidNDKHelpers.h"
 
-//using namespace Turbo::Core::Debug;
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 using namespace Turbo::Scene;
 using namespace Turbo::Platform::AndroidNDK;
 
-//-------------------------------------------------------------------------
-// Preprocessor
-//-------------------------------------------------------------------------
+
 #define HELPER_CLASS_NAME "ca/turbobutterfly/ndkhelper/NDKHelper"  // Class name of helper function
-//#define HELPER_CLASS_NAME "com/sample/helper/NDKHelper"  // Class name of helper function
 
-////-------------------------------------------------------------------------
-//// Constants
-////-------------------------------------------------------------------------
-//const int32_t NUM_TEAPOTS_X = 8;
-//const int32_t NUM_TEAPOTS_Y = 8;
-//const int32_t NUM_TEAPOTS_Z = 8;
-
-
-#pragma region AndroidNDKGameApplication Methods
 
 AndroidNDKGameApplication::AndroidNDKGameApplication(
     android_app* app,
@@ -47,6 +35,13 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
 
     _android_app->application = this;
     _android_app->onAppCmd = AndroidNDKGameApplication::HandleAppCmd;
+
+    //_android_app->activity->callbacks->onConfigurationChanged = ActivityConfigurationChanged;
+}
+
+void AndroidNDKGameApplication::ActivityConfigurationChanged(ANativeActivity *activity)
+{
+//    activity->assetManager;
 }
 
 int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
@@ -62,11 +57,11 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
 
         if (navInfo->Terminate)
         {
-            TermDisplay();
+            TerminateDisplay();
             return 0;
         }
 
-        if (HasFocus())
+        if (_hasFocus)
         {
             //	Update the scene
             game->Update(navInfo);
@@ -77,70 +72,10 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
                 _audio->LoadSceneResources(game->Scene());
             }
 
-            //	Render the Scene
             _renderer->RenderScene(game->Scene());
-
-            //	Play audio
             _audio->PlaySounds(game->Scene());
         }
     }
-}
-
-bool AndroidNDKGameApplication::ProcessEvents()
-{
-    // Read all pending events.
-    int id;
-
-    //  If the timeout is zero, returns immediately without blocking.
-    //  If the timeout is negative, waits indefinitely until an event appears.
-    int timeout = HasFocus() ? 0 : -1;
-    int events;
-    android_poll_source* source;
-
-    // If not animating, we will block forever waiting for events.
-    // If animating, we loop until all events are read, then continue
-    // to draw the next frame of animation.
-    while ((id = ALooper_pollAll(timeout, NULL, &events, (void**)&source)) >= 0)
-    {
-        // Process this event.
-        if (source != NULL)
-        {
-            source->process(_android_app, source);
-        }
-
-        //ProcessSensors(id);
-
-        // Check if we are exiting.
-        if (_android_app->destroyRequested != 0)
-        {
-            TermDisplay();
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/**
- * Just the current frame in the display.
- */
-void AndroidNDKGameApplication::DrawFrame(std::shared_ptr<ITurboGame> game)
-{
-    //	Update the scene
-    NavigationInfo* navInfo = _controller->GetNavigationInfo();
-    game->Update(navInfo);
-
-    if (game->SceneChanged())
-    {
-        _renderer->LoadSceneResources(game->Scene());
-        _audio->LoadSceneResources(game->Scene());
-    }
-
-    //	Render the Scene
-    _renderer->RenderScene(game->Scene());
-
-    //	Play audio
-    _audio->PlaySounds(game->Scene());
 }
 
 /**
@@ -151,100 +86,97 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
     AndroidNDKGameApplication* application = (AndroidNDKGameApplication*)app->application;
     switch (cmd)
     {
-        default:
+        //  Open/Resume
+        case APP_CMD_START:
             break;
-        case APP_CMD_SAVE_STATE:
+        case APP_CMD_RESUME:
+            break;
+        case APP_CMD_INPUT_CHANGED:
             break;
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
-            application->InitDisplay(app);
+            application->InitializeDisplay(app);
             break;
-        case APP_CMD_TERM_WINDOW:
-            // The window is being hidden or closed, clean it up.
-            application->TermDisplay();
+        case APP_CMD_GAINED_FOCUS:
+            application->_hasFocus = true;
+            application->_controller->Resume();
+            break;
+
+        //  Pause/Close
+        case APP_CMD_PAUSE:
+            break;
+        case APP_CMD_LOST_FOCUS:
+            application->_hasFocus = false;
+            application->_controller->Suspend();
+            break;
+        case APP_CMD_SAVE_STATE:
             break;
         case APP_CMD_STOP:
             break;
-        case APP_CMD_GAINED_FOCUS:
-            application->HasFocus(true);
+        case APP_CMD_TERM_WINDOW:
+            // The window is being hidden or closed, clean it up.
+            application->TerminateDisplay();
             break;
-        case APP_CMD_LOST_FOCUS:
-            application->HasFocus(false);
+
+        //  Rotate/Resize
+        case APP_CMD_CONFIG_CHANGED:
+            application->ReconfigureDisplay(app);
+            break;
+        case APP_CMD_WINDOW_RESIZED:
+            application->ReconfigureDisplay(app);
+            break;
+
+        //  Other
+        case APP_CMD_WINDOW_REDRAW_NEEDED:
+            break;
+        case APP_CMD_CONTENT_RECT_CHANGED:
             break;
         case APP_CMD_LOW_MEMORY:
             // Free up GL resources
             application->TrimMemory();
             break;
+        case APP_CMD_DESTROY:
+            break;
+
+        default:
+            break;
     }
 }
-
-#pragma endregion
-
-/**
- * Load resources
- */
-//void AndroidNDKGameApplication::LoadResources()
-//{
-//    renderer_.Init(NUM_TEAPOTS_X, NUM_TEAPOTS_Y, NUM_TEAPOTS_Z);
-//    renderer_.Bind(&_tap_camera);
-//}
-
-/**
- * Unload resources
- */
-//void AndroidNDKGameApplication::UnloadResources()
-//{
-//    renderer_.Unload();
-//}
 
 /**
  * Initialize an EGL context for the current display.
  */
-void AndroidNDKGameApplication::InitDisplay(android_app *app)
+void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
 {
     if (app->window != NULL)
     {
         _renderer->UpdateDisplayInformation();
-        HasFocus(true);
-        //DrawFrame(_game);
+        _controller->Resume();
+        _hasFocus = true;
     }
 }
 
 /**
  * Tear down the EGL context currently associated with the display.
  */
-void AndroidNDKGameApplication::TermDisplay()
+void AndroidNDKGameApplication::TerminateDisplay()
 {
+    _hasFocus = false;
+    _controller->Suspend();
     _renderer->Reset();
-    //_renderer->Suspend();
-    //_gl_context->Suspend();
-    HasFocus(false);
+}
+
+void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
+{
+    if (app->window != NULL)
+    {
+        _renderer->Reset();
+        _renderer->UpdateDisplayInformation();
+    }
 }
 
 void AndroidNDKGameApplication::TrimMemory()
 {
     LOGI("Trimming memory");
-    _renderer->Reset();
-    //_gl_context->Invalidate();
-}
-
-//-------------------------------------------------------------------------
-// Misc
-//-------------------------------------------------------------------------
-bool AndroidNDKGameApplication::HasFocus()
-{
-    return _hasFocus;
-}
-
-void AndroidNDKGameApplication::HasFocus(bool hasFocus)
-{
-    _hasFocus = hasFocus;
-    if (_hasFocus)
-    {
-        _controller->Resume();
-    }
-    else
-    {
-        _controller->Suspend();
-    }
+   // _renderer->Reset();
 }

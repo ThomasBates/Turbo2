@@ -14,7 +14,9 @@ namespace Turbo
 			{
 				debugError,
 				debugWarning,
-				debugInformation
+				debugInformation,
+				debugDebug,
+				debugVerbose
 			};
 
 			inline std::string DebugSeverity(TurboDebugSeverity severity)
@@ -24,6 +26,8 @@ namespace Turbo
 					case debugError:		return "Error";
 					case debugWarning:		return "Warning";
 					case debugInformation:	return "Information";
+					case debugDebug:		return "Debug";
+					case debugVerbose:		return "Verbose";
 				}
 				return "Unknown Debug Severity";
 			}
@@ -33,6 +37,7 @@ namespace Turbo
 			enum TurboDebugCategory
 			{
 				debugStartup,
+				debugController,
 				debugInteractions
 			};
 
@@ -41,6 +46,7 @@ namespace Turbo
 				switch (category)
 				{
 					case debugStartup: return "Startup";
+					case debugController: return "Controller";
 					case debugInteractions: return "Interactions";
 				}
 				return "Unknown Debug Category";

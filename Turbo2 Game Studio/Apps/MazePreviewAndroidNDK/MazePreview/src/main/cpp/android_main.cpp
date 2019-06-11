@@ -7,7 +7,8 @@
 #include <AndroidGLRenderer.h>
 
 #include <AndroidNDKGameApplication.h>
-#include <AndroidNDKGameController.h>
+#include <AndroidNDKGameController_DualPads.h>
+#include <AndroidNDKGameController_LookAround.h>
 #include <AndroidNDKIOService.h>
 #include <AndroidNDKAudio.h>
 
@@ -27,7 +28,7 @@ void android_main(android_app* app)
     std::shared_ptr<ITurboDebugLogger> logger = std::shared_ptr<ITurboDebugLogger>(new AndroidNDKDebugLogCatLogger());
     std::shared_ptr<ITurboDebug> debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
-    std::shared_ptr<ITurboGameController> controller = std::shared_ptr<ITurboGameController>(new AndroidNDKGameController(app, debug));
+    std::shared_ptr<ITurboGameController> controller = std::shared_ptr<ITurboGameController>(new AndroidNDKGameController_DualPads(app, debug));
     std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
     std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new AndroidGLRenderer(app, debug, ioService));
     std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new AndroidNDKAudio(debug, ioService));

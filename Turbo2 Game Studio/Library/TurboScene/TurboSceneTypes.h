@@ -16,6 +16,12 @@ namespace Turbo
 			bool	Pointer;
 			float	PointerX;
 			float	PointerY;
+			bool 	MovePadActive;
+			float 	MovePadX;
+			float 	MovePadY;
+			bool 	LookPadActive;
+			float 	LookPadX;
+			float 	LookPadY;
 			bool	MoveLeft;
 			bool	MoveRight;
 			bool	MoveDown;

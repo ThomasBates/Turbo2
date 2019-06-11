@@ -176,7 +176,6 @@ private:
     void UpdateFPS();
     void UpdateProjectionMatrix();
     void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement);
-    void TransformPosition(ndk_helper::Vec2 &vec);
 
     void InitializeRendering();
     void RenderSceneObjects(std::shared_ptr<ITurboScene> scene);
