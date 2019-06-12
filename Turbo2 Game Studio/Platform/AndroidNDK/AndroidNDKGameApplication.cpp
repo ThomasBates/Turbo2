@@ -2,7 +2,7 @@
 #include <pch.h>
 
 #include <AndroidNDKGameApplication.h>
-#include <AndroidNDKGameController_LookAround.h>
+#include <AndroidNDKGameController_Legacy.h>
 #include "AndroidNDKHelpers.h"
 
 using namespace Turbo::Core::Debug;

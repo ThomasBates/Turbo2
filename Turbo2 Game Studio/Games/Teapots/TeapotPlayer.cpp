@@ -25,7 +25,7 @@ TeapotPlayer::TeapotPlayer()
 void TeapotPlayer::Update(NavigationInfo* navInfo)
 {
     const double cMoveAccelleration = 2.0f;
-    const double cRotateAccelleration = 45.0f;
+//    const double cRotateAccelleration = 45.0f;
 //    const double cFrictionFactor = 2.0f;
 
 //	const double cHoverFrequency = 2.0f;
@@ -39,7 +39,6 @@ void TeapotPlayer::Update(NavigationInfo* navInfo)
 //    const double cSelfRightingSpeed = 3000.0f;
 
     double deltaTime = navInfo->DeltaTime;
-//    double time = navInfo->Time;
 
     double moveSpeed = cMoveAccelleration * deltaTime;
 
@@ -65,19 +64,42 @@ void TeapotPlayer::Update(NavigationInfo* navInfo)
 	velocity.Y -= deltaTime * cGravityFactor;
 */
 
-    //	Handle keyboard movement inputs.
-    if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
-    if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
-    if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
-    if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
-    if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
-    if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
+//    //	Handle keyboard movement inputs.
+//    if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
+//    if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
+//    if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
+//    if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
+//    if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
+//    if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
+
+    for (auto& control: navInfo->Controls)
+    {
+        if ((control->Type() == TurboGameControlType::Move) &&
+            (control->IsActive()))
+        {
+            velocity -= _placement->Back()  * moveSpeed * control->YValue();
+            velocity += _placement->Right() * moveSpeed * control->XValue();
+        }
+    }
 
     _placement->Velocity(velocity);
 
-    double rotateSpeed = cRotateAccelleration * deltaTime;
+//    double rotateSpeed = cRotateAccelleration * deltaTime;
 
     TurboVector3D angularVelocity = _placement->AngularVelocity();
+
+    for (auto& control: navInfo->Controls)
+    {
+        if ((control->Type() == TurboGameControlType::Look) &&
+            (control->IsActive()))
+        {
+            double dx = control->XValue();
+            double dy = control->YValue();
+
+            angularVelocity.X = dy / deltaTime;
+            angularVelocity.Y = dx / deltaTime;
+        }
+    }
 
 /*
 	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
@@ -99,47 +121,47 @@ void TeapotPlayer::Update(NavigationInfo* navInfo)
 */
 
     //	Handle mouse direction inputs
-    if (navInfo->Pointer && _lastNavInfo.Pointer)
-    {
-        double dx = navInfo->PointerX - _lastNavInfo.PointerX;
-        double dy = navInfo->PointerY - _lastNavInfo.PointerY;
+//    if (navInfo->Pointer && _lastNavInfo.Pointer)
+//    {
+//        double dx = navInfo->PointerX - _lastNavInfo.PointerX;
+//        double dy = navInfo->PointerY - _lastNavInfo.PointerY;
+//
+//        if (true)//(_userOptions->InvertedMouse)
+//        {
+//            angularVelocity.X = 0.01 * dy / deltaTime;
+//            angularVelocity.Y = 0.01 * dx / deltaTime;
+//        }
+//        else
+//        {
+//            angularVelocity.X = -1.00 * dy / deltaTime;
+//            angularVelocity.Y = -1.00 * dx / deltaTime;
+//        }
+//    }
 
-        if (true)//(_userOptions->InvertedMouse)
-        {
-            angularVelocity.X = 0.01 * dy / deltaTime;
-            angularVelocity.Y = 0.01 * dx / deltaTime;
-        }
-        else
-        {
-            angularVelocity.X = -1.00 * dy / deltaTime;
-            angularVelocity.Y = -1.00 * dx / deltaTime;
-        }
-    }
+//    //	Handle keyboard direction inputs.
+//    if (navInfo->PitchFore)	angularVelocity.X -= rotateSpeed;
+//    if (navInfo->PitchBack)	angularVelocity.X += rotateSpeed;
+//    if (navInfo->YawRight)	angularVelocity.Y -= rotateSpeed;
+//    if (navInfo->YawLeft)	angularVelocity.Y += rotateSpeed;
+//    if (navInfo->RollRight)	angularVelocity.Z -= rotateSpeed;
+//    if (navInfo->RollLeft)	angularVelocity.Z += rotateSpeed;
 
-    //	Handle keyboard direction inputs.
-    if (navInfo->PitchFore)	angularVelocity.X -= rotateSpeed;
-    if (navInfo->PitchBack)	angularVelocity.X += rotateSpeed;
-    if (navInfo->YawRight)	angularVelocity.Y -= rotateSpeed;
-    if (navInfo->YawLeft)	angularVelocity.Y += rotateSpeed;
-    if (navInfo->RollRight)	angularVelocity.Z -= rotateSpeed;
-    if (navInfo->RollLeft)	angularVelocity.Z += rotateSpeed;
-
-    //	If no direction inputs, slow down the spinning and stand upright (if enabled).
-    if (!(navInfo->Pointer ||
-          navInfo->PitchFore ||
-          navInfo->PitchBack ||
-          navInfo->YawRight ||
-          navInfo->YawLeft ||
-          navInfo->RollRight ||
-          navInfo->RollLeft))
-    {
-        // Slow down spinning
-        angularVelocity -= angularVelocity * 1.0f * deltaTime;
-    }
+//    //	If no direction inputs, slow down the spinning and stand upright (if enabled).
+//    if (!(navInfo->Pointer ||
+//          navInfo->PitchFore ||
+//          navInfo->PitchBack ||
+//          navInfo->YawRight ||
+//          navInfo->YawLeft ||
+//          navInfo->RollRight ||
+//          navInfo->RollLeft))
+//    {
+//        // Slow down spinning
+//        angularVelocity -= angularVelocity * 1.0f * deltaTime;
+//    }
 
     _placement->AngularVelocity(angularVelocity);
 
-    _lastNavInfo = *navInfo;
+//    _lastNavInfo = *navInfo;
 }
 
 void TeapotPlayer::PlaySound(float volume)

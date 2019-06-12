@@ -41,7 +41,6 @@ add_library(MazePreview
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeCornerMesh.cpp
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeEdgeMesh.cpp
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeFactory.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeMotionEffects.cpp
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeMotionEffects_WithGravity.cpp
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeMotionEffects_WithoutGravity.cpp
 		${GamesFolder}/MazePreview/CubicMaze/CubicMazeObjectInteractions.cpp
@@ -105,6 +104,9 @@ add_library(TurboScene
 		${LibraryFolder}/TurboScene/TurboSceneFont.cpp
 		${LibraryFolder}/TurboScene/TurboSceneMaterial.cpp
 		${LibraryFolder}/TurboScene/TurboSceneMesh.cpp
+		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Base.cpp
+		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Button.cpp
+		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Last.cpp
 		${LibraryFolder}/TurboScene/TurboSceneObject.cpp
 		${LibraryFolder}/TurboScene/TurboScenePixelShader.cpp
 		${LibraryFolder}/TurboScene/TurboScenePlacement.cpp
@@ -122,8 +124,8 @@ add_library(AndroidNDK
 		${PlatformFolder}/AndroidNDK/AndroidNDKAudio.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKGameApplication.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_DualPads.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_LookAround.cpp
+		${PlatformFolder}/AndroidNDK/AndroidNDKGameController.cpp
+		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_Legacy.cpp
 		${PlatformFolder}/AndroidNDK/AndroidNDKIOService.cpp
 		${PlatformFolder}/AndroidNDK/gestureDetector.cpp
 		${PlatformFolder}/AndroidNDK/gl3stub.cpp

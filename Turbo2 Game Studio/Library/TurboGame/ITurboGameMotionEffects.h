@@ -4,10 +4,12 @@
 #include <pch.h>
 
 #include <ITurboGameController.h>
-#include <ITurboGameState.h>
-#include <ITurboScene.h>
+#include <TurboSceneNavigationInfo.h>
+#include <ITurboSceneObject.h>
 
 #include <TurboGameTypes.h>
+
+using namespace Turbo::Scene;
 
 namespace Turbo
 {

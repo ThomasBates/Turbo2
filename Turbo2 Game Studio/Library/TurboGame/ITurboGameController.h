@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <TurboSceneTypes.h>
+#include <TurboSceneNavigationInfo.h>
 
 using namespace Turbo::Scene;
 

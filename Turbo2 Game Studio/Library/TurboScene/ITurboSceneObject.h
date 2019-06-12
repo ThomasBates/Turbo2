@@ -8,7 +8,7 @@
 #include <ITurboScenePlacement.h>
 #include <ITurboSceneSoundEffect.h>
 
-#include <TurboSceneTypes.h>
+#include <TurboSceneNavigationInfo.h>
 
 namespace Turbo
 {

@@ -3,20 +3,20 @@
 
 #include <sensorManager.h>
 
-#include <AndroidNDKGameController_LookAround.h>
+#include <AndroidNDKGameController_Legacy.h>
 
 using namespace Turbo::Platform::AndroidNDK;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-AndroidNDKGameController_LookAround::AndroidNDKGameController_LookAround(
+AndroidNDKGameController_Legacy::AndroidNDKGameController_Legacy(
 		android_app* app,
 		std::shared_ptr<ITurboDebug> debug) :
 		_android_app(app),
 		_debug(debug)
 {
 	_android_app->controller = this;
-	_android_app->onInputEvent = AndroidNDKGameController_LookAround::HandleInputEvents;
+	_android_app->onInputEvent = AndroidNDKGameController_Legacy::HandleInputEvents;
 
 	InitSensors();
 }
@@ -24,7 +24,7 @@ AndroidNDKGameController_LookAround::AndroidNDKGameController_LookAround(
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameController Methods ---------------------------------------------------------------------------------------
 
-NavigationInfo* AndroidNDKGameController_LookAround::GetNavigationInfo()
+NavigationInfo* AndroidNDKGameController_Legacy::GetNavigationInfo()
 {
     ProcessEvents();
 
@@ -35,12 +35,12 @@ NavigationInfo* AndroidNDKGameController_LookAround::GetNavigationInfo()
     return &_navInfo;
 }
 
-void AndroidNDKGameController_LookAround::Suspend()
+void AndroidNDKGameController_Legacy::Suspend()
 {
     SuspendSensors();
 }
 
-void AndroidNDKGameController_LookAround::Resume()
+void AndroidNDKGameController_Legacy::Resume()
 {
     ResumeSensors();
 }
@@ -51,9 +51,9 @@ void AndroidNDKGameController_LookAround::Resume()
 /**
  * Process the next input event.
  */
-int32_t AndroidNDKGameController_LookAround::HandleInputEvents(android_app* app, AInputEvent* event)
+int32_t AndroidNDKGameController_Legacy::HandleInputEvents(android_app* app, AInputEvent* event)
 {
-	AndroidNDKGameController_LookAround* controller = (AndroidNDKGameController_LookAround*)app->controller;
+	AndroidNDKGameController_Legacy* controller = (AndroidNDKGameController_Legacy*)app->controller;
 
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
 	{
@@ -109,7 +109,7 @@ int32_t AndroidNDKGameController_LookAround::HandleInputEvents(android_app* app,
 //-------------------------------------------------------------------------
 // Sensor handlers
 //-------------------------------------------------------------------------
-void AndroidNDKGameController_LookAround::InitSensors()
+void AndroidNDKGameController_Legacy::InitSensors()
 {
     _doubletap_detector.SetConfiguration(_android_app->config);
     _drag_detector.SetConfiguration(_android_app->config);
@@ -123,7 +123,7 @@ void AndroidNDKGameController_LookAround::InitSensors()
     _sensor_event_queue = ASensorManager_createEventQueue(_sensor_manager, _android_app->looper, LOOPER_ID_USER, NULL, NULL);
 }
 
-bool AndroidNDKGameController_LookAround::ProcessEvents()
+bool AndroidNDKGameController_Legacy::ProcessEvents()
 {
 	// Read all pending events.
 	int id;
@@ -158,7 +158,7 @@ bool AndroidNDKGameController_LookAround::ProcessEvents()
 	return true;
 }
 
-void AndroidNDKGameController_LookAround::ProcessSensors(int32_t id)
+void AndroidNDKGameController_Legacy::ProcessSensors(int32_t id)
 {
     // If a sensor has data, process it now.
     if (id == LOOPER_ID_USER)
@@ -173,7 +173,7 @@ void AndroidNDKGameController_LookAround::ProcessSensors(int32_t id)
     }
 }
 
-void AndroidNDKGameController_LookAround::ResumeSensors()
+void AndroidNDKGameController_Legacy::ResumeSensors()
 {
     // When our app gains focus, we start monitoring the accelerometer.
     if (_accelerometer_sensor != NULL)
@@ -187,7 +187,7 @@ void AndroidNDKGameController_LookAround::ResumeSensors()
     _isRunning = true;
 }
 
-void AndroidNDKGameController_LookAround::SuspendSensors()
+void AndroidNDKGameController_Legacy::SuspendSensors()
 {
 	_isRunning = false;
 
@@ -199,43 +199,43 @@ void AndroidNDKGameController_LookAround::SuspendSensors()
     }
 }
 
-void AndroidNDKGameController_LookAround::DoubleTap()
+void AndroidNDKGameController_Legacy::DoubleTap()
 {
 	//_tap_camera.Reset(true);
 }
 
-void AndroidNDKGameController_LookAround::StartDrag()
+void AndroidNDKGameController_Legacy::StartDrag()
 {
-	ndk_helper::Vec2 v;
-	_drag_detector.GetPointer(v);
-
-	_navInfo.Pointer = true;
-	v.Value(_navInfo.PointerX, _navInfo.PointerY);
+//	ndk_helper::Vec2 v;
+//	_drag_detector.GetPointer(v);
+//
+//	_navInfo.Pointer = true;
+//	v.Value(_navInfo.PointerX, _navInfo.PointerY);
 
 //	TransformPosition(v);
 //	_tap_camera.BeginDrag(v);
 }
 
-void AndroidNDKGameController_LookAround::Drag()
+void AndroidNDKGameController_Legacy::Drag()
 {
-	ndk_helper::Vec2 v;
-	_drag_detector.GetPointer(v);
-
-    _navInfo.Pointer = true;
-    v.Value(_navInfo.PointerX, _navInfo.PointerY);
+//	ndk_helper::Vec2 v;
+//	_drag_detector.GetPointer(v);
+//
+//    _navInfo.Pointer = true;
+//    v.Value(_navInfo.PointerX, _navInfo.PointerY);
 
 //	TransformPosition(v);
 //	_tap_camera.Drag(v);
 }
 
-void AndroidNDKGameController_LookAround::EndDrag()
+void AndroidNDKGameController_Legacy::EndDrag()
 {
-    _navInfo.Pointer = false;
+//    _navInfo.Pointer = false;
 
 	//_tap_camera.EndDrag();
 }
 
-void AndroidNDKGameController_LookAround::StartPinch()
+void AndroidNDKGameController_Legacy::StartPinch()
 {
 //	ndk_helper::Vec2 v1;
 //	ndk_helper::Vec2 v2;
@@ -245,7 +245,7 @@ void AndroidNDKGameController_LookAround::StartPinch()
 //	_tap_camera.BeginPinch(v1, v2);
 }
 
-void AndroidNDKGameController_LookAround::Pinch()
+void AndroidNDKGameController_Legacy::Pinch()
 {
 //	ndk_helper::Vec2 v1;
 //	ndk_helper::Vec2 v2;
@@ -255,7 +255,7 @@ void AndroidNDKGameController_LookAround::Pinch()
 //	_tap_camera.Pinch(v1, v2);
 }
 
-void AndroidNDKGameController_LookAround::DebugLogEvent(AInputEvent *event)
+void AndroidNDKGameController_Legacy::DebugLogEvent(AInputEvent *event)
 {
 	int32_t action = AMotionEvent_getAction(event);
     int32_t index = (action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;

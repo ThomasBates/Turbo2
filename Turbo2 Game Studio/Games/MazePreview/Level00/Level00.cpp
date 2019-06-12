@@ -346,7 +346,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 			mazeOptions->LightsOn = false;
 			break;
 	}
-	*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
+	//*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
 }
 
 void Level00::BuildScene()

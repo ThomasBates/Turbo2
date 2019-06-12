@@ -26,14 +26,14 @@ namespace Turbo
 			//	is that DX12GameController inherits from an interface in order to be abstracted, 
 			//	and DX12NavigationControl has to be a "ref class" in order to receive windows events. 
 			//	Apparently one class can't do both. 
-			class AndroidNDKGameController_LookAround : public ITurboGameController
+			class AndroidNDKGameController_Legacy : public ITurboGameController
 			{
 			public:
 				//  Constructors and Destructors -------------------------------------------------------------------------------
-				AndroidNDKGameController_LookAround(
+				AndroidNDKGameController_Legacy(
 						android_app* app,
 						std::shared_ptr<ITurboDebug> debug);
-				virtual ~AndroidNDKGameController_LookAround() {}
+				virtual ~AndroidNDKGameController_Legacy() {}
 
 				//  ITurboGameController Methods -------------------------------------------------------------------------------
 				virtual NavigationInfo* GetNavigationInfo();

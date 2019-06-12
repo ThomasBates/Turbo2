@@ -3,7 +3,8 @@
 #include <pch.h>
 
 #include <ITurboSceneObject.h>
-#include <TurboSceneTypes.h>
+//#include <TurboSceneTypes.h>
+#include <TurboSceneNavigationInfo.h>
 #include <Level00Types.h>
 
 using namespace Turbo::Math;
@@ -49,5 +50,5 @@ private:
 	std::vector<std::shared_ptr<ITurboSceneObject>> _childSceneObjects;
 	Level00UserOptions*								_userOptions;
 
-	NavigationInfo _lastNavInfo;
+	//NavigationInfo _lastNavInfo;
 };

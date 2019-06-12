@@ -3,28 +3,33 @@
 
 #include <sensorManager.h>
 
-#include <AndroidNDKGameController_DualPads.h>
+#include <AndroidNDKGameController.h>
+#include <TurboSceneNavigationControl_Base.h>
+#include <TurboSceneNavigationControl_Button.h>
+#include <TurboSceneNavigationControl_Last.h>
 
 using namespace Turbo::Platform::AndroidNDK;
+using namespace Turbo::Scene;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-AndroidNDKGameController_DualPads::AndroidNDKGameController_DualPads(
+AndroidNDKGameController::AndroidNDKGameController(
 		android_app* app,
 		std::shared_ptr<ITurboDebug> debug) :
 		_android_app(app),
 		_debug(debug)
 {
 	_android_app->controller = this;
-	_android_app->onInputEvent = AndroidNDKGameController_DualPads::HandleInputEvents;
+	_android_app->onInputEvent = AndroidNDKGameController::HandleInputEvents;
 
-	InitSensors();
+	InitializeSensors();
+	InitializeControls();
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameController Methods ---------------------------------------------------------------------------------------
 
-NavigationInfo* AndroidNDKGameController_DualPads::GetNavigationInfo()
+NavigationInfo* AndroidNDKGameController::GetNavigationInfo()
 {
     ProcessEvents();
 
@@ -35,12 +40,12 @@ NavigationInfo* AndroidNDKGameController_DualPads::GetNavigationInfo()
     return &_navInfo;
 }
 
-void AndroidNDKGameController_DualPads::Suspend()
+void AndroidNDKGameController::Suspend()
 {
     SuspendSensors();
 }
 
-void AndroidNDKGameController_DualPads::Resume()
+void AndroidNDKGameController::Resume()
 {
     ResumeSensors();
 }
@@ -51,14 +56,14 @@ void AndroidNDKGameController_DualPads::Resume()
 /**
  * Process the next input event.
  */
-int32_t AndroidNDKGameController_DualPads::HandleInputEvents(android_app* app, AInputEvent* event)
+int32_t AndroidNDKGameController::HandleInputEvents(android_app* app, AInputEvent* event)
 {
-	auto controller = (AndroidNDKGameController_DualPads*)app->controller;
+	auto controller = (AndroidNDKGameController*)app->controller;
 
 	return controller->HandleInputEvent(event);
 }
 
-int32_t AndroidNDKGameController_DualPads::HandleInputEvent(AInputEvent *event)
+int32_t AndroidNDKGameController::HandleInputEvent(AInputEvent *event)
 {
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
 	{
@@ -69,7 +74,7 @@ int32_t AndroidNDKGameController_DualPads::HandleInputEvent(AInputEvent *event)
 	return 0;
 }
 
-int32_t AndroidNDKGameController_DualPads::HandleMotionEvent(AInputEvent *event)
+int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 {
 	int32_t action = AMotionEvent_getAction(event);
 	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
@@ -78,6 +83,7 @@ int32_t AndroidNDKGameController_DualPads::HandleMotionEvent(AInputEvent *event)
 	int32_t pointerID;
 	float x;
 	float y;
+	std::shared_ptr<ITurboSceneNavigationControl> activeControl;
 
 	switch (actionCode)
 	{
@@ -87,67 +93,28 @@ int32_t AndroidNDKGameController_DualPads::HandleMotionEvent(AInputEvent *event)
 			x = AMotionEvent_getX(event, pointerIndex);
 			y = AMotionEvent_getY(event, pointerIndex);
 
-			if (y < 540*3)
-			{
-				if (!_screenPointer.IsActive)
-				{
-					_screenPointer.IsActive = true;
-					_screenPointer.ID = pointerID;
-					_screenPointer.Index = pointerIndex;
-					_navInfo.Pointer = true;
-					_navInfo.PointerX = x;
-					_navInfo.PointerY = y;
-				}
-			}
-			else if (x < 540)
-			{
-				if (!_movePointer.IsActive)
-				{
-					_movePointer.IsActive = true;
-					_movePointer.ID = pointerID;
-					_movePointer.Index = pointerIndex;
-					_movePointer.CenterX = x;
-					_movePointer.CenterY = y;
-					_navInfo.MovePadActive = true;
-                    _navInfo.MovePadX = 0.0f;
-                    _navInfo.MovePadY = 0.0f;
-				}
-			}
-			else if (x >= 540)
-			{
-				if (!_lookPointer.IsActive)
-				{
-					_lookPointer.IsActive = true;
-					_lookPointer.ID = pointerID;
-					_lookPointer.Index = pointerIndex;
-					_lookPointer.CenterX = x;
-					_lookPointer.CenterY = y;
-					_navInfo.LookPadActive = true;
-                    _navInfo.LookPadX = 0.0f;
-                    _navInfo.LookPadY = 0.0f;
-				}
-			}
+			for (auto& control : _navInfo.Controls)
+            {
+                if (control->IsActive() || !control->Contains(x,y))
+                    continue;
+
+                control->IsActive(true);
+                control->CurrentPoint(x, y);
+
+                _activeControls[pointerID] = control;
+                _activeIndexes[pointerID] = pointerIndex;
+            }
 			break;
 
 		// 	Last touch up
 		case AMOTION_EVENT_ACTION_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-			if (_screenPointer.IsActive && (pointerID == _screenPointer.ID))
-			{
-				_screenPointer.IsActive = false;
-				_navInfo.Pointer = false;
-			}
-			if (_movePointer.IsActive && (pointerID == _movePointer.ID))
-			{
-				_movePointer.IsActive = false;
-				_navInfo.MovePadActive = false;
-			}
-			if (_lookPointer.IsActive && (pointerID == _lookPointer.ID))
-			{
-				_lookPointer.IsActive = false;
-				_navInfo.LookPadActive = false;
-			}
+			activeControl = _activeControls[pointerID];
+			activeControl->IsActive(false);
+
+			_activeControls.erase(pointerID);
+			_activeIndexes.erase(pointerID);
 			break;
 
 		case AMOTION_EVENT_ACTION_POINTER_DOWN:
@@ -155,109 +122,53 @@ int32_t AndroidNDKGameController_DualPads::HandleMotionEvent(AInputEvent *event)
 			x = AMotionEvent_getX(event, pointerIndex);
 			y = AMotionEvent_getY(event, pointerIndex);
 
-            if (y < 540*3)
-            {
-                if (!_screenPointer.IsActive)
-                {
-                    _screenPointer.IsActive = true;
-                    _screenPointer.ID = pointerID;
-                    _screenPointer.Index = pointerIndex;
-                    _navInfo.Pointer = true;
-                    _navInfo.PointerX = x;
-                    _navInfo.PointerY = y;
-                }
-            }
-            else if (x < 540)
-            {
-                if (!_movePointer.IsActive)
-                {
-                    _movePointer.IsActive = true;
-                    _movePointer.ID = pointerID;
-                    _movePointer.Index = pointerIndex;
-                    _movePointer.CenterX = x;
-                    _movePointer.CenterY = y;
-                    _navInfo.MovePadActive = true;
-                    _navInfo.MovePadX = 0.0f;
-                    _navInfo.MovePadY = 0.0f;
-                }
-            }
-            else if (x >= 540)
-            {
-                if (!_lookPointer.IsActive)
-                {
-                    _lookPointer.IsActive = true;
-                    _lookPointer.ID = pointerID;
-                    _lookPointer.Index = pointerIndex;
-                    _lookPointer.CenterX = x;
-                    _lookPointer.CenterY = y;
-                    _navInfo.LookPadActive = true;
-                    _navInfo.LookPadX = 0.0f;
-                    _navInfo.LookPadY = 0.0f;
-                }
-            }
+			for (auto& control : _navInfo.Controls)
+			{
+				if (control->IsActive() || !control->Contains(x,y))
+					continue;
 
-			UpdatePointerIndex(event, &_screenPointer);
-			UpdatePointerIndex(event, &_movePointer);
-			UpdatePointerIndex(event, &_lookPointer);
+				control->IsActive(true);
+				control->CurrentPoint(x, y);
+
+				_activeControls[pointerID] = control;
+				_activeIndexes[pointerID] = pointerIndex;
+			}
+
+			UpdatePointerIndexes(event);
 			break;
 
 		case AMOTION_EVENT_ACTION_POINTER_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-            if (_screenPointer.IsActive && (pointerID == _screenPointer.ID))
-            {
-                _screenPointer.IsActive = false;
-                _navInfo.Pointer = false;
-            }
-            if (_movePointer.IsActive && (pointerID == _movePointer.ID))
-            {
-                _movePointer.IsActive = false;
-                _navInfo.MovePadActive = false;
-            }
-            if (_lookPointer.IsActive && (pointerID == _lookPointer.ID))
-            {
-                _lookPointer.IsActive = false;
-                _navInfo.LookPadActive = false;
-            }
+			activeControl = _activeControls[pointerID];
+			activeControl->IsActive(false);
 
-			UpdatePointerIndex(event, &_screenPointer);
-			UpdatePointerIndex(event, &_movePointer);
-			UpdatePointerIndex(event, &_lookPointer);
+			_activeControls.erase(pointerID);
+			_activeIndexes.erase(pointerID);
+
+			UpdatePointerIndexes(event);
 			break;
 
 	    case AMOTION_EVENT_ACTION_CANCEL:
-            _screenPointer.IsActive = false;
-            _navInfo.Pointer = false;
-
-            _movePointer.IsActive = false;
-            _navInfo.MovePadActive = false;
-
-            _lookPointer.IsActive = false;
-            _navInfo.LookPadActive = false;
+			for (auto& control : _navInfo.Controls)
+			{
+				control->IsActive(false);
+			}
+			_activeControls.clear();
+			_activeIndexes.clear();
 	        break;
 
 		case AMOTION_EVENT_ACTION_MOVE:
-			if (_screenPointer.IsActive)
+			for (auto& element : _activeControls)
 			{
-				pointerIndex = _screenPointer.Index;
-				_navInfo.PointerX = AMotionEvent_getX(event, pointerIndex);
-				_navInfo.PointerY = AMotionEvent_getY(event, pointerIndex);
-			}
-			if (_movePointer.IsActive)
-			{
-				pointerIndex = _movePointer.Index;
+				pointerID = element.first;
+				activeControl = element.second;
+				pointerIndex = _activeIndexes[pointerID];
+
 				x = AMotionEvent_getX(event, pointerIndex);
 				y = AMotionEvent_getY(event, pointerIndex);
-				_navInfo.MovePadX = fmin(fmax((x - _movePointer.CenterX) / 200.0f, -1.0f), 1.0f);
-				_navInfo.MovePadY = fmin(fmax((y - _movePointer.CenterY) / 200.0f, -1.0f), 1.0f);
-			}
-			if (_lookPointer.IsActive)
-			{
-				pointerIndex = _lookPointer.Index;
-				x = AMotionEvent_getX(event, pointerIndex);
-				y = AMotionEvent_getY(event, pointerIndex);
-				_navInfo.LookPadX = fmin(fmax((x - _lookPointer.CenterX) / 200.0f, -1.0f), 1.0f);
-				_navInfo.LookPadY = fmin(fmax((y - _lookPointer.CenterY) / 200.0f, -1.0f), 1.0f);
+
+				activeControl->CurrentPoint(x, y);
 			}
 			break;
 
@@ -267,22 +178,21 @@ int32_t AndroidNDKGameController_DualPads::HandleMotionEvent(AInputEvent *event)
 	return 1;
 }
 
-void AndroidNDKGameController_DualPads::UpdatePointerIndex(const AInputEvent *event,
-														   PointerInfo *pointer)
+void AndroidNDKGameController::UpdatePointerIndexes(const AInputEvent *event)
 {
-	if (pointer->IsActive)
+	_activeIndexes.clear();
+	for (auto& element : _activeControls)
 	{
-		int32_t pointerIndex = GetPointerIndex(event, pointer->ID);
-		if (pointerIndex < 0)
+		int32_t pointerID = element.first;
+		int32_t pointerIndex = GetPointerIndex(event, pointerID);
+		if (pointerIndex >= 0)
 		{
-			//	throw
-			return;
+			_activeIndexes[pointerID] = (size_t)pointerIndex;
 		}
-		pointer->Index = (size_t)pointerIndex;
 	}
 }
 
-int32_t AndroidNDKGameController_DualPads::GetPointerIndex(const AInputEvent *event, int32_t id)
+int32_t AndroidNDKGameController::GetPointerIndex(const AInputEvent *event, int32_t id)
 {
 	size_t count = AMotionEvent_getPointerCount(event);
 	for (size_t index = 0; index < count; ++index)
@@ -293,7 +203,7 @@ int32_t AndroidNDKGameController_DualPads::GetPointerIndex(const AInputEvent *ev
 	return -1;
 }
 
-void AndroidNDKGameController_DualPads::DebugLogMotionEvent(AInputEvent *event)
+void AndroidNDKGameController::DebugLogMotionEvent(AInputEvent *event)
 {
 	int32_t action = AMotionEvent_getAction(event);
 	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
@@ -371,7 +281,7 @@ void AndroidNDKGameController_DualPads::DebugLogMotionEvent(AInputEvent *event)
 //-------------------------------------------------------------------------
 // Sensor handlers
 //-------------------------------------------------------------------------
-void AndroidNDKGameController_DualPads::InitSensors()
+void AndroidNDKGameController::InitializeSensors()
 {
     _doubletap_detector.SetConfiguration(_android_app->config);
     _drag_detector.SetConfiguration(_android_app->config);
@@ -385,7 +295,14 @@ void AndroidNDKGameController_DualPads::InitSensors()
     _sensor_event_queue = ASensorManager_createEventQueue(_sensor_manager, _android_app->looper, LOOPER_ID_USER, NULL, NULL);
 }
 
-bool AndroidNDKGameController_DualPads::ProcessEvents()
+void AndroidNDKGameController::InitializeControls()
+{
+	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
+	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
+    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Button(TurboGameControlType::Move, 0.0f,  540.0f, 1440.0f, 1920.0f)));
+}
+
+bool AndroidNDKGameController::ProcessEvents()
 {
 	// Read all pending events.
 	int id;
@@ -420,7 +337,7 @@ bool AndroidNDKGameController_DualPads::ProcessEvents()
 	return true;
 }
 
-void AndroidNDKGameController_DualPads::ProcessSensors(int32_t id)
+void AndroidNDKGameController::ProcessSensors(int32_t id)
 {
     // If a sensor has data, process it now.
     if (id == LOOPER_ID_USER)
@@ -435,7 +352,7 @@ void AndroidNDKGameController_DualPads::ProcessSensors(int32_t id)
     }
 }
 
-void AndroidNDKGameController_DualPads::ResumeSensors()
+void AndroidNDKGameController::ResumeSensors()
 {
     // When our app gains focus, we start monitoring the accelerometer.
     if (_accelerometer_sensor != NULL)
@@ -449,7 +366,7 @@ void AndroidNDKGameController_DualPads::ResumeSensors()
     _isRunning = true;
 }
 
-void AndroidNDKGameController_DualPads::SuspendSensors()
+void AndroidNDKGameController::SuspendSensors()
 {
 	_isRunning = false;
 
@@ -459,60 +376,4 @@ void AndroidNDKGameController_DualPads::SuspendSensors()
     {
         ASensorEventQueue_disableSensor(_sensor_event_queue, _accelerometer_sensor);
     }
-}
-
-void AndroidNDKGameController_DualPads::DoubleTap()
-{
-	//_tap_camera.Reset(true);
-}
-
-void AndroidNDKGameController_DualPads::StartDrag()
-{
-	ndk_helper::Vec2 v;
-	_drag_detector.GetPointer(v);
-
-	_navInfo.Pointer = true;
-	v.Value(_navInfo.PointerX, _navInfo.PointerY);
-
-//	TransformPosition(v);
-//	_tap_camera.BeginDrag(v);
-}
-
-void AndroidNDKGameController_DualPads::Drag()
-{
-	ndk_helper::Vec2 v;
-	_drag_detector.GetPointer(v);
-
-    _navInfo.Pointer = true;
-    v.Value(_navInfo.PointerX, _navInfo.PointerY);
-
-//	TransformPosition(v);
-//	_tap_camera.Drag(v);
-}
-
-void AndroidNDKGameController_DualPads::EndDrag()
-{
-    _navInfo.Pointer = false;
-
-	//_tap_camera.EndDrag();
-}
-
-void AndroidNDKGameController_DualPads::StartPinch()
-{
-//	ndk_helper::Vec2 v1;
-//	ndk_helper::Vec2 v2;
-//	_pinch_detector.GetPointers(v1, v2);
-//	TransformPosition(v1);
-//	TransformPosition(v2);
-//	_tap_camera.BeginPinch(v1, v2);
-}
-
-void AndroidNDKGameController_DualPads::Pinch()
-{
-//	ndk_helper::Vec2 v1;
-//	ndk_helper::Vec2 v2;
-//	_pinch_detector.GetPointers(v1, v2);
-//	TransformPosition(v1);
-//	TransformPosition(v2);
-//	_tap_camera.Pinch(v1, v2);
 }

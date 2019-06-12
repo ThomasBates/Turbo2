@@ -8,13 +8,15 @@
 #include <tapCamera.h>
 
 #include <ITurboDebug.h>
+#include <ITurboSceneNavigationControl.h>
 #include <ITurboGameController.h>
-//#include <AndroidNDKNavigationControl.h>
+#include <TurboSceneNavigationInfo.h>
 #include <android_native_app_glue.h>
 #include <gestureDetector.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
+using namespace Turbo::Scene;
 
 namespace Turbo
 {
@@ -22,23 +24,14 @@ namespace Turbo
 	{
 		namespace AndroidNDK
 		{
-			struct PointerInfo
-			{
-				bool IsActive;
-				int32_t ID;
-				size_t Index;
-				float CenterX;
-				float CenterY;
-			};
-
-			class AndroidNDKGameController_DualPads : public ITurboGameController
+			class AndroidNDKGameController : public ITurboGameController
 			{
 			public:
 				//  Constructors and Destructors -------------------------------------------------------------------------------
-				AndroidNDKGameController_DualPads(
+				AndroidNDKGameController(
 						android_app* app,
 						std::shared_ptr<ITurboDebug> debug);
-				virtual ~AndroidNDKGameController_DualPads() {}
+				virtual ~AndroidNDKGameController() {}
 
 				//  ITurboGameController Methods -------------------------------------------------------------------------------
 				virtual NavigationInfo* GetNavigationInfo();
@@ -58,9 +51,9 @@ namespace Turbo
 				ndk_helper::DragDetector _drag_detector;
 				//ndk_helper::TapCamera _tap_camera;
 
-				PointerInfo _screenPointer;
-				PointerInfo _movePointer;
-				PointerInfo _lookPointer;
+				std::map<int32_t, std::shared_ptr<ITurboSceneNavigationControl>> _activeControls;
+				//std::map<std::shared_ptr<ITurboSceneNavigationControl>, int32_t> _pointerID;
+				std::map<int32_t, size_t> _activeIndexes;
 
 				ASensorManager* _sensor_manager = NULL;
 				const ASensor* _accelerometer_sensor = NULL;
@@ -71,22 +64,15 @@ namespace Turbo
 				void 	DebugLogMotionEvent(AInputEvent *event);
 				int32_t HandleMotionEvent(AInputEvent *event);
 
-				void InitSensors();
+				void InitializeSensors();
+				void InitializeControls();
 				bool ProcessEvents();
 				void ProcessSensors(int32_t id);
 				void SuspendSensors();
 				void ResumeSensors();
 
-				void DoubleTap();
-				void StartDrag();
-				void Drag();
-				void EndDrag();
-				void StartPinch();
-				void Pinch();
-
+				void UpdatePointerIndexes(const AInputEvent *event);
 				int32_t GetPointerIndex(const AInputEvent *event, int32_t id);
-
-				void UpdatePointerIndex(const AInputEvent *event, PointerInfo *pointer);
 			};
 		}
 	}

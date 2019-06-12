@@ -19,7 +19,7 @@ Level00Player::Level00Player(Level00UserOptions* userOptions) :
 void Level00Player::Update(NavigationInfo* navInfo)
 {
 	const double cMoveAccelleration = 2.0f;
-	const double cRotateAccelleration = 45.0f;
+//	const double cRotateAccelleration = 45.0f;
 //	const double cFrictionFactor = 2.0f;
 
 //	const double cHoverFrequency = 2.0f;
@@ -33,7 +33,6 @@ void Level00Player::Update(NavigationInfo* navInfo)
 //	const double cSelfRightingSpeed = 3000.0f;
 
 	double deltaTime = navInfo->DeltaTime;
-//	double time = navInfo->Time;
 
 	double moveSpeed = cMoveAccelleration * deltaTime;
 
@@ -60,23 +59,48 @@ void Level00Player::Update(NavigationInfo* navInfo)
 */
 
 	//	Handle keyboard movement inputs.
-	if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
-	if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
-	if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
-	if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
-	if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
-	if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
+//	if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
+//	if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
+//	if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
+//	if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
+//	if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
+//	if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
+//
+//	if (navInfo->MovePadActive)
+//	{
+//		velocity -= _placement->Back() * moveSpeed;// * navInfo->MovePadY;
+//	}
 
-	if (navInfo->MovePadActive)
+	for (auto& control: navInfo->Controls)
 	{
-		velocity -= _placement->Back() * moveSpeed;// * navInfo->MovePadY;
+		if ((control->Type() == TurboGameControlType::Move) &&
+			(control->IsActive()))
+		{
+			velocity += _placement->Back()  * moveSpeed * control->YValue();
+			velocity += _placement->Right() * moveSpeed * control->XValue();
+		}
 	}
+
 
 	_placement->Velocity(velocity);
 
-	double rotateSpeed = cRotateAccelleration * deltaTime;
+//	double rotateSpeed = cRotateAccelleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
+
+
+	for (auto& control: navInfo->Controls)
+	{
+		if ((control->Type() == TurboGameControlType::Look) &&
+			(control->IsActive()))
+		{
+			double dx = control->XValue();
+			double dy = control->YValue();
+
+			angularVelocity.X = dy / deltaTime;
+			angularVelocity.Y = dx / deltaTime;
+		}
+	}
 
 /*
 	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
@@ -98,48 +122,48 @@ void Level00Player::Update(NavigationInfo* navInfo)
 */
 
 	//	Handle mouse direction inputs
-	if (navInfo->Pointer && _lastNavInfo.Pointer)
-	{
-		double dx = navInfo->PointerX - _lastNavInfo.PointerX;
-		double dy = navInfo->PointerY - _lastNavInfo.PointerY;
+//	if (navInfo->Pointer && _lastNavInfo.Pointer)
+//	{
+//		double dx = navInfo->PointerX - _lastNavInfo.PointerX;
+//		double dy = navInfo->PointerY - _lastNavInfo.PointerY;
+//
+//		if (_userOptions->InvertedMouse)
+//		{
+//			angularVelocity.X = 0.08 * dy / deltaTime;
+//			angularVelocity.Y = 0.08 * dx / deltaTime;
+//		}
+//		else
+//		{
+//			angularVelocity.X = -1.00 * dy / deltaTime;
+//			angularVelocity.Y = -1.00 * dx / deltaTime;
+//		}
+//	}
 
-		if (_userOptions->InvertedMouse)
-		{
-			angularVelocity.X = 0.08 * dy / deltaTime;
-			angularVelocity.Y = 0.08 * dx / deltaTime;
-		}
-		else
-		{
-			angularVelocity.X = -1.00 * dy / deltaTime;
-			angularVelocity.Y = -1.00 * dx / deltaTime;
-		}
-	}
-
-	if (navInfo->LookPadActive)
-	{
-		if (_userOptions->InvertedMouse)
-		{
-			angularVelocity.X += rotateSpeed * navInfo->LookPadY;
-			angularVelocity.Y += rotateSpeed * navInfo->LookPadX;
-		}
-		else
-		{
-			angularVelocity.X -= rotateSpeed * navInfo->LookPadY;
-			angularVelocity.Y -= rotateSpeed * navInfo->LookPadX;
-		}
-	}
+//	if (navInfo->LookPadActive)
+//	{
+//		if (_userOptions->InvertedMouse)
+//		{
+//			angularVelocity.X += rotateSpeed * navInfo->LookPadY;
+//			angularVelocity.Y += rotateSpeed * navInfo->LookPadX;
+//		}
+//		else
+//		{
+//			angularVelocity.X -= rotateSpeed * navInfo->LookPadY;
+//			angularVelocity.Y -= rotateSpeed * navInfo->LookPadX;
+//		}
+//	}
 
 	//	Handle keyboard direction inputs.
-	if (navInfo->PitchFore)	angularVelocity.X -= rotateSpeed;
-	if (navInfo->PitchBack)	angularVelocity.X += rotateSpeed;
-	if (navInfo->YawRight)	angularVelocity.Y -= rotateSpeed;
-	if (navInfo->YawLeft)	angularVelocity.Y += rotateSpeed;
-	if (navInfo->RollRight)	angularVelocity.Z -= rotateSpeed;
-	if (navInfo->RollLeft)	angularVelocity.Z += rotateSpeed;
+//	if (navInfo->PitchFore)	angularVelocity.X -= rotateSpeed;
+//	if (navInfo->PitchBack)	angularVelocity.X += rotateSpeed;
+//	if (navInfo->YawRight)	angularVelocity.Y -= rotateSpeed;
+//	if (navInfo->YawLeft)	angularVelocity.Y += rotateSpeed;
+//	if (navInfo->RollRight)	angularVelocity.Z -= rotateSpeed;
+//	if (navInfo->RollLeft)	angularVelocity.Z += rotateSpeed;
 
 	_placement->AngularVelocity(angularVelocity);
 
-	_lastNavInfo = *navInfo;
+//	_lastNavInfo = *navInfo;
 }
 
 void Level00Player::PlaySound(float volume)

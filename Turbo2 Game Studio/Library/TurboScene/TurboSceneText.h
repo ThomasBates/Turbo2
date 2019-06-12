@@ -42,7 +42,7 @@ namespace Turbo
 			virtual void Scale(float scale) { _scale = scale; }
 
 			//  ITurboSceneText Methods --------------------------------------------------------------------------------------
-			virtual void Update(NavigationInfo navInfo) {}
+			//virtual void Update(NavigationInfo navInfo) {}
 
 		private:
 			std::shared_ptr<ITurboSceneFont>	_font;

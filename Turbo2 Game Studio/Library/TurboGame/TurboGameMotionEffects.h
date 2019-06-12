@@ -3,7 +3,9 @@
 
 #include <pch.h>
 #include <ITurboGameMotionEffects.h>
-#include <TurboSceneTypes.h>
+#include <TurboSceneNavigationInfo.h>
+
+using namespace Turbo::Scene;
 
 namespace Turbo
 {
@@ -49,7 +51,7 @@ namespace Turbo
 			double _gravityFactor;
 			double _selfRightingSpeed;
 
-			NavigationInfo _lastNavInfo;
+			//NavigationInfo _lastNavInfo;
 		};
 	}
 }

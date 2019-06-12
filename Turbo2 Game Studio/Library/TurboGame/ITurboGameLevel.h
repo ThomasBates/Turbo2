@@ -9,6 +9,8 @@
 
 #include <TurboGameTypes.h>
 
+using namespace Turbo::Scene;
+
 namespace Turbo
 {
 	namespace Game

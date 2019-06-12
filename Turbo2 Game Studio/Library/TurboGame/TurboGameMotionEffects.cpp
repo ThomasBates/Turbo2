@@ -24,12 +24,18 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo* navInfo, std::
 	TurboVector3D velocity = _placement->Velocity();
 
 	//	If no movement inputs, slow down, hover, and fall (if enabled).
-	if (!(navInfo->MoveLeft ||
-		navInfo->MoveRight ||
-		navInfo->MoveDown ||
-		navInfo->MoveUp ||
-		navInfo->MoveFore ||
-		navInfo->MoveBack))
+	bool anyActiveControl = false;
+	for (auto& control : navInfo->Controls)
+    {
+        if ((control->Type() == TurboGameControlType::Move) &&
+            (control->IsActive()))
+        {
+            anyActiveControl = true;
+            break;
+        }
+    }
+
+	if (!anyActiveControl)
 	{
 		//  air friction decay
 		velocity -= velocity * _frictionFactor * deltaTime;
@@ -57,13 +63,18 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo* navInfo, std::
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 
 	//	If no direction inputs, slow down the spinning and stand upright (if enabled).
-	if (!(navInfo->Pointer ||
-		navInfo->PitchFore ||
-		navInfo->PitchBack ||
-		navInfo->YawRight ||
-		navInfo->YawLeft ||
-		navInfo->RollRight ||
-		navInfo->RollLeft))
+    anyActiveControl = false;
+    for (auto& control : navInfo->Controls)
+    {
+        if ((control->Type() == TurboGameControlType::Look) &&
+            (control->IsActive()))
+        {
+            anyActiveControl = true;
+            break;
+        }
+    }
+
+    if (!anyActiveControl)
 	{
 		// Slow down spinning
 		angularVelocity -= angularVelocity * 1.0f * deltaTime;
@@ -96,5 +107,5 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo* navInfo, std::
 
 	_placement->AngularVelocity(angularVelocity);
 
-	_lastNavInfo = *navInfo;
+//	_lastNavInfo = *navInfo;
 }

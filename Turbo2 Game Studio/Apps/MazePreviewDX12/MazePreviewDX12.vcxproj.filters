@@ -220,9 +220,6 @@
     <ClCompile Include="..\..\Library\TurboGame\TurboGameMotionEffects.cpp">
       <Filter>Library\TurboGame</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp">
-      <Filter>Games\MazePreview\CubicMaze</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Castle.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClCompile>
@@ -262,6 +259,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.cpp">
       <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Base.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Button.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Last.cpp">
+      <Filter>Library\TurboScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Set.cpp">
+      <Filter>Library\TurboScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -527,12 +536,6 @@
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.h">
-      <Filter>Games\MazePreview\CubicMaze</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeMotionEffects.h">
-      <Filter>Games\MazePreview\CubicMaze</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Laboratory.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
     </ClInclude>
@@ -575,6 +578,24 @@
     </ClInclude>
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSceneBuilder_Random.h">
       <Filter>Games\MazePreview\CubicMaze</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\ITurboSceneNavigationControl.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Base.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Button.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Last.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationInfo.h">
+      <Filter>Library\TurboScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Set.h">
+      <Filter>Library\TurboScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

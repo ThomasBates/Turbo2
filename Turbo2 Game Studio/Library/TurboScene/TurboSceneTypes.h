@@ -10,33 +10,10 @@ namespace Turbo
 {
 	namespace Scene
 	{
-		struct NavigationInfo {
-			double	Time;
-			double	DeltaTime;
-			bool	Pointer;
-			float	PointerX;
-			float	PointerY;
-			bool 	MovePadActive;
-			float 	MovePadX;
-			float 	MovePadY;
-			bool 	LookPadActive;
-			float 	LookPadX;
-			float 	LookPadY;
-			bool	MoveLeft;
-			bool	MoveRight;
-			bool	MoveDown;
-			bool	MoveUp;
-			bool	MoveFore;
-			bool	MoveBack;
-			bool	PitchFore;
-			bool	PitchBack;
-			bool	YawRight;
-			bool	YawLeft;
-			bool	RollLeft;
-			bool	RollRight;
-			bool	Pause;
-			bool	Restart;
-			bool	Terminate;
+		enum TurboGameControlType
+		{
+			Look,
+			Move
 		};
 
 		struct TurboSceneVertex

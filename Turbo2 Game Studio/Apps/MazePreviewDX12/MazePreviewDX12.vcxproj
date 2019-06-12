@@ -392,6 +392,7 @@
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneLight.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneMaterial.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneMesh.h" />
+    <ClInclude Include="..\..\Library\TurboScene\ITurboSceneNavigationControl.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboSceneObject.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboScenePixelShader.h" />
     <ClInclude Include="..\..\Library\TurboScene\ITurboScenePlacement.h" />
@@ -403,6 +404,11 @@
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneDirectionalLight.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneMaterial.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneMesh.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Base.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Button.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Last.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Set.h" />
+    <ClInclude Include="..\..\Library\TurboScene\TurboSceneNavigationInfo.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboSceneObject.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePixelShader.h" />
     <ClInclude Include="..\..\Library\TurboScene\TurboScenePlacement.h" />
@@ -432,7 +438,6 @@
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.h" />
-    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.h" />
@@ -446,7 +451,6 @@
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeSignMesh.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\CubicMazeWallMesh.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeFactory.h" />
-    <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeMotionEffects.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeObjectInteractions.h" />
     <ClInclude Include="..\..\Games\MazePreview\CubicMaze\ICubicMazeSceneBuilder.h" />
     <ClInclude Include="..\..\Games\MazePreview\Level00\Level00.h" />
@@ -477,6 +481,10 @@
     <ClCompile Include="..\..\Library\TurboScene\TurboScene.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneMaterial.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneMesh.cpp" />
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Base.cpp" />
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Button.cpp" />
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Last.cpp" />
+    <ClCompile Include="..\..\Library\TurboScene\TurboSceneNavigationControl_Set.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboSceneObject.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboScenePixelShader.cpp" />
     <ClCompile Include="..\..\Library\TurboScene\TurboScenePlacement.cpp" />
@@ -499,7 +507,6 @@
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeCornerMesh.cpp" />
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeEdgeMesh.cpp" />
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeFactory.cpp" />
-    <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects.cpp" />
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithGravity.cpp" />
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeMotionEffects_WithoutGravity.cpp" />
     <ClCompile Include="..\..\Games\MazePreview\CubicMaze\CubicMazeObjectInteractions.cpp" />

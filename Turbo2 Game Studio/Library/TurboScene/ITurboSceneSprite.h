@@ -4,7 +4,7 @@
 #include <ITurboScenePlacement.h>
 
 #include <TurboColor.h>
-#include <TurboSceneTypes.h>
+#include <TurboSceneNavigationInfo.h>
 
 using namespace Turbo::Graphics;
 
