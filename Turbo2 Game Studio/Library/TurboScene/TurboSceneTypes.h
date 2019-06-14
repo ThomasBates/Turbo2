@@ -20,6 +20,7 @@ namespace Turbo
 		{
 			TurboVector3D Position;
 			TurboVector3D Normal;
+			TurboVector3D Color;
 			TurboVector2D TextureUV;
 		};
 

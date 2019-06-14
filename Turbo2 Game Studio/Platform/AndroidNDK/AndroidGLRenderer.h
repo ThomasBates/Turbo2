@@ -54,7 +54,8 @@ using namespace Turbo::Game;
 struct SHADER_VERTEX {
   float Position[3];
   float Normal[3];
-  //float Texture[2];
+  float Color[3];
+  float Texture[2];
 };
 
 enum SHADER_ATTRIBUTES {
@@ -122,7 +123,7 @@ private:
     GLuint _sceneObjectCount;
     std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneObjectMesh;
     GLuint _sceneObjectMeshCount;
-    std::map<std::string, GLuint> _sceneObjectTextureOffsets;
+    std::map<std::string, GLuint> _sceneTextureBufferNames;
     GLuint _sceneObjectTextureCount;
     bool _sceneResourcesLoaded;
 
@@ -159,7 +160,8 @@ private:
     void CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene);
     void LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject);
     void LoadTextureData(std::string textureName,
-                         GLuint *textureResourceDesc,
+                         GLsizei *textureWidth,
+                         GLsizei *textureHeight,
                          std::vector<unsigned char> *textureData);
 
     void CreateShaders();

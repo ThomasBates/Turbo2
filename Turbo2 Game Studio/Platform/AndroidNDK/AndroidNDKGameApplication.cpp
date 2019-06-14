@@ -12,7 +12,7 @@ using namespace Turbo::Platform::AndroidNDK;
 
 
 #define HELPER_CLASS_NAME "ca/turbobutterfly/ndkhelper/NDKHelper"  // Class name of helper function
-
+#define ever ;;
 
 AndroidNDKGameApplication::AndroidNDKGameApplication(
     android_app* app,
@@ -51,7 +51,7 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
     game->Initialize();	//	Create level, create & draw static scene
 
     // loop waiting for stuff to do.
-    while (true)
+    for(ever)
     {
         NavigationInfo* navInfo = _controller->GetNavigationInfo();
 

@@ -112,7 +112,7 @@ bool AndroidGLRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
     InitializeSceneResources();
 
     CreateSceneVertexResources(scene);
-    //CreateSceneTextureResources(scene);
+    CreateSceneTextureResources(scene);
 
     CreateShaders();
 
@@ -134,7 +134,7 @@ void AndroidGLRenderer::ReleaseSceneResources()
     _sceneObjectMesh.clear();
     _sceneObjectMeshCount = 0;
 
-    _sceneObjectTextureOffsets.clear();
+    _sceneTextureBufferNames.clear();
     _sceneObjectTextureCount = 0;
 
     _sceneResourcesLoaded = false;
@@ -218,9 +218,10 @@ void AndroidGLRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> 
     }
 
     //	Prepare data structures.
+    _sceneObjectOffsets.clear();
+    _sceneObjectMesh.clear();
     _sceneVertexBufferNames.clear();
     _sceneIndexBufferNames.clear();
-    _sceneObjectMesh.clear();
 
     auto sceneObjects = scene->SceneObjects();
 
@@ -235,7 +236,6 @@ void AndroidGLRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> 
 
 void AndroidGLRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-
     GLuint sceneObjectOffset = (GLuint)_sceneObjectOffsets.size();
     _sceneObjectOffsets[sceneObject] = sceneObjectOffset;
 
@@ -309,8 +309,12 @@ void AndroidGLRenderer::LoadVertexData(
         shaderVertex.Normal[1] = (float)(meshVertex.Normal.Y);
         shaderVertex.Normal[2] = (float)(meshVertex.Normal.Z);
 
-//        shaderVertex.Texture[0] = (float)(meshVertex.TextureUV.X);
-//        shaderVertex.Texture[1] = (float)(meshVertex.TextureUV.Y);
+        shaderVertex.Color[0] = (float)(meshVertex.Color.X);
+        shaderVertex.Color[1] = (float)(meshVertex.Color.Y);
+        shaderVertex.Color[2] = (float)(meshVertex.Color.Z);
+
+        shaderVertex.Texture[0] = (float)(meshVertex.TextureUV.X);
+        shaderVertex.Texture[1] = (float)(meshVertex.TextureUV.Y);
 
         vertexList->push_back(shaderVertex);
     }
@@ -333,7 +337,7 @@ void AndroidGLRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene>
     }
 
     //	Prepare data structures.
-    _sceneObjectTextureOffsets.clear();
+    _sceneTextureBufferNames.clear();
 //    _sceneTextureTargetResources.clear();
 //    _sceneTextureSourceResources.clear();
 
@@ -344,7 +348,7 @@ void AndroidGLRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene>
         LoadSceneObjectTextures(sceneObject);
     }
 
-    _sceneObjectTextureCount = (GLuint)_sceneObjectTextureOffsets.size();
+    _sceneObjectTextureCount = (GLuint)_sceneTextureBufferNames.size();
 }
 
 void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
@@ -362,24 +366,42 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
     }
 
     std::string textureName = texture->Name();
-
-    //  Already loaded this texture? don't reload it.
-    if (_sceneObjectTextureOffsets.find(textureName) != _sceneObjectTextureOffsets.end())
+    if (textureName.empty())
     {
         return;
     }
 
-    GLuint textureOffset = (GLuint)_sceneObjectTextureOffsets.size();
-    _sceneObjectTextureOffsets[textureName] = textureOffset;
+    //  Already loaded this texture? don't reload it.
+    if (_sceneTextureBufferNames.find(textureName) != _sceneTextureBufferNames.end())
+    {
+        return;
+    }
 
-    GLuint textureResourceDesc;
+    GLsizei textureWidth;
+    GLsizei textureHeight;
     std::vector<unsigned char> textureData;
 
-    LoadTextureData(textureName, &textureResourceDesc, &textureData);
+    LoadTextureData(textureName, &textureWidth, &textureHeight, &textureData);
 
+    GLuint textureBufferName;
 
-    //  TODO: Load buffers with Texture Data
+    glGenTextures(1, &textureBufferName);
+    glBindTexture(GL_TEXTURE_2D, textureBufferName);
 
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+
+    glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
+                 GL_RGBA,
+                 textureWidth, textureHeight,
+                 0,                // border color
+                 GL_RGBA, GL_UNSIGNED_BYTE, textureData.data());
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    _sceneTextureBufferNames[textureName] = textureBufferName;
 
     //  Iterate over child scene objects. Call this method recursively.
     for (auto& childSceneObject : sceneObject->ChildSceneObjects())
@@ -390,7 +412,8 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
 
 void AndroidGLRenderer::LoadTextureData(
         std::string textureName,
-        GLuint *textureResourceDesc,
+        GLsizei *textureWidth,
+        GLsizei *textureHeight,
         std::vector<unsigned char> *textureData)
 {
     std::shared_ptr<ITurboCanvas> canvas = std::shared_ptr<ITurboCanvas>(new TurboCanvasRGBA32());
@@ -402,20 +425,8 @@ void AndroidGLRenderer::LoadTextureData(
     int canvasDataSize = canvas->DataSize();
     textureData->assign(canvasData, canvasData + canvasDataSize);
 
-//    int textureWidth = canvas->Width();
-//    int textureHeight = canvas->Height();
-
-//    *textureResourceDesc = {};
-
-//    textureResourceDesc->MipLevels = 1;
-//    textureResourceDesc->Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-//    textureResourceDesc->Width = textureWidth;
-//    textureResourceDesc->Height = textureHeight;
-//    textureResourceDesc->Flags = D3D12_RESOURCE_FLAG_NONE;
-//    textureResourceDesc->DepthOrArraySize = 1;
-//    textureResourceDesc->SampleDesc.Count = 1;
-//    textureResourceDesc->SampleDesc.Quality = 0;
-//    textureResourceDesc->Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    *textureWidth = canvas->Width();
+    *textureHeight = canvas->Height();
 }
 
 //  Shaders  -----------------------------------------------------------------------------------------------------------
@@ -698,6 +709,16 @@ void AndroidGLRenderer::DeleteBuffers()
         glDeleteProgram(shader_param_.program_);
         shader_param_.program_ = 0;
     }
+
+    for (auto& entry : _sceneTextureBufferNames)
+    {
+        GLuint textureBufferName = entry.second;
+        if (textureBufferName)
+        {
+            glDeleteTextures(1, &textureBufferName);
+        }
+    }
+    _sceneTextureBufferNames.clear();
 }
 
 //  RenderScene  -------------------------------------------------------------------------------------------------------
@@ -795,26 +816,31 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
 {
     std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
 
-    if (mesh == nullptr) {
+    if (mesh == nullptr)
+    {
         return;
     }
 
     GLuint vertexBufferName = _sceneVertexBufferNames[mesh];
 //    GLuint vertexCount = _sceneVertexCount[mesh];
     GLuint indexBufferName = _sceneIndexBufferNames[mesh];
-    GLuint indexCount = _sceneIndexCount[mesh];
 
     // Bind the Vertex buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferName);
 
-    int32_t iStride = sizeof(SHADER_VERTEX);
+    int32_t stride = sizeof(SHADER_VERTEX);
     // Pass the vertex data
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride, BUFFER_OFFSET(0));
+    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(ATTRIB_VERTEX);
 
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, iStride,
-                          BUFFER_OFFSET(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_NORMAL);
+
+    glVertexAttribPointer(ATTRIB_COLOR, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_COLOR);
+
+    glVertexAttribPointer(ATTRIB_UV, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_UV);
 
     // Bind the Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferName);
@@ -868,6 +894,8 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
         }
         glUnmapBuffer(GL_UNIFORM_BUFFER);
 
+        GLuint indexCount = _sceneIndexCount[mesh];
+
         // Instanced rendering
         glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0), _sceneObjectCount);
     }
@@ -896,7 +924,8 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //	Iterate over child scene objects. Call this method recursively.
-    for (auto &childSceneObject : sceneObject->ChildSceneObjects()) {
+    for (auto &childSceneObject : sceneObject->ChildSceneObjects())
+    {
         RenderSceneObject(childSceneObject);
     }
 }

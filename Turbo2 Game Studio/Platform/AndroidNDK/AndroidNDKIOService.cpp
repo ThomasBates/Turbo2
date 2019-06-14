@@ -6,7 +6,8 @@
 
 #include <TurboGameState.h>
 #include <AndroidNDKIOService.h>
-//#include <AndroidNDKHelpers.h>
+#include <AndroidNDKHelpers.h>
+#include "JNIHelper.h"
 
 //using namespace Concurrency;
 //using namespace Microsoft::WRL;
@@ -17,6 +18,7 @@
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::AndroidNDK;
+using namespace ndk_helper;
 
 AndroidNDKIOService::AndroidNDKIOService(std::shared_ptr<ITurboDebug> debug) :
 	_debug(debug)
@@ -54,9 +56,16 @@ std::shared_ptr<ITurboGameState> AndroidNDKIOService::LoadGameState()
 
 std::vector<unsigned char> AndroidNDKIOService::ReadData(const std::wstring &filename)
 {
-	std::vector<unsigned char> outputBuffer = std::vector<unsigned char>();
+	std::vector<unsigned char> data; //  = std::vector<unsigned char>();
 
-	return outputBuffer;
+	const char *fileName = ToString(filename).data();
+
+	if (!JNIHelper::GetInstance()->ReadFile(fileName, &data))
+	{
+		_debug->Send(debugError, debugIOService) << "Can not open a file: " << fileName << "\n";
+	}
+
+	return data;
 }
 
 int AndroidNDKIOService::WriteData(const std::wstring &filename, std::vector<unsigned char> fileData)
