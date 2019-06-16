@@ -377,11 +377,15 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
         return;
     }
 
+    _debug->Send(debugDebug, debugRenderer) << "Loading texture: "  << textureName << "\n";
+
     GLsizei textureWidth;
     GLsizei textureHeight;
     std::vector<unsigned char> textureData;
 
     LoadTextureData(textureName, &textureWidth, &textureHeight, &textureData);
+
+    _debug->Send(debugDebug, debugRenderer) << "Loading texture: "  << textureName << " (" << textureData.size() << ")\n";
 
     GLuint textureBufferName;
 
@@ -393,6 +397,8 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
+    _debug->Send(debugDebug, debugRenderer) << "Loading texture: "  << textureName << " (" << textureData.size() << ") (" << textureBufferName << ")\n";
+
     glTexImage2D(GL_TEXTURE_2D, 0,  // mip level
                  GL_RGBA,
                  textureWidth, textureHeight,
@@ -402,6 +408,8 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
     glBindTexture(GL_TEXTURE_2D, 0);
 
     _sceneTextureBufferNames[textureName] = textureBufferName;
+
+    _debug->Send(debugDebug, debugRenderer) << "Loaded texture: "  << textureName << "\n";
 
     //  Iterate over child scene objects. Call this method recursively.
     for (auto& childSceneObject : sceneObject->ChildSceneObjects())
@@ -417,7 +425,7 @@ void AndroidGLRenderer::LoadTextureData(
         std::vector<unsigned char> *textureData)
 {
     std::shared_ptr<ITurboCanvas> canvas = std::shared_ptr<ITurboCanvas>(new TurboCanvasRGBA32());
-    std::vector<unsigned char> fileData = _ioService->ReadData(ToWString(textureName + ".bmp"));
+    std::vector<unsigned char> fileData = _ioService->ReadData(ToWString("Textures/" + textureName + ".bmp"));
     std::shared_ptr<ITurboImage> bitmap = std::shared_ptr<ITurboImage>(new TurboBitmap(canvas.get(), fileData.data()));
     bitmap->Draw();
 
@@ -504,16 +512,16 @@ void AndroidGLRenderer::CreateShaders()
             geometry_instancing_support_ = false;
             // Load shader for GLES2.0
             LoadShaders(&shader_param_,
-                        "Shaders/VS_ShaderPlain.vsh",
-                        "Shaders/ShaderPlain.fsh");
+                        "Shaders/VertexShader_100.vsh",
+                        "Shaders/PixelShader_100.fsh");
         }
     }
     else
     {
         // Load shader for GLES2.0
         LoadShaders(&shader_param_,
-                    "Shaders/VS_ShaderPlain.vsh",
-                    "Shaders/ShaderPlain.fsh");
+                    "Shaders/VertexShader_100.vsh",
+                    "Shaders/PixelShader_100.fsh");
     }
 }
 
@@ -527,7 +535,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     // before linking
     //
     GLuint program;
-    GLuint vertexShader, fragmentShader;
+    GLuint vertexShader, pixelShader;
 
     // Create shader program
     program = glCreateProgram();
@@ -543,7 +551,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     }
 
     // Create and compile fragment shader
-    if (!ndk_helper::shader::CompileShader(&fragmentShader, GL_FRAGMENT_SHADER,
+    if (!ndk_helper::shader::CompileShader(&pixelShader, GL_FRAGMENT_SHADER,
                                            fragmentShaderName))
     {
         LOGI("Failed to compile fragment shader");
@@ -555,12 +563,14 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     glAttachShader(program, vertexShader);
 
     // Attach fragment shader to program
-    glAttachShader(program, fragmentShader);
+    glAttachShader(program, pixelShader);
 
     // Bind attribute locations
     // this needs to be done prior to linking
     glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
     glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
+    glBindAttribLocation(program, ATTRIB_COLOR,  "myColor");
+    glBindAttribLocation(program, ATTRIB_UV,     "myTextureUV");
 
     // Link program
     if (!ndk_helper::shader::LinkProgram(program))
@@ -572,10 +582,10 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
             glDeleteShader(vertexShader);
             vertexShader = 0;
         }
-        if (fragmentShader)
+        if (pixelShader)
         {
-            glDeleteShader(fragmentShader);
-            fragmentShader = 0;
+            glDeleteShader(pixelShader);
+            pixelShader = 0;
         }
         if (program)
         {
@@ -585,6 +595,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     }
 
     // Get uniform locations
+    params->active_texture_ = glGetUniformLocation(program, "uActiveTexture");
     params->matrix_projection_ = glGetUniformLocation(program, "uPMatrix");
     params->matrix_view_ = glGetUniformLocation(program, "uMVMatrix");
 
@@ -595,7 +606,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
 
     // Release vertex and fragment shaders
     if (vertexShader) glDeleteShader(vertexShader);
-    if (fragmentShader) glDeleteShader(fragmentShader);
+    if (pixelShader) glDeleteShader(pixelShader);
 
     params->program_ = program;
     return true;
@@ -824,6 +835,7 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     GLuint vertexBufferName = _sceneVertexBufferNames[mesh];
 //    GLuint vertexCount = _sceneVertexCount[mesh];
     GLuint indexBufferName = _sceneIndexBufferNames[mesh];
+    GLuint indexCount = _sceneIndexCount[mesh];
 
     // Bind the Vertex buffer
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferName);
@@ -836,14 +848,18 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_NORMAL);
 
-    glVertexAttribPointer(ATTRIB_COLOR, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_COLOR);
 
-    glVertexAttribPointer(ATTRIB_UV, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_UV);
 
     // Bind the Index buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferName);
+
+    std::string textureName = sceneObject->Material()->Texture()->Name();
+    GLuint textureBufferName = _sceneTextureBufferNames[textureName];
+    glBindTexture(GL_TEXTURE_2D, textureBufferName);
 
     glUseProgram(shader_param_.program_);
 
@@ -854,6 +870,7 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     float specularExponent = material->SpecularExponent();
 
     // Update uniforms
+//    glUniform1i(shader_param_.active_texture_, 0);
     // (using glUniform3fv here was troublesome..)
     glUniform3f(shader_param_.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
     glUniform4f(shader_param_.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
@@ -893,8 +910,6 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
             mat_mv += ubo_matrix_stride_;
         }
         glUnmapBuffer(GL_UNIFORM_BUFFER);
-
-        GLuint indexCount = _sceneIndexCount[mesh];
 
         // Instanced rendering
         glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0), _sceneObjectCount);

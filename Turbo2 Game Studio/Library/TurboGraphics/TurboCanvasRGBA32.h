@@ -82,8 +82,8 @@ namespace Turbo
 		{
 		private:
 			char*	_data;
-			int		_width;
-			int		_height;
+			int		_width = 0;
+			int		_height = 0;
 			ITurboBrush*	_brush;
 			ITurboPen*		_pen;
 			int		_x;

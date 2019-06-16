@@ -67,6 +67,7 @@ enum SHADER_ATTRIBUTES {
 
 struct SHADER_PARAMS {
   GLuint program_;
+  GLint active_texture_;
   GLint light0_;
   GLint material_diffuse_;
   GLint material_ambient_;

@@ -58,7 +58,8 @@ std::vector<unsigned char> AndroidNDKIOService::ReadData(const std::wstring &fil
 {
 	std::vector<unsigned char> data; //  = std::vector<unsigned char>();
 
-	const char *fileName = ToString(filename).data();
+	std::string temp = ToString(filename);
+	const char *fileName = temp.data();
 
 	if (!JNIHelper::GetInstance()->ReadFile(fileName, &data))
 	{
