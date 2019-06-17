@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -46,7 +46,7 @@
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
     <ApplicationType>Windows Store</ApplicationType>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformMinVersion>10.0.10240.0</WindowsTargetPlatformMinVersion>
     <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
   </PropertyGroup>
@@ -54,58 +54,58 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|ARM'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TurboTest|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -306,48 +306,48 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="..\..\Resources\Textures\LaboratoryCeiling.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryCorner.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryEdge.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryEntrance.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryLocked.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryExit.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryFloor.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text00.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text01.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text02.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text03.bmp" />
-    <Image Include="..\..\Resources\Textures\LaboratoryWall.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text04R1.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text04R2.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text04R3.bmp" />
-    <Image Include="..\..\Resources\Textures\Level00Text04R4.bmp" />
-    <Image Include="..\..\Resources\Textures\Level01Text00.bmp" />
-    <Image Include="..\..\Resources\Textures\Level01Text01.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleCeiling.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleCorner.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleEdge.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleEntrance.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleExit.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleLocked.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleFloor.bmp" />
-    <Image Include="..\..\Resources\Textures\Hazard.bmp" />
-    <Image Include="..\..\Resources\Textures\Key.bmp" />
-    <Image Include="..\..\Resources\Textures\Level04Text01.bmp" />
-    <Image Include="..\..\Resources\Textures\Level04Text02.bmp" />
-    <Image Include="..\..\Resources\Textures\CastleWall.bmp" />
-    <Image Include="..\..\Resources\Textures\Level05Text00.bmp" />
-    <Image Include="..\..\Resources\Textures\Level05Text01.bmp" />
-    <Image Include="..\..\Resources\Textures\Level05Text10.bmp" />
-    <Image Include="..\..\Resources\Textures\Level05Text11.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalCeiling.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalCorner.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalEdge.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalEntrance.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalExit.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalFloor.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalLocked.bmp" />
-    <Image Include="..\..\Resources\Textures\MetalWall.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryCeiling.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryCorner.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryEntrance.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryExit.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryFloor.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text00.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text02.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text03.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\LaboratoryWall.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text04R1.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text04R2.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text04R3.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level00Text04R4.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level01Text00.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level01Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleCeiling.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleCorner.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleEntrance.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleExit.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleFloor.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Hazard.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Key.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level04Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level04Text02.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\CastleWall.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level05Text00.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level05Text01.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level05Text10.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\Level05Text11.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalCeiling.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalCorner.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalEdge.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalEntrance.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalExit.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalFloor.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalLocked.bmp" />
+    <Image Include="..\..\Resources\Textures\BMP\MetalWall.bmp" />
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
     <Image Include="Assets\SplashScreen.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
