@@ -312,30 +312,58 @@ Mat4 Mat4::Translation(const Vec3 vec) {
   return ret;
 }
 
-Mat4 Mat4::Perspective(float width, float height, float nearPlane,
-                       float farPlane) {
+Mat4 Mat4::Perspective(float width, float height, float nearPlane, float farPlane)
+{
   float n2 = 2.0f * nearPlane;
   float rcpnmf = 1.f / (nearPlane - farPlane);
 
   Mat4 result;
-  result.f_[0] = n2 / width;
-  result.f_[4] = 0;
-  result.f_[8] = 0;
+
+  result.f_[ 0] = n2 / width;
+  result.f_[ 4] = 0;
+  result.f_[ 8] = 0;
   result.f_[12] = 0;
-  result.f_[1] = 0;
-  result.f_[5] = n2 / height;
-  result.f_[9] = 0;
+
+  result.f_[ 1] = 0;
+  result.f_[ 5] = n2 / height;
+  result.f_[ 9] = 0;
   result.f_[13] = 0;
-  result.f_[2] = 0;
-  result.f_[6] = 0;
+
+  result.f_[ 2] = 0;
+  result.f_[ 6] = 0;
   result.f_[10] = (farPlane + nearPlane) * rcpnmf;
   result.f_[14] = farPlane * rcpnmf * n2;
-  result.f_[3] = 0;
-  result.f_[7] = 0;
-  result.f_[11] = -1.0;
+
+  result.f_[ 3] = 0;
+  result.f_[ 7] = 0;
+  result.f_[11] = -1.0f;
   result.f_[15] = 0;
 
   return result;
+}
+
+Mat4 Mat4::Perspective(float fovAngle,
+                       float viewportWidth,
+                       float viewportHeight,
+                       float nearPlane,
+                       float farPlane)
+{
+  float bigDimension = nearPlane * tan(0.5f * fovAngle * 3.1415927f / 180.0f);
+  float width;    //  width of near Z plane, or width of viewport in world coordinates.
+  float height;   //  height of near Z plane, or height of viewport in world coordinates.
+
+  if (viewportWidth < viewportHeight)
+  {
+    height = bigDimension;
+    width  = height * viewportWidth / viewportHeight;
+  }
+  else
+  {
+    width  = bigDimension;
+    height = width * viewportHeight / viewportWidth;
+  }
+
+  return Perspective(width, height, nearPlane, farPlane);
 }
 
 Mat4 Mat4::Ortho2D(float left, float top, float right, float bottom) {

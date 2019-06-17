@@ -753,8 +753,9 @@ class Mat4 {
   //--------------------------------------------------------------------------------
   // Misc
   //--------------------------------------------------------------------------------
-  static Mat4 Perspective(float width, float height, float nearPlane,
-                          float farPlane);
+  static Mat4 Perspective(float width, float height, float nearPlane, float farPlane);
+  static Mat4 Perspective(float fovAngle, float viewportWidth, float viewportHeight, float nearPlane, float farPlane);
+
   static Mat4 Ortho2D(float left, float top, float right, float bottom);
 
   static Mat4 LookAt(const Vec3& vEye, const Vec3& vAt, const Vec3& vUp);

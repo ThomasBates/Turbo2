@@ -757,23 +757,10 @@ void AndroidGLRenderer::UpdateProjectionMatrix()
 {
     int32_t viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
+    float width  = static_cast<float>(viewport[2]);
+    float height = static_cast<float>(viewport[3]);
 
-    const float CAM_NEAR = 0.5f;
-    const float CAM_FAR = 100.0f;
-
-    float x = static_cast<float>(viewport[2]);
-    float y = static_cast<float>(viewport[3]);
-
-    if (x < y)
-    {
-        float width = x / y;
-        _projectionMatrix = ndk_helper::Mat4::Perspective(width, 1.0f, CAM_NEAR, CAM_FAR);
-    }
-    else
-    {
-        float height = y / x;
-        _projectionMatrix = ndk_helper::Mat4::Perspective(1.0f, height, CAM_NEAR, CAM_FAR);
-    }
+    _projectionMatrix = ndk_helper::Mat4::Perspective(70.0f, width, height, 0.01f, 100.0f);
 }
 
 void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement)

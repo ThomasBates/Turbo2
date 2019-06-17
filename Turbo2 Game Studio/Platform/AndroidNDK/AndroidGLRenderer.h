@@ -178,6 +178,7 @@ private:
     //  RenderScene ------------------------------------------------------------------------------------------------
     void UpdateFPS();
     void UpdateProjectionMatrix();
+    void UpdateProjectionMatrix2();
     void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement);
 
     void InitializeRendering();
