@@ -348,18 +348,18 @@ Mat4 Mat4::Perspective(float fovAngle,
                        float nearPlane,
                        float farPlane)
 {
-  float bigDimension = nearPlane * tan(0.5f * fovAngle * 3.1415927f / 180.0f);
+  float smallDimension = nearPlane * tan(0.5f * fovAngle * 3.1415927f / 180.0f);
   float width;    //  width of near Z plane, or width of viewport in world coordinates.
   float height;   //  height of near Z plane, or height of viewport in world coordinates.
 
-  if (viewportWidth < viewportHeight)
+  if (viewportWidth > viewportHeight)
   {
-    height = bigDimension;
+    height = smallDimension;
     width  = height * viewportWidth / viewportHeight;
   }
   else
   {
-    width  = bigDimension;
+    width  = smallDimension;
     height = width * viewportHeight / viewportWidth;
   }
 

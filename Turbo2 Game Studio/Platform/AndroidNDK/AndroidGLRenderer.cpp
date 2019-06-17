@@ -152,7 +152,7 @@ bool AndroidGLRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
     UpdateFPS();
 
     UpdateProjectionMatrix();
-    UpdateViewMatrix(scene->CameraPlacement());
+    UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
 
     InitializeRendering();
     RenderSceneObjects(scene);
@@ -457,7 +457,7 @@ void AndroidGLRenderer::CreateShaders()
             param[std::string("%ARB%")] = std::string("");
 
         // Load shader
-        bool shadersLoaded = LoadShadersES3(&shader_param_,
+        bool shadersLoaded = LoadShadersES3(&_shaderParams,
                                             "Shaders/VS_ShaderPlainES3.vsh",
                                             "Shaders/ShaderPlainES3.fsh", param);
         if (shadersLoaded)
@@ -467,18 +467,18 @@ void AndroidGLRenderer::CreateShaders()
             //
             GLuint bindingPoint = 1;
             GLuint blockIndex;
-            blockIndex = glGetUniformBlockIndex(shader_param_.program_, "ParamBlock");
-            glUniformBlockBinding(shader_param_.program_, blockIndex, bindingPoint);
+            blockIndex = glGetUniformBlockIndex(_shaderParams.program, "ParamBlock");
+            glUniformBlockBinding(_shaderParams.program, blockIndex, bindingPoint);
 
             // Retrieve array stride value
             int32_t num_indices;
-            glGetActiveUniformBlockiv(shader_param_.program_, blockIndex,
+            glGetActiveUniformBlockiv(_shaderParams.program, blockIndex,
                                       GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &num_indices);
             GLint indices[num_indices];
             GLint stride[num_indices];
-            glGetActiveUniformBlockiv(shader_param_.program_, blockIndex,
+            glGetActiveUniformBlockiv(_shaderParams.program, blockIndex,
                                       GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, indices);
-            glGetActiveUniformsiv(shader_param_.program_, num_indices, (GLuint *) indices,
+            glGetActiveUniformsiv(_shaderParams.program, num_indices, (GLuint *) indices,
                                   GL_UNIFORM_ARRAY_STRIDE, stride);
 
             ubo_matrix_stride_ = stride[0] / sizeof(float);
@@ -511,7 +511,7 @@ void AndroidGLRenderer::CreateShaders()
             // This happens some devices.
             geometry_instancing_support_ = false;
             // Load shader for GLES2.0
-            LoadShaders(&shader_param_,
+            LoadShaders(&_shaderParams,
                         "Shaders/VertexShader_100.vsh",
                         "Shaders/PixelShader_100.fsh");
         }
@@ -519,7 +519,7 @@ void AndroidGLRenderer::CreateShaders()
     else
     {
         // Load shader for GLES2.0
-        LoadShaders(&shader_param_,
+        LoadShaders(&_shaderParams,
                     "Shaders/VertexShader_100.vsh",
                     "Shaders/PixelShader_100.fsh");
     }
@@ -567,10 +567,10 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
 
     // Bind attribute locations
     // this needs to be done prior to linking
-    glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
-    glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
-    glBindAttribLocation(program, ATTRIB_COLOR,  "myColor");
-    glBindAttribLocation(program, ATTRIB_UV,     "myTextureUV");
+    glBindAttribLocation(program, ATTRIB_VERTEX, "vsPosition");
+    glBindAttribLocation(program, ATTRIB_NORMAL, "vsNormal");
+    glBindAttribLocation(program, ATTRIB_COLOR,  "vsColor");
+    glBindAttribLocation(program, ATTRIB_UV,     "vsTexture");
 
     // Link program
     if (!ndk_helper::shader::LinkProgram(program))
@@ -595,20 +595,22 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     }
 
     // Get uniform locations
-    params->active_texture_ = glGetUniformLocation(program, "uActiveTexture");
-    params->matrix_projection_ = glGetUniformLocation(program, "uPMatrix");
-    params->matrix_view_ = glGetUniformLocation(program, "uMVMatrix");
+    params->TextureSampler    = glGetUniformLocation(program, "uSampler");
+    params->ModelMatrix       = glGetUniformLocation(program, "uModel");
+    params->ViewMatrix        = glGetUniformLocation(program, "uView");
+    params->ProjectionMatrix  = glGetUniformLocation(program, "uProjection");
+    params->LightCount        = glGetUniformLocation(program, "uLightCount");
 
-    params->light0_ = glGetUniformLocation(program, "vLight0");
-    params->material_diffuse_ = glGetUniformLocation(program, "vMaterialDiffuse");
-    params->material_ambient_ = glGetUniformLocation(program, "vMaterialAmbient");
-    params->material_specular_ = glGetUniformLocation(program, "vMaterialSpecular");
+//    params->light0_ = glGetUniformLocation(program, "uLight0");
+//    params->material_diffuse_ = glGetUniformLocation(program, "uMaterialDiffuse");
+//    params->material_ambient_ = glGetUniformLocation(program, "uMaterialAmbient");
+//    params->material_specular_ = glGetUniformLocation(program, "uMaterialSpecular");
 
     // Release vertex and fragment shaders
     if (vertexShader) glDeleteShader(vertexShader);
     if (pixelShader) glDeleteShader(pixelShader);
 
-    params->program_ = program;
+    params->program = program;
     return true;
 }
 
@@ -673,15 +675,15 @@ bool AndroidGLRenderer::LoadShadersES3(
     }
 
     // Get uniform locations
-    params->light0_ = glGetUniformLocation(program, "vLight0");
-    params->material_ambient_ = glGetUniformLocation(program, "vMaterialAmbient");
-    params->material_specular_ = glGetUniformLocation(program, "vMaterialSpecular");
+//    params->light0_ = glGetUniformLocation(program, "vLight0");
+//    params->material_ambient_ = glGetUniformLocation(program, "vMaterialAmbient");
+//    params->material_specular_ = glGetUniformLocation(program, "vMaterialSpecular");
 
     // Release vertex and fragment shaders
     if (vertexShader) glDeleteShader(vertexShader);
     if (fragmentShader) glDeleteShader(fragmentShader);
 
-    params->program_ = program;
+    params->program = program;
     return true;
 }
 
@@ -715,10 +717,10 @@ void AndroidGLRenderer::DeleteBuffers()
         _sceneUniformBufferName = 0;
     }
 
-    if (shader_param_.program_)
+    if (_shaderParams.program)
     {
-        glDeleteProgram(shader_param_.program_);
-        shader_param_.program_ = 0;
+        glDeleteProgram(_shaderParams.program);
+        _shaderParams.program = 0;
     }
 
     for (auto& entry : _sceneTextureBufferNames)
@@ -760,10 +762,10 @@ void AndroidGLRenderer::UpdateProjectionMatrix()
     float width  = static_cast<float>(viewport[2]);
     float height = static_cast<float>(viewport[3]);
 
-    _projectionMatrix = ndk_helper::Mat4::Perspective(70.0f, width, height, 0.01f, 100.0f);
+    _projectionMatrix = ndk_helper::Mat4::Perspective(75.0f, width, height, 0.01f, 100.0f);
 }
 
-void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement)
+void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
 {
     TurboVector3D position = cameraPlacement->Position();
     TurboVector3D target = cameraPlacement->Target();
@@ -784,6 +786,8 @@ void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> c
 //    _tap_camera.Update();
 //    _viewMatrix = _tap_camera.GetTransformMatrix() * _viewMatrix *
 //                  _tap_camera.GetRotationMatrix();
+
+    _lightCount = lightHack ? 1 : 0;
 }
 
 
@@ -848,20 +852,26 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     GLuint textureBufferName = _sceneTextureBufferNames[textureName];
     glBindTexture(GL_TEXTURE_2D, textureBufferName);
 
-    glUseProgram(shader_param_.program_);
+    glUseProgram(_shaderParams.program);
 
-    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
+//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
 
-    TurboColor ambientColor = material->AmbientColor();
-    TurboColor specularColor = material->SpecularColor();
-    float specularExponent = material->SpecularExponent();
+//    TurboColor ambientColor = material->AmbientColor();
+//    TurboColor specularColor = material->SpecularColor();
+//    float specularExponent = material->SpecularExponent();
 
     // Update uniforms
-//    glUniform1i(shader_param_.active_texture_, 0);
+    //glUniform1i(_shaderParams.TextureSampler, 0);
+
+    glUniformMatrix4fv(_shaderParams.ViewMatrix, 1, GL_FALSE, _viewMatrix.Ptr());
+    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, _projectionMatrix.Ptr());
+
+    glUniform1i(_shaderParams.LightCount, _lightCount);
+
     // (using glUniform3fv here was troublesome..)
-    glUniform3f(shader_param_.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
-    glUniform4f(shader_param_.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
-    glUniform3f(shader_param_.light0_, 100.f, -200.f, -600.f);
+//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
+//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
+//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
 
     //  TODO: Optimize to use instancing
     //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
@@ -903,8 +913,8 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     }
     else
     {
-        TurboColor diffuseColor = material->DiffuseColor();
-        glUniform4f(shader_param_.material_diffuse_, diffuseColor.R, diffuseColor.G, diffuseColor.B, 1.f);
+        //TurboColor diffuseColor = material->DiffuseColor();
+        //glUniform4f(_shaderParams.material_diffuse_, diffuseColor.R, diffuseColor.G, diffuseColor.B, 1.f);
 
 
         TurboMatrix4x4 transform = sceneObject->Placement()->Transform();
@@ -913,11 +923,14 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
                        (float)transform.M31, (float)transform.M32, (float)transform.M33, (float)transform.M34,
                        (float)transform.M41, (float)transform.M42, (float)transform.M43, (float)transform.M44};
         ndk_helper::Mat4 model = ndk_helper::Mat4(mat);
-        ndk_helper::Mat4 view = _viewMatrix * model;
-        ndk_helper::Mat4 projection = _projectionMatrix * view;
+//        ndk_helper::Mat4 view = _viewMatrix * model;
+//        ndk_helper::Mat4 projection = _projectionMatrix * view;
+//
+//        glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
+//        glUniformMatrix4fv(_shaderParams.ViewMatrix, 1, GL_FALSE, view.Ptr());
+//        glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection.Ptr());
 
-        glUniformMatrix4fv(shader_param_.matrix_projection_, 1, GL_FALSE, projection.Ptr());
-        glUniformMatrix4fv(shader_param_.matrix_view_, 1, GL_FALSE, view.Ptr());
+        glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
 
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
     }

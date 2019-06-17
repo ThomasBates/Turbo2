@@ -18,35 +18,60 @@
 
 // #version 100 core
 
-uniform highp mat4      uMVMatrix;
-uniform highp mat4      uPMatrix;
-uniform highp vec3      vLight0;
-uniform lowp vec4       vMaterialDiffuse;
-uniform lowp vec3       vMaterialAmbient;
+uniform     highp   mat4    uModel;
+uniform     highp   mat4    uView;
+uniform     highp   mat4    uProjection;
+uniform             int     uLightCount;
+//iform     highp   vec3    uLight0;
+//iform     lowp    vec4    uMaterialDiffuse;
+//iform     lowp    vec3    uMaterialAmbient;
 
-attribute highp vec3    myVertex;
-attribute highp vec3    myNormal;
-attribute highp vec3    myColor;
-attribute highp vec2    myTextureUV;
+attribute   highp   vec3    vsPosition;
+attribute   highp   vec3    vsNormal;
+attribute   highp   vec3    vsColor;
+attribute   highp   vec2    vsTexture;
 
-varying mediump vec3 position;
-varying mediump vec3 normal;
-varying mediump vec4 colorDiffuse;
-varying mediump vec2 textureUV;
+//rying     mediump vec3    psPosition;
+//rying     mediump vec3    psNormal;
+varying     mediump vec4    psColor;
+varying     mediump vec2    psTexture;
 
 void main(void)
 {
-    highp vec4 p = vec4(myVertex,1);
-    gl_Position = uPMatrix * p;
+    highp vec4 position = vec4(vsPosition,1);
+    //gl_Position = uProjection * position;
 
-    //colorDiffuse = vec4(myColor, 1);
+    position   = uModel * position;
+    position   = uView * position;
+    gl_Position = uProjection * position;
 
-    highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
-    highp vec3 ecPosition = p.xyz;
-    colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
+    //psPosition = gl_Position.xyz;
 
-    position = ecPosition;
-    normal = worldNormal;
-    textureUV = myTextureUV;
+    if (uLightCount > 0)
+    {
+        float litArea = 0.5;
+        float dist = length(position);
+        float power = 1.0;
+        if (dist > 1.0 + litArea)
+        {
+            power = 1.0 / (dist - litArea);
+            power = pow(power, 3.0);
+        }
+
+        psColor = vec4(power, power, power, 1);
+    }
+    else
+    {
+        psColor = vec4(1);
+    }
+
+    //psNormal = vec3(mat3(uView[0].xyz, uView[1].xyz, uView[2].xyz) * vsNormal);
+    psTexture = vsTexture;
+
+    //psColor = vec4(vsColor, 1);
+    //psPosition = position.xyz;
+    //psNormal = vec3(mat3(uView[0].xyz, uView[1].xyz, uView[2].xyz) * vsNormal);
+    //psColor = dot( psNormal, normalize(-uLight0+psPosition) ) * uMaterialDiffuse  + vec4( uMaterialAmbient, 1 );
+    //psTexture = vsTexture;
 }
 

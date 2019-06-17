@@ -52,144 +52,153 @@ using namespace Turbo::Game;
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
 
 struct SHADER_VERTEX {
-  float Position[3];
-  float Normal[3];
-  float Color[3];
-  float Texture[2];
+    float Position[3];
+    float Normal[3];
+    float Color[3];
+    float Texture[2];
 };
 
 enum SHADER_ATTRIBUTES {
-  ATTRIB_VERTEX,
-  ATTRIB_NORMAL,
-  ATTRIB_COLOR,
-  ATTRIB_UV
+    ATTRIB_VERTEX,
+    ATTRIB_NORMAL,
+    ATTRIB_COLOR,
+    ATTRIB_UV
 };
 
 struct SHADER_PARAMS {
-  GLuint program_;
-  GLint active_texture_;
-  GLint light0_;
-  GLint material_diffuse_;
-  GLint material_ambient_;
-  GLint material_specular_;
+    GLuint program;
 
-  GLint matrix_projection_;
-  GLint matrix_view_;
+    GLint TextureSampler;
+    GLint ModelMatrix;
+    GLint ViewMatrix;
+    GLint ProjectionMatrix;
+    GLint LightCount;
+
+//    GLint light0_;
+//    GLint material_diffuse_;
+//    GLint material_ambient_;
+//    GLint material_specular_;
 };
 
 struct SHADER_MATERIALS {
-  float specular_color[4];
-  float ambient_color[3];
+    float specular_color[4];
+    float ambient_color[3];
 };
 
 
-namespace Turbo {
-namespace Platform {
-namespace AndroidGL {
-class AndroidGLRenderer : public ITurboGameRenderer
+namespace Turbo
 {
-public:
-    AndroidGLRenderer(
-            android_app *app,
-            std::shared_ptr<ITurboDebug> debug,
-            std::shared_ptr<ITurboGameIOService> ioService);
+    namespace Platform
+    {
+        namespace AndroidGL
+        {
+            class AndroidGLRenderer : public ITurboGameRenderer
+            {
+            public:
+                AndroidGLRenderer(
+                        android_app *app,
+                        std::shared_ptr<ITurboDebug> debug,
+                        std::shared_ptr<ITurboGameIOService> ioService);
 
-    virtual ~AndroidGLRenderer();
+                virtual ~AndroidGLRenderer();
 
-    //	ITurboGameRenderer Methods ---------------------------------------------------------------------------------
-    virtual void UpdateDisplayInformation();
-    virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene);
-    virtual void ReleaseSceneResources();
-    virtual bool RenderScene(std::shared_ptr<ITurboScene> scene);
-    virtual void Reset();
+                //	ITurboGameRenderer Methods ---------------------------------------------------------------------------------
+                virtual void UpdateDisplayInformation();
+                virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene);
+                virtual void ReleaseSceneResources();
+                virtual bool RenderScene(std::shared_ptr<ITurboScene> scene);
+                virtual void Reset();
 
-private:
-    //  Private Fields  --------------------------------------------------------------------------------------------
-    android_app *_android_app;
+            private:
+                //  Private Fields  --------------------------------------------------------------------------------------------
+                android_app *_android_app;
 
-    std::shared_ptr<ITurboDebug> _debug;
-    std::shared_ptr<ITurboGameIOService> _ioService;
+                std::shared_ptr<ITurboDebug> _debug;
+                std::shared_ptr<ITurboGameIOService> _ioService;
 
-    //ANativeWindow *_nativeWindow;
-    ndk_helper::GLContext *_gl_context;
-    bool _resources_initialized = false;
+                //ANativeWindow *_nativeWindow;
+                ndk_helper::GLContext *_gl_context;
+                bool _resources_initialized = false;
 
-    std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexBufferNames;
-    std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexCount;
-    std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexBufferNames;
-    std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexCount;
-    GLuint _sceneUniformBufferName;
+                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexBufferNames;
+                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexCount;
+                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexBufferNames;
+                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexCount;
+                GLuint _sceneUniformBufferName;
 
-    std::map<std::shared_ptr<ITurboSceneObject>, GLuint> _sceneObjectOffsets;
-    GLuint _sceneObjectCount;
-    std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneObjectMesh;
-    GLuint _sceneObjectMeshCount;
-    std::map<std::string, GLuint> _sceneTextureBufferNames;
-    GLuint _sceneObjectTextureCount;
-    bool _sceneResourcesLoaded;
+                std::map<std::shared_ptr<ITurboSceneObject>, GLuint> _sceneObjectOffsets;
+                GLuint _sceneObjectCount;
+                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneObjectMesh;
+                GLuint _sceneObjectMeshCount;
+                std::map<std::string, GLuint> _sceneTextureBufferNames;
+                GLuint _sceneObjectTextureCount;
+                bool _sceneResourcesLoaded;
 
-    ndk_helper::PerfMonitor _performance_monitor;
+                ndk_helper::PerfMonitor _performance_monitor;
 
-    SHADER_PARAMS shader_param_;
+                SHADER_PARAMS _shaderParams;
 
-    ndk_helper::Mat4 _projectionMatrix;
-    ndk_helper::Mat4 _viewMatrix;
-    std::vector<ndk_helper::Mat4> vec_mat_models_;
-    std::vector<ndk_helper::Vec3> vec_colors_;
-    std::vector<ndk_helper::Vec2> vec_rotations_;
-    std::vector<ndk_helper::Vec2> vec_current_rotations_;
+                ndk_helper::Mat4 _viewMatrix;
+                ndk_helper::Mat4 _projectionMatrix;
+                int _lightCount;
 
-    //  ndk_helper::TapCamera _tap_camera;
+                std::vector<ndk_helper::Mat4> vec_mat_models_;
+                std::vector<ndk_helper::Vec3> vec_colors_;
+                std::vector<ndk_helper::Vec2> vec_rotations_;
+                std::vector<ndk_helper::Vec2> vec_current_rotations_;
 
-    int32_t ubo_matrix_stride_;
-    int32_t ubo_vector_stride_;
-    bool geometry_instancing_support_ = false;
-    bool arb_support_;
+                //  ndk_helper::TapCamera _tap_camera;
 
-    //  UpdateDisplayInformation    --------------------------------------------------------------------------------
-    void ShowUI();
+                int32_t ubo_matrix_stride_;
+                int32_t ubo_vector_stride_;
+                bool geometry_instancing_support_ = false;
+                bool arb_support_;
 
-    //  LoadSceneResources  ----------------------------------------------------------------------------------------
-    void InitializeSceneResources();
+                //  UpdateDisplayInformation    --------------------------------------------------------------------------------
+                void ShowUI();
 
-    void CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene);
-    void LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject);
-    void LoadVertexData(std::shared_ptr<ITurboSceneMesh> mesh,
-                        std::vector<SHADER_VERTEX> *vertexList,
-                        std::vector<uint16_t> *indexList);
+                //  LoadSceneResources  ----------------------------------------------------------------------------------------
+                void InitializeSceneResources();
 
-    void CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene);
-    void LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject);
-    void LoadTextureData(std::string textureName,
-                         GLsizei *textureWidth,
-                         GLsizei *textureHeight,
-                         std::vector<unsigned char> *textureData);
+                void CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene);
+                void LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void LoadVertexData(std::shared_ptr<ITurboSceneMesh> mesh,
+                                    std::vector<SHADER_VERTEX> *vertexList,
+                                    std::vector<uint16_t> *indexList);
 
-    void CreateShaders();
-    bool LoadShaders(SHADER_PARAMS *params, const char *vertexShaderName,
-                     const char *fragmentShaderName);
-    bool LoadShadersES3(SHADER_PARAMS *params, const char *vertexShaderName,
-                        const char *fragmentShaderName,
-                        std::map<std::string, std::string> &shaderParameters);
+                void CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene);
+                void LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void LoadTextureData(std::string textureName,
+                                     GLsizei *textureWidth,
+                                     GLsizei *textureHeight,
+                                     std::vector<unsigned char> *textureData);
 
-    //  ReleaseSceneResources   ------------------------------------------------------------------------------------
-    void DeleteBuffers();
+                void CreateShaders();
+                bool LoadShaders(SHADER_PARAMS *params, const char *vertexShaderName,
+                                 const char *fragmentShaderName);
+                bool LoadShadersES3(SHADER_PARAMS *params, const char *vertexShaderName,
+                                    const char *fragmentShaderName,
+                                    std::map<std::string, std::string> &shaderParameters);
 
-    //  RenderScene ------------------------------------------------------------------------------------------------
-    void UpdateFPS();
-    void UpdateProjectionMatrix();
-    void UpdateProjectionMatrix2();
-    void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement);
+                //  ReleaseSceneResources   ------------------------------------------------------------------------------------
+                void DeleteBuffers();
 
-    void InitializeRendering();
-    void RenderSceneObjects(std::shared_ptr<ITurboScene> scene);
-    void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
-    void FinalizeRendering();
+                //  RenderScene ------------------------------------------------------------------------------------------------
+                void UpdateFPS();
+                void UpdateProjectionMatrix();
+                void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack);
+
+                void InitializeRendering();
+                void RenderSceneObjects(std::shared_ptr<ITurboScene> scene);
+                void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void FinalizeRendering();
 
 
-    //  bool Bind(ndk_helper::TapCamera* camera);
-    std::string ToString(const int32_t i);
-};
-}}}
+                //  bool Bind(ndk_helper::TapCamera* camera);
+                std::string ToString(const int32_t i);
+            };
+        }
+    }
+}
 
 #endif

@@ -15,6 +15,6 @@ using namespace Turbo::Platform::AndroidNDK;
 
 void AndroidNDKDebugLogCatLogger::Log(std::string severity, std::string category, std::string message)
 {
-	__android_log_print(ANDROID_LOG_INFO, APPNAME, "%s - %s - %s", severity.data(), category.data(), message.data());
+	__android_log_print(ANDROID_LOG_DEBUG, APPNAME, "%s - %s - %s", severity.data(), category.data(), message.data());
 	return;
 }

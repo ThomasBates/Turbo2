@@ -297,8 +297,8 @@ void AndroidNDKGameController::InitializeSensors()
 
 void AndroidNDKGameController::InitializeControls()
 {
-	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.05)));
-	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -0.50f)));
+	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
+	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
     _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Button(TurboGameControlType::Move, 0.0f,  540.0f, 1440.0f, 1920.0f)));
 }
 

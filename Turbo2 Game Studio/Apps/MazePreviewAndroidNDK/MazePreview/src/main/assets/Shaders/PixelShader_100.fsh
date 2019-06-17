@@ -18,29 +18,21 @@
 
 //  #version 100 core
 
-uniform highp vec3      vLight0;
-uniform lowp vec3       vMaterialAmbient;
-uniform lowp vec4       vMaterialSpecular;
+//iform     highp   vec3    uLight0;
+//iform     lowp    vec3    uMaterialAmbient;
+//iform     lowp    vec4    uMaterialSpecular;
+uniform     sampler2D       uSampler;
 
-uniform sampler2D       uActiveTexture;
-
-varying mediump vec3 position;
-varying mediump vec3 normal;
-varying mediump vec4 colorDiffuse;
-varying mediump vec2 textureUV;
+//rying     mediump vec3    psPosition;
+//rying     mediump vec3    psNormal;
+varying     mediump vec4    psColor;
+varying     mediump vec2    psTexture;
 
 void main()
 {
-//    mediump vec3 halfVector = normalize(-vLight0 + position);
-//    mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
-//    mediump float fPower = vMaterialSpecular.w;
-//    mediump float specular = pow(NdotH, fPower);
-//
-//    lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-//    gl_FragColor = colorDiffuse + colorSpecular;
+    lowp vec4 color = texture2D(uSampler, psTexture);
 
-    lowp vec4 colorTexture = texture2D(uActiveTexture, textureUV);
-    gl_FragColor = colorTexture;
-
-//    gl_FragColor = colorDiffuse;
+//    gl_FragColor = color;               //  Just the texture color
+//    gl_FragColor = psColor;             //  Just the lighting color
+    gl_FragColor = color * psColor;     //  Combination of lighting and texture
 }
