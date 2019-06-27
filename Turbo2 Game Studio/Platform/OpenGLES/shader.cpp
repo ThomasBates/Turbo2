@@ -20,13 +20,14 @@
 #include "shader.h"
 #include "JNIHelper.h"
 
-namespace ndk_helper {
+using namespace Turbo::Platform::OpenGLES;
 
 #define DEBUG (1)
 
-bool shader::CompileShader(
+bool CompileShader(
     GLuint *shader, const GLenum type, const char *str_file_name,
-    const std::map<std::string, std::string> &map_parameters) {
+    const std::map<std::string, std::string> &map_parameters)
+{
   std::vector<uint8_t> data;
   if (!JNIHelper::GetInstance()->ReadFile(str_file_name, &data)) {
     LOGI("Can not open a file:%s", str_file_name);
@@ -65,10 +66,10 @@ bool shader::CompileShader(
 
   std::vector<uint8_t> v(str.begin(), str.end());
   str.clear();
-  return shader::CompileShader(shader, type, v);
+  return CompileShader(shader, type, v);
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
+bool CompileShader(GLuint *shader, const GLenum type,
                            const GLchar *source, const int32_t iSize) {
   if (source == NULL || iSize <= 0) return false;
 
@@ -99,16 +100,16 @@ bool shader::CompileShader(GLuint *shader, const GLenum type,
   return true;
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
+bool CompileShader(GLuint *shader, const GLenum type,
                            std::vector<uint8_t> &data) {
   if (!data.size()) return false;
 
   const GLchar *source = (GLchar *)&data[0];
   int32_t iSize = data.size();
-  return shader::CompileShader(shader, type, source, iSize);
+  return CompileShader(shader, type, source, iSize);
 }
 
-bool shader::CompileShader(GLuint *shader, const GLenum type,
+bool CompileShader(GLuint *shader, const GLenum type,
                            const char *strFileName) {
   std::vector<uint8_t> data;
   bool b = JNIHelper::GetInstance()->ReadFile(strFileName, &data);
@@ -117,10 +118,10 @@ bool shader::CompileShader(GLuint *shader, const GLenum type,
     return false;
   }
 
-  return shader::CompileShader(shader, type, data);
+  return CompileShader(shader, type, data);
 }
 
-bool shader::LinkProgram(const GLuint prog) {
+bool LinkProgram(const GLuint prog) {
   GLint status;
 
   glLinkProgram(prog);
@@ -145,7 +146,7 @@ bool shader::LinkProgram(const GLuint prog) {
   return true;
 }
 
-bool shader::ValidateProgram(const GLuint prog) {
+bool ValidateProgram(const GLuint prog) {
   GLint logLength, status;
 
   glValidateProgram(prog);
@@ -162,5 +163,3 @@ bool shader::ValidateProgram(const GLuint prog) {
 
   return true;
 }
-
-}  // namespace ndkHelper

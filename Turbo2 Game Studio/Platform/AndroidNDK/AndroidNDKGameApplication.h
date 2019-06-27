@@ -2,34 +2,36 @@
 #pragma once
 
 //  From AndroidNDKGameEngine  -----------------------------------------------------
-#include <jni.h>
-#include <errno.h>
+//#include <jni.h>
+//#include <errno.h>
 
-#include <vector>
-#include <EGL/egl.h>
-#include <GLES/gl.h>
+//#include <vector>
+//#include <EGL/egl.h>
+//#include <GLES/gl.h>
 
-#include <android/sensor.h>
-#include <android/log.h>
-#include <android_native_app_glue.h>
-#include <android/native_window_jni.h>
+//#include <android/sensor.h>
+//#include <android/log.h>
+//#include <android_native_app_glue.h>
+//#include <android/native_window_jni.h>
 
 //  From AndroidNDKGameEngine  -----------------------------------------------------
 
 #include <ITurboGameRenderer.h>
-//#include "GLContext.h"
-#include <AndroidGLRenderer.h>
+//#include "OpenGLESContext.h"
+//#include <OpenGLESRenderer.h>
+
+#include "NDKHelper.h"
 
 
-//#include <ITurboDebug.h>
+#include <ITurboDebug.h>
 //#include <ITurboGame.h>
 #include <ITurboGameApplication.h>
 #include <ITurboGameAudio.h>
-//#include <ITurboGameIOService.h>
+#include <ITurboGameIOService.h>
 //#include <ITurboGameRenderer.h>
 //#include <ITurboGameAudio.h>
 
-//using namespace Turbo::Core::Debug;
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 
 namespace Turbo
@@ -67,6 +69,8 @@ namespace Turbo
 				std::shared_ptr<ITurboGameRenderer> _renderer;
 				std::shared_ptr<ITurboGameAudio> _audio;
 
+				ndk_helper::PerfMonitor _performance_monitor;
+
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 bool _hasFocus = false;
 
@@ -75,9 +79,12 @@ namespace Turbo
 				void TerminateDisplay();
 				void ReconfigureDisplay(android_app *app);
                 void TrimMemory();
+
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 void ActivityConfigurationChanged(ANativeActivity *activity);
 
+                void JNI_ShowUI();
+				void JNI_UpdateFPS();
             };
 		}
 	}

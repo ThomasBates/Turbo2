@@ -2,8 +2,6 @@
 #include <pch.h>
 
 #include <AndroidNDKGameApplication.h>
-#include <AndroidNDKGameController_Legacy.h>
-#include "AndroidNDKHelpers.h"
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -74,6 +72,8 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
 
             _renderer->RenderScene(game->Scene());
             _audio->PlaySounds(game->Scene());
+
+            JNI_UpdateFPS();
         }
     }
 }
@@ -83,7 +83,7 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
  */
 void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cmd)
 {
-    AndroidNDKGameApplication* application = (AndroidNDKGameApplication*)app->application;
+    auto application = (AndroidNDKGameApplication*)app->application;
     switch (cmd)
     {
         //  Open/Resume
@@ -151,6 +151,7 @@ void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
     if (app->window != NULL)
     {
         _renderer->UpdateDisplayInformation();
+        JNI_ShowUI();
         _controller->Resume();
         _hasFocus = true;
     }
@@ -172,6 +173,7 @@ void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
     {
         _renderer->Reset();
         _renderer->UpdateDisplayInformation();
+        JNI_ShowUI();
     }
 }
 
@@ -179,4 +181,36 @@ void AndroidNDKGameApplication::TrimMemory()
 {
     LOGI("Trimming memory");
    // _renderer->Reset();
+}
+
+void AndroidNDKGameApplication::JNI_ShowUI()
+{
+    JNIEnv *jni;
+    _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
+
+    // Default class retrieval
+    jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
+    jmethodID methodID = jni->GetMethodID(clazz, "showUI", "()V");
+    jni->CallVoidMethod(_android_app->activity->clazz, methodID);
+
+    _android_app->activity->vm->DetachCurrentThread();
+}
+
+void AndroidNDKGameApplication::JNI_UpdateFPS()
+{
+    float fps;
+    if (!_performance_monitor.Update(fps))
+    {
+        return;
+    }
+
+    JNIEnv *jni;
+    _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
+
+    // Default class retrieval
+    jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
+    jmethodID methodID = jni->GetMethodID(clazz, "updateFPS", "(F)V");
+    jni->CallVoidMethod(_android_app->activity->clazz, methodID, fps);
+
+    _android_app->activity->vm->DetachCurrentThread();
 }

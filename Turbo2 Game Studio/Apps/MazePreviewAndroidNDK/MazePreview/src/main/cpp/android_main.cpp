@@ -4,7 +4,7 @@
 #include <TurboDebugMemoryLogger.h>
 #include <AndroidNDKDebugLogCatLogger.h>
 
-#include <AndroidGLRenderer.h>
+#include <OpenGLESRenderer.h>
 
 #include <AndroidNDKGameApplication.h>
 #include <AndroidNDKGameController.h>
@@ -17,7 +17,7 @@
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::AndroidNDK;
-using namespace Turbo::Platform::AndroidGL;
+using namespace Turbo::Platform::OpenGLES;
 
 // This is the main entry point of a native application that is using
 // android_native_app_glue.  It runs in its own thread, with its own
@@ -30,7 +30,7 @@ void android_main(android_app* app)
 
     std::shared_ptr<ITurboGameController> controller = std::shared_ptr<ITurboGameController>(new AndroidNDKGameController(app, debug));
     std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
-    std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new AndroidGLRenderer(app, debug, ioService));
+    std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService));
     std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new AndroidNDKAudio(debug, ioService));
 
     std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new AndroidNDKGameApplication(app, debug, controller, ioService, renderer, audio));

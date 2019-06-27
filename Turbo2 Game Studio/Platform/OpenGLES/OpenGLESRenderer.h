@@ -15,7 +15,7 @@
  */
 
 //--------------------------------------------------------------------------------
-// AndroidGLRenderer.h
+// OpenGLESRenderer.h
 // Renderer for teapots
 //--------------------------------------------------------------------------------
 #ifndef _MazePreviewRenderer_H
@@ -24,7 +24,7 @@
 //--------------------------------------------------------------------------------
 // Include files
 //--------------------------------------------------------------------------------
-#include <jni.h>
+//#include <jni.h>
 #include <errno.h>
 #include <random>
 #include <vector>
@@ -32,10 +32,10 @@
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
-#include <android/sensor.h>
-#include <android/log.h>
-#include <android_native_app_glue.h>
-#include <android/native_window_jni.h>
+//#include <android/sensor.h>
+//#include <android/log.h>
+//#include <android_native_app_glue.h>
+//#include <android/native_window_jni.h>
 
 #include <ITurboDebug.h>
 #include <ITurboGameRenderer.h>
@@ -90,17 +90,17 @@ namespace Turbo
 {
     namespace Platform
     {
-        namespace AndroidGL
+        namespace OpenGLES
         {
-            class AndroidGLRenderer : public ITurboGameRenderer
+            class OpenGLESRenderer : public ITurboGameRenderer
             {
             public:
-                AndroidGLRenderer(
+                OpenGLESRenderer(
                         android_app *app,
                         std::shared_ptr<ITurboDebug> debug,
                         std::shared_ptr<ITurboGameIOService> ioService);
 
-                virtual ~AndroidGLRenderer();
+                virtual ~OpenGLESRenderer();
 
                 //	ITurboGameRenderer Methods ---------------------------------------------------------------------------------
                 virtual void UpdateDisplayInformation();
@@ -117,7 +117,7 @@ namespace Turbo
                 std::shared_ptr<ITurboGameIOService> _ioService;
 
                 //ANativeWindow *_nativeWindow;
-                ndk_helper::GLContext *_gl_context;
+                OpenGLESContext *_gl_context;
                 bool _resources_initialized = false;
 
                 std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexBufferNames;
@@ -134,8 +134,6 @@ namespace Turbo
                 GLuint _sceneObjectTextureCount;
                 bool _sceneResourcesLoaded;
 
-                ndk_helper::PerfMonitor _performance_monitor;
-
                 SHADER_PARAMS _shaderParams;
 
                 ndk_helper::Mat4 _viewMatrix;
@@ -149,13 +147,10 @@ namespace Turbo
 
                 //  ndk_helper::TapCamera _tap_camera;
 
-                int32_t ubo_matrix_stride_;
-                int32_t ubo_vector_stride_;
-                bool geometry_instancing_support_ = false;
-                bool arb_support_;
-
-                //  UpdateDisplayInformation    --------------------------------------------------------------------------------
-                void ShowUI();
+                //int32_t ubo_matrix_stride_;
+                //int32_t ubo_vector_stride_;
+                //bool geometry_instancing_support_ = false;
+                //bool arb_support_;
 
                 //  LoadSceneResources  ----------------------------------------------------------------------------------------
                 void InitializeSceneResources();
@@ -174,17 +169,16 @@ namespace Turbo
                                      std::vector<unsigned char> *textureData);
 
                 void CreateShaders();
-                bool LoadShaders(SHADER_PARAMS *params, const char *vertexShaderName,
-                                 const char *fragmentShaderName);
-                bool LoadShadersES3(SHADER_PARAMS *params, const char *vertexShaderName,
-                                    const char *fragmentShaderName,
-                                    std::map<std::string, std::string> &shaderParameters);
+                bool LoadShaders(SHADER_PARAMS *params,
+                                 std::wstring vertexShaderName,
+                                 std::wstring fragmentShaderName);
+                bool CompileShader(GLuint *shader, const GLenum type, std::wstring strFileName);
+                bool LinkProgram(const GLuint prog);
 
                 //  ReleaseSceneResources   ------------------------------------------------------------------------------------
                 void DeleteBuffers();
 
                 //  RenderScene ------------------------------------------------------------------------------------------------
-                void UpdateFPS();
                 void UpdateProjectionMatrix();
                 void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack);
 

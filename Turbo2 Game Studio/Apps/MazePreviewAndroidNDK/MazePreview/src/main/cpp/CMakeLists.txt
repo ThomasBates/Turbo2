@@ -23,9 +23,7 @@ android_ndk_import_module_native_app_glue()
 # set up common compile options
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -fno-rtti")
 
-get_filename_component(GamesFolder    ../../../../../../Games    ABSOLUTE)
-get_filename_component(LibraryFolder  ../../../../../../Library  ABSOLUTE)
-get_filename_component(PlatformFolder ../../../../../../Platform ABSOLUTE)
+get_filename_component(TurboFolder ../../../../../.. ABSOLUTE)
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}
@@ -33,123 +31,125 @@ add_library(${PROJECT_NAME}
 		android_main.cpp
 		)
 
-add_library(MazePreview
+add_library(Games_MazePreview
 		STATIC
-		${GamesFolder}/MazePreview/MazePreview.cpp
-
-		${GamesFolder}/MazePreview/CubicMaze/CubicMaze.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeCornerMesh.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeEdgeMesh.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeFactory.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeMotionEffects_WithGravity.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeMotionEffects_WithoutGravity.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeObjectInteractions.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder_Castle.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder_Flat.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder_Laboratory.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder_Metal.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneBuilder_Random.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSceneObject.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeSignMesh.cpp
-		${GamesFolder}/MazePreview/CubicMaze/CubicMazeWallMesh.cpp
-
-		${GamesFolder}/MazePreview/Level00/Level00.cpp
-		${GamesFolder}/MazePreview/Level00/Level00CubicMazeFactory.cpp
-		${GamesFolder}/MazePreview/Level00/Level00Helper.cpp
-		${GamesFolder}/MazePreview/Level00/Level00Player.cpp
-		${GamesFolder}/MazePreview/Level00/Level01.cpp
-		${GamesFolder}/MazePreview/Level00/Level02.cpp
-		${GamesFolder}/MazePreview/Level00/Level03.cpp
-		${GamesFolder}/MazePreview/Level00/Level04.cpp
-		${GamesFolder}/MazePreview/Level00/Level05.cpp
-		${GamesFolder}/MazePreview/Level00/Level05CubicMazeFactory.cpp
+		${TurboFolder}/Games/MazePreview/MazePreview.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMaze.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeCornerMesh.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeEdgeMesh.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeFactory.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeMotionEffects_WithGravity.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeMotionEffects_WithoutGravity.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeObjectInteractions.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder_Castle.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder_Flat.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder_Laboratory.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder_Metal.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneBuilder_Random.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneObject.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSignMesh.cpp
+		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeWallMesh.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level00.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level00CubicMazeFactory.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level00Helper.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level00Player.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level01.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level02.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level03.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level04.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level05.cpp
+		${TurboFolder}/Games/MazePreview/Level00/Level05CubicMazeFactory.cpp
 		)
 
-add_library(Teapots
-        STATIC
-        ${GamesFolder}/Teapots/TeapotGame.cpp
-        ${GamesFolder}/Teapots/TeapotMesh.cpp
-        ${GamesFolder}/Teapots/TeapotPlayer.cpp
-        )
-
-add_library(TurboCore
+add_library(Games_Teapots
 		STATIC
-		${LibraryFolder}/TurboCore/TurboDebug/TurboDebug.cpp
-		${LibraryFolder}/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
+		${TurboFolder}/Games/Teapots/TeapotGame.cpp
+		${TurboFolder}/Games/Teapots/TeapotMesh.cpp
+		${TurboFolder}/Games/Teapots/TeapotPlayer.cpp
 		)
 
-add_library(TurboGame
+add_library(Library_TurboCore
 		STATIC
-		${LibraryFolder}/TurboGame/TurboGameMotionEffects.cpp
-		${LibraryFolder}/TurboGame/TurboGameState.cpp
+		${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebug.cpp
+		${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
 		)
 
-add_library(TurboGraphics
+add_library(Library_TurboGame
 		STATIC
-		${LibraryFolder}/TurboGraphics/TurboBitmap.cpp
-		${LibraryFolder}/TurboGraphics/TurboCanvasRGBA32.cpp
+		${TurboFolder}/Library/TurboGame/TurboGameMotionEffects.cpp
+		${TurboFolder}/Library/TurboGame/TurboGameState.cpp
 		)
 
-add_library(TurboMath
+add_library(Library_TurboGraphics
 		STATIC
-		${LibraryFolder}/TurboMath/TurboMatrix4x4.cpp
-		${LibraryFolder}/TurboMath/TurboVector2D.cpp
-		${LibraryFolder}/TurboMath/TurboVector3D.cpp
+		${TurboFolder}/Library/TurboGraphics/TurboBitmap.cpp
+		${TurboFolder}/Library/TurboGraphics/TurboCanvasRGBA32.cpp
 		)
 
-add_library(TurboScene
+add_library(Library_TurboMath
 		STATIC
-		${LibraryFolder}/TurboScene/TurboScene.cpp
-		${LibraryFolder}/TurboScene/TurboSceneFont.cpp
-		${LibraryFolder}/TurboScene/TurboSceneMaterial.cpp
-		${LibraryFolder}/TurboScene/TurboSceneMesh.cpp
-		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Base.cpp
-		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Button.cpp
-		${LibraryFolder}/TurboScene/TurboSceneNavigationControl_Last.cpp
-		${LibraryFolder}/TurboScene/TurboSceneObject.cpp
-		${LibraryFolder}/TurboScene/TurboScenePixelShader.cpp
-		${LibraryFolder}/TurboScene/TurboScenePlacement.cpp
-		${LibraryFolder}/TurboScene/TurboSceneSoundEffect.cpp
-		${LibraryFolder}/TurboScene/TurboSceneSprite.cpp
-		${LibraryFolder}/TurboScene/TurboSceneText.cpp
-		${LibraryFolder}/TurboScene/TurboSceneTexture.cpp
-		${LibraryFolder}/TurboScene/TurboSceneVertexShader.cpp
+		${TurboFolder}/Library/TurboMath/TurboMatrix4x4.cpp
+		${TurboFolder}/Library/TurboMath/TurboVector2D.cpp
+		${TurboFolder}/Library/TurboMath/TurboVector3D.cpp
+		)
+
+add_library(Library_TurboScene
+		STATIC
+		${TurboFolder}/Library/TurboScene/TurboScene.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneFont.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneMaterial.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneMesh.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Base.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Button.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Last.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneObject.cpp
+		${TurboFolder}/Library/TurboScene/TurboScenePixelShader.cpp
+		${TurboFolder}/Library/TurboScene/TurboScenePlacement.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneSoundEffect.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneSprite.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneText.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneTexture.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneVertexShader.cpp
 		)
 
 # TODO: Separate GL from NDK
-add_library(AndroidNDK
+add_library(Platform_AndroidNDK
 		STATIC
-		${PlatformFolder}/AndroidNDK/AndroidGLRenderer.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKAudio.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameApplication.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameController.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKGameController_Legacy.cpp
-		${PlatformFolder}/AndroidNDK/AndroidNDKIOService.cpp
-		${PlatformFolder}/AndroidNDK/gestureDetector.cpp
-		${PlatformFolder}/AndroidNDK/gl3stub.cpp
-		${PlatformFolder}/AndroidNDK/GLContext.cpp
-		${PlatformFolder}/AndroidNDK/interpolator.cpp
-		${PlatformFolder}/AndroidNDK/JNIHelper.cpp
-		${PlatformFolder}/AndroidNDK/perfMonitor.cpp
-		${PlatformFolder}/AndroidNDK/sensorManager.cpp
-		${PlatformFolder}/AndroidNDK/shader.cpp
-		${PlatformFolder}/AndroidNDK/tapCamera.cpp
-		${PlatformFolder}/AndroidNDK/vecmath.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKAudio.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameApplication.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameController.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameController_Legacy.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKIOService.cpp
+		${TurboFolder}/Platform/AndroidNDK/interpolator.cpp
+		${TurboFolder}/Platform/AndroidNDK/JNIHelper.cpp
+		${TurboFolder}/Platform/AndroidNDK/perfMonitor.cpp
+		${TurboFolder}/Platform/AndroidNDK/sensorManager.cpp
+		)
+
+# TODO: Separate GL from NDK
+add_library(Platform_OpenGLES
+		STATIC
+		${TurboFolder}/Platform/OpenGLES/gl3stub.cpp
+		${TurboFolder}/Platform/OpenGLES/OpenGLESRenderer.cpp
+		${TurboFolder}/Platform/OpenGLES/OpenGLESContext.cpp
+		${TurboFolder}/Platform/OpenGLES/vecmath.cpp
 		)
 
 include_directories(.)
-include_directories(${GamesFolder}/Teapots)
-include_directories(${GamesFolder}/MazePreview)
-include_directories(${GamesFolder}/MazePreview/CubicMaze)
-include_directories(${GamesFolder}/MazePreview/Level00)
-include_directories(${LibraryFolder}/TurboCore/TurboDebug)
-include_directories(${LibraryFolder}/TurboGame)
-include_directories(${LibraryFolder}/TurboGraphics)
-include_directories(${LibraryFolder}/TurboMath)
-include_directories(${LibraryFolder}/TurboScene)
-include_directories(${PlatformFolder}/AndroidNDK)
+include_directories(${TurboFolder}/Games/Teapots)
+include_directories(${TurboFolder}/Games/MazePreview)
+include_directories(${TurboFolder}/Games/MazePreview/CubicMaze)
+include_directories(${TurboFolder}/Games/MazePreview/Level00)
+include_directories(${TurboFolder}/Library/TurboCore)
+include_directories(${TurboFolder}/Library/TurboCore/TurboDebug)
+include_directories(${TurboFolder}/Library/TurboGame)
+include_directories(${TurboFolder}/Library/TurboGraphics)
+include_directories(${TurboFolder}/Library/TurboMath)
+include_directories(${TurboFolder}/Library/TurboScene)
+include_directories(${TurboFolder}/Platform/AndroidNDK)
+include_directories(${TurboFolder}/Platform/OpenGLES)
 
 set_target_properties(${PROJECT_NAME}
 		PROPERTIES
@@ -166,54 +166,63 @@ set_target_properties(${PROJECT_NAME}
 		LINK_FLAGS "-u ANativeActivity_onCreate"
 		)
 
-set_target_properties(MazePreview
+set_target_properties(Games_MazePreview
 		PROPERTIES
 		CXX_STANDARD 11
 		CXX_STANDARD_REQUIRED YES
 		CXX_EXTENSIONS NO
-		INTERFACE_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:MazePreview,INCLUDE_DIRECTORIES>
+		INTERFACE_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:Games_MazePreview,INCLUDE_DIRECTORIES>
 		)
 
 # add lib dependencies
 target_link_libraries(${PROJECT_NAME}
 		PRIVATE
-		Teapots
-		MazePreview
-		TurboCore
-		TurboGame
-		TurboGraphics
-		TurboMath
-		TurboScene
-		AndroidNDK
+		Games_Teapots
+		Games_MazePreview
+		Library_TurboCore
+		Library_TurboGame
+		Library_TurboGraphics
+		Library_TurboMath
+		Library_TurboScene
+        Platform_AndroidNDK
+        Platform_OpenGLES
 		)
 
-target_link_libraries(MazePreview
+target_link_libraries(Games_MazePreview
 		PRIVATE
-		TurboCore
-		TurboGame
-		TurboGraphics
-		TurboMath
-		TurboScene
+		Library_TurboCore
+		Library_TurboGame
+		Library_TurboGraphics
+		Library_TurboMath
+		Library_TurboScene
 		)
 
-target_link_libraries(TurboGame
+target_link_libraries(Library_TurboGame
 		PUBLIC
-		TurboScene
+		Library_TurboScene
 		)
 
-target_link_libraries(TurboScene
+target_link_libraries(Library_TurboScene
 		PUBLIC
-		TurboMath
+		Library_TurboMath
 		)
 
-target_link_libraries(AndroidNDK
+target_link_libraries(Platform_AndroidNDK
 		PUBLIC
 		native_app_glue
-		GLESv2
-		EGL
 		log
 		android
 		atomic
-		TurboGame
-		TurboGraphics
+		Library_TurboCore
+		Library_TurboGame
+		)
+
+target_link_libraries(Platform_OpenGLES
+		PUBLIC
+		GLESv2
+		EGL
+		atomic
+		Library_TurboCore
+		Library_TurboGame
+		Library_TurboGraphics
 		)

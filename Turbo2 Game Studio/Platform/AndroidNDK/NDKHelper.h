@@ -31,7 +31,7 @@
  * - Make NDK samples more simpler and readable
  */
 #include "gl3stub.h"    // GLES3 stubs
-#include "GLContext.h"  // EGL & OpenGL manager
+#include "OpenGLESContext.h"  // EGL & OpenGL manager
 #include "shader.h"     // Shader compiler support
 #include "vecmath.h"  // Vector math support, C++ implementation n current version
 #include "tapCamera.h"        // Tap/Pinch camera control

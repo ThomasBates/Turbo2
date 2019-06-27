@@ -15,19 +15,19 @@
  */
 
 //--------------------------------------------------------------------------------
-// GLContext.cpp
+// OpenGLESContext.cpp
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 // includes
 //--------------------------------------------------------------------------------
-#include "GLContext.h"
+#include "OpenGLESContext.h"
 
 #include <string.h>
 #include <unistd.h>
 
 #include "gl3stub.h"
 
-namespace ndk_helper {
+using namespace Turbo::Platform::OpenGLES;
 
 //--------------------------------------------------------------------------------
 // eGLContext
@@ -36,7 +36,7 @@ namespace ndk_helper {
 //--------------------------------------------------------------------------------
 // Ctor
 //--------------------------------------------------------------------------------
-GLContext::GLContext()
+OpenGLESContext::OpenGLESContext()
     : window_(nullptr),
       display_(EGL_NO_DISPLAY),
       surface_(EGL_NO_SURFACE),
@@ -47,7 +47,7 @@ GLContext::GLContext()
       egl_context_initialized_(false),
       es3_supported_(false) {}
 
-void GLContext::InitGLES() {
+void OpenGLESContext::InitGLES() {
   if (gles_initialized_) return;
   //
   // Initialize OpenGL ES 3 if available
@@ -66,9 +66,9 @@ void GLContext::InitGLES() {
 //--------------------------------------------------------------------------------
 // Dtor
 //--------------------------------------------------------------------------------
-GLContext::~GLContext() { Terminate(); }
+OpenGLESContext::~OpenGLESContext() { Terminate(); }
 
-bool GLContext::Init(ANativeWindow* window) {
+bool OpenGLESContext::Init(ANativeWindow* window) {
   if (egl_context_initialized_) return true;
 
   //
@@ -84,7 +84,7 @@ bool GLContext::Init(ANativeWindow* window) {
   return true;
 }
 
-bool GLContext::InitEGLSurface() {
+bool OpenGLESContext::InitEGLSurface() {
   display_ = eglGetDisplay(EGL_DEFAULT_DISPLAY);
   eglInitialize(display_, 0, 0);
 
@@ -143,7 +143,7 @@ bool GLContext::InitEGLSurface() {
   return true;
 }
 
-bool GLContext::InitEGLContext() {
+bool OpenGLESContext::InitEGLContext() {
   const EGLint context_attribs[] = {EGL_CONTEXT_CLIENT_VERSION,
                                     2,  // Request opengl ES2.0
                                     EGL_NONE};
@@ -158,7 +158,7 @@ bool GLContext::InitEGLContext() {
   return true;
 }
 
-EGLint GLContext::Swap() {
+EGLint OpenGLESContext::Swap() {
   bool b = eglSwapBuffers(display_, surface_);
   if (!b) {
     EGLint err = eglGetError();
@@ -177,7 +177,7 @@ EGLint GLContext::Swap() {
   return EGL_SUCCESS;
 }
 
-void GLContext::Terminate() {
+void OpenGLESContext::Terminate() {
   if (display_ != EGL_NO_DISPLAY) {
     eglMakeCurrent(display_, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     if (context_ != EGL_NO_CONTEXT) {
@@ -197,7 +197,7 @@ void GLContext::Terminate() {
   context_valid_ = false;
 }
 
-EGLint GLContext::Resume(ANativeWindow* window) {
+EGLint OpenGLESContext::Resume(ANativeWindow* window) {
   if (egl_context_initialized_ == false) {
     Init(window);
     return EGL_SUCCESS;
@@ -237,21 +237,21 @@ EGLint GLContext::Resume(ANativeWindow* window) {
   return err;
 }
 
-void GLContext::Suspend() {
+void OpenGLESContext::Suspend() {
   if (surface_ != EGL_NO_SURFACE) {
     eglDestroySurface(display_, surface_);
     surface_ = EGL_NO_SURFACE;
   }
 }
 
-bool GLContext::Invalidate() {
+bool OpenGLESContext::Invalidate() {
   Terminate();
 
   egl_context_initialized_ = false;
   return true;
 }
 
-bool GLContext::CheckExtension(const char* extension) {
+bool OpenGLESContext::CheckExtension(const char* extension) {
   if (extension == NULL) return false;
 
   std::string extensions = std::string((char*)glGetString(GL_EXTENSIONS));
@@ -265,5 +265,3 @@ bool GLContext::CheckExtension(const char* extension) {
 
   return false;
 }
-
-}  // namespace ndkHelper

@@ -6,7 +6,7 @@
 
 #include <TurboGameState.h>
 #include <AndroidNDKIOService.h>
-#include <AndroidNDKHelpers.h>
+#include "TurboCoreHelpers.h"
 #include "JNIHelper.h"
 
 //using namespace Concurrency;
@@ -16,6 +16,7 @@
 //using namespace Windows::Storage;
 //using namespace Windows::Storage::Streams;
 
+using namespace Turbo::Core;
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::AndroidNDK;
 using namespace ndk_helper;

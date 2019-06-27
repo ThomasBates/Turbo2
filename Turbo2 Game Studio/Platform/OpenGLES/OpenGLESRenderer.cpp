@@ -15,50 +15,50 @@
  */
 
 //--------------------------------------------------------------------------------
-// AndroidGLRenderer.cpp
+// OpenGLESRenderer.cpp
 // Render teapots
 //--------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------
 // Include files
 //--------------------------------------------------------------------------------
-#include "AndroidGLRenderer.h"
-#include "AndroidNDKHelpers.h"
+#include <OpenGLESRenderer.h>
+#include <TurboCoreHelpers.h>
 
 #include <chrono>
 #include <thread>
-#include <string.h>
+#include <cstring>
 
 #include <ITurboCanvas.h>
 #include <TurboCanvasRGBA32.h>
 #include <ITurboImage.h>
 #include <TurboBitmap.h>
 
+using namespace Turbo::Core;
 using namespace Turbo::Graphics;
-using namespace Turbo::Platform::AndroidGL;
-using namespace Turbo::Platform::AndroidNDK;
+using namespace Turbo::Platform::OpenGLES;
+//using namespace Turbo::Platform::AndroidNDK;
 
 //  Constructors & Destructors  ----------------------------------------------------------------------------------------
 
-AndroidGLRenderer::AndroidGLRenderer(
+OpenGLESRenderer::OpenGLESRenderer(
         android_app* app,
         std::shared_ptr<ITurboDebug> debug,
         std::shared_ptr<ITurboGameIOService> ioService) :
         _android_app(app),
         _debug(debug),
-        _ioService(ioService),
-        geometry_instancing_support_(false)
+        _ioService(ioService)
 {
-    _gl_context = ndk_helper::GLContext::GetInstance();
+    _gl_context = OpenGLESContext::GetInstance();
 }
 
-AndroidGLRenderer::~AndroidGLRenderer()
+OpenGLESRenderer::~OpenGLESRenderer()
 {
     ReleaseSceneResources();
 }
 
 //	ITurboGameRenderer Methods ---------------------------------------------------------------------
 
-void AndroidGLRenderer::UpdateDisplayInformation()
+void OpenGLESRenderer::UpdateDisplayInformation()
 {
 //    ReleaseSceneResources();
 
@@ -91,8 +91,6 @@ void AndroidGLRenderer::UpdateDisplayInformation()
         }
     }
 
-    ShowUI();
-
     // Initialize GL state.
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
@@ -105,7 +103,7 @@ void AndroidGLRenderer::UpdateDisplayInformation()
     //renderer_.UpdateViewport();
 }
 
-bool AndroidGLRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
+bool OpenGLESRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 {
     ReleaseSceneResources();
 
@@ -121,7 +119,7 @@ bool AndroidGLRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
     return true;
 }
 
-void AndroidGLRenderer::ReleaseSceneResources()
+void OpenGLESRenderer::ReleaseSceneResources()
 {
     DeleteBuffers();
 
@@ -140,16 +138,12 @@ void AndroidGLRenderer::ReleaseSceneResources()
     _sceneResourcesLoaded = false;
 }
 
-bool AndroidGLRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
+bool OpenGLESRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
 {
     if (!_sceneResourcesLoaded)
     {
         LoadSceneResources(scene);
     }
-
-    // Drawing is throttled to the screen update rate, so there
-    // is no need to do timing here.
-    UpdateFPS();
 
     UpdateProjectionMatrix();
     UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
@@ -161,7 +155,7 @@ bool AndroidGLRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
     return false;
 }
 
-void AndroidGLRenderer::Reset()
+void OpenGLESRenderer::Reset()
 {
     ReleaseSceneResources();
 
@@ -171,24 +165,9 @@ void AndroidGLRenderer::Reset()
     _resources_initialized = false;
 }
 
-//  UpdateDisplayInformation  ------------------------------------------------------------------------------------------
-
-void AndroidGLRenderer::ShowUI()
-{
-    JNIEnv *jni;
-    _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
-
-    // Default class retrieval
-    jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
-    jmethodID methodID = jni->GetMethodID(clazz, "showUI", "()V");
-    jni->CallVoidMethod(_android_app->activity->clazz, methodID);
-
-    _android_app->activity->vm->DetachCurrentThread();
-}
-
 //  LoadSceneResources  ------------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::InitializeSceneResources()
+void OpenGLESRenderer::InitializeSceneResources()
 {
     if (_gl_context->GetGLVersion() >= 3.0)
     {
@@ -210,7 +189,7 @@ void AndroidGLRenderer::InitializeSceneResources()
 
 //	Scene Vertex Resources ---------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
+void OpenGLESRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
 {
     if (scene == nullptr)
     {
@@ -234,7 +213,7 @@ void AndroidGLRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> 
     _sceneObjectMeshCount = (GLuint)_sceneObjectMesh.size();
 }
 
-void AndroidGLRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
     GLuint sceneObjectOffset = (GLuint)_sceneObjectOffsets.size();
     _sceneObjectOffsets[sceneObject] = sceneObjectOffset;
@@ -292,14 +271,14 @@ void AndroidGLRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObjec
     }
 }
 
-void AndroidGLRenderer::LoadVertexData(
+void OpenGLESRenderer::LoadVertexData(
         std::shared_ptr<ITurboSceneMesh> mesh,
         std::vector<SHADER_VERTEX> *vertexList,
         std::vector<uint16_t> *indexList)
 {
     for (auto& meshVertex : mesh->Vertices())
     {
-        SHADER_VERTEX shaderVertex;
+        SHADER_VERTEX shaderVertex {};
 
         shaderVertex.Position[0] = (float)(meshVertex.Position.X);
         shaderVertex.Position[1] = (float)(meshVertex.Position.Y);
@@ -329,7 +308,7 @@ void AndroidGLRenderer::LoadVertexData(
 
 //	Scene Texture Resources --------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
+void OpenGLESRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
 {
     if (scene == nullptr)
     {
@@ -351,7 +330,7 @@ void AndroidGLRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene>
     _sceneObjectTextureCount = (GLuint)_sceneTextureBufferNames.size();
 }
 
-void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OpenGLESRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
     std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
     if (material == nullptr)
@@ -418,7 +397,7 @@ void AndroidGLRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObjec
     }
 }
 
-void AndroidGLRenderer::LoadTextureData(
+void OpenGLESRenderer::LoadTextureData(
         std::string textureName,
         GLsizei *textureWidth,
         GLsizei *textureHeight,
@@ -429,8 +408,8 @@ void AndroidGLRenderer::LoadTextureData(
     std::shared_ptr<ITurboImage> bitmap = std::shared_ptr<ITurboImage>(new TurboBitmap(canvas.get(), fileData.data()));
     bitmap->Draw();
 
-    unsigned char *canvasData = (unsigned char *)canvas->Data();
-    int canvasDataSize = canvas->DataSize();
+    auto *canvasData = (unsigned char *)canvas->Data();
+    auto canvasDataSize = canvas->DataSize();
     textureData->assign(canvasData, canvasData + canvasDataSize);
 
     *textureWidth = canvas->Width();
@@ -439,95 +418,17 @@ void AndroidGLRenderer::LoadTextureData(
 
 //  Shaders  -----------------------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::CreateShaders()
+void OpenGLESRenderer::CreateShaders()
 {
-    if (geometry_instancing_support_)
-    {
-        //
-        // Create parameter dictionary for shader patch
-        std::map<std::string, std::string> param;
-        param[std::string("%NUM_TEAPOT%")] =
-                //ToString(teapot_x_ * teapot_y_ * teapot_z_);
-                ToString(256);
-        param[std::string("%LOCATION_VERTEX%")] = ToString(ATTRIB_VERTEX);
-        param[std::string("%LOCATION_NORMAL%")] = ToString(ATTRIB_NORMAL);
-        if (arb_support_)
-            param[std::string("%ARB%")] = std::string("ARB");
-        else
-            param[std::string("%ARB%")] = std::string("");
-
-        // Load shader
-        bool shadersLoaded = LoadShadersES3(&_shaderParams,
-                                            "Shaders/VS_ShaderPlainES3.vsh",
-                                            "Shaders/ShaderPlainES3.fsh", param);
-        if (shadersLoaded)
-        {
-            //
-            // Create uniform buffer
-            //
-            GLuint bindingPoint = 1;
-            GLuint blockIndex;
-            blockIndex = glGetUniformBlockIndex(_shaderParams.program, "ParamBlock");
-            glUniformBlockBinding(_shaderParams.program, blockIndex, bindingPoint);
-
-            // Retrieve array stride value
-            int32_t num_indices;
-            glGetActiveUniformBlockiv(_shaderParams.program, blockIndex,
-                                      GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &num_indices);
-            GLint indices[num_indices];
-            GLint stride[num_indices];
-            glGetActiveUniformBlockiv(_shaderParams.program, blockIndex,
-                                      GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, indices);
-            glGetActiveUniformsiv(_shaderParams.program, num_indices, (GLuint *) indices,
-                                  GL_UNIFORM_ARRAY_STRIDE, stride);
-
-            ubo_matrix_stride_ = stride[0] / sizeof(float);
-            ubo_vector_stride_ = stride[2] / sizeof(float);
-
-            glGenBuffers(1, &_sceneUniformBufferName);
-            glBindBuffer(GL_UNIFORM_BUFFER, _sceneUniformBufferName);
-            glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, _sceneUniformBufferName);
-
-            // Store color value which wouldn't be updated every frame
-            int32_t size = _sceneObjectCount *
-                           (ubo_matrix_stride_ + ubo_matrix_stride_ +
-                            ubo_vector_stride_);  // Mat4 + Mat4 + Vec3 + 1 stride
-            float *pBuffer = new float[size];
-            float *pColor = pBuffer + _sceneObjectCount * ubo_matrix_stride_ * 2;
-            for (int32_t i = 0; i < _sceneObjectCount; ++i)
-            {
-                memcpy(pColor, &vec_colors_[i], 3 * sizeof(float));
-                pColor += ubo_vector_stride_;  // Assuming std140 layout which is 4
-                // DWORD stride for vectors
-            }
-
-            glBufferData(GL_UNIFORM_BUFFER, size * sizeof(float), pBuffer,
-                         GL_DYNAMIC_DRAW);
-            delete[] pBuffer;
-        }
-        else
-        {
-            LOGI("Shader compilation failed!! Falls back to ES2.0 pass");
-            // This happens some devices.
-            geometry_instancing_support_ = false;
-            // Load shader for GLES2.0
-            LoadShaders(&_shaderParams,
-                        "Shaders/VertexShader_100.vsh",
-                        "Shaders/PixelShader_100.fsh");
-        }
-    }
-    else
-    {
-        // Load shader for GLES2.0
-        LoadShaders(&_shaderParams,
-                    "Shaders/VertexShader_100.vsh",
-                    "Shaders/PixelShader_100.fsh");
-    }
+    // Load shader for GLES2.0
+    LoadShaders(&_shaderParams,
+                L"Shaders/VertexShader_100.vsh",
+                L"Shaders/PixelShader_100.fsh");
 }
 
-bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
-                                    const char *vertexShaderName,
-                                    const char *fragmentShaderName)
+bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
+                                   std::wstring vertexShaderName,
+                                   std::wstring fragmentShaderName)
 {
     //
     // Shader load for GLES2
@@ -535,15 +436,15 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     // before linking
     //
     GLuint program;
-    GLuint vertexShader, pixelShader;
+    GLuint vertexShader;
+    GLuint pixelShader;
 
     // Create shader program
     program = glCreateProgram();
     LOGI("Created Shader %d", program);
 
     // Create and compile vertex shader
-    if (!ndk_helper::shader::CompileShader(&vertexShader, GL_VERTEX_SHADER,
-                                           vertexShaderName))
+    if (!CompileShader(&vertexShader, GL_VERTEX_SHADER, vertexShaderName))
     {
         LOGI("Failed to compile vertex shader");
         glDeleteProgram(program);
@@ -551,8 +452,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     }
 
     // Create and compile fragment shader
-    if (!ndk_helper::shader::CompileShader(&pixelShader, GL_FRAGMENT_SHADER,
-                                           fragmentShaderName))
+    if (!CompileShader(&pixelShader, GL_FRAGMENT_SHADER, fragmentShaderName))
     {
         LOGI("Failed to compile fragment shader");
         glDeleteProgram(program);
@@ -573,7 +473,7 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     glBindAttribLocation(program, ATTRIB_UV,     "vsTexture");
 
     // Link program
-    if (!ndk_helper::shader::LinkProgram(program))
+    if (!LinkProgram(program))
     {
         LOGI("Failed to link program: %d", program);
 
@@ -614,82 +514,83 @@ bool AndroidGLRenderer::LoadShaders(SHADER_PARAMS *params,
     return true;
 }
 
-bool AndroidGLRenderer::LoadShadersES3(
-        SHADER_PARAMS *params, const char *vertexShaderName, const char *fragmentShaderName,
-        std::map<std::string, std::string> &shaderParams)
+bool OpenGLESRenderer::CompileShader(GLuint *shader, const GLenum type, std::wstring strFileName)
 {
-    //
-    // Shader load for GLES3
-    // In GLES3.0, shader attribute index can be described in a shader code
-    // directly with layout() attribute
-    //
-    GLuint program;
-    GLuint vertexShader, fragmentShader;
+    //std::vector<uint8_t> data;
 
-    // Create shader program
-    program = glCreateProgram();
-    LOGI("Created Shader %d", program);
-
-    // Create and compile vertex shader
-    if (!ndk_helper::shader::CompileShader(&vertexShader, GL_VERTEX_SHADER, vertexShaderName,
-                                           shaderParams))
+    auto data = _ioService->ReadData(strFileName);
+    //bool b = JNIHelper::GetInstance()->ReadFile(strFileName, &data);
+    if (data.empty())
     {
-        LOGI("Failed to compile vertex shader");
-        glDeleteProgram(program);
+        LOGI("Can not open a file:%s", Core::ToString(strFileName).data());
         return false;
     }
 
-    // Create and compile fragment shader
-    if (!ndk_helper::shader::CompileShader(&fragmentShader, GL_FRAGMENT_SHADER,
-                                           fragmentShaderName, shaderParams))
+    const GLchar *source = (GLchar *)&data[0];
+    auto size = (GLint)data.size();
+
+    if (source == NULL || size <= 0) return false;
+
+    *shader = glCreateShader(type);
+    glShaderSource(*shader, 1, &source, &size);  // Not specifying 3rd parameter
+    // (size) could be troublesome..
+
+    glCompileShader(*shader);
+
+#if defined(DEBUG)
+    GLint logLength;
+    glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
+    if (logLength > 0)
     {
-        LOGI("Failed to compile fragment shader");
-        glDeleteProgram(program);
+        GLchar *log = (GLchar *)malloc(logLength);
+        glGetShaderInfoLog(*shader, logLength, &logLength, log);
+        LOGI("Shader compile log:\n%s", log);
+        free(log);
+    }
+#endif
+
+    GLint status;
+    glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
+    if (status == 0)
+    {
+        glDeleteShader(*shader);
         return false;
     }
 
-    // Attach vertex shader to program
-    glAttachShader(program, vertexShader);
+    return true;
+}
 
-    // Attach fragment shader to program
-    glAttachShader(program, fragmentShader);
+bool OpenGLESRenderer::LinkProgram(const GLuint prog)
+{
+    GLint status;
 
-    // Link program
-    if (!ndk_helper::shader::LinkProgram(program))
+    glLinkProgram(prog);
+
+#if defined(DEBUG)
+    GLint logLength;
+    glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
+    if (logLength > 0)
     {
-        LOGI("Failed to link program: %d", program);
+        GLchar *log = (GLchar *)malloc(logLength);
+        glGetProgramInfoLog(prog, logLength, &logLength, log);
+        LOGI("Program link log:\n%s", log);
+        free(log);
+    }
+#endif
 
-        if (vertexShader) {
-            glDeleteShader(vertexShader);
-            vertexShader = 0;
-        }
-        if (fragmentShader) {
-            glDeleteShader(fragmentShader);
-            fragmentShader = 0;
-        }
-        if (program) {
-            glDeleteProgram(program);
-        }
-
+    glGetProgramiv(prog, GL_LINK_STATUS, &status);
+    if (status == 0)
+    {
+        LOGI("Program link failed\n");
         return false;
     }
 
-    // Get uniform locations
-//    params->light0_ = glGetUniformLocation(program, "vLight0");
-//    params->material_ambient_ = glGetUniformLocation(program, "vMaterialAmbient");
-//    params->material_specular_ = glGetUniformLocation(program, "vMaterialSpecular");
-
-    // Release vertex and fragment shaders
-    if (vertexShader) glDeleteShader(vertexShader);
-    if (fragmentShader) glDeleteShader(fragmentShader);
-
-    params->program = program;
     return true;
 }
 
 //  ReleaseSceneResources  ---------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::DeleteBuffers()
+void OpenGLESRenderer::DeleteBuffers()
 {
     for (auto& entry : _sceneVertexBufferNames)
     {
@@ -736,36 +637,17 @@ void AndroidGLRenderer::DeleteBuffers()
 
 //  RenderScene  -------------------------------------------------------------------------------------------------------
 
-void AndroidGLRenderer::UpdateFPS()
-{
-    float fps;
-    if (!_performance_monitor.Update(fps))
-    {
-        return;
-    }
-
-    JNIEnv *jni;
-    _android_app->activity->vm->AttachCurrentThread(&jni, NULL);
-
-    // Default class retrieval
-    jclass clazz = jni->GetObjectClass(_android_app->activity->clazz);
-    jmethodID methodID = jni->GetMethodID(clazz, "updateFPS", "(F)V");
-    jni->CallVoidMethod(_android_app->activity->clazz, methodID, fps);
-
-    _android_app->activity->vm->DetachCurrentThread();
-}
-
-void AndroidGLRenderer::UpdateProjectionMatrix()
+void OpenGLESRenderer::UpdateProjectionMatrix()
 {
     int32_t viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    float width  = static_cast<float>(viewport[2]);
-    float height = static_cast<float>(viewport[3]);
+    auto width  = static_cast<float>(viewport[2]);
+    auto height = static_cast<float>(viewport[3]);
 
     _projectionMatrix = ndk_helper::Mat4::Perspective(75.0f, width, height, 0.01f, 100.0f);
 }
 
-void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
+void OpenGLESRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
 {
     TurboVector3D position = cameraPlacement->Position();
     TurboVector3D target = cameraPlacement->Target();
@@ -791,7 +673,7 @@ void AndroidGLRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> c
 }
 
 
-void AndroidGLRenderer::InitializeRendering()
+void OpenGLESRenderer::InitializeRendering()
 {
     // Just fill the screen with a color.
     glClearColor(0.5f, 0.5f, 0.5f, 1.f);
@@ -799,7 +681,7 @@ void AndroidGLRenderer::InitializeRendering()
 
 }
 
-void AndroidGLRenderer::RenderSceneObjects(std::shared_ptr<ITurboScene> scene)
+void OpenGLESRenderer::RenderSceneObjects(std::shared_ptr<ITurboScene> scene)
 {
     if (scene == nullptr)
     {
@@ -814,7 +696,7 @@ void AndroidGLRenderer::RenderSceneObjects(std::shared_ptr<ITurboScene> scene)
     }
 }
 
-void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
     std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
 
@@ -875,43 +757,43 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
 
     //  TODO: Optimize to use instancing
     //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
-    if (geometry_instancing_support_)
-    {
-        //
-        // Geometry instancing, new feature in GLES3.0
-        //
-
-        // Update UBO
-        glBindBuffer(GL_UNIFORM_BUFFER, _sceneUniformBufferName);
-        float *range = (float *) glMapBufferRange(GL_UNIFORM_BUFFER, 0,
-                                              _sceneObjectCount * (ubo_matrix_stride_ * 2) * sizeof(float),
-                                              GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
-        float *mat_mvp = range;
-        float *mat_mv = range + _sceneObjectCount * ubo_matrix_stride_;
-        for (int32_t i = 0; i < _sceneObjectCount; ++i)
-        {
-            // Rotation
-            float x, y;
-            vec_current_rotations_[i] += vec_rotations_[i];
-            vec_current_rotations_[i].Value(x, y);
-            ndk_helper::Mat4 mat_rotation = ndk_helper::Mat4::RotationX(x) * ndk_helper::Mat4::RotationY(y);
-
-            // Feed Projection and Model View matrices to the shaders
-            ndk_helper::Mat4 mat_v = _viewMatrix * vec_mat_models_[i] * mat_rotation;
-            ndk_helper::Mat4 mat_vp = _projectionMatrix * mat_v;
-
-            memcpy(mat_mvp, mat_vp.Ptr(), sizeof(mat_v));
-            mat_mvp += ubo_matrix_stride_;
-
-            memcpy(mat_mv, mat_v.Ptr(), sizeof(mat_v));
-            mat_mv += ubo_matrix_stride_;
-        }
-        glUnmapBuffer(GL_UNIFORM_BUFFER);
-
-        // Instanced rendering
-        glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0), _sceneObjectCount);
-    }
-    else
+//    if (geometry_instancing_support_)
+//    {
+//        //
+//        // Geometry instancing, new feature in GLES3.0
+//        //
+//
+//        // Update UBO
+//        glBindBuffer(GL_UNIFORM_BUFFER, _sceneUniformBufferName);
+//        float *range = (float *) glMapBufferRange(GL_UNIFORM_BUFFER, 0,
+//                                              _sceneObjectCount * (ubo_matrix_stride_ * 2) * sizeof(float),
+//                                              GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+//        float *mat_mvp = range;
+//        float *mat_mv = range + _sceneObjectCount * ubo_matrix_stride_;
+//        for (int32_t i = 0; i < _sceneObjectCount; ++i)
+//        {
+//            // Rotation
+//            float x, y;
+//            vec_current_rotations_[i] += vec_rotations_[i];
+//            vec_current_rotations_[i].Value(x, y);
+//            ndk_helper::Mat4 mat_rotation = ndk_helper::Mat4::RotationX(x) * ndk_helper::Mat4::RotationY(y);
+//
+//            // Feed Projection and Model View matrices to the shaders
+//            ndk_helper::Mat4 mat_v = _viewMatrix * vec_mat_models_[i] * mat_rotation;
+//            ndk_helper::Mat4 mat_vp = _projectionMatrix * mat_v;
+//
+//            memcpy(mat_mvp, mat_vp.Ptr(), sizeof(mat_v));
+//            mat_mvp += ubo_matrix_stride_;
+//
+//            memcpy(mat_mv, mat_v.Ptr(), sizeof(mat_v));
+//            mat_mv += ubo_matrix_stride_;
+//        }
+//        glUnmapBuffer(GL_UNIFORM_BUFFER);
+//
+//        // Instanced rendering
+//        glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0), _sceneObjectCount);
+//    }
+//    else
     {
         //TurboColor diffuseColor = material->DiffuseColor();
         //glUniform4f(_shaderParams.material_diffuse_, diffuseColor.R, diffuseColor.G, diffuseColor.B, 1.f);
@@ -945,7 +827,7 @@ void AndroidGLRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
     }
 }
 
-void AndroidGLRenderer::FinalizeRendering()
+void OpenGLESRenderer::FinalizeRendering()
 {
     // Swap
     if (EGL_SUCCESS != _gl_context->Swap())
@@ -957,7 +839,7 @@ void AndroidGLRenderer::FinalizeRendering()
 //--------------------------------------------------------------------------------
 // Helper functions
 //--------------------------------------------------------------------------------
-std::string AndroidGLRenderer::ToString(const int32_t i)
+std::string OpenGLESRenderer::ToString(const int32_t i)
 {
     char str[64];
     snprintf(str, sizeof(str), "%d", i);
