@@ -18,8 +18,7 @@
 // OpenGLESRenderer.h
 // Renderer for teapots
 //--------------------------------------------------------------------------------
-#ifndef _MazePreviewRenderer_H
-#define _MazePreviewRenderer_H
+#pragma once
 
 //--------------------------------------------------------------------------------
 // Include files
@@ -40,11 +39,12 @@
 #include <ITurboDebug.h>
 #include <ITurboGameRenderer.h>
 #include <ITurboGameIOService.h>
+#include <OpenGLESContext.h>
 
 //#define CLASS_NAME "android/app/NativeActivity"
 //#define APPLICATION_CLASS_NAME "com/sample/moreteapots/MoreTeapotsApplication"
 
-#include "NDKHelper.h"
+//#include "NDKHelper.h"
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -136,14 +136,16 @@ namespace Turbo
 
                 SHADER_PARAMS _shaderParams;
 
-                ndk_helper::Mat4 _viewMatrix;
-                ndk_helper::Mat4 _projectionMatrix;
+                TurboMatrix4x4 _viewMatrix;
+                TurboMatrix4x4 _projectionMatrix;
+//                ndk_helper::Mat4 _viewMatrix;
+//                ndk_helper::Mat4 _projectionMatrix;
                 int _lightCount;
 
-                std::vector<ndk_helper::Mat4> vec_mat_models_;
-                std::vector<ndk_helper::Vec3> vec_colors_;
-                std::vector<ndk_helper::Vec2> vec_rotations_;
-                std::vector<ndk_helper::Vec2> vec_current_rotations_;
+//                std::vector<ndk_helper::Mat4> vec_mat_models_;
+//                std::vector<ndk_helper::Vec3> vec_colors_;
+//                std::vector<ndk_helper::Vec2> vec_rotations_;
+//                std::vector<ndk_helper::Vec2> vec_current_rotations_;
 
                 //  ndk_helper::TapCamera _tap_camera;
 
@@ -171,7 +173,7 @@ namespace Turbo
                 void CreateShaders();
                 bool LoadShaders(SHADER_PARAMS *params,
                                  std::wstring vertexShaderName,
-                                 std::wstring fragmentShaderName);
+                                 std::wstring pixelShaderName);
                 bool CompileShader(GLuint *shader, const GLenum type, std::wstring strFileName);
                 bool LinkProgram(const GLuint prog);
 
@@ -187,12 +189,13 @@ namespace Turbo
                 void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
                 void FinalizeRendering();
 
-
-                //  bool Bind(ndk_helper::TapCamera* camera);
-                std::string ToString(const int32_t i);
+                TurboMatrix4x4 MakePerspectiveProjection(float fovAngle,
+                                                         float viewportWidth,
+                                                         float viewportHeight,
+                                                         float nearPlane,
+                                                         float farPlane);
+                TurboMatrix4x4 MakeViewProjection(const TurboVector3D& vEye, const TurboVector3D& vAt, const TurboVector3D& vUp);
             };
         }
     }
 }
-
-#endif

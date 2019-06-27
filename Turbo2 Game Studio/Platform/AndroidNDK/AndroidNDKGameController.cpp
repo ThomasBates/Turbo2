@@ -1,8 +1,6 @@
 
 #include <pch.h>
 
-#include <sensorManager.h>
-
 #include <AndroidNDKGameController.h>
 #include <TurboSceneNavigationControl_Base.h>
 #include <TurboSceneNavigationControl_Button.h>
@@ -283,16 +281,6 @@ void AndroidNDKGameController::DebugLogMotionEvent(AInputEvent *event)
 //-------------------------------------------------------------------------
 void AndroidNDKGameController::InitializeSensors()
 {
-//    _doubletap_detector.SetConfiguration(_android_app->config);
-//    _drag_detector.SetConfiguration(_android_app->config);
-//    _pinch_detector.SetConfiguration(_android_app->config);
-
-//	_tap_camera.SetFlip(1.f, -1.f, -1.f);
-//	_tap_camera.SetPinchTransformFactor(10.f, 10.f, 8.f);
-
-//	_sensor_manager = ndk_helper::AcquireASensorManagerInstance(_android_app);
-//    _accelerometer_sensor = ASensorManager_getDefaultSensor(_sensor_manager, ASENSOR_TYPE_ACCELEROMETER);
-//    _sensor_event_queue = ASensorManager_createEventQueue(_sensor_manager, _android_app->looper, LOOPER_ID_USER, NULL, NULL);
 }
 
 void AndroidNDKGameController::InitializeControls()
@@ -339,41 +327,14 @@ bool AndroidNDKGameController::ProcessEvents()
 
 void AndroidNDKGameController::ProcessSensors(int32_t id)
 {
-//    // If a sensor has data, process it now.
-//    if (id == LOOPER_ID_USER)
-//    {
-//        if (_accelerometer_sensor != NULL)
-//        {
-//            ASensorEvent event;
-//            while (ASensorEventQueue_getEvents(_sensor_event_queue, &event, 1) > 0)
-//            {
-//            }
-//        }
-//    }
 }
 
 void AndroidNDKGameController::ResumeSensors()
 {
-//    // When our app gains focus, we start monitoring the accelerometer.
-//    if (_accelerometer_sensor != NULL)
-//    {
-//        ASensorEventQueue_enableSensor(_sensor_event_queue, _accelerometer_sensor);
-//        // We'd like to get 60 events per second (in us).
-//        ASensorEventQueue_setEventRate(_sensor_event_queue, _accelerometer_sensor,
-//                                       (1000L / 60) * 1000);
-//    }
-
     _isRunning = true;
 }
 
 void AndroidNDKGameController::SuspendSensors()
 {
 	_isRunning = false;
-
-//    // When our app loses focus, we stop monitoring the accelerometer.
-//    // This is to avoid consuming battery while not being used.
-//    if (_accelerometer_sensor != NULL)
-//    {
-//        ASensorEventQueue_disableSensor(_sensor_event_queue, _accelerometer_sensor);
-//    }
 }

@@ -6,10 +6,6 @@
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-#define PI 3.1415926535897932384626433832795
-#define PIby180 ((double)(PI/180.0))
-
-
 #pragma region Constructors --------------------------------------------------------------------------------------------
 
 TurboScenePlacement::TurboScenePlacement()

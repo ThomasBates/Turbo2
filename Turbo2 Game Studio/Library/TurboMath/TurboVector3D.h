@@ -10,29 +10,29 @@ namespace Turbo
 	{
 		struct TurboVector3D
 		{
-			double X, Y, Z;
+			float X, Y, Z;
 
 			//  Constructors
 			TurboVector3D();
-			TurboVector3D(double x, double y, double z);
+			TurboVector3D(float x, float y, float z);
 
-			double Length();
+			float Length();
 			TurboVector3D Normalize();
 
 			TurboVector3D operator-() const;
 
 			TurboVector3D operator+(const TurboVector3D &v) const;
 			TurboVector3D operator-(const TurboVector3D &v) const;
-			TurboVector3D operator*(double r) const;
-			TurboVector3D operator/(double r) const;
+			TurboVector3D operator*(float r) const;
+			TurboVector3D operator/(float r) const;
 
-			TurboVector3D &operator=(double r);
+			TurboVector3D &operator=(float r);
 			TurboVector3D &operator+=(const TurboVector3D &v);
 			TurboVector3D &operator-=(const TurboVector3D &v);
-			TurboVector3D &operator*=(double r);
-			TurboVector3D &operator/=(double r);
+			TurboVector3D &operator*=(float r);
+			TurboVector3D &operator/=(float r);
 
-			double operator*(const TurboVector3D &v) const;   //  Dot product
+			float operator*(const TurboVector3D &v) const;   //  Dot product
 			TurboVector3D operator%(const TurboVector3D &v) const;  //  cross product
 
 			TurboVector3D operator*(const TurboMatrix4x4 &m) const;  //  transform

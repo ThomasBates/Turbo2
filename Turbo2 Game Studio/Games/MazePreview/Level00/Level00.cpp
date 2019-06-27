@@ -413,7 +413,6 @@ void Level00::BuildScene()
 	if (_mazeOptions.LevelRound == 1)
 	{
 		_helper->CreateSign(_scene, CubicMazeLocation(4, 0, 3), CubicMazeCellWallSide::Front, "Level00Text00");
-		_helper->CreateSign(_scene, CubicMazeLocation(0, -1, 4), CubicMazeCellWallSide::Front, "Level00Text01");
 
 		if (_level01Unlocked)
 		{

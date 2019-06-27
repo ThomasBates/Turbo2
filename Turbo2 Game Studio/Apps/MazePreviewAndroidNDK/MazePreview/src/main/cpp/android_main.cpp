@@ -8,7 +8,6 @@
 
 #include <AndroidNDKGameApplication.h>
 #include <AndroidNDKGameController.h>
-#include <AndroidNDKGameController_Legacy.h>
 #include <AndroidNDKIOService.h>
 #include <AndroidNDKAudio.h>
 

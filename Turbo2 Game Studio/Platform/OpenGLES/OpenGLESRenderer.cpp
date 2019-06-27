@@ -29,14 +29,17 @@
 #include <cstring>
 
 #include <ITurboCanvas.h>
-#include <TurboCanvasRGBA32.h>
 #include <ITurboImage.h>
+
+#include <TurboCanvasRGBA32.h>
 #include <TurboBitmap.h>
+
+#include <OpenGLESRenderer.h>
+
 
 using namespace Turbo::Core;
 using namespace Turbo::Graphics;
 using namespace Turbo::Platform::OpenGLES;
-//using namespace Turbo::Platform::AndroidNDK;
 
 //  Constructors & Destructors  ----------------------------------------------------------------------------------------
 
@@ -60,8 +63,6 @@ OpenGLESRenderer::~OpenGLESRenderer()
 
 void OpenGLESRenderer::UpdateDisplayInformation()
 {
-//    ReleaseSceneResources();
-
     if (!_resources_initialized)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -100,7 +101,6 @@ void OpenGLESRenderer::UpdateDisplayInformation()
     int width = _gl_context->GetScreenWidth();
     int height = _gl_context->GetScreenHeight();
     glViewport(0, 0, width, height);
-    //renderer_.UpdateViewport();
 }
 
 bool OpenGLESRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
@@ -159,7 +159,6 @@ void OpenGLESRenderer::Reset()
 {
     ReleaseSceneResources();
 
-    //_gl_context->Suspend();
     _gl_context->Invalidate();
 
     _resources_initialized = false;
@@ -280,20 +279,20 @@ void OpenGLESRenderer::LoadVertexData(
     {
         SHADER_VERTEX shaderVertex {};
 
-        shaderVertex.Position[0] = (float)(meshVertex.Position.X);
-        shaderVertex.Position[1] = (float)(meshVertex.Position.Y);
-        shaderVertex.Position[2] = (float)(meshVertex.Position.Z);
+        shaderVertex.Position[0] = meshVertex.Position.X;
+        shaderVertex.Position[1] = meshVertex.Position.Y;
+        shaderVertex.Position[2] = meshVertex.Position.Z;
 
-        shaderVertex.Normal[0] = (float)(meshVertex.Normal.X);
-        shaderVertex.Normal[1] = (float)(meshVertex.Normal.Y);
-        shaderVertex.Normal[2] = (float)(meshVertex.Normal.Z);
+        shaderVertex.Normal[0]   = meshVertex.Normal.X;
+        shaderVertex.Normal[1]   = meshVertex.Normal.Y;
+        shaderVertex.Normal[2]   = meshVertex.Normal.Z;
 
-        shaderVertex.Color[0] = (float)(meshVertex.Color.X);
-        shaderVertex.Color[1] = (float)(meshVertex.Color.Y);
-        shaderVertex.Color[2] = (float)(meshVertex.Color.Z);
+        shaderVertex.Color[0]    = meshVertex.Color.X;
+        shaderVertex.Color[1]    = meshVertex.Color.Y;
+        shaderVertex.Color[2]    = meshVertex.Color.Z;
 
-        shaderVertex.Texture[0] = (float)(meshVertex.TextureUV.X);
-        shaderVertex.Texture[1] = (float)(meshVertex.TextureUV.Y);
+        shaderVertex.Texture[0]  = meshVertex.TextureUV.X;
+        shaderVertex.Texture[1]  = meshVertex.TextureUV.Y;
 
         vertexList->push_back(shaderVertex);
     }
@@ -317,8 +316,6 @@ void OpenGLESRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> 
 
     //	Prepare data structures.
     _sceneTextureBufferNames.clear();
-//    _sceneTextureTargetResources.clear();
-//    _sceneTextureSourceResources.clear();
 
     auto sceneObjects = scene->SceneObjects();
 
@@ -428,7 +425,7 @@ void OpenGLESRenderer::CreateShaders()
 
 bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
                                    std::wstring vertexShaderName,
-                                   std::wstring fragmentShaderName)
+                                   std::wstring pixelShaderName)
 {
     //
     // Shader load for GLES2
@@ -452,7 +449,7 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
     }
 
     // Create and compile fragment shader
-    if (!CompileShader(&pixelShader, GL_FRAGMENT_SHADER, fragmentShaderName))
+    if (!CompileShader(&pixelShader, GL_FRAGMENT_SHADER, pixelShaderName))
     {
         LOGI("Failed to compile fragment shader");
         glDeleteProgram(program);
@@ -501,11 +498,6 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
     params->ProjectionMatrix  = glGetUniformLocation(program, "uProjection");
     params->LightCount        = glGetUniformLocation(program, "uLightCount");
 
-//    params->light0_ = glGetUniformLocation(program, "uLight0");
-//    params->material_diffuse_ = glGetUniformLocation(program, "uMaterialDiffuse");
-//    params->material_ambient_ = glGetUniformLocation(program, "uMaterialAmbient");
-//    params->material_specular_ = glGetUniformLocation(program, "uMaterialSpecular");
-
     // Release vertex and fragment shaders
     if (vertexShader) glDeleteShader(vertexShader);
     if (pixelShader) glDeleteShader(pixelShader);
@@ -516,10 +508,7 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
 
 bool OpenGLESRenderer::CompileShader(GLuint *shader, const GLenum type, std::wstring strFileName)
 {
-    //std::vector<uint8_t> data;
-
     auto data = _ioService->ReadData(strFileName);
-    //bool b = JNIHelper::GetInstance()->ReadFile(strFileName, &data);
     if (data.empty())
     {
         LOGI("Can not open a file:%s", Core::ToString(strFileName).data());
@@ -644,7 +633,7 @@ void OpenGLESRenderer::UpdateProjectionMatrix()
     auto width  = static_cast<float>(viewport[2]);
     auto height = static_cast<float>(viewport[3]);
 
-    _projectionMatrix = ndk_helper::Mat4::Perspective(75.0f, width, height, 0.01f, 100.0f);
+    _projectionMatrix = MakePerspectiveProjection(75.0f, width, height, 0.01f, 100.0f);
 }
 
 void OpenGLESRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
@@ -652,22 +641,8 @@ void OpenGLESRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> ca
     TurboVector3D position = cameraPlacement->Position();
     TurboVector3D target = cameraPlacement->Target();
     TurboVector3D up = cameraPlacement->Up();
-//    TurboVector3D front = -cameraPlacement->Back();
 
-    ndk_helper::Vec3 eyePosition   = ndk_helper::Vec3((float)(position.X), (float)(position.Y), (float)(position.Z));
-    ndk_helper::Vec3 focusPosition = ndk_helper::Vec3((float)(target.X), (float)(target.Y), (float)(target.Z));
-    ndk_helper::Vec3 upDirection   = ndk_helper::Vec3((float)(up.X), (float)(up.Y), (float)(up.Z));
-//    ndk_helper::Vec3 eyeDirection  = ndk_helper::Vec3((float)(front.X), (float)(front.Y), (float)(front.Z));
-
-//    const float CAM_X = 0.f;
-//    const float CAM_Y = 0.f;
-//    const float CAM_Z = 2000.f;
-
-    _viewMatrix = ndk_helper::Mat4::LookAt(eyePosition, focusPosition, upDirection);
-
-//    _tap_camera.Update();
-//    _viewMatrix = _tap_camera.GetTransformMatrix() * _viewMatrix *
-//                  _tap_camera.GetRotationMatrix();
+    _viewMatrix = MakeViewProjection(position, target, up);
 
     _lightCount = lightHack ? 1 : 0;
 }
@@ -706,7 +681,7 @@ void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> scen
     }
 
     GLuint vertexBufferName = _sceneVertexBufferNames[mesh];
-//    GLuint vertexCount = _sceneVertexCount[mesh];
+//  GLuint vertexCount = _sceneVertexCount[mesh];
     GLuint indexBufferName = _sceneIndexBufferNames[mesh];
     GLuint indexCount = _sceneIndexCount[mesh];
 
@@ -743,9 +718,7 @@ void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> scen
 //    float specularExponent = material->SpecularExponent();
 
     // Update uniforms
-    //glUniform1i(_shaderParams.TextureSampler, 0);
-
-    glUniformMatrix4fv(_shaderParams.ViewMatrix, 1, GL_FALSE, _viewMatrix.Ptr());
+    glUniformMatrix4fv(_shaderParams.ViewMatrix,       1, GL_FALSE, _viewMatrix.Ptr());
     glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, _projectionMatrix.Ptr());
 
     glUniform1i(_shaderParams.LightCount, _lightCount);
@@ -757,65 +730,11 @@ void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> scen
 
     //  TODO: Optimize to use instancing
     //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
-//    if (geometry_instancing_support_)
-//    {
-//        //
-//        // Geometry instancing, new feature in GLES3.0
-//        //
-//
-//        // Update UBO
-//        glBindBuffer(GL_UNIFORM_BUFFER, _sceneUniformBufferName);
-//        float *range = (float *) glMapBufferRange(GL_UNIFORM_BUFFER, 0,
-//                                              _sceneObjectCount * (ubo_matrix_stride_ * 2) * sizeof(float),
-//                                              GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
-//        float *mat_mvp = range;
-//        float *mat_mv = range + _sceneObjectCount * ubo_matrix_stride_;
-//        for (int32_t i = 0; i < _sceneObjectCount; ++i)
-//        {
-//            // Rotation
-//            float x, y;
-//            vec_current_rotations_[i] += vec_rotations_[i];
-//            vec_current_rotations_[i].Value(x, y);
-//            ndk_helper::Mat4 mat_rotation = ndk_helper::Mat4::RotationX(x) * ndk_helper::Mat4::RotationY(y);
-//
-//            // Feed Projection and Model View matrices to the shaders
-//            ndk_helper::Mat4 mat_v = _viewMatrix * vec_mat_models_[i] * mat_rotation;
-//            ndk_helper::Mat4 mat_vp = _projectionMatrix * mat_v;
-//
-//            memcpy(mat_mvp, mat_vp.Ptr(), sizeof(mat_v));
-//            mat_mvp += ubo_matrix_stride_;
-//
-//            memcpy(mat_mv, mat_v.Ptr(), sizeof(mat_v));
-//            mat_mv += ubo_matrix_stride_;
-//        }
-//        glUnmapBuffer(GL_UNIFORM_BUFFER);
-//
-//        // Instanced rendering
-//        glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0), _sceneObjectCount);
-//    }
-//    else
-    {
-        //TurboColor diffuseColor = material->DiffuseColor();
-        //glUniform4f(_shaderParams.material_diffuse_, diffuseColor.R, diffuseColor.G, diffuseColor.B, 1.f);
 
+    TurboMatrix4x4 model = sceneObject->Placement()->Transform();
+    glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
 
-        TurboMatrix4x4 transform = sceneObject->Placement()->Transform();
-        float mat[16] {(float)transform.M11, (float)transform.M12, (float)transform.M13, (float)transform.M14,
-                       (float)transform.M21, (float)transform.M22, (float)transform.M23, (float)transform.M24,
-                       (float)transform.M31, (float)transform.M32, (float)transform.M33, (float)transform.M34,
-                       (float)transform.M41, (float)transform.M42, (float)transform.M43, (float)transform.M44};
-        ndk_helper::Mat4 model = ndk_helper::Mat4(mat);
-//        ndk_helper::Mat4 view = _viewMatrix * model;
-//        ndk_helper::Mat4 projection = _projectionMatrix * view;
-//
-//        glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
-//        glUniformMatrix4fv(_shaderParams.ViewMatrix, 1, GL_FALSE, view.Ptr());
-//        glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection.Ptr());
-
-        glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
-
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
-    }
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -839,9 +758,77 @@ void OpenGLESRenderer::FinalizeRendering()
 //--------------------------------------------------------------------------------
 // Helper functions
 //--------------------------------------------------------------------------------
-std::string OpenGLESRenderer::ToString(const int32_t i)
+TurboMatrix4x4 OpenGLESRenderer::MakePerspectiveProjection(float fovAngle,
+                                                           float viewportWidth,
+                                                           float viewportHeight,
+                                                           float nearPlane,
+                                                           float farPlane)
 {
-    char str[64];
-    snprintf(str, sizeof(str), "%d", i);
-    return std::string(str);
+    float smallDimension = nearPlane * tan(0.5f * fovAngle * PIby180);
+    float width;    //  width of near Z plane, or width of viewport in world coordinates.
+    float height;   //  height of near Z plane, or height of viewport in world coordinates.
+
+    if (viewportWidth > viewportHeight)
+    {
+        height = smallDimension;
+        width  = height * viewportWidth / viewportHeight;
+    }
+    else
+    {
+        width  = smallDimension;
+        height = width * viewportHeight / viewportWidth;
+    }
+
+    float n2 = 2 * nearPlane;
+    float rcpnmf = 1 / (nearPlane - farPlane);
+
+    TurboMatrix4x4 result;
+
+    result.M11 = n2 / width;
+
+    result.M22 = n2 / height;
+
+    result.M33 = (farPlane + nearPlane) * rcpnmf;
+    result.M43 = farPlane * rcpnmf * n2;
+
+    result.M34 = -1;
+    result.M44 = 0;
+
+    return result;
+}
+
+TurboMatrix4x4 OpenGLESRenderer::MakeViewProjection(const TurboVector3D &vec_eye, const TurboVector3D &vec_at, const TurboVector3D &vec_up)
+{
+    TurboVector3D vec_forward;
+    TurboVector3D vec_up_norm;
+    TurboVector3D vec_side;
+
+    vec_forward = vec_eye - vec_at;
+    vec_forward.Normalize();
+
+    vec_up_norm = vec_up;
+    vec_up_norm.Normalize();
+
+    vec_side = vec_up_norm % vec_forward;   // cross product
+    vec_up_norm = vec_forward % vec_side;   // cross product
+
+    TurboMatrix4x4 result;
+
+    result.M11 = vec_side.X;
+    result.M21 = vec_side.Y;
+    result.M31 = vec_side.Z;
+
+    result.M12 = vec_up_norm.X;
+    result.M22 = vec_up_norm.Y;
+    result.M32 = vec_up_norm.Z;
+
+    result.M13 = vec_forward.X;
+    result.M23 = vec_forward.Y;
+    result.M33 = vec_forward.Z;
+
+    result.M41 = -vec_eye.X * result.M11 + -vec_eye.Y * result.M21 + -vec_eye.Z * result.M31;
+    result.M42 = -vec_eye.X * result.M12 + -vec_eye.Y * result.M22 + -vec_eye.Z * result.M32;
+    result.M43 = -vec_eye.X * result.M13 + -vec_eye.Y * result.M23 + -vec_eye.Z * result.M33;
+
+    return result;
 }

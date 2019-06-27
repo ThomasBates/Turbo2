@@ -120,21 +120,16 @@ add_library(Platform_AndroidNDK
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameApplication.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameController.cpp
-		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameController_Legacy.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKIOService.cpp
-		${TurboFolder}/Platform/AndroidNDK/interpolator.cpp
 		${TurboFolder}/Platform/AndroidNDK/JNIHelper.cpp
 		${TurboFolder}/Platform/AndroidNDK/perfMonitor.cpp
-		${TurboFolder}/Platform/AndroidNDK/sensorManager.cpp
 		)
 
-# TODO: Separate GL from NDK
 add_library(Platform_OpenGLES
 		STATIC
 		${TurboFolder}/Platform/OpenGLES/gl3stub.cpp
 		${TurboFolder}/Platform/OpenGLES/OpenGLESRenderer.cpp
 		${TurboFolder}/Platform/OpenGLES/OpenGLESContext.cpp
-		${TurboFolder}/Platform/OpenGLES/vecmath.cpp
 		)
 
 include_directories(.)

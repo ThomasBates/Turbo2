@@ -3,16 +3,16 @@
 
 #include <pch.h>
 
-#include <android/sensor.h>
-#include <android_native_app_glue.h>
-#include <tapCamera.h>
+//#include <android/sensor.h>
+//#include <android_native_app_glue.h>
 
 #include <ITurboDebug.h>
 #include <ITurboSceneNavigationControl.h>
 #include <ITurboGameController.h>
 #include <TurboSceneNavigationInfo.h>
 #include <android_native_app_glue.h>
-#include <gestureDetector.h>
+
+#include <perfMonitor.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -46,18 +46,9 @@ namespace Turbo
 				bool _isRunning = false;
 
 				ndk_helper::PerfMonitor _performance_monitor;
-//				ndk_helper::DoubletapDetector _doubletap_detector;
-//				ndk_helper::PinchDetector _pinch_detector;
-//				ndk_helper::DragDetector _drag_detector;
-				//ndk_helper::TapCamera _tap_camera;
 
 				std::map<int32_t, std::shared_ptr<ITurboSceneNavigationControl>> _activeControls;
-				//std::map<std::shared_ptr<ITurboSceneNavigationControl>, int32_t> _pointerID;
 				std::map<int32_t, size_t> _activeIndexes;
-
-//				ASensorManager* _sensor_manager = NULL;
-//				const ASensor* _accelerometer_sensor = NULL;
-//				ASensorEventQueue* _sensor_event_queue = NULL;
 
 				static int32_t HandleInputEvents(android_app* app, AInputEvent* event);
 				int32_t HandleInputEvent(AInputEvent *event);

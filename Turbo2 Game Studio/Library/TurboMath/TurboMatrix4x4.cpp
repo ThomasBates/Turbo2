@@ -3,11 +3,10 @@
 //#include <math.h>
 #include <TurboVector3D.h>
 #include <TurboMatrix4x4.h>
+#include "TurboMatrix4x4.h"
+
 
 using namespace Turbo::Math;
-
-#define PI 3.1415926535897932384626433832795
-#define PIby180 ((double)(PI/180.0))
 
 TurboMatrix4x4::TurboMatrix4x4()
 {
@@ -19,10 +18,10 @@ TurboMatrix4x4::TurboMatrix4x4()
 }
 
 TurboMatrix4x4::TurboMatrix4x4(
-	double m11, double m12, double m13, double m14,
-	double m21, double m22, double m23, double m24,
-	double m31, double m32, double m33, double m34,
-	double m41, double m42, double m43, double m44)
+	float m11, float m12, float m13, float m14,
+	float m21, float m22, float m23, float m24,
+	float m31, float m32, float m33, float m34,
+	float m41, float m42, float m43, float m44)
 {
 	M11 = m11; M12 = m12; M13 = m13; M14 = m14;
 	M21 = m21; M22 = m22; M23 = m23; M24 = m24;
@@ -30,7 +29,17 @@ TurboMatrix4x4::TurboMatrix4x4(
 	M41 = m41; M42 = m42; M43 = m43; M44 = m44;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::Translate(double x, double y, double z)
+TurboMatrix4x4 TurboMatrix4x4::Transpose()
+{
+    TurboMatrix4x4 transpose = TurboMatrix4x4(
+            M11, M21, M31, M41,
+            M12, M22, M32, M42,
+            M13, M23, M33, M43,
+            M14, M24, M34, M44);
+    return transpose;
+}
+
+TurboMatrix4x4 TurboMatrix4x4::Translate(float x, float y, float z)
 {
 	TurboMatrix4x4 translate = TurboMatrix4x4(
 		1, 0, 0, 0,
@@ -46,15 +55,15 @@ TurboMatrix4x4 TurboMatrix4x4::Translate(TurboVector3D translation)
 	return Translate(translation.X, translation.Y, translation.Z);
 }
 
-TurboMatrix4x4 TurboMatrix4x4::Rotate(TurboVector3D axis, double degrees)
+TurboMatrix4x4 TurboMatrix4x4::Rotate(TurboVector3D axis, float degrees)
 {
 	return TurboMatrix4x4();
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateX(double degrees)
+TurboMatrix4x4 TurboMatrix4x4::RotateX(float degrees)
 {
-	double c = cos(degrees * PIby180);
-	double s = sin(degrees * PIby180);
+	float c = cos(degrees * PIby180);
+	float s = sin(degrees * PIby180);
 
 	TurboMatrix4x4 rotate = TurboMatrix4x4(
 		1, 0, 0, 0,
@@ -65,10 +74,10 @@ TurboMatrix4x4 TurboMatrix4x4::RotateX(double degrees)
 	return *this * rotate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateY(double degrees)
+TurboMatrix4x4 TurboMatrix4x4::RotateY(float degrees)
 {
-	double c = cos(degrees * PIby180);
-	double s = sin(degrees * PIby180);
+	float c = cos(degrees * PIby180);
+	float s = sin(degrees * PIby180);
 
 	TurboMatrix4x4 rotate = TurboMatrix4x4(
 		c, 0,-s, 0,
@@ -79,10 +88,10 @@ TurboMatrix4x4 TurboMatrix4x4::RotateY(double degrees)
 	return *this * rotate;
 }
 
-TurboMatrix4x4 TurboMatrix4x4::RotateZ(double degrees)
+TurboMatrix4x4 TurboMatrix4x4::RotateZ(float degrees)
 {
-	double c = cos(degrees * PIby180);
-	double s = sin(degrees * PIby180);
+	float c = cos(degrees * PIby180);
+	float s = sin(degrees * PIby180);
 
 	TurboMatrix4x4 rotate = TurboMatrix4x4(
 		c, s, 0, 0,

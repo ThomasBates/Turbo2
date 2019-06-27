@@ -12,16 +12,16 @@ TurboVector3D::TurboVector3D()
 	Z = 0;
 }
 
-TurboVector3D::TurboVector3D( double x, double y, double z )
+TurboVector3D::TurboVector3D( float x, float y, float z )
 {
 	X = x;
 	Y = y;
 	Z = z;
 }
 
-double TurboVector3D::Length()
+float TurboVector3D::Length()
 {
-	return (double)sqrt(X*X + Y*Y + Z*Z);
+	return (float)sqrt(X*X + Y*Y + Z*Z);
 }
 
 TurboVector3D TurboVector3D::Normalize()
@@ -44,19 +44,19 @@ TurboVector3D TurboVector3D::operator-(const TurboVector3D &v) const
 	return TurboVector3D(X - v.X, Y - v.Y, Z - v.Z);
 }
 
-TurboVector3D TurboVector3D::operator*(double r) const
+TurboVector3D TurboVector3D::operator*(float r) const
 {
 	return TurboVector3D(X*r, Y*r, Z*r);
 }
 
-TurboVector3D TurboVector3D::operator/(double r) const
+TurboVector3D TurboVector3D::operator/(float r) const
 {
 	if (r != 0)
 		return TurboVector3D(X/r, Y/r, Z/r);
 	return TurboVector3D();
 }
 
-TurboVector3D &TurboVector3D::operator=(double r)
+TurboVector3D &TurboVector3D::operator=(float r)
 {
 	*this = TurboVector3D(r,r,r);
 	return *this;
@@ -76,28 +76,29 @@ TurboVector3D &TurboVector3D::operator-=(const TurboVector3D &v)
 	return *this;
 }
 
-TurboVector3D &TurboVector3D::operator*=(double r)
+TurboVector3D &TurboVector3D::operator*=(float r)
 {
 	*this = *this * r;
 	return *this;
 }
 
-TurboVector3D &TurboVector3D::operator/=(double r)
+TurboVector3D &TurboVector3D::operator/=(float r)
 {
 	*this = *this / r;
 	return *this;
 }
 
-double TurboVector3D::operator*(const TurboVector3D &v) const	//dot product
+float TurboVector3D::operator*(const TurboVector3D &v) const	//dot product
 {
 	return X*v.X + Y*v.Y + Z*v.Z;
 }
 
 TurboVector3D TurboVector3D::operator%(const TurboVector3D &v) const	//  cross product
 {
-	return TurboVector3D(Y * v.Z - Z * v.Y,
-					Z * v.X - X * v.Z,
-					X * v.Y - Y * v.X);
+	return TurboVector3D(
+		Y * v.Z - Z * v.Y,
+		Z * v.X - X * v.Z,
+		X * v.Y - Y * v.X);
 }
 
 TurboVector3D TurboVector3D::operator*(const TurboMatrix4x4 & m) const

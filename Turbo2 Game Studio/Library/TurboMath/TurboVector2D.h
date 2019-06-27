@@ -7,29 +7,29 @@ namespace Turbo
 	{
 		struct TurboVector2D
 		{
-			double X, Y;
+			float X, Y;
 
 			//  Constructors
 			TurboVector2D();
-			TurboVector2D(double x, double y);
+			TurboVector2D(float x, float y);
 
-			double Length();
+			float Length();
 			TurboVector2D Normalize();
 
 			TurboVector2D operator-() const;
 
 			TurboVector2D operator+(const TurboVector2D &v) const;
 			TurboVector2D operator-(const TurboVector2D &v) const;
-			TurboVector2D operator*(double r) const;
-			TurboVector2D operator/(double r) const;
+			TurboVector2D operator*(float r) const;
+			TurboVector2D operator/(float r) const;
 
-			TurboVector2D &operator=(double r);
+			TurboVector2D &operator=(float r);
 			TurboVector2D &operator+=(const TurboVector2D &v);
 			TurboVector2D &operator-=(const TurboVector2D &v);
-			TurboVector2D &operator*=(double r);
-			TurboVector2D &operator/=(double r);
+			TurboVector2D &operator*=(float r);
+			TurboVector2D &operator/=(float r);
 
-			double operator*(const TurboVector2D &v) const;   //  Dot product
+			float operator*(const TurboVector2D &v) const;   //  Dot product
 		};
 
 		inline std::ostream& operator<<(std::ostream& os, const TurboVector2D& v)

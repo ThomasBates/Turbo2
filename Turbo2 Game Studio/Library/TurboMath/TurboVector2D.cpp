@@ -9,15 +9,15 @@ Turbo::Math::TurboVector2D::TurboVector2D()
 	Y = 0;
 }
 
-Turbo::Math::TurboVector2D::TurboVector2D(double x, double y)
+Turbo::Math::TurboVector2D::TurboVector2D(float x, float y)
 {
 	X = x;
 	Y = y;
 }
 
-double Turbo::Math::TurboVector2D::Length()
+float Turbo::Math::TurboVector2D::Length()
 {
-	return (double)sqrt(X*X + Y*Y);
+	return (float)sqrt(X*X + Y*Y);
 }
 
 Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::Normalize()
@@ -40,19 +40,19 @@ Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::operator-(const TurboVect
 	return TurboVector2D(X - v.X, Y - v.Y);
 }
 
-Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::operator*(double r) const
+Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::operator*(float r) const
 {
 	return TurboVector2D(X*r, Y*r);
 }
 
-Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::operator/(double r) const
+Turbo::Math::TurboVector2D Turbo::Math::TurboVector2D::operator/(float r) const
 {
 	if (r != 0)
 		return TurboVector2D(X/r, Y/r);
 	return TurboVector2D();
 }
 
-Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator=(double r)
+Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator=(float r)
 {
 	*this = TurboVector2D(r,r);
 	return *this;
@@ -72,19 +72,19 @@ Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator-=(const TurboVe
 	return *this;
 }
 
-Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator*=(double r)
+Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator*=(float r)
 {
 	*this = *this * r;
 	return *this;
 }
 
-Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator/=(double r)
+Turbo::Math::TurboVector2D &Turbo::Math::TurboVector2D::operator/=(float r)
 {
 	*this = *this / r;
 	return *this;
 }
 
-double Turbo::Math::TurboVector2D::operator*(const TurboVector2D &v) const	//dot product
+float Turbo::Math::TurboVector2D::operator*(const TurboVector2D &v) const	//dot product
 {
 	return X*v.X + Y*v.Y;
 }
