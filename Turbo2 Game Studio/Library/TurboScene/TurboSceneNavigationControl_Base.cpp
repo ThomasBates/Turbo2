@@ -38,11 +38,6 @@ float TurboSceneNavigationControl_Base::YValue()
     return yValue;
 }
 
-bool TurboSceneNavigationControl_Base::Contains(float x, float y, float z)
-{
-    return (_minX <= x && x < _maxX && _minY <= y && y < _maxY);
-}
-
 void TurboSceneNavigationControl_Base::CurrentPoint(float x, float y, float z)
 {
     if (_firstPoint)
@@ -54,4 +49,10 @@ void TurboSceneNavigationControl_Base::CurrentPoint(float x, float y, float z)
 
     _X = x;
     _Y = y;
+}
+
+bool TurboSceneNavigationControl_Base::Contains(float x, float y)
+{
+    return (_minX <= x && x < _maxX &&
+            _minY <= y && y < _maxY);
 }

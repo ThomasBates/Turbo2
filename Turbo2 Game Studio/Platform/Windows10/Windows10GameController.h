@@ -26,9 +26,10 @@ namespace Turbo
 
 				//  ITurboGameController Methods -------------------------------------------------------------------------------
 				virtual NavigationInfo* GetNavigationInfo();
-				virtual void Suspend() {};
-				virtual void Resume() {};
-
+				virtual void Suspend() {}
+				virtual void Resume() {}
+				virtual void ClearControls() {}
+				virtual void AddControl(std::shared_ptr<ITurboSceneNavigationControl> control) {}
 			private:
 				Windows10NavigationControl^ _navigationControl;
 			};

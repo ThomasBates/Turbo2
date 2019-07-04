@@ -57,6 +57,7 @@ namespace Turbo
                 void InitializeDisplay(android_app *app);
 				void TerminateDisplay();
 				void ReconfigureDisplay(android_app *app);
+				void UpdateControls(android_app *app);
                 void TrimMemory();
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------

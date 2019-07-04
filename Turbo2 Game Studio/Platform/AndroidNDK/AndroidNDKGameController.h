@@ -37,6 +37,8 @@ namespace Turbo
 				virtual NavigationInfo* GetNavigationInfo();
 				virtual void Suspend();
 				virtual void Resume();
+				virtual void ClearControls();
+				virtual void AddControl(std::shared_ptr<ITurboSceneNavigationControl> control);
 
 			private:
 				android_app* _android_app;

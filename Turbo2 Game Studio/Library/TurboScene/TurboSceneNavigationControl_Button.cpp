@@ -19,7 +19,8 @@ TurboSceneNavigationControl_Button::TurboSceneNavigationControl_Button(
 {
 }
 
-bool TurboSceneNavigationControl_Button::Contains(float x, float y, float z)
+bool TurboSceneNavigationControl_Button::Contains(float x, float y)
 {
-    return (_minX <= x && x < _maxX && _minY <= y && y < _maxY);
+    return (_minX <= x && x < _maxX &&
+            _minY <= y && y < _maxY);
 }

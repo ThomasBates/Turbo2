@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <pch.h>
+
 #include <TurboSceneTypes.h>
 
 namespace Turbo
@@ -19,7 +21,6 @@ namespace Turbo
             virtual float ZValue() = 0;
 
             //  ITurboSceneNavigationControl Methods  ------------------------------------------------------------------
-            virtual bool Contains(float x, float y, float z = 0) = 0;
             virtual void CurrentPoint(float x, float y, float z = 0) = 0;
         };
     }

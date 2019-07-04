@@ -2,6 +2,8 @@
 #include <pch.h>
 
 #include <AndroidNDKGameApplication.h>
+#include <TurboSceneNavigationControl_Last.h>
+#include <TurboSceneNavigationControl_Button.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -151,6 +153,7 @@ void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
     if (app->window != NULL)
     {
         _renderer->UpdateDisplayInformation();
+        UpdateControls(app);
         JNI_ShowUI();
         _controller->Resume();
         _hasFocus = true;
@@ -173,8 +176,62 @@ void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
     {
         _renderer->Reset();
         _renderer->UpdateDisplayInformation();
+
+        UpdateControls(app);
+
         JNI_ShowUI();
     }
+}
+
+void AndroidNDKGameApplication::UpdateControls(android_app *app)
+{
+    int32_t width = ANativeWindow_getWidth(app->window);
+    int32_t height = ANativeWindow_getHeight(app->window);
+
+    _controller->ClearControls();
+
+    float s, x1, x2, y1, y2;
+
+    if (width < height)
+    {
+        s = (float) width / 2;
+
+        // center
+        x1 = 0;
+        x2 = width;
+        y1 = s;
+        y2 = height - s;
+    }
+    else
+    {
+        s = (float) height / 2;
+
+        // center
+        x1 = s;
+        x2 = width - s;
+        y1 = 0;
+        y2 = height;
+    }
+
+    // center
+    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
+            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, 0.1f)));
+
+    // bottom left
+    x1 = 0;
+    x2 = s;
+    y1 = height - s;
+    y2 = height;
+    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
+            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2)));
+
+    // bottom right
+    x1 = width - s;
+    x2 = width;
+    y1 = height - s;
+    y2 = height;
+    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
+            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, -1.0f)));
 }
 
 void AndroidNDKGameApplication::TrimMemory()

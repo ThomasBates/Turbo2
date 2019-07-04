@@ -4,13 +4,15 @@
 #include <pch.h>
 
 #include <ITurboSceneNavigationControl.h>
-#include "ITurboSceneNavigationControl.h"
+#include <ITurboSceneNavigationTouch.h>
 
 namespace Turbo
 {
     namespace Scene
     {
-        class TurboSceneNavigationControl_Button : public ITurboSceneNavigationControl
+        class TurboSceneNavigationControl_Button :
+                public ITurboSceneNavigationControl,
+                public ITurboSceneNavigationTouch
         {
         public:
             //  Constructors & Destructors -----------------------------------------------------------------------------
@@ -31,8 +33,16 @@ namespace Turbo
             virtual float ZValue() { return 0.0f; }
 
             //  ITurboSceneNavigationControl Methods  -----------------------------------------------------------------------------
-            virtual bool Contains(float x, float y, float z = 0);
             virtual void CurrentPoint(float x, float y, float z = 0) {}
+
+            //  ITurboSceneNavigationTouch Properties  ----------------------------------------------------------------------------
+            virtual float MinX() { return _minX; }
+            virtual float MaxX() { return _maxX; }
+            virtual float MinY() { return _minY; }
+            virtual float MaxY() { return _maxY; }
+
+            //  ITurboSceneNavigationTouch Methods  -------------------------------------------------------------------------------
+            virtual bool Contains(float x, float y);
 
         private:
             TurboGameControlType _type;

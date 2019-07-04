@@ -21,7 +21,7 @@ include(AndroidNdkModules)
 android_ndk_import_module_native_app_glue()
 
 # set up common compile options
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -fno-rtti")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -frtti")
 
 get_filename_component(TurboFolder ../../../../../.. ABSOLUTE)
 
@@ -103,6 +103,7 @@ add_library(Library_TurboScene
 		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Base.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Button.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Last.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Set.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneObject.cpp
 		${TurboFolder}/Library/TurboScene/TurboScenePixelShader.cpp
 		${TurboFolder}/Library/TurboScene/TurboScenePlacement.cpp
@@ -113,7 +114,6 @@ add_library(Library_TurboScene
 		${TurboFolder}/Library/TurboScene/TurboSceneVertexShader.cpp
 		)
 
-# TODO: Separate GL from NDK
 add_library(Platform_AndroidNDK
 		STATIC
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKAudio.cpp

@@ -5,6 +5,9 @@
 #include <TurboSceneNavigationControl_Base.h>
 #include <TurboSceneNavigationControl_Button.h>
 #include <TurboSceneNavigationControl_Last.h>
+#include <TurboSceneNavigationControl_Set.h>
+#include "AndroidNDKGameController.h"
+
 
 using namespace Turbo::Platform::AndroidNDK;
 using namespace Turbo::Scene;
@@ -46,6 +49,18 @@ void AndroidNDKGameController::Suspend()
 void AndroidNDKGameController::Resume()
 {
     ResumeSensors();
+}
+
+void AndroidNDKGameController::ClearControls()
+{
+    _activeControls.clear();
+    _activeIndexes.clear();
+	_navInfo.Controls.clear();
+}
+
+void AndroidNDKGameController::AddControl(std::shared_ptr<ITurboSceneNavigationControl> control)
+{
+	_navInfo.Controls.push_back(control);
 }
 
 //  ITurboGameController Methods ---------------------------------------------------------------------------------------
@@ -93,10 +108,18 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 
 			for (auto& control : _navInfo.Controls)
             {
-                if (control->IsActive() || !control->Contains(x,y))
+				if (control->IsActive())
+					continue;
+
+                auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
+
+                if (touch == nullptr)
                     continue;
 
-                control->IsActive(true);
+				if (!touch->Contains(x, y))
+					continue;
+
+				control->IsActive(true);
                 control->CurrentPoint(x, y);
 
                 _activeControls[pointerID] = control;
@@ -108,11 +131,14 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 		case AMOTION_EVENT_ACTION_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-			activeControl = _activeControls[pointerID];
-			activeControl->IsActive(false);
+			if (_activeControls.find(pointerID) != _activeControls.end())
+			{
+                activeControl = _activeControls[pointerID];
+                activeControl->IsActive(false);
 
-			_activeControls.erase(pointerID);
-			_activeIndexes.erase(pointerID);
+	    		_activeControls.erase(pointerID);
+    			_activeIndexes.erase(pointerID);
+            }
 			break;
 
 		case AMOTION_EVENT_ACTION_POINTER_DOWN:
@@ -122,8 +148,16 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 
 			for (auto& control : _navInfo.Controls)
 			{
-				if (control->IsActive() || !control->Contains(x,y))
+				if (control->IsActive())
 					continue;
+
+                auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
+
+                if (touch == nullptr)
+                    continue;
+
+                if (!touch->Contains(x, y))
+                    continue;
 
 				control->IsActive(true);
 				control->CurrentPoint(x, y);
@@ -138,11 +172,14 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 		case AMOTION_EVENT_ACTION_POINTER_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-			activeControl = _activeControls[pointerID];
-			activeControl->IsActive(false);
+            if (_activeControls.find(pointerID) != _activeControls.end())
+            {
+                activeControl = _activeControls[pointerID];
+                activeControl->IsActive(false);
 
-			_activeControls.erase(pointerID);
-			_activeIndexes.erase(pointerID);
+                _activeControls.erase(pointerID);
+                _activeIndexes.erase(pointerID);
+            }
 
 			UpdatePointerIndexes(event);
 			break;
@@ -285,9 +322,10 @@ void AndroidNDKGameController::InitializeSensors()
 
 void AndroidNDKGameController::InitializeControls()
 {
-	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
-	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
-    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Button(TurboGameControlType::Move, 0.0f,  540.0f, 1440.0f, 1920.0f)));
+//	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
+//	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
+//    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Button(      TurboGameControlType::Move,   0.0f,  540.0f, 1440.0f, 1920.0f)));
+//    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(         TurboGameControlType::Move)));
 }
 
 bool AndroidNDKGameController::ProcessEvents()

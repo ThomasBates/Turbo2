@@ -49,10 +49,10 @@ Windows10NavigationControl::Windows10NavigationControl()
 
 	_pointerLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(nullptr, TurboGameControlType::Look, 0.0f, 0.0f, 0.0f, 0.0f,  0.1f));
 	_reverseLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(nullptr, TurboGameControlType::Look, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f));
-	_asdwLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Look, 0.0f, 0.0f, 0.0f, 0.0f));
-	_arrowKeyLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Look, 0.0f, 0.0f, 0.0f, 0.0f));
-	_asdwMoveControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Move, 0.0f, 0.0f, 0.0f, 0.0f));
-	_arrowKeyMoveControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Move, 0.0f, 0.0f, 0.0f, 0.0f));
+	_asdwLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Look));
+	_arrowKeyLookControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Look));
+	_asdwMoveControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Move));
+	_arrowKeyMoveControl = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(TurboGameControlType::Move));
 
 	_navInfo.Controls.push_back(_pointerLookControl);
 	_navInfo.Controls.push_back(_reverseLookControl);
