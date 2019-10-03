@@ -2,6 +2,7 @@
 
 #include <TurboDebug.h>
 #include <TurboDebugMemoryLogger.h>
+#include <TurboGameControllerViewModel.h>
 #include <AndroidNDKDebugLogCatLogger.h>
 
 #include <OpenGLESRenderer.h>
@@ -28,8 +29,10 @@ void android_main(android_app* app)
     std::shared_ptr<ITurboDebug> debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
     std::shared_ptr<ITurboGameController> controller = std::shared_ptr<ITurboGameController>(new AndroidNDKGameController(app, debug));
+    std::shared_ptr<ITurboGameControllerViewModel> controllerViewModel = std::shared_ptr<ITurboGameControllerViewModel>(new TurboGameControllerViewModel(debug, controller));
+
     std::shared_ptr<ITurboGameIOService> ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
-    std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService));
+    std::shared_ptr<ITurboGameRenderer> renderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService, controllerViewModel));
     std::shared_ptr<ITurboGameAudio> audio = std::shared_ptr<ITurboGameAudio>(new AndroidNDKAudio(debug, ioService));
 
     std::shared_ptr<ITurboGameApplication> application = std::shared_ptr<ITurboGameApplication>(new AndroidNDKGameApplication(app, debug, controller, ioService, renderer, audio));

@@ -66,10 +66,12 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
             //	Update the scene
             game->Update(navInfo);
 
-            if (game->SceneChanged())
+            if (game->SceneChanged() || _updatedControls)
             {
                 _renderer->LoadSceneResources(game->Scene());
                 _audio->LoadSceneResources(game->Scene());
+
+                _updatedControls = false;
             }
 
             _renderer->RenderScene(game->Scene());
@@ -220,10 +222,16 @@ void AndroidNDKGameApplication::UpdateControls(android_app *app)
     // bottom left
     x1 = 0;
     x2 = s;
+
     y1 = height - s;
+    y2 = height - s/3;
+    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
+            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2, 0, -1, 0, "ForwardButton")));
+
+    y1 = height - s/3;
     y2 = height;
     _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2)));
+            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2, 0, 1, 0, "BackwardButton")));
 
     // bottom right
     x1 = width - s;
@@ -231,7 +239,9 @@ void AndroidNDKGameApplication::UpdateControls(android_app *app)
     y1 = height - s;
     y2 = height;
     _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, -1.0f)));
+            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, -1.0f, "DPadControl")));
+
+    _updatedControls = true;
 }
 
 void AndroidNDKGameApplication::TrimMemory()

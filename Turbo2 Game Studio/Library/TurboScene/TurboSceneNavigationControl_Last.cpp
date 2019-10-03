@@ -2,6 +2,7 @@
 #include <pch.h>
 
 #include "TurboSceneNavigationControl_Last.h"
+#include <TurboSceneTexture.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Scene;
@@ -11,13 +12,18 @@ TurboSceneNavigationControl_Last::TurboSceneNavigationControl_Last(
         TurboGameControlType type,
         float minX, float maxX,
         float minY, float maxY,
-        float scale) :
+        float scale,
+        std::string textureName) :
         _debug(debug),
         _type(type),
         _minX(minX), _maxX(maxX),
         _minY(minY), _maxY(maxY),
         _scale(scale)
 {
+    if (!textureName.empty())
+    {
+        _texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
+    }
 }
 
 void TurboSceneNavigationControl_Last::IsActive(bool isActive)

@@ -24,7 +24,7 @@ void Turbo::Scene::TurboSceneMesh::AddVertex(TurboVector3D position, TurboVector
 
 void Turbo::Scene::TurboSceneMesh::AddTriangle(int vertex1, int vertex2, int vertex3)
 {
-	TurboSceneTriangle triangle;
+	TurboSceneTriangle triangle {};
 
 	int vertexCount = _vertices.size();
 

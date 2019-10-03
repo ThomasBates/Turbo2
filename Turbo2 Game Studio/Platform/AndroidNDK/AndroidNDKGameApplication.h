@@ -52,6 +52,7 @@ namespace Turbo
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 bool _hasFocus = false;
+				bool _updatedControls = false;
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 void InitializeDisplay(android_app *app);

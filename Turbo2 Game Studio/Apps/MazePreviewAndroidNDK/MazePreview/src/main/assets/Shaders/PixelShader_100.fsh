@@ -22,6 +22,7 @@
 //iform     lowp    vec3    uMaterialAmbient;
 //iform     lowp    vec4    uMaterialSpecular;
 uniform     sampler2D       uSampler;
+uniform             int     uIsSprite;
 
 //rying     mediump vec3    psPosition;
 //rying     mediump vec3    psNormal;
@@ -32,7 +33,13 @@ void main()
 {
     lowp vec4 color = texture2D(uSampler, psTexture);
 
+    if (uIsSprite > 0)
+    {
+        //color.a = 0.9;
+        //color = vec4(color.rgb, .9);
+    }
+
 //    gl_FragColor = color;               //  Just the texture color
 //    gl_FragColor = psColor;             //  Just the lighting color
-    gl_FragColor = color * psColor;     //  Combination of lighting and texture
+    gl_FragColor = vec4(color.rgb * psColor.rgb, color.a);     //  Combination of lighting and texture
 }

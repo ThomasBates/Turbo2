@@ -50,6 +50,11 @@ void AndroidNDKAudio::UpdateAudioInformation()
 
 bool AndroidNDKAudio::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 {
+	if (scene == nullptr)
+	{
+		return false;
+	}
+
 	ReleaseSceneResources();
 
 	CreateSceneSoundEffectResources(scene);
@@ -60,6 +65,11 @@ bool AndroidNDKAudio::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
 // Renders one frame using the vertex and pixel shaders.
 bool AndroidNDKAudio::PlaySounds(std::shared_ptr<ITurboScene> scene)
 {
+	if (scene == nullptr)
+	{
+		return false;
+	}
+
 	PlaySceneSoundEffects(scene);
 
 	return true;

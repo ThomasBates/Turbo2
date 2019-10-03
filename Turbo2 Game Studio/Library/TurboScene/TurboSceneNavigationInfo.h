@@ -17,6 +17,8 @@ namespace Turbo
             bool	Terminate;
             std::vector<std::shared_ptr<ITurboSceneNavigationControl>> Controls;
 
+            TurboVector3D Look {};
+            TurboVector3D Move {};
 //			bool	Pointer;
 //			float	PointerX;
 //			float	PointerY;

@@ -6,6 +6,8 @@
 #include <ITurboSceneNavigationControl.h>
 #include <ITurboSceneNavigationTouch.h>
 #include <ITurboDebug.h>
+#include "ITurboSceneTexture.h"
+
 using namespace Turbo::Core::Debug;
 
 namespace Turbo
@@ -23,7 +25,8 @@ namespace Turbo
                     TurboGameControlType type,
                     float minX, float maxX,
                     float minY, float maxY,
-                    float scale = 1.0f);
+                    float scale = 1.0f,
+                    std::string textureName = "");
             virtual ~TurboSceneNavigationControl_Last(){}
 
             //  ITurboSceneNavigationControl Properties  --------------------------------------------------------------------------
@@ -43,6 +46,9 @@ namespace Turbo
             virtual float MinY() { return _minY; }
             virtual float MaxY() { return _maxY; }
 
+            virtual std::shared_ptr<ITurboSceneTexture> Texture() { return _texture; }
+            virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) { _texture = texture; }
+
             //  ITurboSceneNavigationTouch Methods  -------------------------------------------------------------------------------
             virtual bool Contains(float x, float y);
 
@@ -53,7 +59,8 @@ namespace Turbo
             float _maxX;
             float _minY;
             float _maxY;
-            float _scale;
+            float _scale = 1.0f;
+            std::shared_ptr<ITurboSceneTexture> _texture = nullptr;
 
             bool _isActive = false;
             bool _firstPoint = false;

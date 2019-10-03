@@ -8,6 +8,7 @@
 #include <Level04.h>
 #include <Level05.h>
 #include <Level00CubicMazeFactory.h>
+
 #include <CubicMazeMotionEffects_WithGravity.h>
 #include <CubicMazeMotionEffects_WithoutGravity.h>
 #include <CubicMazeSceneBuilder_Castle.h>
@@ -17,10 +18,14 @@
 #include <CubicMazeSceneBuilder_Random.h>
 #include <CubicMazeSceneObject.h>
 #include <CubicMazeSignMesh.h>
+
+#include <ITurboSceneNavigationTouch.h>
 #include <TurboGameState.h>
 #include <TurboSceneAmbientLight.h>
 #include <TurboSceneMaterial.h>
 #include <TurboSceneSoundEffect.h>
+#include <TurboSceneSprite.h>
+#include <TurboSceneTexture.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -121,20 +126,33 @@ void Level00::Initialize()
 	UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
 	UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
 
-	//	Build the scene.
-	BuildScene();
-
-	//	Place the player
-	_player->Placement()->Reset();
-	_player->Placement()->Move(8, 0, -4);
-
-	//  Create NPC's and obstacles ...
-	//  ...
+//	//	Build the scene.
+//	BuildScene();
+//
+//	//	Place the player
+//	_player->Placement()->Reset();
+//	_player->Placement()->Move(8, 0, -4);
+//
+//	//  Create NPC's and obstacles ...
+//	//  ...
 }
 
 void Level00::Update(NavigationInfo* navInfo)
 {
 	_sceneChanged = false;
+
+	if (_scene == nullptr)
+	{
+		//	Build the scene.
+		BuildScene(navInfo);
+
+		//	Place the player
+		_player->Placement()->Reset();
+		_player->Placement()->Move(8, 0, -4);
+
+		//  Create NPC's and obstacles ...
+		//  ...
+	}
 
 	if (_subLevel != nullptr)
 	{
@@ -173,7 +191,7 @@ void Level00::Update(NavigationInfo* navInfo)
 				_subLevel->Finalize();
 				_subLevel = nullptr;
 				_subLevelIndex = 0;
-				BuildScene();
+				BuildScene(navInfo);
 				_sceneChanged = true;
 				break;
 
@@ -221,7 +239,7 @@ void Level00::Update(NavigationInfo* navInfo)
 				_subLevel->Finalize();
 				_subLevel = nullptr;
 				_subLevelIndex = 0;
-				BuildScene();
+				BuildScene(navInfo);
 				_sceneChanged = true;
 				break;
 		}
@@ -349,7 +367,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 	//*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Flat());
 }
 
-void Level00::BuildScene()
+void Level00::BuildScene(NavigationInfo* navInfo)
 {
 	if (_level01Unlocked)
 	{
@@ -395,8 +413,8 @@ void Level00::BuildScene()
 		_maze->Cell(3, 0, 0)->LeftWall.PortalIndex = 0;
 	}
 
-	_maze->Cell(4, 0, 4)->BackWall.Type = CubicMazeCellWallType::Entrance;
-	_maze->Cell(4, 0, 4)->BackWall.PortalIndex = 5;
+//	_maze->Cell(4, 0, 4)->BackWall.Type = CubicMazeCellWallType::Entrance;
+//	_maze->Cell(4, 0, 4)->BackWall.PortalIndex = 5;
 
 	_scene = _sceneBuilder->BuildScene(_maze);
 	_scene->AddSceneObject(_player);
@@ -447,6 +465,28 @@ void Level00::BuildScene()
 			_helper->CreateSign(_scene, CubicMazeLocation(3, 0, 0), CubicMazeCellWallSide::Back, "Level00Text04R4");
 			break;
 		}
+	}
+
+	for (auto &control : navInfo->Controls)
+	{
+		auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
+
+		if (touch == nullptr)
+			continue;
+
+		if (touch->Texture() == nullptr)
+		    continue;
+
+		auto sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite());
+
+		sprite->Texture(touch->Texture());
+		sprite->UseRectangle(true);
+		sprite->Left(touch->MinX());
+		sprite->Right(touch->MaxX());
+		sprite->Top(touch->MinY());
+		sprite->Bottom(touch->MaxY());
+
+		_scene->AddSceneSprite(sprite);
 	}
 
 	std::shared_ptr<ITurboSceneSoundEffect> entranceSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance"));

@@ -11,9 +11,11 @@
 #include <CubicMazeSceneObject.h>
 #include <CubicMazeSignMesh.h>
 
+#include <ITurboSceneNavigationTouch.h>
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
 #include <TurboSceneSoundEffect.h>
+#include <TurboSceneSprite.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -90,7 +92,7 @@ void Level00Helper::CreateHazards(CubicMazeLocation* firstHazardLocation, std::s
 	}
 }
 
-std::shared_ptr<ITurboScene> Level00Helper::BuildScene()
+std::shared_ptr<ITurboScene> Level00Helper::BuildScene(NavigationInfo* navInfo)
 {
 
 	std::shared_ptr<ITurboScene> scene = _sceneBuilder->BuildScene(_maze);
@@ -116,6 +118,28 @@ std::shared_ptr<ITurboScene> Level00Helper::BuildScene()
 		{
 			scene->AddSceneObject(hazard);
 		}
+	}
+
+	for (auto &control : navInfo->Controls)
+	{
+		auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
+
+		if (touch == nullptr)
+			continue;
+
+		if (touch->Texture() == nullptr)
+			continue;
+
+		auto sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite());
+
+		sprite->Texture(touch->Texture());
+		sprite->UseRectangle(true);
+		sprite->Left(touch->MinX());
+		sprite->Right(touch->MaxX());
+		sprite->Top(touch->MinY());
+		sprite->Bottom(touch->MaxY());
+
+		scene->AddSceneSprite(sprite);
 	}
 
 	return scene;

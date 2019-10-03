@@ -78,7 +78,7 @@ void Level01::Initialize()
 
 
 	//	Build the scene.
-	BuildScene();
+	//BuildScene();
 
 	_levelState = TurboGameLevelState::Running;
 }
@@ -89,16 +89,16 @@ void Level01::Update(NavigationInfo* navInfo)
 
 	bool rebuildScene = _helper->Update(navInfo, &_levelState);
 
-	if (rebuildScene)
+	if ((_scene == nullptr) || rebuildScene)
 	{
-		BuildScene();
+		BuildScene(navInfo);
 	}
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 //  Local Methods ------------------------------------------------------------------------------------------------------
 
-void Level01::BuildScene()
+void Level01::BuildScene(NavigationInfo* navInfo)
 {
 	bool exitLocked = _keys.size() > _mazeOptions.KeyCount - _mazeOptions.RequiredKeyCount;
 
@@ -113,7 +113,7 @@ void Level01::BuildScene()
 		_maze->Cell(_exitLocation)->RightWall.PortalIndex = 1;
 	}
 
-	_scene = _helper->BuildScene();
+	_scene = _helper->BuildScene(navInfo);
 
 	if (_mazeOptions.LevelRound == 1)
 	{

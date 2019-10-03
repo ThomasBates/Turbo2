@@ -22,6 +22,7 @@ uniform     highp   mat4    uModel;
 uniform     highp   mat4    uView;
 uniform     highp   mat4    uProjection;
 uniform             int     uLightCount;
+uniform             int     uIsSprite;
 //iform     highp   vec3    uLight0;
 //iform     lowp    vec4    uMaterialDiffuse;
 //iform     lowp    vec3    uMaterialAmbient;
@@ -39,13 +40,20 @@ varying     mediump vec2    psTexture;
 void main(void)
 {
     highp vec4 position = vec4(vsPosition,1);
-    //gl_Position = uProjection * position;
+
+    if (uIsSprite > 0)
+    {
+        gl_Position = uProjection * position;
+
+        psColor = vec4(1);
+        psTexture = vsTexture;
+
+        return;
+    }
 
     position   = uModel * position;
     position   = uView * position;
     gl_Position = uProjection * position;
-
-    //psPosition = gl_Position.xyz;
 
     if (uLightCount > 0)
     {

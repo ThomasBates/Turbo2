@@ -75,6 +75,6 @@ private:
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBuilder, Level00MazeOptions* mazeOptions);
-	void BuildScene();
+	void BuildScene(NavigationInfo* navInfo);
 };
 

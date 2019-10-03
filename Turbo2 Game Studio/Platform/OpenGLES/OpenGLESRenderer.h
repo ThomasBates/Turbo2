@@ -37,8 +37,9 @@
 //#include <android/native_window_jni.h>
 
 #include <ITurboDebug.h>
-#include <ITurboGameRenderer.h>
+#include <ITurboGameControllerViewModel.h>
 #include <ITurboGameIOService.h>
+#include <ITurboGameRenderer.h>
 #include <OpenGLESContext.h>
 
 //#define CLASS_NAME "android/app/NativeActivity"
@@ -49,56 +50,70 @@
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 
-#define BUFFER_OFFSET(i) ((char*)NULL + (i))
-
-struct SHADER_VERTEX {
-    float Position[3];
-    float Normal[3];
-    float Color[3];
-    float Texture[2];
-};
-
-enum SHADER_ATTRIBUTES {
-    ATTRIB_VERTEX,
-    ATTRIB_NORMAL,
-    ATTRIB_COLOR,
-    ATTRIB_UV
-};
-
-struct SHADER_PARAMS {
-    GLuint program;
-
-    GLint TextureSampler;
-    GLint ModelMatrix;
-    GLint ViewMatrix;
-    GLint ProjectionMatrix;
-    GLint LightCount;
-
-//    GLint light0_;
-//    GLint material_diffuse_;
-//    GLint material_ambient_;
-//    GLint material_specular_;
-};
-
-struct SHADER_MATERIALS {
-    float specular_color[4];
-    float ambient_color[3];
-};
-
-
 namespace Turbo
 {
     namespace Platform
     {
         namespace OpenGLES
         {
+
+#define BUFFER_OFFSET(i) ((char*)NULL + (i))
+
+            struct SHADER_VERTEX
+            {
+                float Position[3];
+                float Normal[3];
+                float Color[3];
+                float Texture[2];
+            };
+
+            enum SHADER_ATTRIBUTES
+            {
+                ATTRIB_VERTEX,
+                ATTRIB_NORMAL,
+                ATTRIB_COLOR,
+                ATTRIB_UV
+            };
+
+            struct MeshInfo
+            {
+                GLuint VertexBufferName;
+                GLuint VertexCount;
+                GLuint IndexBufferName;
+                GLuint IndexCount;
+            };
+
+            struct SHADER_PARAMS
+            {
+                GLuint program;
+
+                GLint TextureSampler;
+                GLint ModelMatrix;
+                GLint ViewMatrix;
+                GLint ProjectionMatrix;
+                GLint LightCount;
+                GLint IsSprite;
+
+//                GLint light0_;
+//                GLint material_diffuse_;
+//                GLint material_ambient_;
+//                GLint material_specular_;
+            };
+
+            struct SHADER_MATERIALS
+            {
+                float specular_color[4];
+                float ambient_color[3];
+            };
+
             class OpenGLESRenderer : public ITurboGameRenderer
             {
             public:
                 OpenGLESRenderer(
                         android_app *app,
                         std::shared_ptr<ITurboDebug> debug,
-                        std::shared_ptr<ITurboGameIOService> ioService);
+                        std::shared_ptr<ITurboGameIOService> ioService,
+                        std::shared_ptr<ITurboGameControllerViewModel> controllerViewModel);
 
                 virtual ~OpenGLESRenderer();
 
@@ -115,23 +130,26 @@ namespace Turbo
 
                 std::shared_ptr<ITurboDebug> _debug;
                 std::shared_ptr<ITurboGameIOService> _ioService;
+                std::shared_ptr<ITurboGameControllerViewModel> _controllerViewModel;
 
                 //ANativeWindow *_nativeWindow;
                 OpenGLESContext *_gl_context;
                 bool _resources_initialized = false;
 
-                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexBufferNames;
-                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexCount;
-                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexBufferNames;
-                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexCount;
+                std::map<std::shared_ptr<ITurboSceneMesh>, MeshInfo> _sceneMeshInfo;
+                MeshInfo _spriteMeshInfo;
+//                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexBufferNames;
+//                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneVertexCount;
+//                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexBufferNames;
+//                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneIndexCount;
                 GLuint _sceneUniformBufferName;
 
-                std::map<std::shared_ptr<ITurboSceneObject>, GLuint> _sceneObjectOffsets;
-                GLuint _sceneObjectCount;
-                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneObjectMesh;
-                GLuint _sceneObjectMeshCount;
+//                std::map<std::shared_ptr<ITurboSceneObject>, GLuint> _sceneObjectOffsets;
+//                GLuint _sceneObjectCount;
+//                std::map<std::shared_ptr<ITurboSceneMesh>, GLuint> _sceneObjectMesh;
+//                GLuint _sceneObjectMeshCount;
                 std::map<std::string, GLuint> _sceneTextureBufferNames;
-                GLuint _sceneObjectTextureCount;
+//                GLuint _sceneObjectTextureCount;
                 bool _sceneResourcesLoaded;
 
                 SHADER_PARAMS _shaderParams;
@@ -165,6 +183,8 @@ namespace Turbo
 
                 void CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene);
                 void LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void LoadSceneSpriteTextures(std::shared_ptr<ITurboSceneSprite> sceneSprite);
+                void LoadSceneTexture(std::shared_ptr<ITurboSceneTexture> texture);
                 void LoadTextureData(std::string textureName,
                                      GLsizei *textureWidth,
                                      GLsizei *textureHeight,
@@ -187,6 +207,7 @@ namespace Turbo
                 void InitializeRendering();
                 void RenderSceneObjects(std::shared_ptr<ITurboScene> scene);
                 void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite);
                 void FinalizeRendering();
 
                 TurboMatrix4x4 MakePerspectiveProjection(float fovAngle,
@@ -195,6 +216,8 @@ namespace Turbo
                                                          float nearPlane,
                                                          float farPlane);
                 TurboMatrix4x4 MakeViewProjection(const TurboVector3D& vEye, const TurboVector3D& vAt, const TurboVector3D& vUp);
+
+                void LoadSceneSpriteVertices();
             };
         }
     }

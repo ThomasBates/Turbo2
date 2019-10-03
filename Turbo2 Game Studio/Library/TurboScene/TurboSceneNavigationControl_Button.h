@@ -21,16 +21,20 @@ namespace Turbo
                     float minX,
                     float maxX,
                     float minY,
-                    float maxY);
+                    float maxY,
+                    float xValue,
+                    float yValue,
+                    float zValue,
+                    std::string textureName = "");
             virtual ~TurboSceneNavigationControl_Button(){}
 
             //  ITurboSceneNavigationControl Properties  --------------------------------------------------------------------------
             virtual TurboGameControlType Type() { return _type; }
             virtual bool IsActive() { return _isActive; }
             virtual void IsActive(bool isActive) { _isActive = isActive; }
-            virtual float XValue() { return 0.0f; }
-            virtual float YValue() { return -1.0f; }
-            virtual float ZValue() { return 0.0f; }
+            virtual float XValue() { return _xValue; }
+            virtual float YValue() { return _yValue; }
+            virtual float ZValue() { return _zValue; }
 
             //  ITurboSceneNavigationControl Methods  -----------------------------------------------------------------------------
             virtual void CurrentPoint(float x, float y, float z = 0) {}
@@ -41,6 +45,9 @@ namespace Turbo
             virtual float MinY() { return _minY; }
             virtual float MaxY() { return _maxY; }
 
+            virtual std::shared_ptr<ITurboSceneTexture> Texture() { return _texture; }
+            virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) { _texture = texture; }
+
             //  ITurboSceneNavigationTouch Methods  -------------------------------------------------------------------------------
             virtual bool Contains(float x, float y);
 
@@ -50,6 +57,10 @@ namespace Turbo
             float _maxX;
             float _minY;
             float _maxY;
+            float _xValue;
+            float _yValue;
+            float _zValue;
+            std::shared_ptr<ITurboSceneTexture> _texture = nullptr;
 
             bool _isActive = false;
         };

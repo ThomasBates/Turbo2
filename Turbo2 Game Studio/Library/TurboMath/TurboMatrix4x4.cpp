@@ -42,10 +42,10 @@ TurboMatrix4x4 TurboMatrix4x4::Transpose()
 TurboMatrix4x4 TurboMatrix4x4::Translate(float x, float y, float z)
 {
 	TurboMatrix4x4 translate = TurboMatrix4x4(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		x, y, z, 1);
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			x, y, z, 1);
 
 	return *this * translate;
 }
@@ -53,6 +53,22 @@ TurboMatrix4x4 TurboMatrix4x4::Translate(float x, float y, float z)
 TurboMatrix4x4 TurboMatrix4x4::Translate(TurboVector3D translation)
 {
 	return Translate(translation.X, translation.Y, translation.Z);
+}
+
+TurboMatrix4x4 TurboMatrix4x4::Scale(float x, float y, float z)
+{
+	TurboMatrix4x4 scale = TurboMatrix4x4(
+			x, 0, 0, 0,
+			0, y, 0, 0,
+			0, 0, z, 0,
+			0, 0, 0, 1);
+
+	return *this * scale;
+}
+
+TurboMatrix4x4 TurboMatrix4x4::Scale(TurboVector3D scale)
+{
+	return Translate(scale.X, scale.Y, scale.Z);
 }
 
 TurboMatrix4x4 TurboMatrix4x4::Rotate(TurboVector3D axis, float degrees)

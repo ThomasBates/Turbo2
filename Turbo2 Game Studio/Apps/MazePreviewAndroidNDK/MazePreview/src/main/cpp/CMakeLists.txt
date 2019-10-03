@@ -77,6 +77,7 @@ add_library(Library_TurboCore
 
 add_library(Library_TurboGame
 		STATIC
+		${TurboFolder}/Library/TurboGame/TurboGameControllerViewModel.cpp
 		${TurboFolder}/Library/TurboGame/TurboGameMotionEffects.cpp
 		${TurboFolder}/Library/TurboGame/TurboGameState.cpp
 		)

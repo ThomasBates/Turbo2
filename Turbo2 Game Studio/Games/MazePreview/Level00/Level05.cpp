@@ -78,7 +78,7 @@ void Level05::Initialize()
 
 
 	//	Build the scene.
-	BuildScene();
+//	BuildScene();
 
 	_levelState = TurboGameLevelState::Running;
 }
@@ -87,6 +87,10 @@ void Level05::Update(NavigationInfo* navInfo)
 {
 	_sceneChanged = false;
 
+	if (_scene == nullptr)
+	{
+		BuildScene(navInfo);
+	}
 
 	//  Update player
 	_player->Update(navInfo);
@@ -106,13 +110,13 @@ void Level05::Update(NavigationInfo* navInfo)
 	case 1:
 		_userOptions->InvertedMouse = !_userOptions->InvertedMouse;
 		_player->Placement()->Move(-2, 0, -2 + 1);
-		BuildScene();
+		BuildScene(navInfo);
 		break;
 
 	case 2:
 		_userOptions->SoundEffectsOn = !_userOptions->SoundEffectsOn;
 		_player->Placement()->Move(2, 0, -2 + 1);
-		BuildScene();
+		BuildScene(navInfo);
 		break;
 
 	case 3:
@@ -124,7 +128,7 @@ void Level05::Update(NavigationInfo* navInfo)
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 //  Local Methods ------------------------------------------------------------------------------------------------------
 
-void Level05::BuildScene()
+void Level05::BuildScene(NavigationInfo* navInfo)
 {
 	_maze->Cell(_invertedMouseLocation)->BackWall.Type = CubicMazeCellWallType::Exit;
 	_maze->Cell(_invertedMouseLocation)->BackWall.PortalIndex = 1;
@@ -136,7 +140,7 @@ void Level05::BuildScene()
 	_maze->Cell(_exitLocation)->FrontWall.PortalIndex = 3;
 
 
-	_scene = _helper->BuildScene();
+	_scene = _helper->BuildScene(navInfo);
 
 	if (!_userOptions->InvertedMouse && !_userOptions->SoundEffectsOn)
 	{

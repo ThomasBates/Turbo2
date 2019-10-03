@@ -71,6 +71,6 @@ private:
 	CubicMazeLocation								_exitLocation;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
-	void BuildScene();
+	void BuildScene(NavigationInfo* navInfo);
 };
 

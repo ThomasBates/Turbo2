@@ -12,6 +12,7 @@ namespace Turbo
 			//  Constructors and Destructors -----------------------------------------------------------------------------------
 			TurboSceneSprite();
 			TurboSceneSprite(std::shared_ptr<ITurboSceneTexture> texture);
+			virtual ~TurboSceneSprite() {}
 
 			//  ITurboSceneSprite Properties -----------------------------------------------------------------------------------
 			virtual std::shared_ptr<ITurboSceneTexture> Texture() { return _texture; }

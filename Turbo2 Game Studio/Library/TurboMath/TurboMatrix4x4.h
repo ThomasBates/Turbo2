@@ -34,6 +34,8 @@ namespace Turbo
             TurboMatrix4x4 Transpose();
             TurboMatrix4x4 Translate(float x, float y, float z);
 			TurboMatrix4x4 Translate(TurboVector3D translation);
+			TurboMatrix4x4 Scale(float x, float y, float z);
+			TurboMatrix4x4 Scale(TurboVector3D scale);
 			TurboMatrix4x4 Rotate(TurboVector3D axis, float degrees);
 			TurboMatrix4x4 RotateX(float degrees);
 			TurboMatrix4x4 RotateY(float degrees);

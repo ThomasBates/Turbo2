@@ -75,6 +75,6 @@ private:
 	CubicMazeLocation								_soundEffectsOnLocation;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
-	void BuildScene();
+	void BuildScene(NavigationInfo* navInfo);
 };
 

@@ -47,7 +47,7 @@ public:
 	void CreateKeys(CubicMazeLocation* firstKeyLocation, std::string keyTextureName);
 	void CreateHazards(CubicMazeLocation* firstHazardLocation, std::string hazardTextureName);
 
-	std::shared_ptr<ITurboScene> BuildScene();
+	std::shared_ptr<ITurboScene> BuildScene(NavigationInfo* navInfo);
 
 	void CreateSign(std::shared_ptr<ITurboScene> scene, CubicMazeLocation signLocation, CubicMazeCellWallSide wallSide, std::string signTextureName);
 

@@ -40,6 +40,9 @@ namespace Turbo
             virtual float MinY() { return _minY; }
             virtual float MaxY() { return _maxY; }
 
+            virtual std::shared_ptr<ITurboSceneTexture> Texture() { return _texture; }
+            virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) { _texture = texture; }
+
             //  ITurboSceneNavigationTouch Methods  -------------------------------------------------------------------------------
             virtual bool Contains(float x, float y);
 
@@ -50,6 +53,7 @@ namespace Turbo
             float _minY;
             float _maxY;
             float _scale;
+            std::shared_ptr<ITurboSceneTexture> _texture = nullptr;
 
             bool _isActive = false;
             bool _firstPoint = false;
