@@ -7,9 +7,6 @@
 #include <ITurboGameAudio.h>
 #include <ITurboScene.h>
 
-//using namespace Microsoft::WRL;
-//using namespace Windows::System;
-
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 using namespace Turbo::Scene;

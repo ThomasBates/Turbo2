@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <pch.h>
+
 #include <ITurboScene.h>
 
 using namespace Turbo::Scene;

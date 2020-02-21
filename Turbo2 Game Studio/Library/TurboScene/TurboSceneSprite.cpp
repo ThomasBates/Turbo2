@@ -2,17 +2,18 @@
 #include <pch.h>
 
 #include <TurboSceneSprite.h>
-#include <TurboScenePlacement.h>
+
+using namespace Turbo::Scene;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-Turbo::Scene::TurboSceneSprite::TurboSceneSprite()
+TurboSceneSprite::TurboSceneSprite()
 {
 }
 
-Turbo::Scene::TurboSceneSprite::TurboSceneSprite(std::shared_ptr<ITurboSceneTexture> texture)
+TurboSceneSprite::TurboSceneSprite(std::shared_ptr<ITurboSceneTexture> texture) :
+	_texture(texture)
 {
-	_texture = texture;
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------

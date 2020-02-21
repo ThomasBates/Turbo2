@@ -1,9 +1,9 @@
 #pragma once
 
-#include<pch.h>
+#include <pch.h>
 
-#include <TurboColor.h>
 #include <TurboVector3D.h>
+#include <TurboColor.h>
 
 using namespace Turbo::Graphics;
 using namespace Turbo::Math;
@@ -26,6 +26,7 @@ namespace Turbo
 		class ITurboSceneLight
 		{
 		public:
+			//  ITurboSceneLight Properties ----------------------------------------------------------------------------
 			virtual TurboSceneLightType LightType() = 0;
 
 			virtual TurboVector3D Position() = 0;

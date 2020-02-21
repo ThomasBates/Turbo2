@@ -20,7 +20,7 @@ public:
 	virtual ~MazePreview(){}
 
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
-	virtual std::string Title() { return "Space Labyrinth"; }
+	virtual std::string Title() { return "Maze Preview"; }
 
 	virtual std::shared_ptr<ITurboGameState> GameState();
 	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);

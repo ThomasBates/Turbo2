@@ -1,36 +1,33 @@
 
 #include <pch.h>
 
-#include <AndroidNDKGameController.h>
-#include <TurboSceneNavigationControl_Base.h>
-#include <TurboSceneNavigationControl_Button.h>
-#include <TurboSceneNavigationControl_Last.h>
-#include <TurboSceneNavigationControl_Set.h>
-#include "AndroidNDKGameController.h"
-
+#include <AndroidNDKViewController.h>
+#include <ITurboGroupView.h>
 
 using namespace Turbo::Platform::AndroidNDK;
-using namespace Turbo::Scene;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-AndroidNDKGameController::AndroidNDKGameController(
+AndroidNDKViewController::AndroidNDKViewController(
 		android_app* app,
-		std::shared_ptr<ITurboDebug> debug) :
+		std::shared_ptr<ITurboDebug> debug,
+		std::shared_ptr<ITurboView> view) :
 		_android_app(app),
 		_debug(debug)
 {
+	AddControls(view);
+
 	_android_app->controller = this;
-	_android_app->onInputEvent = AndroidNDKGameController::HandleInputEvents;
+	_android_app->onInputEvent = AndroidNDKViewController::HandleInputEvents;
 
 	InitializeSensors();
 	InitializeControls();
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
-//  ITurboGameController Methods ---------------------------------------------------------------------------------------
+//  ITurboViewController Methods ---------------------------------------------------------------------------------------
 
-NavigationInfo* AndroidNDKGameController::GetNavigationInfo()
+NavigationInfo* AndroidNDKViewController::GetNavigationInfo()
 {
     ProcessEvents();
 
@@ -41,42 +38,30 @@ NavigationInfo* AndroidNDKGameController::GetNavigationInfo()
     return &_navInfo;
 }
 
-void AndroidNDKGameController::Suspend()
+void AndroidNDKViewController::Suspend()
 {
     SuspendSensors();
 }
 
-void AndroidNDKGameController::Resume()
+void AndroidNDKViewController::Resume()
 {
     ResumeSensors();
 }
 
-void AndroidNDKGameController::ClearControls()
-{
-    _activeControls.clear();
-    _activeIndexes.clear();
-	_navInfo.Controls.clear();
-}
-
-void AndroidNDKGameController::AddControl(std::shared_ptr<ITurboSceneNavigationControl> control)
-{
-	_navInfo.Controls.push_back(control);
-}
-
-//  ITurboGameController Methods ---------------------------------------------------------------------------------------
+//  ITurboViewController Methods ---------------------------------------------------------------------------------------
 //	Event Handler Methods ----------------------------------------------------------------------------------------------
 
 /**
  * Process the next input event.
  */
-int32_t AndroidNDKGameController::HandleInputEvents(android_app* app, AInputEvent* event)
+int32_t AndroidNDKViewController::HandleInputEvents(android_app* app, AInputEvent* event)
 {
-	auto controller = (AndroidNDKGameController*)app->controller;
+	auto controller = (AndroidNDKViewController*)app->controller;
 
 	return controller->HandleInputEvent(event);
 }
 
-int32_t AndroidNDKGameController::HandleInputEvent(AInputEvent *event)
+int32_t AndroidNDKViewController::HandleInputEvent(AInputEvent *event)
 {
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
 	{
@@ -87,7 +72,7 @@ int32_t AndroidNDKGameController::HandleInputEvent(AInputEvent *event)
 	return 0;
 }
 
-int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
+int32_t AndroidNDKViewController::HandleMotionEvent(AInputEvent *event)
 {
 	int32_t action = AMotionEvent_getAction(event);
 	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
@@ -96,7 +81,7 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 	int32_t pointerID;
 	float x;
 	float y;
-	std::shared_ptr<ITurboSceneNavigationControl> activeControl;
+	std::shared_ptr<ITurboControlView> activeControl;
 
 	switch (actionCode)
 	{
@@ -106,23 +91,25 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 			x = AMotionEvent_getX(event, pointerIndex);
 			y = AMotionEvent_getY(event, pointerIndex);
 
-			for (auto& control : _navInfo.Controls)
+			for (auto& control : _controlViews)
             {
 				if (control->IsActive())
+				{
+					_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" is already active.\n";
 					continue;
+				}
 
-                auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
-
-                if (touch == nullptr)
-                    continue;
-
-				if (!touch->Contains(x, y))
+				if (!control->Contains(x, y))
+				{
+					_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" was not hit.\n";
 					continue;
+				}
 
+				_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" was hit.\n";
 				control->IsActive(true);
                 control->CurrentPoint(x, y);
 
-                _activeControls[pointerID] = control;
+                _activeControlViews[pointerID] = control;
                 _activeIndexes[pointerID] = pointerIndex;
             }
 			break;
@@ -131,12 +118,12 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 		case AMOTION_EVENT_ACTION_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-			if (_activeControls.find(pointerID) != _activeControls.end())
+			if (_activeControlViews.find(pointerID) != _activeControlViews.end())
 			{
-                activeControl = _activeControls[pointerID];
+                activeControl = _activeControlViews[pointerID];
                 activeControl->IsActive(false);
 
-	    		_activeControls.erase(pointerID);
+	    		_activeControlViews.erase(pointerID);
     			_activeIndexes.erase(pointerID);
             }
 			break;
@@ -146,23 +133,18 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 			x = AMotionEvent_getX(event, pointerIndex);
 			y = AMotionEvent_getY(event, pointerIndex);
 
-			for (auto& control : _navInfo.Controls)
+			for (auto& control : _controlViews)
 			{
 				if (control->IsActive())
 					continue;
 
-                auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
-
-                if (touch == nullptr)
-                    continue;
-
-                if (!touch->Contains(x, y))
+                if (!control->Contains(x, y))
                     continue;
 
 				control->IsActive(true);
 				control->CurrentPoint(x, y);
 
-				_activeControls[pointerID] = control;
+				_activeControlViews[pointerID] = control;
 				_activeIndexes[pointerID] = pointerIndex;
 			}
 
@@ -172,12 +154,12 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 		case AMOTION_EVENT_ACTION_POINTER_UP:
 			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
 
-            if (_activeControls.find(pointerID) != _activeControls.end())
+            if (_activeControlViews.find(pointerID) != _activeControlViews.end())
             {
-                activeControl = _activeControls[pointerID];
+                activeControl = _activeControlViews[pointerID];
                 activeControl->IsActive(false);
 
-                _activeControls.erase(pointerID);
+                _activeControlViews.erase(pointerID);
                 _activeIndexes.erase(pointerID);
             }
 
@@ -185,16 +167,16 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 			break;
 
 	    case AMOTION_EVENT_ACTION_CANCEL:
-			for (auto& control : _navInfo.Controls)
+			for (auto& control : _controlViews)
 			{
 				control->IsActive(false);
 			}
-			_activeControls.clear();
+			_activeControlViews.clear();
 			_activeIndexes.clear();
 	        break;
 
 		case AMOTION_EVENT_ACTION_MOVE:
-			for (auto& element : _activeControls)
+			for (auto& element : _activeControlViews)
 			{
 				pointerID = element.first;
 				activeControl = element.second;
@@ -213,10 +195,10 @@ int32_t AndroidNDKGameController::HandleMotionEvent(AInputEvent *event)
 	return 1;
 }
 
-void AndroidNDKGameController::UpdatePointerIndexes(const AInputEvent *event)
+void AndroidNDKViewController::UpdatePointerIndexes(const AInputEvent *event)
 {
 	_activeIndexes.clear();
-	for (auto& element : _activeControls)
+	for (auto& element : _activeControlViews)
 	{
 		int32_t pointerID = element.first;
 		int32_t pointerIndex = GetPointerIndex(event, pointerID);
@@ -227,7 +209,7 @@ void AndroidNDKGameController::UpdatePointerIndexes(const AInputEvent *event)
 	}
 }
 
-int32_t AndroidNDKGameController::GetPointerIndex(const AInputEvent *event, int32_t id)
+int32_t AndroidNDKViewController::GetPointerIndex(const AInputEvent *event, int32_t id)
 {
 	size_t count = AMotionEvent_getPointerCount(event);
 	for (size_t index = 0; index < count; ++index)
@@ -238,7 +220,7 @@ int32_t AndroidNDKGameController::GetPointerIndex(const AInputEvent *event, int3
 	return -1;
 }
 
-void AndroidNDKGameController::DebugLogMotionEvent(AInputEvent *event)
+void AndroidNDKViewController::DebugLogMotionEvent(AInputEvent *event)
 {
 	int32_t action = AMotionEvent_getAction(event);
 	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
@@ -316,19 +298,19 @@ void AndroidNDKGameController::DebugLogMotionEvent(AInputEvent *event)
 //-------------------------------------------------------------------------
 // Sensor handlers
 //-------------------------------------------------------------------------
-void AndroidNDKGameController::InitializeSensors()
+void AndroidNDKViewController::InitializeSensors()
 {
 }
 
-void AndroidNDKGameController::InitializeControls()
+void AndroidNDKViewController::InitializeControls()
 {
-//	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
-//	_navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
-//    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Button(      TurboGameControlType::Move,   0.0f,  540.0f, 1440.0f, 1920.0f)));
-//    _navInfo.Controls.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationControl_Set(         TurboGameControlType::Move)));
+//	_controlViews.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationPadControl(_debug, TurboViewControlType::Look,   0.0f, 1080.0f,    0.0f, 1440.0f,  0.1f)));
+//	_controlViews.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationPadControl(_debug, TurboViewControlType::Look, 540.0f, 1080.0f, 1440.0f, 1920.0f, -1.0f)));
+//    _controlViews.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(      TurboViewControlType::Move,   0.0f,  540.0f, 1440.0f, 1920.0f)));
+//    _controlViews.push_back(std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationSetControl(         TurboViewControlType::Move)));
 }
 
-bool AndroidNDKGameController::ProcessEvents()
+bool AndroidNDKViewController::ProcessEvents()
 {
 	// Read all pending events.
 	int id;
@@ -355,7 +337,7 @@ bool AndroidNDKGameController::ProcessEvents()
 		// Check if we are exiting.
 		if (_android_app->destroyRequested != 0)
 		{
-			_navInfo.Terminate = true;
+			//_navInfo.Terminate = true;
 			return false;
 		}
 	}
@@ -363,16 +345,50 @@ bool AndroidNDKGameController::ProcessEvents()
 	return true;
 }
 
-void AndroidNDKGameController::ProcessSensors(int32_t id)
+void AndroidNDKViewController::ProcessSensors(int32_t id)
 {
 }
 
-void AndroidNDKGameController::ResumeSensors()
+void AndroidNDKViewController::ResumeSensors()
 {
     _isRunning = true;
 }
 
-void AndroidNDKGameController::SuspendSensors()
+void AndroidNDKViewController::SuspendSensors()
 {
 	_isRunning = false;
+}
+
+void AndroidNDKViewController::AddControls(std::shared_ptr<ITurboView> control)
+{
+	auto touch = std::dynamic_pointer_cast<ITurboControlView>(control);
+	if (touch != nullptr)
+	{
+		AddControl(touch);
+		return;
+	}
+
+	auto group = std::dynamic_pointer_cast<ITurboGroupView>(control);
+	if (group != nullptr)
+	{
+		for (auto& child : group->Views())
+			AddControls(child);
+	}
+}
+
+void AndroidNDKViewController::AddControl(std::shared_ptr<ITurboControlView> controlView)
+{
+    _controlViews.push_back(controlView);
+    auto viewModel = controlView->ControlViewModel();
+    auto control = viewModel->Control();
+    _navInfo.Controls.push_back(control);
+}
+
+void AndroidNDKViewController::ClearControls()
+{
+    _activeControlViews.clear();
+    _activeIndexes.clear();
+
+    _controlViews.clear();
+    _navInfo.Controls.clear();
 }

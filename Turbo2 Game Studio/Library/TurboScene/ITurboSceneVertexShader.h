@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pch.h>
+
 namespace Turbo
 {
 	namespace Scene
@@ -7,7 +9,7 @@ namespace Turbo
 		class ITurboSceneVertexShader
 		{
 		public:
-			//  ITurboSceneVertexShader Properties -----------------------------------------------------------------------------
+			//  ITurboSceneVertexShader Properties ---------------------------------------------------------------------
 			virtual std::string Name() = 0;
 		};
 	}

@@ -3,8 +3,6 @@
 
 //#include <TurboVector3D.h>
 
-//#include "TurboVector3D.h"
-
 #define PI 3.1415926535897932384626433832795
 #define PIby180 ((float)(PI/180.0))
 
@@ -22,7 +20,7 @@ namespace Turbo
 			float M31, M32, M33, M34;
 			float M41, M42, M43, M44;
 
-			//  Constructors
+			//  Constructors -------------------------------------------------------------------------------------------
 			TurboMatrix4x4();
 			TurboMatrix4x4(
 				float m11, float m12, float m13, float m14,
@@ -30,6 +28,7 @@ namespace Turbo
 				float m31, float m32, float m33, float m34,
 				float m41, float m42, float m43, float m44);
 
+			//	TurboMatrix4x4 Methods ---------------------------------------------------------------------------------
 			float *Ptr() {return &M11;}
             TurboMatrix4x4 Transpose();
             TurboMatrix4x4 Translate(float x, float y, float z);
@@ -41,20 +40,8 @@ namespace Turbo
 			TurboMatrix4x4 RotateY(float degrees);
 			TurboMatrix4x4 RotateZ(float degrees);
 
-
-			//TurboMatrix4x4 operator+(const TurboMatrix4x4 &v) const;
-		 //   TurboMatrix4x4 operator-(const TurboMatrix4x4 &v) const;
-		 //   TurboMatrix4x4 operator*(float r) const;
-		 //   TurboMatrix4x4 operator/(float r) const;
-
-			//TurboMatrix4x4 &operator=(float r);
-			//TurboMatrix4x4 &operator+=(const TurboMatrix4x4 &v);
-			//TurboMatrix4x4 &operator-=(const TurboMatrix4x4 &v);
-		 //   TurboMatrix4x4 &operator*=(float r);
-		 //   TurboMatrix4x4 &operator/=(float r);
-
+			//	TurboMatrix4x4 Operators -------------------------------------------------------------------------------
 			TurboMatrix4x4 operator*(const TurboMatrix4x4 &m) const;
-
 			TurboVector3D operator*(const TurboVector3D &v) const;
 		};
 	}

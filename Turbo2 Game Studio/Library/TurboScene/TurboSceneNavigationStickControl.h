@@ -9,32 +9,36 @@ namespace Turbo
 {
     namespace Scene
     {
-        class TurboSceneNavigationControl_Set :
-                public ITurboSceneNavigationControl
+        class TurboSceneNavigationStickControl : public ITurboSceneNavigationControl
         {
         public:
             //  Constructors & Destructors -----------------------------------------------------------------------------
-            TurboSceneNavigationControl_Set(TurboGameControlType type);
-            virtual ~TurboSceneNavigationControl_Set() {}
+            TurboSceneNavigationStickControl(
+                    TurboGameControlType type,
+                    float scale = 1.0);
+            virtual ~TurboSceneNavigationStickControl(){}
 
-            //  ITurboSceneNavigationControl Properties  --------------------------------------------------------------------------
+            //  ITurboSceneNavigationControl Properties ----------------------------------------------------------------
             virtual TurboGameControlType Type() { return _type; }
             virtual bool IsActive() { return _isActive; }
             virtual void IsActive(bool isActive);
             virtual float XValue();
             virtual float YValue();
-			virtual float ZValue();
+            virtual float ZValue() { return 0.0f; }
 
-            //  ITurboSceneNavigationControl Methods  -----------------------------------------------------------------------------
+            //  ITurboSceneNavigationControl Methods -------------------------------------------------------------------
             virtual void CurrentPoint(float x, float y, float z);
 
         private:
             TurboGameControlType _type;
+            float _scale = 1.0f;
 
             bool _isActive = false;
+            bool _firstPoint = false;
+            float _baseX = 0.0f;
+            float _baseY = 0.0f;
             float _X = 0.0f;
             float _Y = 0.0f;
-			float _Z = 0.0f;
         };
     }
 }

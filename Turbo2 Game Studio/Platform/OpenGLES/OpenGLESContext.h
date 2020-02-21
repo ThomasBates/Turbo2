@@ -17,8 +17,7 @@
 //--------------------------------------------------------------------------------
 // OpenGLESContext.h
 //--------------------------------------------------------------------------------
-#ifndef GLCONTEXT_H_
-#define GLCONTEXT_H_
+#pragma once
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
@@ -54,7 +53,44 @@ namespace Turbo
              *thread,
              * thus GLContext class is not designed as a thread-safe
              */
-            class OpenGLESContext {
+            class OpenGLESContext
+            {
+            public:
+                static OpenGLESContext *GetInstance() {
+                  // Singleton
+                  static OpenGLESContext instance;
+
+                  return &instance;
+                }
+
+                bool Init(ANativeWindow *window);
+
+                EGLint Swap();
+
+                bool Invalidate();
+
+                void Suspend();
+
+                EGLint Resume(ANativeWindow *window);
+
+                ANativeWindow *GetANativeWindow(void) const { return window_; };
+
+                int32_t GetScreenWidth() const { return screen_width_; }
+
+                int32_t GetScreenHeight() const { return screen_height_; }
+
+                int32_t GetBufferColorSize() const { return color_size_; }
+
+                int32_t GetBufferDepthSize() const { return depth_size_; }
+
+                float GetGLVersion() const { return gl_version_; }
+
+                bool CheckExtension(const char *extension);
+
+                EGLDisplay GetDisplay() const { return display_; }
+
+                EGLSurface GetSurface() const { return surface_; }
+
             private:
                 // EGL configurations
                 ANativeWindow *window_;
@@ -91,45 +127,7 @@ namespace Turbo
                 OpenGLESContext();
 
                 virtual ~OpenGLESContext();
-
-            public:
-                static OpenGLESContext *GetInstance() {
-                  // Singleton
-                  static OpenGLESContext instance;
-
-                  return &instance;
-                }
-
-                bool Init(ANativeWindow *window);
-
-                EGLint Swap();
-
-                bool Invalidate();
-
-                void Suspend();
-
-                EGLint Resume(ANativeWindow *window);
-
-                ANativeWindow *GetANativeWindow(void) const { return window_; };
-
-                int32_t GetScreenWidth() const { return screen_width_; }
-
-                int32_t GetScreenHeight() const { return screen_height_; }
-
-                int32_t GetBufferColorSize() const { return color_size_; }
-
-                int32_t GetBufferDepthSize() const { return depth_size_; }
-
-                float GetGLVersion() const { return gl_version_; }
-
-                bool CheckExtension(const char *extension);
-
-                EGLDisplay GetDisplay() const { return display_; }
-
-                EGLSurface GetSurface() const { return surface_; }
             };
         }   //  namespace Turbo::Platform::OpenGLES
     }   //  namespace Turbo::Platform
 }  // namespace Turbo
-
-#endif /* GLCONTEXT_H_ */

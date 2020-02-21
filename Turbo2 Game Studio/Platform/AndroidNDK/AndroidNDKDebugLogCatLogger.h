@@ -16,11 +16,15 @@ namespace Turbo
 			class AndroidNDKDebugLogCatLogger : public ITurboDebugLogger
 			{
 			public:
-				AndroidNDKDebugLogCatLogger(){}
+				//  Constructors & Destructors -------------------------------------------------------------------------
+				AndroidNDKDebugLogCatLogger(std::string appName);
 				virtual ~AndroidNDKDebugLogCatLogger(){}
+
+				//  ITurboDebugLogger Methods --------------------------------------------------------------------------
 				virtual void Log(std::string severity, std::string category, std::string message);
 
 			private:
+				std::string _appName;
 				//char _fileName[512] = { 0 };
 			};
 		}

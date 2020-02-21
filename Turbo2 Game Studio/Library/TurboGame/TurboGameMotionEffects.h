@@ -23,8 +23,8 @@ namespace Turbo
 				double hoverMagnitude,
 				double gravityFactor,
 				double selfRightingSpeed) :
-				//_moveAccelleration(moveAccelleration),
-				//_rotateAccelleration(rotateAccelleration),
+//				_moveAccelleration(moveAccelleration),
+//				_rotateAccelleration(rotateAccelleration),
 				_frictionFactor(frictionFactor),
 				_hoverFrequency(hoverFrequency),
 				_hoverMagnitude(hoverMagnitude),
@@ -43,8 +43,8 @@ namespace Turbo
 				bool isPlayer);
 
 		private:
-			//double _moveAccelleration;
-			//double _rotateAccelleration;
+//			double _moveAccelleration;
+//			double _rotateAccelleration;
 			double _frictionFactor;
 			double _hoverFrequency;
 			double _hoverMagnitude;

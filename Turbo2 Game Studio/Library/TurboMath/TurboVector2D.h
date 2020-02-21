@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <pch.h>
+
 namespace Turbo
 {
 	namespace Math
@@ -9,13 +11,15 @@ namespace Turbo
 		{
 			float X, Y;
 
-			//  Constructors
+			//  Constructors -------------------------------------------------------------------------------------------
 			TurboVector2D();
 			TurboVector2D(float x, float y);
 
+			//	TurboVector2D Methods ----------------------------------------------------------------------------------
 			float Length();
 			TurboVector2D Normalize();
 
+			//	TurboVector2D Operators --------------------------------------------------------------------------------
 			TurboVector2D operator-() const;
 
 			TurboVector2D operator+(const TurboVector2D &v) const;

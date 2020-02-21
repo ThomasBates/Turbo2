@@ -3,7 +3,6 @@
 #include <pch.h>
 
 #include <ITurboDebugLogger.h>
-#include <TurboDebugTypes.h>
 
 namespace Turbo
 {
@@ -14,6 +13,7 @@ namespace Turbo
 			class TurboDebugMemoryLogger : public ITurboDebugLogger
 			{
 			public:
+				//  ITurboDebugLogger Methods --------------------------------------------------------------------------
 				virtual void Log(std::string severity, std::string category, std::string message);
 
 			private:

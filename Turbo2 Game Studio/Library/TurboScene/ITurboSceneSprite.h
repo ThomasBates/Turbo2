@@ -1,12 +1,14 @@
 #pragma once
 
-#include <ITurboSceneTexture.h>
-#include <ITurboScenePlacement.h>
+#include <pch.h>
 
+#include <ITurboSceneTexture.h>
 #include <TurboColor.h>
+#include <TurboVector2D.h>
 #include <TurboSceneNavigationInfo.h>
 
 using namespace Turbo::Graphics;
+using namespace Turbo::Math;
 
 namespace Turbo
 {
@@ -15,7 +17,7 @@ namespace Turbo
 		class ITurboSceneSprite
 		{
 		public:
-			//  ITurboSceneSprite Properties -----------------------------------------------------------------------------------
+			//  ITurboSceneSprite Properties ---------------------------------------------------------------------------
 			virtual std::shared_ptr<ITurboSceneTexture> Texture() = 0;
 			virtual void Texture(std::shared_ptr<ITurboSceneTexture> texture) = 0;
 
@@ -49,7 +51,7 @@ namespace Turbo
 			virtual float Scale() = 0;
 			virtual void Scale(float scale) = 0;
 
-			//  ITurboSceneSprite Methods --------------------------------------------------------------------------------------
+			//  ITurboSceneSprite Methods ------------------------------------------------------------------------------
 			virtual void Update(NavigationInfo navInfo) = 0;
 		};
 	}

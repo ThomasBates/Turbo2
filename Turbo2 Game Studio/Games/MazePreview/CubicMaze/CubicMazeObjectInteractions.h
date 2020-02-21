@@ -10,7 +10,6 @@
 #include <ITurboSceneBuilder.h>
 
 using namespace Turbo::Core::Debug;
-using namespace Turbo::Game;
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 

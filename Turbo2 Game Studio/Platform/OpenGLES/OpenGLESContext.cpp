@@ -14,53 +14,45 @@
  * limitations under the License.
  */
 
-//--------------------------------------------------------------------------------
-// OpenGLESContext.cpp
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-// includes
-//--------------------------------------------------------------------------------
 #include "OpenGLESContext.h"
 
-#include <string.h>
+#include <string>
 #include <unistd.h>
 
 #include "gl3stub.h"
 
 using namespace Turbo::Platform::OpenGLES;
 
-//--------------------------------------------------------------------------------
-// eGLContext
-//--------------------------------------------------------------------------------
+//  Constructors -------------------------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
-// Ctor
-//--------------------------------------------------------------------------------
-OpenGLESContext::OpenGLESContext()
-    : window_(nullptr),
-      display_(EGL_NO_DISPLAY),
-      surface_(EGL_NO_SURFACE),
-      context_(EGL_NO_CONTEXT),
-      screen_width_(0),
-      screen_height_(0),
-      gles_initialized_(false),
-      egl_context_initialized_(false),
-      es3_supported_(false) {}
+OpenGLESContext::OpenGLESContext() :
+    window_(nullptr),
+    display_(EGL_NO_DISPLAY),
+    surface_(EGL_NO_SURFACE),
+    context_(EGL_NO_CONTEXT),
+    screen_width_(0),
+    screen_height_(0),
+    gles_initialized_(false),
+    egl_context_initialized_(false),
+    es3_supported_(false)
+{
+}
 
-void OpenGLESContext::InitGLES() {
-  if (gles_initialized_) return;
-  //
-  // Initialize OpenGL ES 3 if available
-  //
-  const char* versionStr = (const char*)glGetString(GL_VERSION);
-  if (strstr(versionStr, "OpenGL ES 3.") && gl3stubInit()) {
-    es3_supported_ = true;
-    gl_version_ = 3.0f;
-  } else {
-    gl_version_ = 2.0f;
-  }
+void OpenGLESContext::InitGLES()
+{
+    if (gles_initialized_) return;
+    //
+    // Initialize OpenGL ES 3 if available
+    //
+    const char* versionStr = (const char*)glGetString(GL_VERSION);
+    if (strstr(versionStr, "OpenGL ES 3.") && gl3stubInit()) {
+      es3_supported_ = true;
+      gl_version_ = 3.0f;
+    } else {
+      gl_version_ = 2.0f;
+    }
 
-  gles_initialized_ = true;
+    gles_initialized_ = true;
 }
 
 //--------------------------------------------------------------------------------

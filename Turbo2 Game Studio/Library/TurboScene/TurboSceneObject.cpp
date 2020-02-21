@@ -4,38 +4,30 @@
 #include <TurboSceneObject.h>
 #include <TurboScenePlacement.h>
 
+using namespace Turbo::Scene;
+
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-Turbo::Scene::TurboSceneObject::TurboSceneObject()
+TurboSceneObject::TurboSceneObject()
 {
     _placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
-Turbo::Scene::TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh)
+TurboSceneObject::TurboSceneObject(std::shared_ptr<ITurboSceneMesh> mesh) :
+	_mesh(mesh)
 {
-	_mesh = mesh;
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboSceneObject Methods ------------------------------------------------------------------------------------------
 
-//void Turbo::Scene::TurboSceneObject::Update()
-//{
-//
-//}
-
-//void Turbo::Scene::TurboSceneObject::Render()
-//{
-//
-//}
-
-bool Turbo::Scene::TurboSceneObject::IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal)
+bool TurboSceneObject::IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal)
 {
 	return false;
 }
 
-void Turbo::Scene::TurboSceneObject::PlaySound(float volume)
+void TurboSceneObject::PlaySound(float volume)
 {
 	if (_hitSound != nullptr)
 	{

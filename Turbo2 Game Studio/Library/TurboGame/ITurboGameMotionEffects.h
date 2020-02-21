@@ -3,11 +3,8 @@
 
 #include <pch.h>
 
-#include <ITurboGameController.h>
 #include <TurboSceneNavigationInfo.h>
 #include <ITurboSceneObject.h>
-
-#include <TurboGameTypes.h>
 
 using namespace Turbo::Scene;
 

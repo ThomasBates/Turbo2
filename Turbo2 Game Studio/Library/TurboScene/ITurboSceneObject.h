@@ -17,9 +17,9 @@ namespace Turbo
 		class ITurboSceneObject
 		{
 		public:
-			//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
+			//  ITurboSceneObject Properties ---------------------------------------------------------------------------
 			virtual SceneObjectPrimitiveType PrimitiveType() = 0;
-			virtual void PrimitiveType(SceneObjectPrimitiveType primitivetype) = 0;
+			virtual void PrimitiveType(SceneObjectPrimitiveType primitiveType) = 0;
 			
 			virtual	std::shared_ptr<ITurboSceneMesh> Mesh() = 0;
 			virtual void Mesh(std::shared_ptr<ITurboSceneMesh> mesh) = 0;
@@ -38,7 +38,7 @@ namespace Turbo
 
 			virtual std::vector<std::shared_ptr<ITurboSceneObject>> ChildSceneObjects() = 0;
 
-			//  ITurboSceneObject Methods --------------------------------------------------------------------------------------
+			//  ITurboSceneObject Methods ------------------------------------------------------------------------------
 			virtual void Update(NavigationInfo* navInfo) = 0;
 			virtual bool IsTouching(TurboVector3D oldPosition, TurboVector3D newPosition, double radius, TurboVector3D *contact, TurboVector3D *normal) = 0;
 			virtual void PlaySound(float volume) = 0;

@@ -1,9 +1,11 @@
 
 #include <pch.h>
-//#include <math.h>
+
 #include <TurboVector3D.h>
 
 using namespace Turbo::Math;
+
+//  Constructors -------------------------------------------------------------------------------------------------------
 
 TurboVector3D::TurboVector3D()
 {
@@ -19,6 +21,8 @@ TurboVector3D::TurboVector3D( float x, float y, float z )
 	Z = z;
 }
 
+//	TurboVector3D Methods ----------------------------------------------------------------------------------------------
+
 float TurboVector3D::Length()
 {
 	return (float)sqrt(X*X + Y*Y + Z*Z);
@@ -28,6 +32,8 @@ TurboVector3D TurboVector3D::Normalize()
 {
 	return *this / Length();
 }
+
+//	TurboVector3D Operators --------------------------------------------------------------------------------------------
 
 TurboVector3D TurboVector3D::operator-() const
 {
@@ -108,9 +114,3 @@ TurboVector3D TurboVector3D::operator*(const TurboMatrix4x4 & m) const
 		X * m.M12 + Y * m.M22 + Z * m.M32 + 1 * m.M42,
 		X * m.M13 + Y * m.M23 + Z * m.M33 + 1 * m.M43);
 }
-
-//std::ostream& operator<<(std::ostream& os, const TurboVector3D& v)
-//{
-//	os << "(" << v.X << "," << v.Y << "," << v.Z << ")";
-//	return os;
-//}

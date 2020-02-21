@@ -2,6 +2,7 @@
 #pragma once
 
 #include <pch.h>
+
 #include <TurboMatrix4x4.h>
 
 namespace Turbo
@@ -12,13 +13,15 @@ namespace Turbo
 		{
 			float X, Y, Z;
 
-			//  Constructors
+			//  Constructors -------------------------------------------------------------------------------------------
 			TurboVector3D();
 			TurboVector3D(float x, float y, float z);
 
+			//	TurboVector3D Methods ----------------------------------------------------------------------------------
 			float Length();
 			TurboVector3D Normalize();
 
+			//	TurboVector3D Operators --------------------------------------------------------------------------------
 			TurboVector3D operator-() const;
 
 			TurboVector3D operator+(const TurboVector3D &v) const;

@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include <ITurboScene.h>
+#include <ITurboView.h>
 
-using namespace Turbo::Scene;
+using namespace Turbo::View;
 
 namespace Turbo
 {
@@ -14,9 +14,8 @@ namespace Turbo
 		public:
 			//	ITurboGameRenderer Methods -----------------------------------------------------------------------------
 			virtual void UpdateDisplayInformation() = 0;
-			virtual bool LoadSceneResources(std::shared_ptr<ITurboScene> scene) = 0;
-			virtual void ReleaseSceneResources() = 0;
-			virtual bool RenderScene(std::shared_ptr<ITurboScene> scene) = 0;
+			virtual bool LoadView(std::shared_ptr<ITurboView> view) = 0;
+			virtual bool RenderView(std::shared_ptr<ITurboView> view) = 0;
 			virtual void Reset() = 0;
 		};
 	}

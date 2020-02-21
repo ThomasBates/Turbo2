@@ -12,8 +12,7 @@ namespace Turbo
 			Running,
 			Failing,
 			Failed,
-			Completed,
-			LevelStateCount
+			Completed
 		};
 	}
 }

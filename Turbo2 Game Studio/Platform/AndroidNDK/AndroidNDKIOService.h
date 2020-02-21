@@ -19,11 +19,11 @@ namespace Turbo
 			class AndroidNDKIOService : public ITurboGameIOService
 			{
 			public:
-				//  Constructors and Destructors -------------------------------------------------------------------------------
+				//  Constructors and Destructors -----------------------------------------------------------------------
 				AndroidNDKIOService(std::shared_ptr<ITurboDebug> debug);
 				virtual ~AndroidNDKIOService() {};
 
-				//	ITurboGameIOService Methods --------------------------------------------------------------------------------
+				//	ITurboGameIOService Methods ------------------------------------------------------------------------
 				virtual void SaveGameState(std::shared_ptr<ITurboGameState> gameState);
 				virtual std::shared_ptr<ITurboGameState> LoadGameState();
 

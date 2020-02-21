@@ -1,14 +1,18 @@
 
 #include <pch.h>
 
-#include <memory>
+//#include <memory>
 
 #include <TurboSceneMaterial.h>
 #include <TurboSceneTexture.h>
 #include <TurboScenePixelShader.h>
 #include <TurboSceneVertexShader.h>
 
-Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
+using namespace Turbo::Scene;
+
+//  Constructors and Destructors ---------------------------------------------------------------------------------------
+
+TurboSceneMaterial::TurboSceneMaterial(
 	TurboColor ambientColor,
 	TurboColor diffuseColor,
 	TurboColor specularColor,
@@ -24,7 +28,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(
 	_pixelShader = nullptr;
 }
 
-Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::shared_ptr<ITurboSceneTexture> texture)
+TurboSceneMaterial::TurboSceneMaterial(std::shared_ptr<ITurboSceneTexture> texture)
 {
 	_ambientColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);
 	_diffuseColor = TurboColor(0.8f, 0.8f, 0.8f, 1.0f);
@@ -36,7 +40,7 @@ Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::shared_ptr<ITurboScene
 	_pixelShader = nullptr;
 }
 
-Turbo::Scene::TurboSceneMaterial::TurboSceneMaterial(std::string textureName)
+TurboSceneMaterial::TurboSceneMaterial(std::string textureName)
 {
 	//	Standard default values.
 	_ambientColor = TurboColor(0.5f, 0.5f, 0.5f, 1.0f);

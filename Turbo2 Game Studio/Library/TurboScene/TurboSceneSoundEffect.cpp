@@ -3,8 +3,10 @@
 
 #include <TurboSceneSoundEffect.h>
 
-Turbo::Scene::TurboSceneSoundEffect::TurboSceneSoundEffect(std::string name)
+using namespace Turbo::Scene;
+
+TurboSceneSoundEffect::TurboSceneSoundEffect(std::string name) :
+	_name(name)
 {
-	_name = name;
 }
 

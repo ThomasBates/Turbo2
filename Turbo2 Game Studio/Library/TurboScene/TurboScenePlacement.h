@@ -1,7 +1,8 @@
 #pragma once
 
+#include <pch.h>
+
 #include <ITurboScenePlacement.h>
-#include <TurboMatrix4x4.h>
 
 namespace Turbo
 {
@@ -9,19 +10,6 @@ namespace Turbo
 	{
 		class TurboScenePlacement : public ITurboScenePlacement
 		{
-		private:
-			TurboMatrix4x4		_transform;
-			TurboMatrix4x4		_inverse;
-
-			TurboVector3D			_right;
-			TurboVector3D			_up;
-			TurboVector3D			_back;
-			TurboVector3D			_position;
-			TurboVector3D			_target;
-
-			TurboVector3D			_velocity;
-			TurboVector3D			_angularVelocity;
-
 		public:
 			TurboScenePlacement();
 			virtual ~TurboScenePlacement() {};
@@ -30,15 +18,11 @@ namespace Turbo
 			virtual TurboMatrix4x4	Transform() { return _transform; }
 			virtual TurboMatrix4x4	Inverse() { return _inverse; }
 
-			virtual TurboVector3D	Right() { return TurboVector3D(_transform.M11, _transform.M12, _transform.M13); }
-			//virtual TurboVector3D	Right() { return _right; }
-			virtual TurboVector3D	Up() { return TurboVector3D(_transform.M21, _transform.M22, _transform.M23); }
-			//virtual TurboVector3D	Up() { return _up; }
-			virtual TurboVector3D	Back() { return TurboVector3D(_transform.M31, _transform.M32, _transform.M33); }
-			//virtual TurboVector3D	Back() { return _back; }
-			virtual TurboVector3D	Position() { return TurboVector3D(_transform.M41, _transform.M42, _transform.M43); }
-			virtual TurboVector3D	Target() { return Position() - Back(); }
-			//virtual TurboVector3D	Target() { return _target; }
+			virtual TurboVector3D	Right() 	{ return TurboVector3D(_transform.M11, _transform.M12, _transform.M13); }
+			virtual TurboVector3D	Up() 		{ return TurboVector3D(_transform.M21, _transform.M22, _transform.M23); }
+			virtual TurboVector3D	Back() 		{ return TurboVector3D(_transform.M31, _transform.M32, _transform.M33); }
+			virtual TurboVector3D	Position() 	{ return TurboVector3D(_transform.M41, _transform.M42, _transform.M43); }
+			virtual TurboVector3D	Target() 	{ return Position() - Back(); }
 
 			virtual TurboVector3D	Velocity() { return _velocity; }
 			virtual void			Velocity(TurboVector3D value) { _velocity = value; }
@@ -57,8 +41,12 @@ namespace Turbo
 			virtual void RotateY(double degrees);
 			virtual void RotateZ(double degrees);
 
-			//virtual void Transform(TurboMatrix4x4 transform);
-			//virtual std::shared_ptr<ITurboScenePlacement> Clone();
+		private:
+			TurboMatrix4x4	_transform;
+			TurboMatrix4x4	_inverse;
+
+			TurboVector3D	_velocity;
+			TurboVector3D	_angularVelocity;
 		};
 	}
 }

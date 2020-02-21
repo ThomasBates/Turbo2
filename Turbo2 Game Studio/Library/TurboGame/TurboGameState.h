@@ -2,6 +2,7 @@
 #pragma once
 
 #include <pch.h>
+
 #include <ITurboGameState.h>
 
 typedef std::pair<std::string, std::string> KeyValue;
@@ -13,14 +14,14 @@ namespace Turbo
 		class TurboGameState : public ITurboGameState
 		{
 		public:
-			//  Constructors & Destructors -------------------------------------------------------------------------------------
-			TurboGameState();
+			//  Constructors & Destructors -----------------------------------------------------------------------------
+			TurboGameState() {}
 			virtual ~TurboGameState() {}
 
-			//  ITurboGameState Properties -------------------------------------------------------------------------------------
+			//  ITurboGameState Properties -----------------------------------------------------------------------------
 			virtual std::vector<std::string> Keys();
 
-			//  ITurboGameState Methods ----------------------------------------------------------------------------------------
+			//  ITurboGameState Methods --------------------------------------------------------------------------------
 			virtual void SaveBoolean(std::string key, bool value);
 			virtual void SaveInteger(std::string key, int value);
 			virtual void SaveFloat(std::string key, float value);

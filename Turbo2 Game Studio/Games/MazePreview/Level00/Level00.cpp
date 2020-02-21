@@ -19,7 +19,6 @@
 #include <CubicMazeSceneObject.h>
 #include <CubicMazeSignMesh.h>
 
-#include <ITurboSceneNavigationTouch.h>
 #include <TurboGameState.h>
 #include <TurboSceneAmbientLight.h>
 #include <TurboSceneMaterial.h>
@@ -467,27 +466,27 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		}
 	}
 
-	for (auto &control : navInfo->Controls)
-	{
-		auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
-
-		if (touch == nullptr)
-			continue;
-
-		if (touch->Texture() == nullptr)
-		    continue;
-
-		auto sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite());
-
-		sprite->Texture(touch->Texture());
-		sprite->UseRectangle(true);
-		sprite->Left(touch->MinX());
-		sprite->Right(touch->MaxX());
-		sprite->Top(touch->MinY());
-		sprite->Bottom(touch->MaxY());
-
-		_scene->AddSceneSprite(sprite);
-	}
+//	for (auto &control : navInfo->Views)
+//	{
+//		auto touch = std::dynamic_pointer_cast<ITurboSceneNavigationTouch>(control);
+//
+//		if (touch == nullptr)
+//			continue;
+//
+//		if (touch->Texture() == nullptr)
+//		    continue;
+//
+//		auto sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite());
+//
+//		sprite->Texture(touch->Texture());
+//		sprite->UseRectangle(true);
+//		sprite->Left(touch->MinX());
+//		sprite->Right(touch->MaxX());
+//		sprite->Top(touch->MinY());
+//		sprite->Bottom(touch->MaxY());
+//
+//		_scene->AddSceneSprite(sprite);
+//	}
 
 	std::shared_ptr<ITurboSceneSoundEffect> entranceSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance"));
 	std::shared_ptr<ITurboSceneSoundEffect> lockedSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked"));

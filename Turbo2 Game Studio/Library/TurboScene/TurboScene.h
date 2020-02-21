@@ -19,11 +19,11 @@ namespace Turbo
 			bool											_lightHack;
 
 		public:
-			//  Constructors and Destructors -----------------------------------------------------------------------------------
-			TurboScene();
-			virtual ~TurboScene();
+			//  Constructors and Destructors ---------------------------------------------------------------------------
+			TurboScene() {}
+			virtual ~TurboScene() {}
 
-			//  ITurboScene Properties -----------------------------------------------------------------------------------------
+			//  ITurboScene Properties ---------------------------------------------------------------------------------
 			virtual std::vector<std::shared_ptr<ITurboSceneObject>> SceneObjects() { return _sceneObjects; }
 			virtual std::vector<std::shared_ptr<ITurboSceneSprite>> SceneSprites() { return _sceneSprites; }
 			virtual std::vector<std::shared_ptr<ITurboSceneText>> SceneTexts() { return _sceneTexts; }
@@ -34,7 +34,7 @@ namespace Turbo
 			virtual bool LightHack() { return _lightHack; }
 			virtual void LightHack(bool lightHack) { _lightHack = lightHack; }
 
-			//  ITurboScene Methods --------------------------------------------------------------------------------------------
+			//  ITurboScene Methods ------------------------------------------------------------------------------------
 			virtual void AddSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
 			virtual void AddSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite);
 			virtual void AddSceneText(std::shared_ptr<ITurboSceneText> sceneText);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ITurboSceneMaterial.h>
+#include <pch.h>
+
 #include <TurboVector2D.h>
 #include <TurboVector3D.h>
 #include <TurboSceneTypes.h>
@@ -14,11 +15,11 @@ namespace Turbo
 		class ITurboSceneMesh
 		{
 		public:
-			//  ITurboSceneMesh Methods ----------------------------------------------------------------------------------------
+			//  ITurboSceneMesh Methods --------------------------------------------------------------------------------
 			virtual void AddVertex(TurboVector3D position, TurboVector3D normal, TurboVector2D textureUV) = 0;
 			virtual void AddTriangle(int vertex1, int vertex2, int vertex3) = 0;
 
-			//  ITurboSceneMesh Properties -------------------------------------------------------------------------------------
+			//  ITurboSceneMesh Properties -----------------------------------------------------------------------------
 			virtual std::vector<TurboSceneVertex> Vertices() = 0;
 			virtual std::vector<TurboSceneTriangle> Triangles() = 0;
 

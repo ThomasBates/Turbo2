@@ -3,7 +3,9 @@
 
 #include <TurboSceneFont.h>
 
-Turbo::Scene::TurboSceneFont::TurboSceneFont(std::string name)
+using namespace Turbo::Scene;
+
+TurboSceneFont::TurboSceneFont(std::string name) :
+	_name(name)
 {
-	_name = name;
 }

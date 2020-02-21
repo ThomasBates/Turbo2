@@ -32,22 +32,21 @@ namespace Turbo
 		class ITurboImage
 		{
 		public:
-			//  Property Accessor Methods
-			virtual	void*	Data() = 0;
-			virtual void	Data(void* data) = 0;
+			//  ITurboImage Properties ---------------------------------------------------------------------------------
+			virtual	void* Data() = 0;
+			virtual void Data(void* data) = 0;
 			virtual	ITurboCanvas *GetCanvas() = 0;
-			virtual void	SetCanvas(ITurboCanvas *canvas) = 0;
+			virtual void SetCanvas(ITurboCanvas *canvas) = 0;
 
-			virtual int		Width() = 0;
-			virtual void	Width(int width) = 0;
-			virtual int		Height() = 0;
-			virtual void	Height(int height) = 0;
-			virtual	int		GetStyle() = 0;
-			virtual void	SetStyle(int style) = 0;
+			virtual int Width() = 0;
+			virtual void Width(int width) = 0;
+			virtual int Height() = 0;
+			virtual void Height(int height) = 0;
+			virtual	int GetStyle() = 0;
+			virtual void SetStyle(int style) = 0;
 
-			//  Methods
-			//virtual int		LoadFromFile(std::string fileName) = 0;
-			virtual	void	Draw(int width = -1, int height = -1, int style = 0) = 0;
+			//  ITurboImage Methods ------------------------------------------------------------------------------------
+			virtual	void Draw(int width = -1, int height = -1, int style = 0) = 0;
 		};
 	}
 }

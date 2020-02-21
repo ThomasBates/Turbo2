@@ -1,8 +1,6 @@
 #include <pch.h>
 #include <CubicMazeObjectInteractions.h>
 
-using namespace Turbo::Core::Debug;
-using namespace Turbo::Game;
 using namespace Turbo::Scene;
 
 

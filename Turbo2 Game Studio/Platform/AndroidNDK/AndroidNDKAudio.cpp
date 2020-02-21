@@ -11,17 +11,10 @@
 #include <AndroidNDKAudio.h>
 //#include <AndroidNDKHelpers.h>
 
-//using namespace Microsoft::WRL;
-//using namespace Windows::Foundation;
-//using namespace Windows::Graphics::Display;
-//using namespace Windows::UI::Core;
-
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Graphics;
 using namespace Turbo::Platform::AndroidNDK;
 using namespace Turbo::Platform::AndroidNDK;
-
-//	https://docs.microsoft.com/en-us/windows/uwp/gaming/working-with-audio-in-your-directx-game
 
 #pragma region Constructors and Destructors ----------------------------------------------------------------------------
 

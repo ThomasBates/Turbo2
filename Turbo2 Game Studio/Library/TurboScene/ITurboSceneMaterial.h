@@ -2,11 +2,10 @@
 
 #include <pch.h>
 
+#include <TurboColor.h>
 #include <ITurboSceneTexture.h>
 #include <ITurboScenePixelShader.h>
 #include <ITurboSceneVertexShader.h>
-
-#include <TurboColor.h>
 
 using namespace Turbo::Graphics;
 
@@ -17,6 +16,7 @@ namespace Turbo
 		class ITurboSceneMaterial
 		{
 		public:
+			//  ITurboSceneMaterial Properties -------------------------------------------------------------------------
 			virtual TurboColor AmbientColor() = 0;
 			virtual void AmbientColor(TurboColor ambientColor) = 0;
 

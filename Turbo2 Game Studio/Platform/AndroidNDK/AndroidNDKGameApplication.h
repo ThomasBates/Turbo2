@@ -4,8 +4,9 @@
 #include <JNIHelper.h>
 #include <perfMonitor.h>
 
-#include <ITurboDebug.h>
 #include <ITurboGameApplication.h>
+#include <ITurboDebug.h>
+#include <ITurboViewController.h>
 #include <ITurboGameAudio.h>
 #include <ITurboGameIOService.h>
 #include <ITurboGameRenderer.h>
@@ -26,14 +27,14 @@ namespace Turbo
 				AndroidNDKGameApplication(
                     android_app* app,
 					std::shared_ptr<ITurboDebug> debug,
-					std::shared_ptr<ITurboGameController> controller,
+					std::shared_ptr<ITurboViewController> controller,
 					std::shared_ptr<ITurboGameIOService> ioService,
 					std::shared_ptr<ITurboGameRenderer> renderer,
 					std::shared_ptr<ITurboGameAudio> audio);
 				virtual ~AndroidNDKGameApplication() {}
 
 				//  ITurboGame Methods ---------------------------------------------------------------------------------
-				virtual int Run(std::shared_ptr<ITurboGame> game);
+				virtual int Run(std::shared_ptr<ITurboGame> game, std::shared_ptr<ITurboView> view);
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 static void HandleAppCmd(struct android_app *app, int32_t cmd);
@@ -43,7 +44,7 @@ namespace Turbo
                 android_app* _android_app;
 
 				std::shared_ptr<ITurboDebug> _debug;
-                std::shared_ptr<ITurboGameController> _controller;
+                std::shared_ptr<ITurboViewController> _controller;
 				std::shared_ptr<ITurboGameIOService> _ioService;
 				std::shared_ptr<ITurboGameRenderer> _renderer;
 				std::shared_ptr<ITurboGameAudio> _audio;
@@ -52,10 +53,14 @@ namespace Turbo
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 bool _hasFocus = false;
-				bool _updatedControls = false;
+                float _width;
+                float _height;
+				bool _updateControls = false;
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 void InitializeDisplay(android_app *app);
+                void ActivateDisplay();
+                void DeactivateDisplay();
 				void TerminateDisplay();
 				void ReconfigureDisplay(android_app *app);
 				void UpdateControls(android_app *app);

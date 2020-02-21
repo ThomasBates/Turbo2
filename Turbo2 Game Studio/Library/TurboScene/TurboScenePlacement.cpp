@@ -21,14 +21,8 @@ TurboScenePlacement::TurboScenePlacement()
 
 void TurboScenePlacement::Reset()
 {
-	_position = 0;
 	_transform = TurboMatrix4x4();
 	_inverse = TurboMatrix4x4();
-
-	//_right = TurboVector3D(1, 0, 0);
-	//_up = TurboVector3D(0, 1, 0);
-	//_back = TurboVector3D(0, 0, 1);
-	//_target = _position - _back;
 
 	_velocity = 0;
 	_angularVelocity = 0;
@@ -114,27 +108,5 @@ void TurboScenePlacement::RotateZ(double degrees)
 	_transform = rotate * _transform;
 	_inverse = _inverse * inverse;
 }
-
-//void TurboScenePlacement::Transform(TurboMatrix4x4 transform)
-//{
-//	_transform = _transform * transform;
-//	_inverse = transform * _inverse;
-//}
-
-//std::shared_ptr<ITurboScenePlacement> TurboScenePlacement::Clone()
-//{
-//	std::shared_ptr<ITurboScenePlacement> clone =
-//		std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
-//
-//	clone->Right(_right);
-//	clone->Up(_up);
-//	clone->Back(_back);
-//	clone->Position(_position);
-//	clone->Target(_target);
-//	clone->Velocity(_velocity);
-//	clone->AngularVelocity(_angularVelocity);
-//
-//	return clone;
-//}
 
 #pragma endregion ITurboScenePlacement Methods -------------------------------------------------------------------------

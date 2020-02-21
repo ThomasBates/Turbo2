@@ -195,7 +195,7 @@ void MazePreview::Update(NavigationInfo* navInfo)
 	//  Beef this up with multiple levels and state logic.
 	_sceneChanged = false;
 
-	if (navInfo->Restart || (_level == nullptr))
+	if (navInfo->Start || (_level == nullptr))
 	{
 		if (_level != nullptr)
 		{

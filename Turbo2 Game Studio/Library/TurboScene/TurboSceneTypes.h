@@ -13,7 +13,8 @@ namespace Turbo
 		enum TurboGameControlType
 		{
 			Look,
-			Move
+			Move,
+			Action
 		};
 
 		struct TurboSceneVertex

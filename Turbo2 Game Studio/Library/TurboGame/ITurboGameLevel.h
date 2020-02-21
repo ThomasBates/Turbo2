@@ -3,7 +3,6 @@
 
 #include <pch.h>
 
-#include <ITurboGameController.h>
 #include <ITurboGameState.h>
 #include <ITurboScene.h>
 
@@ -18,7 +17,7 @@ namespace Turbo
 		class ITurboGameLevel
 		{
 		public:
-			//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
+			//	ITurboGameLevel Properties -----------------------------------------------------------------------------
 			virtual std::string Title() = 0;
 
 			virtual std::shared_ptr<ITurboGameState> GameState() = 0;
@@ -32,7 +31,7 @@ namespace Turbo
 
 			virtual bool SceneChanged() = 0;
 
-			//	ITurboGameLevel Methods ----------------------------------------------------------------------------------------
+			//	ITurboGameLevel Methods --------------------------------------------------------------------------------
 			virtual void	Initialize() = 0;
 			virtual void	Finalize() = 0;
 			virtual void	Update(NavigationInfo* navInfo) = 0;

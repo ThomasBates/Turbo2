@@ -9,7 +9,7 @@ namespace Turbo
 		class ITurboSceneTexture
 		{
 		public:
-			//  ITurboSceneTexture Properties ----------------------------------------------------------------------------------
+			//  ITurboSceneTexture Properties --------------------------------------------------------------------------
 			virtual std::string Name() = 0;
 		};
 	}

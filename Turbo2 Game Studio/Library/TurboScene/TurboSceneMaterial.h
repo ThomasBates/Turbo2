@@ -13,7 +13,7 @@ namespace Turbo
 		class TurboSceneMaterial : public ITurboSceneMaterial
 		{
 		public:
-			//  Constructors and Destructors -----------------------------------------------------------------------------------
+			//  Constructors and Destructors ---------------------------------------------------------------------------
 			TurboSceneMaterial(
 				TurboColor ambientColor,
 				TurboColor diffuseColor,
@@ -23,7 +23,7 @@ namespace Turbo
 			TurboSceneMaterial(std::string textureName);
 			virtual ~TurboSceneMaterial(){}
 
-			//  ITurboSceneObjectMaterial Properties ---------------------------------------------------------------------------
+			//  ITurboSceneObjectMaterial Properties -------------------------------------------------------------------
 			virtual TurboColor AmbientColor() { return _ambientColor; }
 			virtual void AmbientColor(TurboColor ambientColor) { _ambientColor = ambientColor; }
 
@@ -45,7 +45,7 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboScenePixelShader> PixelShader() { return _pixelShader; }
 			virtual void PixelShader(std::shared_ptr<ITurboScenePixelShader> pixelShader) { _pixelShader = pixelShader; }
 
-			//  ITurboSceneObjectMaterial Methods ------------------------------------------------------------------------------
+			//  ITurboSceneObjectMaterial Methods ----------------------------------------------------------------------
 
 		private:
 			TurboColor _ambientColor;

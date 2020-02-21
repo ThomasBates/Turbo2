@@ -1,30 +1,28 @@
+
 #include <pch.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
-//#include <Windows.h>
 
 #include <TurboGameState.h>
 #include <AndroidNDKIOService.h>
 #include "TurboCoreHelpers.h"
 #include "JNIHelper.h"
 
-//using namespace Concurrency;
-//using namespace Microsoft::WRL;
-//using namespace Platform;
-//using namespace Windows::ApplicationModel;
-//using namespace Windows::Storage;
-//using namespace Windows::Storage::Streams;
-
 using namespace Turbo::Core;
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::AndroidNDK;
 using namespace ndk_helper;
 
+//  Constructors and Destructors ---------------------------------------------------------------------------------------
+
 AndroidNDKIOService::AndroidNDKIOService(std::shared_ptr<ITurboDebug> debug) :
 	_debug(debug)
 {
 }
+
+//	ITurboGameIOService Methods ----------------------------------------------------------------------------------------
 
 void AndroidNDKIOService::SaveGameState(std::shared_ptr<ITurboGameState> gameState)
 {

@@ -1,31 +1,13 @@
-/*
- * Copyright 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
-//--------------------------------------------------------------------------------
-// OpenGLESRenderer.cpp
-// Render teapots
-//--------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-// Include files
-//--------------------------------------------------------------------------------
+#include <pch.h>
 
 #include <chrono>
 #include <thread>
 #include <cstring>
 
+#include <OpenGLESRenderer.h>
+
+#include <ITurboGroupView.h>
 #include <ITurboCanvas.h>
 #include <ITurboImage.h>
 
@@ -33,9 +15,6 @@
 #include <TurboCanvasRGBA32.h>
 #include <TurboCoreHelpers.h>
 #include <TurboSceneMesh.h>
-
-#include <OpenGLESRenderer.h>
-#include <ITurboGameControllerViewModel.h>
 
 using namespace Turbo::Core;
 using namespace Turbo::Graphics;
@@ -46,27 +25,28 @@ using namespace Turbo::Platform::OpenGLES;
 OpenGLESRenderer::OpenGLESRenderer(
         android_app* app,
         std::shared_ptr<ITurboDebug> debug,
-        std::shared_ptr<ITurboGameIOService> ioService,
-        std::shared_ptr<ITurboGameControllerViewModel> controllerViewModel) :
+        std::shared_ptr<ITurboGameIOService> ioService) :
         _android_app(app),
         _debug(debug),
-        _ioService(ioService),
-        _controllerViewModel(controllerViewModel)
+        _ioService(ioService)
 {
+    _rendererAccess = std::shared_ptr<ITurboViewRendererAccess>(this);
+
     _gl_context = OpenGLESContext::GetInstance();
 }
 
 OpenGLESRenderer::~OpenGLESRenderer()
 {
-    ReleaseSceneResources();
+    ReleaseViewResources();
 }
 
-//	ITurboGameRenderer Methods ---------------------------------------------------------------------
+//	ITurboGameRenderer Methods -----------------------------------------------------------------------------------------
 
 void OpenGLESRenderer::UpdateDisplayInformation()
 {
     if (!_resources_initialized)
     {
+        //  Give Android a chance to update its ANativeWindow to show the correct dimensions.
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         _gl_context->Init(_android_app->window);
         _resources_initialized = true;
@@ -76,7 +56,7 @@ void OpenGLESRenderer::UpdateDisplayInformation()
         // Re-initialize ANativeWindow.
         // On some devices, ANativeWindow is re-created when the app is resumed
         assert(_gl_context->GetANativeWindow());
-        ReleaseSceneResources();
+        ReleaseViewResources();
         _gl_context->Invalidate();
         _gl_context->Init(_android_app->window);
         _resources_initialized = true;
@@ -85,13 +65,9 @@ void OpenGLESRenderer::UpdateDisplayInformation()
     {
         // initialize OpenGL ES and EGL
         if (EGL_SUCCESS == _gl_context->Resume(_android_app->window))
-        {
-            ReleaseSceneResources();
-        }
+            ReleaseViewResources();
         else
-        {
             assert(0);
-        }
     }
 
     // Initialize GL state.
@@ -105,71 +81,302 @@ void OpenGLESRenderer::UpdateDisplayInformation()
     glViewport(0, 0, width, height);
 }
 
-bool OpenGLESRenderer::LoadSceneResources(std::shared_ptr<ITurboScene> scene)
+//bool OpenGLESRenderer::LoadViewResources(std::shared_ptr<ITurboGroupView> view)
+//{
+//    if (view == nullptr)
+//        return false;
+//
+//    ReleaseViewResources();
+//
+//    InitializeViewResources();
+//
+//    CreateSceneVertexResources(scene);
+//    CreateSceneTextureResources(scene);
+//
+//    CreateShaders();
+//
+//    _sceneResourcesLoaded = true;
+//
+//    return true;
+//}
+
+bool OpenGLESRenderer::LoadView(std::shared_ptr<ITurboView> view)
 {
-    if (scene == nullptr)
-    {
+    if (view == nullptr)
         return false;
-    }
 
-    ReleaseSceneResources();
-
-    InitializeSceneResources();
-
-    CreateSceneVertexResources(scene);
-    CreateSceneTextureResources(scene);
-
-    CreateShaders();
-
-    _sceneResourcesLoaded = true;
+    InitializeLoading();
+    view->Load();
+    FinalizeLoading();
 
     return true;
 }
 
-void OpenGLESRenderer::ReleaseSceneResources()
+bool OpenGLESRenderer::RenderView(std::shared_ptr<ITurboView> view)
 {
-    DeleteBuffers();
-
-    _sceneMeshInfo.clear();
-    _sceneTextureBufferNames.clear();
-
-    _sceneResourcesLoaded = false;
-}
-
-bool OpenGLESRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
-{
-    if (scene == nullptr)
-    {
+    if (view == nullptr)
         return false;
-    }
-
-    if (!_sceneResourcesLoaded)
-    {
-        LoadSceneResources(scene);
-    }
-
-    UpdateProjectionMatrix();
-    UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
 
     InitializeRendering();
-    RenderSceneObjects(scene);
+    view->Render();
     FinalizeRendering();
 
-    return false;
+    return true;
 }
 
 void OpenGLESRenderer::Reset()
 {
-    ReleaseSceneResources();
+    ReleaseViewResources();
 
     _gl_context->Invalidate();
 
     _resources_initialized = false;
 }
 
-//  LoadSceneResources  ------------------------------------------------------------------------------------------------
+//	ITurboViewRendererAccess Methods ----------------------------------------------------------------------------------
 
-void OpenGLESRenderer::InitializeSceneResources()
+void OpenGLESRenderer::LoadScene(std::shared_ptr<ITurboScene> scene)
+{
+    if (scene == nullptr)
+        return;
+
+    for (auto& sceneObject : scene->SceneObjects())
+    {
+        LoadSceneObject(sceneObject);
+        LoadChildSceneObjects(sceneObject);
+    }
+
+    for (auto& sceneSprite : scene->SceneSprites())
+        LoadSceneSprite(sceneSprite);
+
+    for (auto& sceneText : scene->SceneTexts())
+        LoadSceneText(sceneText);
+}
+
+void OpenGLESRenderer::LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+{
+    if (sceneObject == nullptr)
+        return;
+
+    LoadSceneObjectVertices(sceneObject);
+    LoadSceneObjectTexture(sceneObject);
+}
+
+void OpenGLESRenderer::LoadChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
+{
+    if (sceneObject == nullptr)
+        return;
+
+    //	Iterate over child scene objects. Call this method recursively.
+    for (auto &childSceneObject : sceneObject->ChildSceneObjects())
+    {
+        LoadSceneObject(childSceneObject);
+        LoadChildSceneObjects(childSceneObject);
+    }
+}
+
+void OpenGLESRenderer::LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite)
+{
+    if (sceneSprite == nullptr)
+        return;
+
+    LoadSceneSpriteVertices();
+    LoadSceneSpriteTexture(sceneSprite);
+}
+
+void OpenGLESRenderer::LoadSceneText(std::shared_ptr<ITurboSceneText> text)
+{
+    if (text == nullptr)
+        return;
+}
+
+void OpenGLESRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
+{
+    if (scene == nullptr)
+        return;
+
+    UpdateProjectionMatrix();
+    UpdateViewMatrix(scene->CameraPlacement(), scene->LightHack());
+
+    for (auto& sceneObject : scene->SceneObjects())
+    {
+        RenderSceneObject(sceneObject);
+        RenderChildSceneObjects(sceneObject);
+    }
+
+    for (auto& sceneSprite : scene->SceneSprites())
+        RenderSceneSprite(sceneSprite);
+
+    for (auto& sceneText : scene->SceneTexts())
+        RenderSceneText(sceneText);
+}
+
+void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+{
+    if (sceneObject == nullptr)
+        return;
+
+    std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+    if (mesh == nullptr)
+        return;
+
+    _sceneMeshInfo[mesh].Used = true;
+    MeshInfo meshInfo = _sceneMeshInfo[mesh];
+
+    // Bind the Vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
+
+    int32_t stride = sizeof(SHADER_VERTEX);
+    // Pass the vertex data
+    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(ATTRIB_VERTEX);
+
+    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_NORMAL);
+
+    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_COLOR);
+
+    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_UV);
+
+    // Bind the Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
+
+    std::string textureName = sceneObject->Material()->Texture()->Name();
+    _sceneTextureInfo[textureName].Used = true;
+    GLuint textureBufferName = _sceneTextureInfo[textureName].TextureBufferName;
+    glBindTexture(GL_TEXTURE_2D, textureBufferName);
+
+    glUseProgram(_shaderParams.program);
+
+//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
+
+//    TurboColor ambientColor = material->AmbientColor();
+//    TurboColor specularColor = material->SpecularColor();
+//    float specularExponent = material->SpecularExponent();
+
+    // Update uniforms
+    glUniformMatrix4fv(_shaderParams.ViewMatrix,       1, GL_FALSE, _viewMatrix.Ptr());
+    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, _projectionMatrix.Ptr());
+
+    glUniform1i(_shaderParams.LightCount, _lightCount);
+    glUniform1i(_shaderParams.IsSprite, 0);
+
+    // (using glUniform3fv here was troublesome..)
+//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
+//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
+//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
+
+    //  TODO: Optimize to use instancing
+    //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
+
+    TurboMatrix4x4 model = sceneObject->Placement()->Transform();
+    glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
+
+    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void OpenGLESRenderer::RenderChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
+{
+    if (sceneObject == nullptr)
+        return;
+
+    //	Iterate over child scene objects. Call this method recursively.
+    for (auto &childSceneObject : sceneObject->ChildSceneObjects())
+    {
+        RenderSceneObject(childSceneObject);
+        RenderChildSceneObjects(childSceneObject);
+    }
+}
+
+void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite)
+{
+    if (sceneSprite == nullptr)
+        return;
+
+    _spriteMeshInfo.Used = true;
+    MeshInfo meshInfo = _spriteMeshInfo;
+
+    // Bind the Vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
+
+    int32_t stride = sizeof(SHADER_VERTEX);
+    // Pass the vertex data
+    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(ATTRIB_VERTEX);
+
+    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_NORMAL);
+
+    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_COLOR);
+
+    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(ATTRIB_UV);
+
+    // Bind the Index buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
+
+    std::string textureName = sceneSprite->Texture()->Name();
+    _sceneTextureInfo[textureName].Used = true;
+    GLuint textureBufferName = _sceneTextureInfo[textureName].TextureBufferName;
+    glBindTexture(GL_TEXTURE_2D, textureBufferName);
+
+    glUseProgram(_shaderParams.program);
+
+//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
+
+//    TurboColor ambientColor = material->AmbientColor();
+//    TurboColor specularColor = material->SpecularColor();
+//    float specularExponent = material->SpecularExponent();
+
+    int32_t viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    auto width  = static_cast<float>(viewport[2]);
+    auto height = static_cast<float>(viewport[3]);
+
+    float minX = sceneSprite->Left();
+    float maxX = sceneSprite->Right();
+    float minY = sceneSprite->Top();
+    float maxY = sceneSprite->Bottom();
+
+    TurboMatrix4x4 projection {};
+    projection = projection.Translate(1, 1, 0);
+    projection = projection.Scale((maxX - minX) / width, (maxY - minY) / height, 1);
+    projection = projection.Translate((2 * minX / width) - 1, 1 - (2 * maxY / height), 0);
+
+    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection.Ptr());
+
+    // Update uniforms
+    glUniform1i(_shaderParams.IsSprite, 1);
+
+    // (using glUniform3fv here was troublesome..)
+//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
+//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
+//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
+
+    //  TODO: Optimize to use instancing
+    //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
+
+    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void OpenGLESRenderer::RenderSceneText(std::shared_ptr<ITurboSceneText> text)
+{
+    if (text == nullptr)
+        return;
+}
+
+//	--------------------------------------------------------------------------------------------------------------------
+
+void OpenGLESRenderer::InitializeViewResources()
 {
     if (_gl_context->GetGLVersion() >= 3.0)
     {
@@ -189,53 +396,35 @@ void OpenGLESRenderer::InitializeSceneResources()
     glFrontFace(GL_CCW);
 }
 
-//	Scene Vertex Resources ---------------------------------------------------------------------------------------------
-
-void OpenGLESRenderer::CreateSceneVertexResources(std::shared_ptr<ITurboScene> scene)
+void OpenGLESRenderer::ReleaseViewResources()
 {
-    if (scene == nullptr)
-    {
-        return;
-    }
-
-    //	Prepare data structures.
-    _sceneMeshInfo.clear();
-
-    auto sceneObjects = scene->SceneObjects();
-
-    for (auto& sceneObject : sceneObjects)
-    {
-        LoadSceneObjectVertices(sceneObject);
-    }
-
-    LoadSceneSpriteVertices();
+    DeleteBuffers();
 }
+
+//	Scene Vertex Resources ---------------------------------------------------------------------------------------------
 
 void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
     std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
-
     if (mesh == nullptr)
-    {
         return;
-    }
 
     //  Already loaded this mesh? don't reload it.
     if (_sceneMeshInfo.find(mesh) != _sceneMeshInfo.end())
-    {
         return;
-    }
+
+    _debug->Send(debugDebug, debugRenderer) << "Loading vertices: " << "\n";
+
+    MeshInfo meshInfo {};
 
     std::vector<SHADER_VERTEX> vertexList;
     std::vector<uint16_t> indexList;
 
     LoadVertexData(mesh, &vertexList, &indexList);
 
-    MeshInfo meshInfo {};
-
     //  Load mesh vertices ---------------------------------------------------------------------------------------------
     meshInfo.VertexCount = (GLuint)vertexList.size();
-    GLuint vertexBufferSize = (GLuint)(vertexList.size() * sizeof(vertexList[0]));
+    GLsizeiptr vertexBufferSize = (GLsizeiptr)(vertexList.size() * sizeof(vertexList[0]));
     GLuint vertexBufferName;
 
     glGenBuffers(1, &vertexBufferName);
@@ -247,7 +436,7 @@ void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject
 
     //	Load mesh indices ----------------------------------------------------------------------------------------------
     meshInfo.IndexCount = (GLuint)indexList.size();
-    GLuint indexBufferSize = (GLuint)(indexList.size() * sizeof(indexList[0]));
+    GLsizeiptr indexBufferSize = (GLsizeiptr)(indexList.size() * sizeof(indexList[0]));
     GLuint indexBufferName;
 
     glGenBuffers(1, &indexBufferName);
@@ -258,27 +447,20 @@ void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject
     meshInfo.IndexBufferName = indexBufferName;
 
     _sceneMeshInfo[mesh] = meshInfo;
-
-    //	Iterate over child scene objects. Call this method recursively.
-    for (auto& childSceneObject : sceneObject->ChildSceneObjects())
-    {
-        LoadSceneObjectTextures(childSceneObject);
-    }
 }
 
 void OpenGLESRenderer::LoadSceneSpriteVertices()
 {
+    if (_spriteMeshInfo.Used)
+        return;
+
     std::shared_ptr<ITurboSceneMesh> mesh = std::shared_ptr<ITurboSceneMesh>(new TurboSceneMesh());
 
     TurboVector3D normal = TurboVector3D( 0.0,  0.0,  1.0);
-    mesh->AddVertex(TurboVector3D(-1.0, -1.0,  0.0), normal, TurboVector2D(0.0, 0.0));
-    mesh->AddVertex(TurboVector3D(-1.0,  1.0,  0.0), normal, TurboVector2D(0.0, 1.0));
-    mesh->AddVertex(TurboVector3D( 1.0,  1.0,  0.0), normal, TurboVector2D(1.0, 1.0));
-    mesh->AddVertex(TurboVector3D( 1.0, -1.0,  0.0), normal, TurboVector2D(1.0, 0.0));
-//    mesh->AddVertex(TurboVector3D( 0.0, -1.0,  0.0), normal, TurboVector2D(0.0, 0.0));
-//    mesh->AddVertex(TurboVector3D( 0.0, -0.4,  0.0), normal, TurboVector2D(0.0, 1.0));
-//    mesh->AddVertex(TurboVector3D( 1.0, -0.4,  0.0), normal, TurboVector2D(1.0, 1.0));
-//    mesh->AddVertex(TurboVector3D( 1.0, -1.0,  0.0), normal, TurboVector2D(1.0, 0.0));
+    mesh->AddVertex(TurboVector3D(-1.0f, -1.0f,  0.0f), normal, TurboVector2D(0.0f, 0.0f));
+    mesh->AddVertex(TurboVector3D(-1.0f,  1.0f,  0.0f), normal, TurboVector2D(0.0f, 1.0f));
+    mesh->AddVertex(TurboVector3D( 1.0f,  1.0f,  0.0f), normal, TurboVector2D(1.0f, 1.0f));
+    mesh->AddVertex(TurboVector3D( 1.0f, -1.0f,  0.0f), normal, TurboVector2D(1.0f, 0.0f));
 
     mesh->AddTriangle(0, 1, 2);
     mesh->AddTriangle(2, 3, 0);
@@ -292,7 +474,7 @@ void OpenGLESRenderer::LoadSceneSpriteVertices()
 
     //  Load mesh vertices ---------------------------------------------------------------------------------------------
     meshInfo.VertexCount = (GLuint)vertexList.size();
-    GLuint vertexBufferSize = (GLuint)(vertexList.size() * sizeof(vertexList[0]));
+    GLsizeiptr vertexBufferSize = (GLsizeiptr)(vertexList.size() * sizeof(vertexList[0]));
     GLuint vertexBufferName;
 
     glGenBuffers(1, &vertexBufferName);
@@ -304,7 +486,7 @@ void OpenGLESRenderer::LoadSceneSpriteVertices()
 
     //	Load mesh indices ----------------------------------------------------------------------------------------------
     meshInfo.IndexCount = (GLuint)indexList.size();
-    GLuint indexBufferSize = (GLuint)(indexList.size() * sizeof(indexList[0]));
+    GLsizeiptr indexBufferSize = (GLsizeiptr)(indexList.size() * sizeof(indexList[0]));
     GLuint indexBufferName;
 
     glGenBuffers(1, &indexBufferName);
@@ -354,49 +536,16 @@ void OpenGLESRenderer::LoadVertexData(
 
 //	Scene Texture Resources --------------------------------------------------------------------------------------------
 
-void OpenGLESRenderer::CreateSceneTextureResources(std::shared_ptr<ITurboScene> scene)
-{
-    if (scene == nullptr)
-    {
-        return;
-    }
-
-    //	Prepare data structures.
-    _sceneTextureBufferNames.clear();
-
-    auto sceneObjects = scene->SceneObjects();
-
-    for (auto& sceneObject : sceneObjects)
-    {
-        LoadSceneObjectTextures(sceneObject);
-    }
-
-    auto sceneSprites = scene->SceneSprites();
-
-    for (auto& sceneSprite : sceneSprites)
-    {
-        LoadSceneSpriteTextures(sceneSprite);
-    }
-}
-
-void OpenGLESRenderer::LoadSceneObjectTextures(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OpenGLESRenderer::LoadSceneObjectTexture(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
     std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
     if (material == nullptr)
-    {
         return;
-    }
 
     LoadSceneTexture(material->Texture());
-
-    //  Iterate over child scene objects. Call this method recursively.
-    for (auto& childSceneObject : sceneObject->ChildSceneObjects())
-    {
-        LoadSceneObjectTextures(childSceneObject);
-    }
 }
 
-void OpenGLESRenderer::LoadSceneSpriteTextures(std::shared_ptr<ITurboSceneSprite> sceneSprite)
+void OpenGLESRenderer::LoadSceneSpriteTexture(std::shared_ptr<ITurboSceneSprite> sceneSprite)
 {
     LoadSceneTexture(sceneSprite->Texture());
 }
@@ -404,21 +553,15 @@ void OpenGLESRenderer::LoadSceneSpriteTextures(std::shared_ptr<ITurboSceneSprite
 void OpenGLESRenderer::LoadSceneTexture(std::shared_ptr<ITurboSceneTexture> texture)
 {
     if (texture == nullptr)
-    {
         return;
-    }
 
     std::string textureName = texture->Name();
     if (textureName.empty())
-    {
         return;
-    }
 
     //  Already loaded this texture? don't reload it.
-    if (_sceneTextureBufferNames.find(textureName) != _sceneTextureBufferNames.end())
-    {
+    if (_sceneTextureInfo.find(textureName) != _sceneTextureInfo.end())
         return;
-    }
 
     _debug->Send(debugDebug, debugRenderer) << "Loading texture: "  << textureName << "\n";
 
@@ -429,6 +572,8 @@ void OpenGLESRenderer::LoadSceneTexture(std::shared_ptr<ITurboSceneTexture> text
     LoadTextureData(textureName, &textureWidth, &textureHeight, &textureData);
 
     _debug->Send(debugDebug, debugRenderer) << "Loading texture: "  << textureName << " (" << textureData.size() << ")\n";
+
+    TextureInfo textureInfo {};
 
     GLuint textureBufferName;
 
@@ -450,7 +595,9 @@ void OpenGLESRenderer::LoadSceneTexture(std::shared_ptr<ITurboSceneTexture> text
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    _sceneTextureBufferNames[textureName] = textureBufferName;
+    textureInfo.TextureBufferName = textureBufferName;
+
+    _sceneTextureInfo[textureName] = textureInfo;
 
     _debug->Send(debugDebug, debugRenderer) << "Loaded texture: "  << textureName << "\n";
 }
@@ -478,6 +625,9 @@ void OpenGLESRenderer::LoadTextureData(
 
 void OpenGLESRenderer::CreateShaders()
 {
+    if (_shaderProgram)
+        return;
+
     // Load shader for GLES2.0
     LoadShaders(&_shaderParams,
                 L"Shaders/VertexShader_100.vsh",
@@ -493,19 +643,18 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
     // In GLES2.0, shader attribute locations need to be explicitly specified
     // before linking
     //
-    GLuint program;
     GLuint vertexShader;
     GLuint pixelShader;
 
-    // Create shader program
-    program = glCreateProgram();
-    LOGI("Created Shader %d", program);
+    // Create shader _shaderProgram
+    _shaderProgram = glCreateProgram();
+    LOGI("Created Shader %d", _shaderProgram);
 
     // Create and compile vertex shader
     if (!CompileShader(&vertexShader, GL_VERTEX_SHADER, vertexShaderName))
     {
         LOGI("Failed to compile vertex shader");
-        glDeleteProgram(program);
+        glDeleteProgram(_shaderProgram);
         return false;
     }
 
@@ -513,27 +662,27 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
     if (!CompileShader(&pixelShader, GL_FRAGMENT_SHADER, pixelShaderName))
     {
         LOGI("Failed to compile fragment shader");
-        glDeleteProgram(program);
+        glDeleteProgram(_shaderProgram);
         return false;
     }
 
     // Attach vertex shader to program
-    glAttachShader(program, vertexShader);
+    glAttachShader(_shaderProgram, vertexShader);
 
     // Attach fragment shader to program
-    glAttachShader(program, pixelShader);
+    glAttachShader(_shaderProgram, pixelShader);
 
     // Bind attribute locations
     // this needs to be done prior to linking
-    glBindAttribLocation(program, ATTRIB_VERTEX, "vsPosition");
-    glBindAttribLocation(program, ATTRIB_NORMAL, "vsNormal");
-    glBindAttribLocation(program, ATTRIB_COLOR,  "vsColor");
-    glBindAttribLocation(program, ATTRIB_UV,     "vsTexture");
+    glBindAttribLocation(_shaderProgram, ATTRIB_VERTEX, "vsPosition");
+    glBindAttribLocation(_shaderProgram, ATTRIB_NORMAL, "vsNormal");
+    glBindAttribLocation(_shaderProgram, ATTRIB_COLOR,  "vsColor");
+    glBindAttribLocation(_shaderProgram, ATTRIB_UV,     "vsTexture");
 
     // Link program
-    if (!LinkProgram(program))
+    if (!LinkProgram(_shaderProgram))
     {
-        LOGI("Failed to link program: %d", program);
+        LOGI("Failed to link program: %d", _shaderProgram);
 
         if (vertexShader)
         {
@@ -545,26 +694,27 @@ bool OpenGLESRenderer::LoadShaders(SHADER_PARAMS *params,
             glDeleteShader(pixelShader);
             pixelShader = 0;
         }
-        if (program)
+        if (_shaderProgram)
         {
-            glDeleteProgram(program);
+            glDeleteProgram(_shaderProgram);
+            _shaderProgram = 0;
         }
         return false;
     }
 
     // Get uniform locations
-    params->TextureSampler    = glGetUniformLocation(program, "uSampler");
-    params->ModelMatrix       = glGetUniformLocation(program, "uModel");
-    params->ViewMatrix        = glGetUniformLocation(program, "uView");
-    params->ProjectionMatrix  = glGetUniformLocation(program, "uProjection");
-    params->LightCount        = glGetUniformLocation(program, "uLightCount");
-    params->IsSprite          = glGetUniformLocation(program, "uIsSprite");
+    params->TextureSampler    = glGetUniformLocation(_shaderProgram, "uSampler");
+    params->ModelMatrix       = glGetUniformLocation(_shaderProgram, "uModel");
+    params->ViewMatrix        = glGetUniformLocation(_shaderProgram, "uView");
+    params->ProjectionMatrix  = glGetUniformLocation(_shaderProgram, "uProjection");
+    params->LightCount        = glGetUniformLocation(_shaderProgram, "uLightCount");
+    params->IsSprite          = glGetUniformLocation(_shaderProgram, "uIsSprite");
 
     // Release vertex and fragment shaders
     if (vertexShader) glDeleteShader(vertexShader);
     if (pixelShader) glDeleteShader(pixelShader);
 
-    params->program = program;
+    params->program = _shaderProgram;
     return true;
 }
 
@@ -622,7 +772,7 @@ bool OpenGLESRenderer::LinkProgram(const GLuint prog)
     glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0)
     {
-        GLchar *log = (GLchar *)malloc(logLength);
+        auto log = (GLchar *)malloc((size_t)logLength);
         glGetProgramInfoLog(prog, logLength, &logLength, log);
         LOGI("Program link log:\n%s", log);
         free(log);
@@ -643,19 +793,27 @@ bool OpenGLESRenderer::LinkProgram(const GLuint prog)
 
 void OpenGLESRenderer::DeleteBuffers()
 {
+    if (_shaderProgram)
+    {
+        glDeleteProgram(_shaderProgram);
+        _shaderProgram = 0;
+    }
+
+    if (_spriteMeshInfo.VertexBufferName)
+        glDeleteBuffers(1, &_spriteMeshInfo.VertexBufferName);
+    if (_spriteMeshInfo.IndexBufferName)
+        glDeleteBuffers(1, &_spriteMeshInfo.IndexBufferName);
+    _spriteMeshInfo.Used = false;
+
     for (auto& entry : _sceneMeshInfo)
     {
         MeshInfo meshInfo = entry.second;
 
         if (meshInfo.VertexBufferName)
-        {
             glDeleteBuffers(1, &meshInfo.VertexBufferName);
-        }
 
         if (meshInfo.IndexBufferName)
-        {
             glDeleteBuffers(1, &meshInfo.IndexBufferName);
-        }
     }
     _sceneMeshInfo.clear();
 
@@ -671,18 +829,29 @@ void OpenGLESRenderer::DeleteBuffers()
         _shaderParams.program = 0;
     }
 
-    for (auto& entry : _sceneTextureBufferNames)
+    for (auto& entry : _sceneTextureInfo)
     {
-        GLuint textureBufferName = entry.second;
-        if (textureBufferName)
-        {
-            glDeleteTextures(1, &textureBufferName);
-        }
+        TextureInfo textureInfo = entry.second;
+
+        _debug->Send(debugDebug, debugRenderer) << "Unloading texture " << entry.first << " (DeleteBuffers)\n";
+
+        if (textureInfo.TextureBufferName)
+            glDeleteTextures(1, &textureInfo.TextureBufferName);
     }
-    _sceneTextureBufferNames.clear();
+    _sceneTextureInfo.clear();
 }
 
 //  RenderScene  -------------------------------------------------------------------------------------------------------
+
+void OpenGLESRenderer::InitializeLoading()
+{
+    InitializeViewResources();
+}
+
+void OpenGLESRenderer::FinalizeLoading()
+{
+    CreateShaders();
+}
 
 void OpenGLESRenderer::UpdateProjectionMatrix()
 {
@@ -691,7 +860,11 @@ void OpenGLESRenderer::UpdateProjectionMatrix()
     auto width  = static_cast<float>(viewport[2]);
     auto height = static_cast<float>(viewport[3]);
 
-    _projectionMatrix = MakePerspectiveProjection(90.0, width, height, 0.01, 100.0);
+    const float fovAngle  =  90.0;
+    const float nearPlane =   0.01;
+    const float farPlane  = 100.0;
+
+    _projectionMatrix = MakePerspectiveProjection(fovAngle, width, height, nearPlane, farPlane);
 }
 
 void OpenGLESRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack)
@@ -708,6 +881,14 @@ void OpenGLESRenderer::UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> ca
 
 void OpenGLESRenderer::InitializeRendering()
 {
+    _spriteMeshInfo.Used = true;
+
+    for (auto& entry : _sceneMeshInfo)
+        entry.second.Used = false;
+
+    for (auto& entry : _sceneTextureInfo)
+        entry.second.Used = false;
+
     // Draw objects back to front
     //glDisable(GL_DEPTH_TEST);
 
@@ -718,188 +899,73 @@ void OpenGLESRenderer::InitializeRendering()
 
 
     // Just fill the screen with a color.
-    glClearColor(0.5, 0.5, 0.5, 1.0);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-}
-
-void OpenGLESRenderer::RenderSceneObjects(std::shared_ptr<ITurboScene> scene)
-{
-    if (scene == nullptr)
-    {
-        return;
-    }
-
-    auto sceneObjects = scene->SceneObjects();
-
-    for (auto& sceneObject : sceneObjects)
-    {
-        RenderSceneObject(sceneObject);
-    }
-
-    auto sceneSprites = scene->SceneSprites();
-
-    for (auto& sceneSprite : sceneSprites)
-    {
-        RenderSceneSprite(sceneSprite);
-    }
-}
-
-void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
-{
-    std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
-
-    if (mesh == nullptr)
-    {
-        return;
-    }
-
-    MeshInfo meshInfo = _sceneMeshInfo[mesh];
-
-    // Bind the Vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
-
-    int32_t stride = sizeof(SHADER_VERTEX);
-    // Pass the vertex data
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_NORMAL);
-
-    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_COLOR);
-
-    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_UV);
-
-    // Bind the Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
-
-    std::string textureName = sceneObject->Material()->Texture()->Name();
-    GLuint textureBufferName = _sceneTextureBufferNames[textureName];
-    glBindTexture(GL_TEXTURE_2D, textureBufferName);
-
-    glUseProgram(_shaderParams.program);
-
-//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
-
-//    TurboColor ambientColor = material->AmbientColor();
-//    TurboColor specularColor = material->SpecularColor();
-//    float specularExponent = material->SpecularExponent();
-
-    // Update uniforms
-    glUniformMatrix4fv(_shaderParams.ViewMatrix,       1, GL_FALSE, _viewMatrix.Ptr());
-    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, _projectionMatrix.Ptr());
-
-    glUniform1i(_shaderParams.LightCount, _lightCount);
-    glUniform1i(_shaderParams.IsSprite, 0);
-
-    // (using glUniform3fv here was troublesome..)
-//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
-//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
-//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
-
-    //  TODO: Optimize to use instancing
-    //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
-
-    TurboMatrix4x4 model = sceneObject->Placement()->Transform();
-    glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
-
-    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    //	Iterate over child scene objects. Call this method recursively.
-    for (auto &childSceneObject : sceneObject->ChildSceneObjects())
-    {
-        RenderSceneObject(childSceneObject);
-    }
-}
-
-void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite)
-{
-    MeshInfo meshInfo = _spriteMeshInfo;
-
-    // Bind the Vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
-
-    int32_t stride = sizeof(SHADER_VERTEX);
-    // Pass the vertex data
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_NORMAL);
-
-    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_COLOR);
-
-    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_UV);
-
-    // Bind the Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
-
-    std::string textureName = sceneSprite->Texture()->Name();
-    GLuint textureBufferName = _sceneTextureBufferNames[textureName];
-    glBindTexture(GL_TEXTURE_2D, textureBufferName);
-
-    glUseProgram(_shaderParams.program);
-
-//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
-
-//    TurboColor ambientColor = material->AmbientColor();
-//    TurboColor specularColor = material->SpecularColor();
-//    float specularExponent = material->SpecularExponent();
-
-    int32_t viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    auto width  = static_cast<float>(viewport[2]);
-    auto height = static_cast<float>(viewport[3]);
-
-    float minX = sceneSprite->Left();
-    float maxX = sceneSprite->Right();
-    float minY = sceneSprite->Top();
-    float maxY = sceneSprite->Bottom();
-
-    TurboMatrix4x4 projection {};
-    projection = projection.Translate(1, 1, 0);
-    projection = projection.Scale((maxX - minX) / width, (maxY - minY) / height, 1);
-    projection = projection.Translate((2 * minX / width) - 1, 1 - (2 * maxY / height), 0);
-
-    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection.Ptr());
-
-    // Update uniforms
-    glUniform1i(_shaderParams.IsSprite, 1);
-
-    // (using glUniform3fv here was troublesome..)
-//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
-//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
-//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
-
-    //  TODO: Optimize to use instancing
-    //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
-
-    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OpenGLESRenderer::FinalizeRendering()
 {
     // Swap
     if (EGL_SUCCESS != _gl_context->Swap())
-    {
-        ReleaseSceneResources();
-    }
+        ReleaseViewResources();
+
+    //RemoveUnusedResources();
 }
 
-//--------------------------------------------------------------------------------
-// Helper functions
-//--------------------------------------------------------------------------------
+void OpenGLESRenderer::RemoveUnusedResources()
+{
+    if (!_spriteMeshInfo.Used)
+    {
+        if (_spriteMeshInfo.VertexBufferName)
+            glDeleteBuffers(1, &_spriteMeshInfo.VertexBufferName);
+        if (_spriteMeshInfo.IndexBufferName)
+            glDeleteBuffers(1, &_spriteMeshInfo.IndexBufferName);
+    }
+
+    //  Clean up unused meshes.
+    std::vector<std::shared_ptr<ITurboSceneMesh>> unusedMeshes;
+    for (auto& entry : _sceneMeshInfo)
+    {
+        auto mesh = entry.first;
+        auto meshInfo = entry.second;
+
+        if (!meshInfo.Used)
+        {
+            if (meshInfo.VertexBufferName)
+                glDeleteBuffers(1, &meshInfo.VertexBufferName);
+
+            if (meshInfo.IndexBufferName)
+                glDeleteBuffers(1, &meshInfo.IndexBufferName);
+
+            unusedMeshes.push_back(mesh);
+        }
+    }
+    for (auto& mesh : unusedMeshes)
+        _sceneMeshInfo.erase(mesh);
+    unusedMeshes.clear();
+
+    //  Clean up unused textures.
+    std::vector<std::string> unusedTextures;
+    for (auto& entry : _sceneTextureInfo)
+    {
+        auto textureName = entry.first;
+        auto textureInfo = entry.second;
+
+        if (!textureInfo.Used)
+        {
+            _debug->Send(debugDebug, debugRenderer) << "Unloading texture " << textureName << " (FinalizeRendering)\n";
+
+            if (textureInfo.TextureBufferName)
+                glDeleteTextures(1, &textureInfo.TextureBufferName);
+
+            unusedTextures.push_back(textureName);
+        }
+    }
+    for (auto& textureName : unusedTextures)
+        _sceneTextureInfo.erase(textureName);
+    unusedTextures.clear();
+}
+
 TurboMatrix4x4 OpenGLESRenderer::MakePerspectiveProjection(float fovAngle,
                                                            float viewportWidth,
                                                            float viewportHeight,

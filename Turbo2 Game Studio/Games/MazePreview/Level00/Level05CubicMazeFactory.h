@@ -6,6 +6,7 @@
 class Level05CubicMazeFactory: public ICubicMazeFactory
 {
 public:
+	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	Level05CubicMazeFactory(){}
 	virtual ~Level05CubicMazeFactory(){}
 

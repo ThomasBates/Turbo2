@@ -2,8 +2,8 @@
 #include <pch.h>
 
 #include <AndroidNDKGameApplication.h>
-#include <TurboSceneNavigationControl_Last.h>
-#include <TurboSceneNavigationControl_Button.h>
+#include <TurboSceneNavigationPadControl.h>
+#include <TurboSceneNavigationButtonControl.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -17,7 +17,7 @@ using namespace Turbo::Platform::AndroidNDK;
 AndroidNDKGameApplication::AndroidNDKGameApplication(
     android_app* app,
 	std::shared_ptr<ITurboDebug> debug,
-    std::shared_ptr<ITurboGameController> controller,
+    std::shared_ptr<ITurboViewController> controller,
 	std::shared_ptr<ITurboGameIOService> ioService,
 	std::shared_ptr<ITurboGameRenderer> renderer,
 	std::shared_ptr<ITurboGameAudio> audio
@@ -44,7 +44,7 @@ void AndroidNDKGameApplication::ActivityConfigurationChanged(ANativeActivity *ac
 //    activity->assetManager;
 }
 
-int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
+int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared_ptr<ITurboView> view)
 {
     std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
     game->GameState(gameState);
@@ -66,16 +66,17 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game)
             //	Update the scene
             game->Update(navInfo);
 
-            if (game->SceneChanged() || _updatedControls)
+            if (_updateControls)
             {
-                _renderer->LoadSceneResources(game->Scene());
-                _audio->LoadSceneResources(game->Scene());
-
-                _updatedControls = false;
+                _updateControls = false;
+                view->Size(TurboVector2D(_width, _height));
             }
 
-            _renderer->RenderScene(game->Scene());
-            _audio->PlaySounds(game->Scene());
+            _renderer->LoadView(view);
+            _renderer->RenderView(view);
+
+//            _audio->LoadView(view);
+//            _audio->PlaySounds(view);
 
             JNI_UpdateFPS();
         }
@@ -102,16 +103,14 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
             application->InitializeDisplay(app);
             break;
         case APP_CMD_GAINED_FOCUS:
-            application->_hasFocus = true;
-            application->_controller->Resume();
+            application->ActivateDisplay();
             break;
 
         //  Pause/Close
         case APP_CMD_PAUSE:
             break;
         case APP_CMD_LOST_FOCUS:
-            application->_hasFocus = false;
-            application->_controller->Suspend();
+            application->DeactivateDisplay();
             break;
         case APP_CMD_SAVE_STATE:
             break;
@@ -147,24 +146,35 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
     }
 }
 
-/**
- * Initialize an EGL context for the current display.
- */
+//  Initialize an EGL context for the current display.
 void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
 {
-    if (app->window != NULL)
-    {
-        _renderer->UpdateDisplayInformation();
-        UpdateControls(app);
-        JNI_ShowUI();
-        _controller->Resume();
-        _hasFocus = true;
-    }
+    if (app->window == NULL)
+        return;
+
+    _renderer->UpdateDisplayInformation();
+    UpdateControls(app);
+    JNI_ShowUI();
+
+    _controller->Resume();
+    _hasFocus = true;
 }
 
-/**
- * Tear down the EGL context currently associated with the display.
- */
+//  Initialize an EGL context for the current display.
+void AndroidNDKGameApplication::ActivateDisplay()
+{
+    _controller->Resume();
+    _hasFocus = true;
+}
+
+//  Tear down the EGL context currently associated with the display.
+void AndroidNDKGameApplication::DeactivateDisplay()
+{
+    _hasFocus = false;
+    _controller->Suspend();
+}
+
+//  Tear down the EGL context currently associated with the display.
 void AndroidNDKGameApplication::TerminateDisplay()
 {
     _hasFocus = false;
@@ -172,82 +182,32 @@ void AndroidNDKGameApplication::TerminateDisplay()
     _renderer->Reset();
 }
 
+//  Occurs when the device is turned from portrait to landscape or vice versa.
 void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
 {
-    if (app->window != NULL)
-    {
-        _renderer->Reset();
-        _renderer->UpdateDisplayInformation();
+    if (app->window == NULL)
+        return;
 
-        UpdateControls(app);
+    _renderer->Reset();
+    _renderer->UpdateDisplayInformation();
 
-        JNI_ShowUI();
-    }
+    UpdateControls(app);
+
+    JNI_ShowUI();
 }
 
 void AndroidNDKGameApplication::UpdateControls(android_app *app)
 {
-    int32_t width = ANativeWindow_getWidth(app->window);
-    int32_t height = ANativeWindow_getHeight(app->window);
+    _width = (float) ANativeWindow_getWidth(app->window);
+    _height = (float) ANativeWindow_getHeight(app->window);
 
-    _controller->ClearControls();
-
-    float s, x1, x2, y1, y2;
-
-    if (width < height)
-    {
-        s = (float) width / 2;
-
-        // center
-        x1 = 0;
-        x2 = width;
-        y1 = s;
-        y2 = height - s;
-    }
-    else
-    {
-        s = (float) height / 2;
-
-        // center
-        x1 = s;
-        x2 = width - s;
-        y1 = 0;
-        y2 = height;
-    }
-
-    // center
-    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, 0.1f)));
-
-    // bottom left
-    x1 = 0;
-    x2 = s;
-
-    y1 = height - s;
-    y2 = height - s/3;
-    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2, 0, -1, 0, "ForwardButton")));
-
-    y1 = height - s/3;
-    y2 = height;
-    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Button(TurboGameControlType::Move, x1, x2, y1, y2, 0, 1, 0, "BackwardButton")));
-
-    // bottom right
-    x1 = width - s;
-    x2 = width;
-    y1 = height - s;
-    y2 = height;
-    _controller->AddControl(std::shared_ptr<ITurboSceneNavigationControl>(
-            new TurboSceneNavigationControl_Last(_debug, TurboGameControlType::Look, x1, x2, y1, y2, -1.0f, "DPadControl")));
-
-    _updatedControls = true;
+    _updateControls = true;
 }
 
 void AndroidNDKGameApplication::TrimMemory()
 {
     LOGI("Trimming memory");
-   // _renderer->Reset();
+    _renderer->Reset();
 }
 
 void AndroidNDKGameApplication::JNI_ShowUI()

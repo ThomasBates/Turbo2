@@ -1,5 +1,7 @@
 #pragma once
 
+#include <pch.h>
+
 #include <ITurboScene.h>
 
 namespace Turbo
@@ -9,7 +11,7 @@ namespace Turbo
 		class ITurboSceneBuilder
 		{
 		public:
-			//  ITurboSceneBuilder Methods -------------------------------------------------------------------------------------
+			//  ITurboSceneBuilder Methods -----------------------------------------------------------------------------
 			virtual std::shared_ptr<ITurboScene> BuildScene() = 0;
 		};
 	}

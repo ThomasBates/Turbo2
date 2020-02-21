@@ -34,6 +34,7 @@ add_library(${PROJECT_NAME}
 add_library(Games_MazePreview
 		STATIC
 		${TurboFolder}/Games/MazePreview/MazePreview.cpp
+
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMaze.cpp
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeCornerMesh.cpp
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeEdgeMesh.cpp
@@ -50,6 +51,7 @@ add_library(Games_MazePreview
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSceneObject.cpp
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeSignMesh.cpp
 		${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeWallMesh.cpp
+
 		${TurboFolder}/Games/MazePreview/Level00/Level00.cpp
 		${TurboFolder}/Games/MazePreview/Level00/Level00CubicMazeFactory.cpp
 		${TurboFolder}/Games/MazePreview/Level00/Level00Helper.cpp
@@ -60,13 +62,16 @@ add_library(Games_MazePreview
 		${TurboFolder}/Games/MazePreview/Level00/Level04.cpp
 		${TurboFolder}/Games/MazePreview/Level00/Level05.cpp
 		${TurboFolder}/Games/MazePreview/Level00/Level05CubicMazeFactory.cpp
-		)
 
-add_library(Games_Teapots
-		STATIC
-		${TurboFolder}/Games/Teapots/TeapotGame.cpp
-		${TurboFolder}/Games/Teapots/TeapotMesh.cpp
-		${TurboFolder}/Games/Teapots/TeapotPlayer.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewDirectionControlViewModel.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainControlViewModel.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMotionControlViewModel.cpp
+
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewMainView.cpp
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewDirectionControlView.cpp
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewMainControlView.cpp
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewMotionControlView.cpp
 		)
 
 add_library(Library_TurboCore
@@ -77,9 +82,10 @@ add_library(Library_TurboCore
 
 add_library(Library_TurboGame
 		STATIC
-		${TurboFolder}/Library/TurboGame/TurboGameControllerViewModel.cpp
 		${TurboFolder}/Library/TurboGame/TurboGameMotionEffects.cpp
 		${TurboFolder}/Library/TurboGame/TurboGameState.cpp
+		${TurboFolder}/Library/TurboGame/ViewModels/TurboSceneViewModel.cpp
+		${TurboFolder}/Library/TurboGame/Views/TurboSceneView.cpp
 		)
 
 add_library(Library_TurboGraphics
@@ -101,10 +107,10 @@ add_library(Library_TurboScene
 		${TurboFolder}/Library/TurboScene/TurboSceneFont.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneMaterial.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneMesh.cpp
-		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Base.cpp
-		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Button.cpp
-		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Last.cpp
-		${TurboFolder}/Library/TurboScene/TurboSceneNavigationControl_Set.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationButtonControl.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationPadControl.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationSetControl.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneNavigationStickControl.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneObject.cpp
 		${TurboFolder}/Library/TurboScene/TurboScenePixelShader.cpp
 		${TurboFolder}/Library/TurboScene/TurboScenePlacement.cpp
@@ -115,13 +121,21 @@ add_library(Library_TurboScene
 		${TurboFolder}/Library/TurboScene/TurboSceneVertexShader.cpp
 		)
 
+add_library(Library_TurboView
+		STATIC
+		${TurboFolder}/Library/TurboView/ViewModels/TurboControlViewModel.cpp
+		${TurboFolder}/Library/TurboView/Views/TurboGroupView.cpp
+		${TurboFolder}/Library/TurboView/TurboView.cpp
+		${TurboFolder}/Library/TurboView/Views/TurboControlView.cpp
+		)
+
 add_library(Platform_AndroidNDK
 		STATIC
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKAudio.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameApplication.cpp
-		${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameController.cpp
 		${TurboFolder}/Platform/AndroidNDK/AndroidNDKIOService.cpp
+		${TurboFolder}/Platform/AndroidNDK/AndroidNDKViewController.cpp
 		${TurboFolder}/Platform/AndroidNDK/JNIHelper.cpp
 		${TurboFolder}/Platform/AndroidNDK/perfMonitor.cpp
 		)
@@ -134,16 +148,25 @@ add_library(Platform_OpenGLES
 		)
 
 include_directories(.)
-include_directories(${TurboFolder}/Games/Teapots)
+
 include_directories(${TurboFolder}/Games/MazePreview)
 include_directories(${TurboFolder}/Games/MazePreview/CubicMaze)
 include_directories(${TurboFolder}/Games/MazePreview/Level00)
+include_directories(${TurboFolder}/Games/MazePreview/ViewModels)
+include_directories(${TurboFolder}/Games/MazePreview/Views)
+
 include_directories(${TurboFolder}/Library/TurboCore)
 include_directories(${TurboFolder}/Library/TurboCore/TurboDebug)
 include_directories(${TurboFolder}/Library/TurboGame)
+include_directories(${TurboFolder}/Library/TurboGame/ViewModels)
+include_directories(${TurboFolder}/Library/TurboGame/Views)
 include_directories(${TurboFolder}/Library/TurboGraphics)
 include_directories(${TurboFolder}/Library/TurboMath)
 include_directories(${TurboFolder}/Library/TurboScene)
+include_directories(${TurboFolder}/Library/TurboView)
+include_directories(${TurboFolder}/Library/TurboView/ViewModels)
+include_directories(${TurboFolder}/Library/TurboView/Views)
+
 include_directories(${TurboFolder}/Platform/AndroidNDK)
 include_directories(${TurboFolder}/Platform/OpenGLES)
 
@@ -173,13 +196,13 @@ set_target_properties(Games_MazePreview
 # add lib dependencies
 target_link_libraries(${PROJECT_NAME}
 		PRIVATE
-		Games_Teapots
 		Games_MazePreview
 		Library_TurboCore
 		Library_TurboGame
 		Library_TurboGraphics
 		Library_TurboMath
 		Library_TurboScene
+		Library_TurboView
         Platform_AndroidNDK
         Platform_OpenGLES
 		)
@@ -191,16 +214,25 @@ target_link_libraries(Games_MazePreview
 		Library_TurboGraphics
 		Library_TurboMath
 		Library_TurboScene
+		Library_TurboView
 		)
 
 target_link_libraries(Library_TurboGame
 		PUBLIC
 		Library_TurboScene
+		Library_TurboView
 		)
 
 target_link_libraries(Library_TurboScene
 		PUBLIC
 		Library_TurboMath
+		)
+
+target_link_libraries(Library_TurboView
+		PUBLIC
+		Library_TurboCore
+		Library_TurboMath
+		Library_TurboScene
 		)
 
 target_link_libraries(Platform_AndroidNDK
@@ -211,6 +243,7 @@ target_link_libraries(Platform_AndroidNDK
 		atomic
 		Library_TurboCore
 		Library_TurboGame
+		Library_TurboView
 		)
 
 target_link_libraries(Platform_OpenGLES

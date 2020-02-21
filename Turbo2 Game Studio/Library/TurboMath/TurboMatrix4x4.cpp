@@ -1,12 +1,12 @@
 
 #include <pch.h>
-//#include <math.h>
+
 #include <TurboVector3D.h>
 #include <TurboMatrix4x4.h>
-#include "TurboMatrix4x4.h"
-
 
 using namespace Turbo::Math;
+
+//  Constructors -------------------------------------------------------------------------------------------------------
 
 TurboMatrix4x4::TurboMatrix4x4()
 {
@@ -28,6 +28,8 @@ TurboMatrix4x4::TurboMatrix4x4(
 	M31 = m31; M32 = m32; M33 = m33; M34 = m34;
 	M41 = m41; M42 = m42; M43 = m43; M44 = m44;
 }
+
+//	TurboMatrix4x4 Methods ---------------------------------------------------------------------------------------------
 
 TurboMatrix4x4 TurboMatrix4x4::Transpose()
 {
@@ -117,6 +119,8 @@ TurboMatrix4x4 TurboMatrix4x4::RotateZ(float degrees)
 
 	return *this * rotate;
 }
+
+//	TurboMatrix4x4 Operators -------------------------------------------------------------------------------------------
 
 TurboMatrix4x4 TurboMatrix4x4::operator*(const TurboMatrix4x4 &m) const	//  cross product
 {

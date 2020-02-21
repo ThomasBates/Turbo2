@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <pch.h>
@@ -14,14 +15,14 @@ namespace Turbo
 		class TurboSceneDirectionalLight : public ITurboSceneLight
 		{
 		public:
-			//	Constructors -----------------------------------------------------------------------------------------------------
+			//	Constructors -------------------------------------------------------------------------------------------
 			TurboSceneDirectionalLight(TurboVector3D direction, TurboColor color) :
 				_direction(direction),
 				_color(color)
 			{
 			}
 
-			//	ITurboSceneLight Properties --------------------------------------------------------------------------------------
+			//	ITurboSceneLight Properties ----------------------------------------------------------------------------
 			virtual TurboSceneLightType LightType() { return Directional; }
 
 			virtual TurboVector3D Position() { return _position; }
@@ -49,7 +50,7 @@ namespace Turbo
 			virtual void FallOffAngle(float fallOffAngle) {}
 
 		private:
-			//	Private Members --------------------------------------------------------------------------------------------------
+			//	Private Members ----------------------------------------------------------------------------------------
 			TurboVector3D _position;
 			TurboVector3D _direction;
 			TurboColor _color;

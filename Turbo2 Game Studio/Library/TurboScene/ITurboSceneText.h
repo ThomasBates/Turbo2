@@ -1,12 +1,13 @@
 #pragma once
 
-#include <ITurboSceneFont.h>
-#include <ITurboScenePlacement.h>
+#include <pch.h>
 
+#include <ITurboSceneFont.h>
 #include <TurboColor.h>
-#include <TurboSceneTypes.h>
+#include <TurboVector2D.h>
 
 using namespace Turbo::Graphics;
+using namespace Turbo::Math;
 
 namespace Turbo
 {

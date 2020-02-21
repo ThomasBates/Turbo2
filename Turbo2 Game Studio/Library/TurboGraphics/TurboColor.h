@@ -9,7 +9,7 @@ namespace Turbo
 		{
 			float R, G, B, A;
 
-			//  Constructors
+			//  Constructors -------------------------------------------------------------------------------------------
 			TurboColor()
 			{
 				R = 0;

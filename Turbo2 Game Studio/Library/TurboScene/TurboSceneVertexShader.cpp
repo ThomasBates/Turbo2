@@ -3,7 +3,9 @@
 
 #include <TurboSceneVertexShader.h>
 
-Turbo::Scene::TurboSceneVertexShader::TurboSceneVertexShader(std::string name)
+using namespace Turbo::Scene;
+
+TurboSceneVertexShader::TurboSceneVertexShader(std::string name) :
+	_name(name)
 {
-	_name = name;
 }

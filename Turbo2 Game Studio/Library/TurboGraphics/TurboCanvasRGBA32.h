@@ -16,17 +16,19 @@ namespace Turbo
 			TurboColor	_color;
 
 		public:
+			//  Constructors -------------------------------------------------------------------------------------------
+			TurboGraphicObjectRGBA32() {}
 			virtual ~TurboGraphicObjectRGBA32() {}
 
 			//  Property Accessor Methods
-			virtual	TurboColor	GetColor() { return _color; }
-			virtual	void	SetColor(TurboColor color) { _color = color; }
+			virtual	TurboColor GetColor() { return _color; }
+			virtual	void SetColor(TurboColor color) { _color = color; }
 
 			//  Public Access Methods
-			virtual	void	SetRGB(unsigned char red, unsigned char green, unsigned char blue);
-			virtual	void	SetRGB(float red, float green, float blue);
-			virtual	void	SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
-			virtual void	SetRGBA(float red, float green, float blue, float alpha);
+			virtual	void SetRGB(unsigned char red, unsigned char green, unsigned char blue);
+			virtual	void SetRGB(float red, float green, float blue);
+			virtual	void SetRGBA(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
+			virtual void SetRGBA(float red, float green, float blue, float alpha);
 		};
 
 		class TurboBrushRGBA32 : public ITurboBrush
