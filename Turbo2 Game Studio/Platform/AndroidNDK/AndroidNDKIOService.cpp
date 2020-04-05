@@ -7,7 +7,7 @@
 
 #include <TurboGameState.h>
 #include <AndroidNDKIOService.h>
-#include "TurboCoreHelpers.h"
+#include <TurboCoreHelpers.h>
 #include "JNIHelper.h"
 
 using namespace Turbo::Core;

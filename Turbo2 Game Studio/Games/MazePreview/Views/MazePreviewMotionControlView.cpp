@@ -10,12 +10,11 @@ MazePreviewMotionControlView::MazePreviewMotionControlView(
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<MazePreviewMotionControlViewModel> viewModel) :
-        TurboGroupView(name),
-        _rendererAccess(std::move(rendererAccess)),
-        _viewModel(std::move(viewModel))
+        TurboGroupView(name, rendererAccess),
+        _viewModel(viewModel)
 {
-    _forwardControlView = std::shared_ptr<ITurboView>(new TurboControlView("Forward Button View", _rendererAccess, _viewModel->ForwardViewModel()));
-    _backwardControlView = std::shared_ptr<ITurboView>(new TurboControlView("Backward Button View", _rendererAccess, _viewModel->BackwardViewModel()));
+    _forwardControlView = std::shared_ptr<ITurboView>(new TurboControlView("Forward Button View", rendererAccess, _viewModel->ForwardViewModel()));
+    _backwardControlView = std::shared_ptr<ITurboView>(new TurboControlView("Backward Button View", rendererAccess, _viewModel->BackwardViewModel()));
 
     AddView(_forwardControlView);
     AddView(_backwardControlView);

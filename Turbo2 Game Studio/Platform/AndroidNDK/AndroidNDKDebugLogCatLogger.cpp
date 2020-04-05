@@ -1,20 +1,16 @@
 
 #include <pch.h>
-#include <iostream>
-#include <fstream>
-#include <string>
 
-#include <TurboDebugTypes.h>
-#include <AndroidNDKDebugLogCatLogger.h>
 #include <android/log.h>
-#include "AndroidNDKDebugLogCatLogger.h"
+
+#include <AndroidNDKDebugLogCatLogger.h>
 
 using namespace Turbo::Platform::AndroidNDK;
 
 //  Constructors & Destructors -----------------------------------------------------------------------------------------
 
 AndroidNDKDebugLogCatLogger::AndroidNDKDebugLogCatLogger(std::string appName) :
-		_appName(appName)
+	_appName(appName)
 {
 }
 

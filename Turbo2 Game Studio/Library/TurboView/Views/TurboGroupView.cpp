@@ -3,17 +3,17 @@
 
 #include <TurboGroupView.h>
 
-
 using namespace Turbo::View;
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
-TurboGroupView::TurboGroupView(std::string name) :
-	TurboView(name)
+TurboGroupView::TurboGroupView(std::string name,
+							   std::shared_ptr<ITurboViewRendererAccess> rendererAccess) :
+	TurboView(name, rendererAccess)
 {
 }
 
-//	ITurboView Methods ------------------------------------------------------------------------------------------
+//	ITurboView Methods -------------------------------------------------------------------------------------------------
 
 void TurboGroupView::Load()
 {
@@ -27,7 +27,7 @@ void TurboGroupView::Render()
 		view->Render();
 }
 
-//	ITurboViewGroupControl Methods -------------------------------------------------------------------------------------
+//	ITurboGroupView Methods --------------------------------------------------------------------------------------------
 
 void TurboGroupView::AddView(std::shared_ptr<ITurboView> view)
 {

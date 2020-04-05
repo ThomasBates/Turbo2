@@ -11,8 +11,7 @@ TurboSceneView::TurboSceneView(
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<TurboSceneViewModel> viewModel) :
-        TurboView(name),
-        _rendererAccess(std::move(rendererAccess)),
+        TurboView(name, rendererAccess),
         _viewModel(std::move(viewModel))
 {
 }
@@ -21,10 +20,10 @@ TurboSceneView::TurboSceneView(
 
 void TurboSceneView::Load()
 {
-    _rendererAccess->LoadScene(_viewModel->Scene());
+    LoadScene(_viewModel->Scene());
 }
 
 void TurboSceneView::Render()
 {
-    _rendererAccess->RenderScene(_viewModel->Scene());
+    RenderScene(_viewModel->Scene());
 }

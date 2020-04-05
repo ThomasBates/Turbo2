@@ -5,6 +5,7 @@
 
 #include <TurboView.h>
 #include <ITurboGroupView.h>
+#include <ITurboViewRendererAccess.h>
 
 using namespace Turbo::Math;
 
@@ -16,7 +17,8 @@ namespace Turbo
 		{
 		public:
 			//	Constructors and Destructors ---------------------------------------------------------------------------
-			TurboGroupView(std::string name);
+			TurboGroupView(std::string name,
+						   std::shared_ptr<ITurboViewRendererAccess> rendererAccess);
 			virtual ~TurboGroupView(){}
 
 			//	ITurboView Methods -------------------------------------------------------------------------------------

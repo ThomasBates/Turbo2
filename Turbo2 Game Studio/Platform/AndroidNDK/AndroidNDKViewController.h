@@ -40,7 +40,7 @@ namespace Turbo
 				android_app* _android_app;
 				std::shared_ptr<ITurboDebug> _debug;
 
-				NavigationInfo _navInfo;
+				NavigationInfo _navInfo {};
 				std::vector<std::shared_ptr<ITurboControlView>> _controlViews;
 				bool _isRunning = false;
 

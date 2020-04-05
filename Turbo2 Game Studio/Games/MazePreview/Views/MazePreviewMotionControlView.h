@@ -12,7 +12,7 @@ using namespace Turbo::View;
 class MazePreviewMotionControlView : public TurboGroupView
 {
 public:
-    //	Constructors and Destructors ---------------------------------------------------------------------------
+    //	Constructors and Destructors -----------------------------------------------------------------------------------
     MazePreviewMotionControlView(
             std::string name,
             std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
@@ -23,7 +23,6 @@ protected:
     virtual void UpdateLayout(TurboVector2D position, TurboVector2D size);
 
 private:
-    std::shared_ptr<ITurboViewRendererAccess> _rendererAccess;
     std::shared_ptr<MazePreviewMotionControlViewModel> _viewModel;
 
     std::shared_ptr<ITurboView> _forwardControlView;

@@ -4,6 +4,7 @@
 #include <pch.h>
 
 #include <ITurboView.h>
+#include <ITurboViewRendererAccess.h>
 
 using namespace Turbo::Math;
 
@@ -15,7 +16,8 @@ namespace Turbo
 		{
 		public:
 			//	Constructors and Destructors ---------------------------------------------------------------------------
-			TurboView(std::string name);
+			TurboView(std::string name,
+					  std::shared_ptr<ITurboViewRendererAccess> rendererAccess);
 			virtual ~TurboView(){}
 
 			//	ITurboView Properties ---------------------------------------------------------------------------
@@ -33,8 +35,18 @@ namespace Turbo
 		protected:
 			virtual void UpdateLayout(TurboVector2D position, TurboVector2D size) {}
 
+			virtual void LoadScene(std::shared_ptr<ITurboScene> scene) { _rendererAccess->LoadScene(scene); }
+			virtual void LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite) { _rendererAccess->LoadSceneSprite(sceneSprite); }
+			virtual void LoadSceneText(std::shared_ptr<ITurboSceneText> sceneText) { _rendererAccess->LoadSceneText(sceneText); }
+
+			virtual void RenderScene(std::shared_ptr<ITurboScene> scene) { _rendererAccess->RenderScene(scene); }
+			virtual void RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite) { _rendererAccess->RenderSceneSprite(sceneSprite); }
+			virtual void RenderSceneText(std::shared_ptr<ITurboSceneText> sceneText) { _rendererAccess->RenderSceneText(sceneText); }
+
 		private:
 			std::string _name;
+			std::shared_ptr<ITurboViewRendererAccess> _rendererAccess;
+
 			TurboVector2D _position = {};
 			TurboVector2D _size = {};
 		};

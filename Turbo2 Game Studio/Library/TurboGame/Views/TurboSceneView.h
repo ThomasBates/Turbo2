@@ -28,7 +28,6 @@ namespace Turbo
             virtual void Render();
 
         private:
-            std::shared_ptr<ITurboViewRendererAccess> _rendererAccess;
             std::shared_ptr<TurboSceneViewModel> _viewModel;
         };
     }

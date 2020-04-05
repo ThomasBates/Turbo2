@@ -4,6 +4,8 @@
 #include <pch.h>
 
 #include <TurboSceneViewModel.h>
+#include <MazePreviewHUD1ViewModel.h>
+#include <MazePreviewHUD2ViewModel.h>
 #include <MazePreviewMainControlViewModel.h>
 #include <MazePreviewMotionControlViewModel.h>
 #include <MazePreviewDirectionControlViewModel.h>
@@ -14,28 +16,21 @@ class MazePreviewMainViewModel
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewMainViewModel(
-            std::shared_ptr<TurboSceneViewModel> mainSceneViewModel,
-//            std::shared_ptr<MazePreviewHUD1ViewModel> hud1ViewModel,
-//            std::shared_ptr<MazePreviewHUD2ViewModel> hud2ViewModel,
-            std::shared_ptr<MazePreviewMainControlViewModel> mainControlViewModel,
-            std::shared_ptr<MazePreviewMotionControlViewModel> motionControlViewModel,
-            std::shared_ptr<MazePreviewDirectionControlViewModel> directionControlViewModel
-            );
+    MazePreviewMainViewModel(std::shared_ptr<ITurboGame> game);
     virtual ~MazePreviewMainViewModel() {}
 
     //  Public Properties ----------------------------------------------------------------------------------------------
-    std::shared_ptr<TurboSceneViewModel> MainSceneViewModel() { return _mainSceneViewModel; }
-//    std::shared_ptr<MazePreviewHUD1ViewModel> HUD1ViewModel() { return _hud1ViewModel; }
-//    std::shared_ptr<MazePreviewHUD2ViewModel> HUD2ViewModel() { return _hud2ViewModel; }
+    std::shared_ptr<TurboSceneViewModel> MainSceneViewModel() { return _sceneViewModel; }
+    std::shared_ptr<MazePreviewHUD1ViewModel> HUD1ViewModel() { return _hud1ViewModel; }
+    std::shared_ptr<MazePreviewHUD2ViewModel> HUD2ViewModel() { return _hud2ViewModel; }
     std::shared_ptr<MazePreviewMainControlViewModel> MainControlViewModel() { return _mainControlViewModel; }
     std::shared_ptr<MazePreviewMotionControlViewModel> MotionControlViewModel() { return _motionControlViewModel; }
     std::shared_ptr<MazePreviewDirectionControlViewModel> DirectionControlViewModel() { return _directionControlViewModel; }
 
 private:
-    std::shared_ptr<TurboSceneViewModel> _mainSceneViewModel;
-//    std::shared_ptr<MazePreviewHUD1ViewModel> _hud1ViewModel;
-//    std::shared_ptr<MazePreviewHUD2ViewModel> _hud2ViewModel;
+    std::shared_ptr<TurboSceneViewModel> _sceneViewModel;
+    std::shared_ptr<MazePreviewHUD1ViewModel> _hud1ViewModel;
+    std::shared_ptr<MazePreviewHUD2ViewModel> _hud2ViewModel;
     std::shared_ptr<MazePreviewMainControlViewModel> _mainControlViewModel;
     std::shared_ptr<MazePreviewMotionControlViewModel> _motionControlViewModel;
     std::shared_ptr<MazePreviewDirectionControlViewModel> _directionControlViewModel;

@@ -39,7 +39,6 @@ namespace Turbo
             virtual void UpdateLayout(TurboVector2D position, TurboVector2D size);
 
         private:
-            std::shared_ptr<ITurboViewRendererAccess> _rendererAccess;
             std::shared_ptr<ITurboControlViewModel> _controlViewModel;
         };
     }

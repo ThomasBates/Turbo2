@@ -312,6 +312,8 @@ void AndroidNDKViewController::InitializeControls()
 
 bool AndroidNDKViewController::ProcessEvents()
 {
+    _debug->Send(debugVerbose, debugController) << "--> ProcessEvents()\n";
+
 	// Read all pending events.
 	int id;
 
@@ -337,11 +339,13 @@ bool AndroidNDKViewController::ProcessEvents()
 		// Check if we are exiting.
 		if (_android_app->destroyRequested != 0)
 		{
-			//_navInfo.Terminate = true;
+			_navInfo.Terminate = true;
+            _debug->Send(debugVerbose, debugController) << "<-- ProcessEvents(): false\n";
 			return false;
 		}
 	}
 
+    _debug->Send(debugVerbose, debugController) << "<-- ProcessEvents(): true\n";
 	return true;
 }
 

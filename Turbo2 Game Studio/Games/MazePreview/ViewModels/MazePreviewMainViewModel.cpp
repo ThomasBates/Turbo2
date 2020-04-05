@@ -2,19 +2,27 @@
 #include <pch.h>
 
 #include <MazePreviewMainViewModel.h>
+#include <TurboSceneNavigationPadControl.h>
+#include <TurboSceneNavigationButtonControl.h>
+#include <TurboControlViewModel.h>
 
-MazePreviewMainViewModel::MazePreviewMainViewModel(
-        std::shared_ptr<TurboSceneViewModel> mainSceneViewModel,
-//        std::shared_ptr<MazePreviewHUD1ViewModel> hud1ViewModel,
-//        std::shared_ptr<MazePreviewHUD2ViewModel> hud2ViewModel,
-        std::shared_ptr<MazePreviewMainControlViewModel> mainControlViewModel,
-        std::shared_ptr<MazePreviewMotionControlViewModel> motionControlViewModel,
-        std::shared_ptr<MazePreviewDirectionControlViewModel> directionControlViewModel) :
-        _mainSceneViewModel(mainSceneViewModel),
-//        _hud1ViewModel(hud1ViewModel),
-//        _hud2ViewModel(hud2ViewModel),
-        _mainControlViewModel(mainControlViewModel),
-        _motionControlViewModel(motionControlViewModel),
-        _directionControlViewModel(directionControlViewModel)
+MazePreviewMainViewModel::MazePreviewMainViewModel(std::shared_ptr<ITurboGame> game)
 {
+    auto dragControl    = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationPadControl(TurboGameControlType::Look,  0.1F));
+    auto dpadControl    = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationPadControl(TurboGameControlType::Look, -0.5F));
+    auto forwardButton  = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Move, 0, -1, 0));
+    auto backwardButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Move, 0,  1, 0));
+
+    auto dragControlViewModel    = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(dragControl));
+    auto dpadControlViewModel    = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(dpadControl, "DPadControl"));
+    auto forwardButtonViewModel  = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(forwardButton, "ForwardButton"));
+    auto backwardButtonViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(backwardButton, "BackwardButton"));
+
+    _sceneViewModel = std::shared_ptr<TurboSceneViewModel>(new TurboSceneViewModel(game));
+    _hud1ViewModel = std::shared_ptr<MazePreviewHUD1ViewModel>(new MazePreviewHUD1ViewModel(game));
+    _hud2ViewModel = std::shared_ptr<MazePreviewHUD2ViewModel>(new MazePreviewHUD2ViewModel(game));
+
+    _mainControlViewModel      = std::shared_ptr<MazePreviewMainControlViewModel>(new MazePreviewMainControlViewModel(dragControlViewModel));
+    _motionControlViewModel    = std::shared_ptr<MazePreviewMotionControlViewModel>(new MazePreviewMotionControlViewModel(forwardButtonViewModel, backwardButtonViewModel));
+    _directionControlViewModel = std::shared_ptr<MazePreviewDirectionControlViewModel>(new MazePreviewDirectionControlViewModel(dpadControlViewModel));
 }

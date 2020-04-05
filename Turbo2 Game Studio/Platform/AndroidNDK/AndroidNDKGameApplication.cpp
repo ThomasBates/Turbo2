@@ -14,6 +14,8 @@ using namespace Turbo::Platform::AndroidNDK;
 #define HELPER_CLASS_NAME "ca/turbobutterfly/ndkhelper/NDKHelper"  // Class name of helper function
 #define ever ;;
 
+//	Constructors -------------------------------------------------------------------------------------------------------
+
 AndroidNDKGameApplication::AndroidNDKGameApplication(
     android_app* app,
 	std::shared_ptr<ITurboDebug> debug,
@@ -29,6 +31,8 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
 	_renderer(renderer),
 	_audio(audio)
 {
+    _debug->Send(debugDebug, debugApplication) << "--> AndroidNDKGameApplication()\n";
+
     // Init helper functions
     //  JNIHelper is a singleton
     ndk_helper::JNIHelper::GetInstance()->Init(_android_app->activity, HELPER_CLASS_NAME);
@@ -37,15 +41,16 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
     _android_app->onAppCmd = AndroidNDKGameApplication::HandleAppCmd;
 
     //_android_app->activity->callbacks->onConfigurationChanged = ActivityConfigurationChanged;
+
+    _debug->Send(debugDebug, debugApplication) << "<-- AndroidNDKGameApplication()\n";
 }
 
-void AndroidNDKGameApplication::ActivityConfigurationChanged(ANativeActivity *activity)
-{
-//    activity->assetManager;
-}
+//  ITurboGameApplication Methods --------------------------------------------------------------------------------------
 
 int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared_ptr<ITurboView> view)
 {
+    _debug->Send(debugDebug, debugApplication) << "--> Run()\n";
+
     std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
     game->GameState(gameState);
     game->Initialize();	//	Create level, create & draw static scene
@@ -53,22 +58,28 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
     // loop waiting for stuff to do.
     for(ever)
     {
+        _debug->Send(debugVerbose, debugApplication) << "Run: _controller->GetNavigationInfo();\n";
         NavigationInfo* navInfo = _controller->GetNavigationInfo();
+        _debug->Send(debugVerbose, debugApplication) << "Run: navInfo->Terminate = " << navInfo->Terminate << "\n";
 
         if (navInfo->Terminate)
         {
+            _debug->Send(debugVerbose, debugApplication) << "Run: TerminateDisplay();\n";
             TerminateDisplay();
+            _debug->Send(debugVerbose, debugApplication) << "<-- Run(): 0\n";
             return 0;
         }
+
+        _debug->Send(debugVerbose, debugApplication) << "Run: _hasFocus = " << _hasFocus << "\n";
 
         if (_hasFocus)
         {
             //	Update the scene
             game->Update(navInfo);
 
-            if (_updateControls)
+            if (_updateViewSize)
             {
-                _updateControls = false;
+                _updateViewSize = false;
                 view->Size(TurboVector2D(_width, _height));
             }
 
@@ -83,12 +94,20 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
     }
 }
 
-/**
- * Process the next main command.
- */
+//  Application Command Methods ----------------------------------------------------------------------------------------
+
+//  Process the next main command.
 void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cmd)
 {
     auto application = (AndroidNDKGameApplication*)app->application;
+    application->HandleCommand(app, cmd);
+}
+
+//  Process the next main command.
+void AndroidNDKGameApplication::HandleCommand(struct android_app *app, int32_t cmd)
+{
+    _debug->Send(debugDebug, debugApplication) << "HandleCommand(app, " << AppCmd(cmd) << ")\n";
+
     switch (cmd)
     {
         //  Open/Resume
@@ -100,17 +119,17 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
             break;
         case APP_CMD_INIT_WINDOW:
             // The window is being shown, get it ready.
-            application->InitializeDisplay(app);
+            InitializeDisplay(app);
             break;
         case APP_CMD_GAINED_FOCUS:
-            application->ActivateDisplay();
+            ActivateDisplay();
             break;
 
-        //  Pause/Close
+            //  Pause/Close
         case APP_CMD_PAUSE:
             break;
         case APP_CMD_LOST_FOCUS:
-            application->DeactivateDisplay();
+            DeactivateDisplay();
             break;
         case APP_CMD_SAVE_STATE:
             break;
@@ -118,25 +137,25 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
             break;
         case APP_CMD_TERM_WINDOW:
             // The window is being hidden or closed, clean it up.
-            application->TerminateDisplay();
+            TerminateDisplay();
             break;
 
-        //  Rotate/Resize
+            //  Rotate/Resize
         case APP_CMD_CONFIG_CHANGED:
-            application->ReconfigureDisplay(app);
+            ReconfigureDisplay(app);
             break;
         case APP_CMD_WINDOW_RESIZED:
-            application->ReconfigureDisplay(app);
+            ReconfigureDisplay(app);
             break;
 
-        //  Other
+            //  Other
         case APP_CMD_WINDOW_REDRAW_NEEDED:
             break;
         case APP_CMD_CONTENT_RECT_CHANGED:
             break;
         case APP_CMD_LOW_MEMORY:
             // Free up GL resources
-            application->TrimMemory();
+            TrimMemory();
             break;
         case APP_CMD_DESTROY:
             break;
@@ -146,6 +165,11 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
     }
 }
 
+void AndroidNDKGameApplication::ActivityConfigurationChanged(ANativeActivity *activity)
+{
+//    activity->assetManager;
+}
+
 //  Initialize an EGL context for the current display.
 void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
 {
@@ -153,11 +177,11 @@ void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
         return;
 
     _renderer->UpdateDisplayInformation();
-    UpdateControls(app);
+    UpdateViewSize(app);
     JNI_ShowUI();
 
     _controller->Resume();
-    _hasFocus = true;
+    //_hasFocus = true;
 }
 
 //  Initialize an EGL context for the current display.
@@ -177,7 +201,7 @@ void AndroidNDKGameApplication::DeactivateDisplay()
 //  Tear down the EGL context currently associated with the display.
 void AndroidNDKGameApplication::TerminateDisplay()
 {
-    _hasFocus = false;
+    //_hasFocus = false;
     _controller->Suspend();
     _renderer->Reset();
 }
@@ -191,17 +215,9 @@ void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
     _renderer->Reset();
     _renderer->UpdateDisplayInformation();
 
-    UpdateControls(app);
+    UpdateViewSize(app);
 
     JNI_ShowUI();
-}
-
-void AndroidNDKGameApplication::UpdateControls(android_app *app)
-{
-    _width = (float) ANativeWindow_getWidth(app->window);
-    _height = (float) ANativeWindow_getHeight(app->window);
-
-    _updateControls = true;
 }
 
 void AndroidNDKGameApplication::TrimMemory()
@@ -209,6 +225,16 @@ void AndroidNDKGameApplication::TrimMemory()
     LOGI("Trimming memory");
     _renderer->Reset();
 }
+
+void AndroidNDKGameApplication::UpdateViewSize(android_app *app)
+{
+    _width = (float) ANativeWindow_getWidth(app->window);
+    _height = (float) ANativeWindow_getHeight(app->window);
+
+    _updateViewSize = true;
+}
+
+//  JNI Methods --------------------------------------------------------------------------------------------------------
 
 void AndroidNDKGameApplication::JNI_ShowUI()
 {

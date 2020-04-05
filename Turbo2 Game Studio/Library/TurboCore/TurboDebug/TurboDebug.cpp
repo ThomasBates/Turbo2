@@ -19,7 +19,10 @@ void TurboDebug::Send(TurboDebugSeverity severity, TurboDebugCategory category, 
 	if (_logger == nullptr)
 		return;
 
-	if (category == debugInteractions)
+	if (severity < _severity)
+		return;
+
+	if (!CategoryEnabled(category))
 		return;
 
 	_logger->Log(DebugSeverity(severity), DebugCategory(category), message);
@@ -30,7 +33,11 @@ TurboDebugStream& TurboDebug::Send(TurboDebugSeverity severity, TurboDebugCatego
 	if (_logger == nullptr)
 		return _nullStream;
 
-	if (category == debugInteractions)
+
+	if (severity < _severity)
+		return _nullStream;
+
+	if (!CategoryEnabled(category))
 		return _nullStream;
 
 	_stream.Severity(DebugSeverity(severity));

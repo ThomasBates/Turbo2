@@ -2,15 +2,15 @@
 #include <pch.h>
 
 #include <TurboView.h>
-#include "TurboView.h"
-
 
 using namespace Turbo::View;
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
-TurboView::TurboView(std::string name) :
-	_name(name)
+TurboView::TurboView(std::string name,
+					 std::shared_ptr<ITurboViewRendererAccess> rendererAccess) :
+	_name(name),
+	_rendererAccess(rendererAccess)
 {
 }
 

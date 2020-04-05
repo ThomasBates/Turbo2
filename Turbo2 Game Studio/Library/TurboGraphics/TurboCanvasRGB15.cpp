@@ -5,7 +5,7 @@
 #include <nds.h>
 #include <stdio.h>
 
-#include "TurboCanvasRGB15.h"
+#include <TurboCanvasRGB15.h>
 
 #define MIN(a,b)	((a)<(b)?(a):(b))
 #define MAX(a,b)	((a)>(b)?(a):(b))

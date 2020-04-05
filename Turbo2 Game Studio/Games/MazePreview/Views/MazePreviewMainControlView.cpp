@@ -10,11 +10,10 @@ MazePreviewMainControlView::MazePreviewMainControlView(
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<MazePreviewMainControlViewModel> viewModel) :
-        TurboGroupView(name),
-        _rendererAccess(std::move(rendererAccess)),
-        _viewModel(std::move(viewModel))
+        TurboGroupView(name, rendererAccess),
+        _viewModel(viewModel)
 {
-    _mainControlView = std::shared_ptr<ITurboView>(new TurboControlView("Main Control View", _rendererAccess, _viewModel->ControlViewModel()));
+    _mainControlView = std::shared_ptr<ITurboView>(new TurboControlView("Main Control View", rendererAccess, _viewModel->ControlViewModel()));
 
     AddView(_mainControlView);
 }

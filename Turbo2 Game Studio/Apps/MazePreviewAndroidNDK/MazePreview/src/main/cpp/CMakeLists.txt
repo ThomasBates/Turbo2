@@ -64,11 +64,15 @@ add_library(Games_MazePreview
 		${TurboFolder}/Games/MazePreview/Level00/Level05CubicMazeFactory.cpp
 
 		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD1ViewModel.cpp
+		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD2ViewModel.cpp
 		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewDirectionControlViewModel.cpp
 		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainControlViewModel.cpp
 		${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMotionControlViewModel.cpp
 
 		${TurboFolder}/Games/MazePreview/Views/MazePreviewMainView.cpp
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewHUD1View.cpp
+		${TurboFolder}/Games/MazePreview/Views/MazePreviewHUD2View.cpp
 		${TurboFolder}/Games/MazePreview/Views/MazePreviewDirectionControlView.cpp
 		${TurboFolder}/Games/MazePreview/Views/MazePreviewMainControlView.cpp
 		${TurboFolder}/Games/MazePreview/Views/MazePreviewMotionControlView.cpp
@@ -125,8 +129,8 @@ add_library(Library_TurboView
 		STATIC
 		${TurboFolder}/Library/TurboView/ViewModels/TurboControlViewModel.cpp
 		${TurboFolder}/Library/TurboView/Views/TurboGroupView.cpp
-		${TurboFolder}/Library/TurboView/TurboView.cpp
 		${TurboFolder}/Library/TurboView/Views/TurboControlView.cpp
+		${TurboFolder}/Library/TurboView/Views/TurboView.cpp
 		)
 
 add_library(Platform_AndroidNDK

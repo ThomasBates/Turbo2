@@ -11,8 +11,7 @@ TurboControlView::TurboControlView(
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<ITurboControlViewModel> controlViewModel) :
-        TurboView(name),
-        _rendererAccess(std::move(rendererAccess)),
+        TurboView(name, rendererAccess),
         _controlViewModel(std::move(controlViewModel))
 {
 }
@@ -25,7 +24,7 @@ void TurboControlView::Load()
     if (sprite == nullptr)
         return;
 
-    _rendererAccess->LoadSceneSprite(sprite);
+    LoadSceneSprite(sprite);
 }
 
 void TurboControlView::Render()
@@ -34,7 +33,7 @@ void TurboControlView::Render()
     if (sprite == nullptr)
         return;
 
-    _rendererAccess->RenderSceneSprite(sprite);
+    RenderSceneSprite(sprite);
 }
 
 //	ITurboControlView Properties ---------------------------------------------------------------------------------------
