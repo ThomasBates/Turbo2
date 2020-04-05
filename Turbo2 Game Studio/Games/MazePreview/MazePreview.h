@@ -17,32 +17,25 @@ class MazePreview : public ITurboGame
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
 	MazePreview(std::shared_ptr<ITurboDebug> debug);
-
 	virtual ~MazePreview() {}
 
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Maze Preview"; }
 
 	virtual std::shared_ptr<ITurboGameState> GameState();
-
 	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);
 
 	virtual TurboGameLevelState LevelState() { return _levelState; }
-
-	virtual void
-	LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
+	virtual void LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
 
 	virtual std::shared_ptr<ITurboScene> Scene();
-
 	virtual std::shared_ptr<ITurboSceneObject> Player();
 
 	virtual bool SceneChanged() { return _sceneChanged; }
 
 	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();
-
 	virtual void Finalize();
-
 	virtual void Update(NavigationInfo *navInfo);
 
 private:
