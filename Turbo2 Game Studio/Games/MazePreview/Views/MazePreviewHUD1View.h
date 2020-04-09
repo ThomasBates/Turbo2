@@ -29,6 +29,6 @@ protected:
 private:
     std::shared_ptr<MazePreviewHUD1ViewModel> _viewModel;
 
-    std::shared_ptr<ITurboSceneSprite> _test1;
-    std::shared_ptr<ITurboSceneSprite> _test2;
+    std::shared_ptr<ITurboSceneText> _roundText;
+    std::shared_ptr<ITurboSceneText> _titleText;
 };

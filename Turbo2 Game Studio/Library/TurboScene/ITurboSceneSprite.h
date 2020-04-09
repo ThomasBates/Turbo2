@@ -5,7 +5,7 @@
 #include <ITurboSceneTexture.h>
 #include <TurboColor.h>
 #include <TurboVector2D.h>
-#include <TurboSceneNavigationInfo.h>
+#include <TurboRectangle.h>
 
 using namespace Turbo::Graphics;
 using namespace Turbo::Math;
@@ -27,17 +27,8 @@ namespace Turbo
 			virtual bool UseRectangle() = 0;
 			virtual void UseRectangle(bool useRectangle) = 0;
 
-			virtual float Left() = 0;
-			virtual void Left(float left) = 0;
-
-			virtual float Top() = 0;
-			virtual void Top(float top) = 0;
-
-			virtual float Right() = 0;
-			virtual void Right(float right) = 0;
-
-			virtual float Bottom() = 0;
-			virtual void Bottom(float bottom) = 0;
+			virtual TurboRectangle Rectangle() = 0;
+			virtual void Rectangle(TurboRectangle rectangle) = 0;
 
 			virtual TurboVector2D Location() = 0;
 			virtual void Location(TurboVector2D location) = 0;
@@ -48,11 +39,8 @@ namespace Turbo
 			virtual float Rotation() = 0;
 			virtual void Rotation(float rotation) = 0;
 
-			virtual float Scale() = 0;
-			virtual void Scale(float scale) = 0;
-
-			//  ITurboSceneSprite Methods ------------------------------------------------------------------------------
-			virtual void Update(NavigationInfo navInfo) = 0;
+			virtual TurboVector2D Scale() = 0;
+			virtual void Scale(TurboVector2D scale) = 0;
 		};
 	}
 }

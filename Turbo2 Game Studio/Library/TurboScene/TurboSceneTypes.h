@@ -3,7 +3,9 @@
 
 #include <TurboVector2D.h>
 #include <TurboVector3D.h>
+#include <TurboColor.h>
 
+using namespace Turbo::Graphics;
 using namespace Turbo::Math;
 
 namespace Turbo
@@ -21,7 +23,7 @@ namespace Turbo
 		{
 			TurboVector3D Position;
 			TurboVector3D Normal;
-			TurboVector3D Color;
+			TurboColor Color;
 			TurboVector2D TextureUV;
 		};
 
@@ -39,6 +41,24 @@ namespace Turbo
 			Model,
 			Cube,
 			Sphere
+		};
+
+		enum SceneTextHorizontalAlignment
+		{
+			horizontalLeft,
+            horizontalCenter,
+            horizontalRight,
+            horizontalStretched,
+            horizontalJustified
+		};
+
+		enum SceneTextVerticalAlignment
+		{
+			verticalTop,
+            verticalCenter,
+            verticalBottom,
+            verticalStretched,
+            verticalJustified
 		};
 	}
 }

@@ -20,7 +20,7 @@ namespace Turbo
 			//  ITurboSceneObject Properties ---------------------------------------------------------------------------
 			virtual SceneObjectPrimitiveType PrimitiveType() = 0;
 			virtual void PrimitiveType(SceneObjectPrimitiveType primitiveType) = 0;
-			
+
 			virtual	std::shared_ptr<ITurboSceneMesh> Mesh() = 0;
 			virtual void Mesh(std::shared_ptr<ITurboSceneMesh> mesh) = 0;
 

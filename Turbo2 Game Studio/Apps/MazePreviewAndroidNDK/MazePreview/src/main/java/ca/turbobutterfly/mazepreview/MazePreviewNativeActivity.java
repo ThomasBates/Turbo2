@@ -131,6 +131,9 @@ public class MazePreviewNativeActivity extends NativeActivity {
         if( _label == null )
             return;
 
+        if (fFPS == 0)
+            return;
+
         _activity = this;
         this.runOnUiThread(new Runnable()  {
             @Override

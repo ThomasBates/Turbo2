@@ -2,9 +2,7 @@
 #include <pch.h>
 
 #include <MazePreviewHUD1View.h>
-#include <TurboControlView.h>
-#include <TurboSceneTexture.h>
-#include <TurboSceneSprite.h>
+#include <TurboSceneText.h>
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -15,40 +13,42 @@ MazePreviewHUD1View::MazePreviewHUD1View(
         TurboView(name, rendererAccess),
         _viewModel(viewModel)
 {
-    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("BackwardButton"));
-    _test1 = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
-
-    texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("ForwardButton"));
-    _test2 = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
+    _roundText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(0.0F, 0.0F, 1.0F), _viewModel->RoundText()));
+    _titleText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(1.0F, 0.0F, 0.0F), _viewModel->TitleText()));
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
 
 void MazePreviewHUD1View::Load()
 {
-    LoadSceneSprite(_test1);
-    LoadSceneSprite(_test2);
+    _roundText->Text(_viewModel->RoundText());
+    _titleText->Text(_viewModel->TitleText());
+
+    LoadSceneText(_roundText);
+    LoadSceneText(_titleText);
 }
 
 void MazePreviewHUD1View::Render()
 {
-    RenderSceneSprite(_test1);
-    RenderSceneSprite(_test2);
+    RenderSceneText(_roundText);
+    RenderSceneText(_titleText);
 }
 
 //	Protected Methods --------------------------------------------------------------------------------------------------
 
 void MazePreviewHUD1View::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
-    float division = 0.1F;
+    _roundText->UseRectangle(true);
+    _roundText->Rectangle(TurboRectangle(
+            position.X,
+            position.Y,
+            position.X + size.X,
+            position.Y + 60));
 
-    _test1->Left(position.X);
-    _test1->Top(position.Y);
-    _test1->Right(position.X + size.X);
-    _test1->Bottom(position.Y + size.X * division);
-
-    _test2->Left(position.X);
-    _test2->Top(position.Y + size.X * division);
-    _test2->Right(position.X + size.X);
-    _test2->Bottom(position.Y + size.Y);
+    _titleText->UseRectangle(true);
+    _titleText->Rectangle(TurboRectangle(
+            position.X,
+            position.Y + 60,
+            position.X + size.X,
+            position.Y + 120));
 }

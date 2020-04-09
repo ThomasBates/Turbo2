@@ -15,40 +15,29 @@ MazePreviewHUD2View::MazePreviewHUD2View(
         TurboView(name, rendererAccess),
         _viewModel(viewModel)
 {
-    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("BackwardButton"));
+    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Consolas"));
     _test1 = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
-
-    texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("ForwardButton"));
-    _test2 = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
 
 void MazePreviewHUD2View::Load()
 {
-    LoadSceneSprite(_test1);
-    LoadSceneSprite(_test2);
+    //LoadSceneSprite(_test1);
 }
 
 void MazePreviewHUD2View::Render()
 {
-    RenderSceneSprite(_test1);
-    RenderSceneSprite(_test2);
+    //RenderSceneSprite(_test1);
 }
 
 //	Protected Methods --------------------------------------------------------------------------------------------------
 
 void MazePreviewHUD2View::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
-    float division = 0.9F;
-
-    _test1->Left(position.X);
-    _test1->Top(position.Y);
-    _test1->Right(position.X + size.X);
-    _test1->Bottom(position.Y + size.X * division);
-
-    _test2->Left(position.X);
-    _test2->Top(position.Y + size.X * division);
-    _test2->Right(position.X + size.X);
-    _test2->Bottom(position.Y + size.Y);
+    _test1->Rectangle(TurboRectangle(
+            position.X,
+            position.Y,
+            position.X + size.X,
+            position.Y + size.Y));
 }

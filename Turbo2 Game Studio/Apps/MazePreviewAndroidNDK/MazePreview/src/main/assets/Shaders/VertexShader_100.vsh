@@ -29,7 +29,7 @@ uniform             int     uIsSprite;
 
 attribute   highp   vec3    vsPosition;
 attribute   highp   vec3    vsNormal;
-attribute   highp   vec3    vsColor;
+attribute   highp   vec4    vsColor;
 attribute   highp   vec2    vsTexture;
 
 //rying     mediump vec3    psPosition;
@@ -45,7 +45,9 @@ void main(void)
     {
         gl_Position = uProjection * position;
 
-        psColor = vec4(1);
+        //psColor = vec4(1);
+        //psColor = vec4(vsColor, 1);
+        psColor = vsColor;
         psTexture = vsTexture;
 
         return;
@@ -66,11 +68,13 @@ void main(void)
             power = pow(power, 3.0);
         }
 
-        psColor = vec4(power, power, power, 1);
+        psColor = vec4(power * vsColor.r, power * vsColor.g, power * vsColor.b, vsColor.a);
     }
     else
     {
-        psColor = vec4(1);
+        //psColor = vec4(1);
+        //psColor = vec4(vsColor, 1);
+        psColor = vsColor;
     }
 
     //psNormal = vec3(mat3(uView[0].xyz, uView[1].xyz, uView[2].xyz) * vsNormal);

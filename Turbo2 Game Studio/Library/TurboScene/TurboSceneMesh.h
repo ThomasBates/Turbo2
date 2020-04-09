@@ -23,6 +23,8 @@ namespace Turbo
 			virtual ~TurboSceneMesh() {}
 
 			//  ITurboSceneMesh Methods --------------------------------------------------------------------------------
+			virtual void AddVertex(TurboVector3D position, TurboVector3D normal, TurboColor	color, TurboVector2D textureUV);
+			virtual void AddVertex(TurboVector3D position, TurboVector3D normal, TurboColor	color);
 			virtual void AddVertex(TurboVector3D position, TurboVector3D normal, TurboVector2D textureUV);
 			virtual void AddTriangle(int vertex1, int vertex2, int vertex3);
 

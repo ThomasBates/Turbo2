@@ -15,7 +15,13 @@ public:
     virtual ~MazePreviewHUD1ViewModel() {}
 
     //  Public Properties ----------------------------------------------------------------------------------------------
+    std::string TitleText();
+    std::string RoundText();
 
 private:
     std::shared_ptr<ITurboGame> _game;
+    bool _checkRound = true;
+    std::string _roundText;
+    std::string _title;
+    std::string _titleText;
 };

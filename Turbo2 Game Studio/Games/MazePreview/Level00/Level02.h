@@ -28,7 +28,7 @@ public:
 	virtual ~Level02(){}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
-	virtual std::string Title() { return "Original Level"; }
+	virtual std::string Title() { return "Maze 2"; }
 
 	virtual std::shared_ptr<ITurboGameState> GameState();
 	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);

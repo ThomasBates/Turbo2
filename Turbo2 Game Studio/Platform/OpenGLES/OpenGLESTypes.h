@@ -20,7 +20,7 @@ namespace Turbo
             {
                 float Position[3];
                 float Normal[3];
-                float Color[3];
+                float Color[4];
                 float Texture[2];
             };
 

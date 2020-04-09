@@ -37,7 +37,7 @@ MazePreviewMainView::MazePreviewMainView(
     AddView(_motionControlView);
     AddView(_directionControlView);
 
-    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("BackwardButton"));
+    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
 }
 
@@ -108,10 +108,12 @@ void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D siz
     _mainControlView->Size(TurboVector2D(x2 - x1, y2 - y1));
 
     // watermark
-    _watermark->Left(x2 - s/4);
-    _watermark->Top(y2 - s/4);
-    _watermark->Right(x2);
-    _watermark->Bottom(y2);
+    _watermark->UseRectangle(true);
+    _watermark->Rectangle(TurboRectangle(
+            x2 - s/4,
+            y2 - s/4,
+            x2,
+            y2));
 
     // bottom left
     _motionControlView->Position(TurboVector2D(0, height - s));

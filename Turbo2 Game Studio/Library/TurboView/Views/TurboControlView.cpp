@@ -64,8 +64,9 @@ void TurboControlView::UpdateLayout(TurboVector2D position, TurboVector2D size)
         return;
 
     sprite->UseRectangle(true);
-    sprite->Left(position.X);
-    sprite->Top(position.Y);
-    sprite->Right(position.X + size.X);
-    sprite->Bottom(position.Y + size.Y);
+    sprite->Rectangle(TurboRectangle(
+            position.X,
+            position.Y,
+            position.X + size.X,
+            position.Y + size.Y));
 }

@@ -24,6 +24,7 @@
 #include <MazePreviewMainControlView.h>
 #include <MazePreviewMotionControlView.h>
 #include <MazePreviewDirectionControlView.h>
+#include <TurboSceneArialFont.h>
 
 
 using namespace Turbo::Core::Debug;
@@ -48,10 +49,13 @@ void android_main(android_app* app)
     auto renderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService));
     auto audio = std::shared_ptr<ITurboGameAudio>(new AndroidNDKAudio(debug, ioService));
 
+    renderer->RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneArialFont()));
+//    renderer->RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneConsolasFont()));
+
     auto game = std::shared_ptr<ITurboGame>(new MazePreview(debug));
     auto mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
 
-    auto rendererAccess = std::dynamic_pointer_cast<ITurboViewRendererAccess>(renderer);
+    auto rendererAccess = renderer->RendererAccess();
     auto mainView = std::shared_ptr<ITurboGroupView>(new MazePreviewMainView("Main View", rendererAccess, mainViewModel));
 
     auto controller = std::shared_ptr<ITurboViewController>(new AndroidNDKViewController(app, debug, mainView));

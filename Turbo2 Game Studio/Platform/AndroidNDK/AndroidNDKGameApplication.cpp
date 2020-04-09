@@ -89,7 +89,7 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
 //            _audio->LoadView(view);
 //            _audio->PlaySounds(view);
 
-            JNI_UpdateFPS();
+            //JNI_UpdateFPS();
         }
     }
 }

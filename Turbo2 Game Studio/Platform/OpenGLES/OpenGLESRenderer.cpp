@@ -15,6 +15,8 @@
 #include <TurboCanvasRGBA32.h>
 #include <TurboCoreHelpers.h>
 #include <TurboSceneMesh.h>
+#include <TurboSceneTexture.h>
+
 
 using namespace Turbo::Core;
 using namespace Turbo::Graphics;
@@ -30,7 +32,7 @@ OpenGLESRenderer::OpenGLESRenderer(
         _debug(debug),
         _ioService(ioService)
 {
-    _rendererAccess = std::shared_ptr<ITurboViewRendererAccess>(this);
+//    _rendererAccess = std::shared_ptr<ITurboViewRendererAccess>(this);
 
     _gl_context = OpenGLESContext::GetInstance();
 }
@@ -41,6 +43,11 @@ OpenGLESRenderer::~OpenGLESRenderer()
 }
 
 //	ITurboGameRenderer Methods -----------------------------------------------------------------------------------------
+
+void OpenGLESRenderer::RegisterFont(std::shared_ptr<ITurboSceneFont> font)
+{
+    _sceneFonts[font->Name()] = font;
+}
 
 void OpenGLESRenderer::UpdateDisplayInformation()
 {
@@ -158,8 +165,8 @@ void OpenGLESRenderer::LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneO
     if (sceneObject == nullptr)
         return;
 
-    LoadSceneObjectVertices(sceneObject);
     LoadSceneObjectTexture(sceneObject);
+    LoadSceneObjectVertices(sceneObject);
 }
 
 void OpenGLESRenderer::LoadChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
@@ -180,14 +187,18 @@ void OpenGLESRenderer::LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneS
     if (sceneSprite == nullptr)
         return;
 
-    LoadSceneSpriteVertices();
     LoadSceneSpriteTexture(sceneSprite);
+    LoadSceneSpriteVertices();
 }
 
-void OpenGLESRenderer::LoadSceneText(std::shared_ptr<ITurboSceneText> text)
+void OpenGLESRenderer::LoadSceneText(std::shared_ptr<ITurboSceneText> sceneText)
 {
-    if (text == nullptr)
+    if (sceneText == nullptr)
         return;
+
+    LoadSceneFontTexture(sceneText);
+    LoadSceneTextVertices(sceneText);
+
 }
 
 void OpenGLESRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
@@ -216,68 +227,14 @@ void OpenGLESRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> scen
     if (sceneObject == nullptr)
         return;
 
-    std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+    auto mesh = sceneObject->Mesh();
     if (mesh == nullptr)
         return;
 
-    _sceneMeshInfo[mesh].Used = true;
-    MeshInfo meshInfo = _sceneMeshInfo[mesh];
+    auto textureName = sceneObject->Material()->Texture()->Name();
+    auto model = sceneObject->Placement()->Transform();
 
-    // Bind the Vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
-
-    int32_t stride = sizeof(SHADER_VERTEX);
-    // Pass the vertex data
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_NORMAL);
-
-    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_COLOR);
-
-    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_UV);
-
-    // Bind the Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
-
-    std::string textureName = sceneObject->Material()->Texture()->Name();
-    _sceneTextureInfo[textureName].Used = true;
-    GLuint textureBufferName = _sceneTextureInfo[textureName].TextureBufferName;
-    glBindTexture(GL_TEXTURE_2D, textureBufferName);
-
-    glUseProgram(_shaderParams.program);
-
-//    std::shared_ptr<ITurboSceneMaterial> material = sceneObject->Material();
-
-//    TurboColor ambientColor = material->AmbientColor();
-//    TurboColor specularColor = material->SpecularColor();
-//    float specularExponent = material->SpecularExponent();
-
-    // Update uniforms
-    glUniformMatrix4fv(_shaderParams.ViewMatrix,       1, GL_FALSE, _viewMatrix.Ptr());
-    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, _projectionMatrix.Ptr());
-
-    glUniform1i(_shaderParams.LightCount, _lightCount);
-    glUniform1i(_shaderParams.IsSprite, 0);
-
-    // (using glUniform3fv here was troublesome..)
-//    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
-//    glUniform4f(_shaderParams.material_specular_, specularColor.R, specularColor.G, specularColor.B, specularExponent);
-//    glUniform3f(_shaderParams.light0_, 100.f, -200.f, -600.f);
-
-    //  TODO: Optimize to use instancing
-    //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
-
-    TurboMatrix4x4 model = sceneObject->Placement()->Transform();
-    glUniformMatrix4fv(_shaderParams.ModelMatrix, 1, GL_FALSE, model.Ptr());
-
-    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    RenderSceneMesh(&(_sceneMeshInfo[mesh]), textureName, 0, &_projectionMatrix, &_viewMatrix, &model);
 }
 
 void OpenGLESRenderer::RenderChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
@@ -298,11 +255,77 @@ void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> scen
     if (sceneSprite == nullptr)
         return;
 
-    _spriteMeshInfo.Used = true;
-    MeshInfo meshInfo = _spriteMeshInfo;
+    auto textureName = sceneSprite->Texture()->Name();
+
+    TurboMatrix4x4 projection {};
+
+    if (sceneSprite->UseRectangle())
+    {
+        int32_t viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        auto width = static_cast<float>(viewport[2]);
+        auto height = static_cast<float>(viewport[3]);
+
+        auto r = sceneSprite->Rectangle();
+
+        projection = projection.Translate(1, 1, 0);
+        projection = projection.Scale((r.X2 - r.X1) / width, (r.Y2 - r.Y1) / height, 1);
+        projection = projection.Translate((2 * r.X1 / width) - 1, 1 - (2 * r.Y2 / height), 0);
+    }
+
+    RenderSceneMesh(&_spriteMeshInfo, textureName, 1, &projection, NULL, NULL);
+}
+
+void OpenGLESRenderer::RenderSceneText(std::shared_ptr<ITurboSceneText> sceneText)
+{
+    if (sceneText == nullptr)
+        return;
+
+    auto fontName = sceneText->FontName();
+    if (fontName.empty())
+        return;
+
+    //  Font name not registered?
+    if (_sceneFonts.find(fontName) == _sceneFonts.end())
+        return;
+
+    //  Font texture not loaded?
+    if (_sceneTextureInfo.find(fontName) == _sceneTextureInfo.end())
+        return;
+
+    TurboMatrix4x4 projection {};
+
+    if (sceneText->UseRectangle())
+    {
+        int32_t viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        auto width = static_cast<float>(viewport[2]);
+        auto height = static_cast<float>(viewport[3]);
+
+        auto r = sceneText->Rectangle();
+
+        projection = projection.Translate(1, 1, 0);
+        projection = projection.Scale((r.X2 - r.X1) / width, (r.Y2 - r.Y1) / height, 1);
+        projection = projection.Translate((2 * r.X1 / width) - 1, 1 - (2 * r.Y2 / height), 0);
+    }
+
+    RenderSceneMesh(&(_sceneTextInfo[sceneText]), fontName, 1, &projection, NULL, NULL);
+
+    sceneText->PropertyChanged(false);
+}
+
+void OpenGLESRenderer::RenderSceneMesh(
+        MeshInfo *meshInfo,
+        std::string textureName,
+        int isSprite,
+        TurboMatrix4x4 *projection,
+        TurboMatrix4x4 *view,
+        TurboMatrix4x4 *model)
+{
+    meshInfo->Used = true;
 
     // Bind the Vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, meshInfo.VertexBufferName);
+    glBindBuffer(GL_ARRAY_BUFFER, meshInfo->VertexBufferName);
 
     int32_t stride = sizeof(SHADER_VERTEX);
     // Pass the vertex data
@@ -312,16 +335,15 @@ void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> scen
     glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_NORMAL);
 
-    glVertexAttribPointer(ATTRIB_COLOR,  3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+    glVertexAttribPointer(ATTRIB_COLOR,  4, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_COLOR);
 
-    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+    glVertexAttribPointer(ATTRIB_UV,     2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(10 * sizeof(GLfloat)));
     glEnableVertexAttribArray(ATTRIB_UV);
 
     // Bind the Index buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo.IndexBufferName);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshInfo->IndexBufferName);
 
-    std::string textureName = sceneSprite->Texture()->Name();
     _sceneTextureInfo[textureName].Used = true;
     GLuint textureBufferName = _sceneTextureInfo[textureName].TextureBufferName;
     glBindTexture(GL_TEXTURE_2D, textureBufferName);
@@ -334,25 +356,16 @@ void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> scen
 //    TurboColor specularColor = material->SpecularColor();
 //    float specularExponent = material->SpecularExponent();
 
-    int32_t viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    auto width  = static_cast<float>(viewport[2]);
-    auto height = static_cast<float>(viewport[3]);
-
-    float minX = sceneSprite->Left();
-    float maxX = sceneSprite->Right();
-    float minY = sceneSprite->Top();
-    float maxY = sceneSprite->Bottom();
-
-    TurboMatrix4x4 projection {};
-    projection = projection.Translate(1, 1, 0);
-    projection = projection.Scale((maxX - minX) / width, (maxY - minY) / height, 1);
-    projection = projection.Translate((2 * minX / width) - 1, 1 - (2 * maxY / height), 0);
-
-    glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection.Ptr());
-
     // Update uniforms
-    glUniform1i(_shaderParams.IsSprite, 1);
+    if (projection)
+        glUniformMatrix4fv(_shaderParams.ProjectionMatrix, 1, GL_FALSE, projection->Ptr());
+    if (view)
+        glUniformMatrix4fv(_shaderParams.ViewMatrix,       1, GL_FALSE, view->Ptr());
+    if (model)
+        glUniformMatrix4fv(_shaderParams.ModelMatrix,      1, GL_FALSE, model->Ptr());
+
+    glUniform1i(_shaderParams.LightCount, _lightCount);
+    glUniform1i(_shaderParams.IsSprite, isSprite);
 
     // (using glUniform3fv here was troublesome..)
 //    glUniform3f(_shaderParams.material_ambient_,  ambientColor.R,  ambientColor.G,  ambientColor.B);
@@ -362,16 +375,10 @@ void OpenGLESRenderer::RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> scen
     //  TODO: Optimize to use instancing
     //  Loop by mesh first, then all scene objects that use that mesh, then render them as a batch.
 
-    glDrawElements(GL_TRIANGLES, meshInfo.IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+    glDrawElements(GL_TRIANGLES, meshInfo->IndexCount, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void OpenGLESRenderer::RenderSceneText(std::shared_ptr<ITurboSceneText> text)
-{
-    if (text == nullptr)
-        return;
 }
 
 //	--------------------------------------------------------------------------------------------------------------------
@@ -405,7 +412,7 @@ void OpenGLESRenderer::ReleaseViewResources()
 
 void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject> sceneObject)
 {
-    std::shared_ptr<ITurboSceneMesh> mesh = sceneObject->Mesh();
+    auto mesh = sceneObject->Mesh();
     if (mesh == nullptr)
         return;
 
@@ -417,34 +424,7 @@ void OpenGLESRenderer::LoadSceneObjectVertices(std::shared_ptr<ITurboSceneObject
 
     MeshInfo meshInfo {};
 
-    std::vector<SHADER_VERTEX> vertexList;
-    std::vector<uint16_t> indexList;
-
-    LoadVertexData(mesh, &vertexList, &indexList);
-
-    //  Load mesh vertices ---------------------------------------------------------------------------------------------
-    meshInfo.VertexCount = (GLuint)vertexList.size();
-    GLsizeiptr vertexBufferSize = (GLsizeiptr)(vertexList.size() * sizeof(vertexList[0]));
-    GLuint vertexBufferName;
-
-    glGenBuffers(1, &vertexBufferName);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferName);
-    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertexList.data(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    meshInfo.VertexBufferName = vertexBufferName;
-
-    //	Load mesh indices ----------------------------------------------------------------------------------------------
-    meshInfo.IndexCount = (GLuint)indexList.size();
-    GLsizeiptr indexBufferSize = (GLsizeiptr)(indexList.size() * sizeof(indexList[0]));
-    GLuint indexBufferName;
-
-    glGenBuffers(1, &indexBufferName);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferName);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexList.data(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    meshInfo.IndexBufferName = indexBufferName;
+    LoadMeshInfo(mesh, &meshInfo);
 
     _sceneMeshInfo[mesh] = meshInfo;
 }
@@ -454,26 +434,72 @@ void OpenGLESRenderer::LoadSceneSpriteVertices()
     if (_spriteMeshInfo.Used)
         return;
 
-    std::shared_ptr<ITurboSceneMesh> mesh = std::shared_ptr<ITurboSceneMesh>(new TurboSceneMesh());
+    auto mesh = std::shared_ptr<ITurboSceneMesh>(new TurboSceneMesh());
 
     TurboVector3D normal = TurboVector3D( 0.0,  0.0,  1.0);
-    mesh->AddVertex(TurboVector3D(-1.0f, -1.0f,  0.0f), normal, TurboVector2D(0.0f, 0.0f));
-    mesh->AddVertex(TurboVector3D(-1.0f,  1.0f,  0.0f), normal, TurboVector2D(0.0f, 1.0f));
-    mesh->AddVertex(TurboVector3D( 1.0f,  1.0f,  0.0f), normal, TurboVector2D(1.0f, 1.0f));
-    mesh->AddVertex(TurboVector3D( 1.0f, -1.0f,  0.0f), normal, TurboVector2D(1.0f, 0.0f));
+    mesh->AddVertex(TurboVector3D(-1, -1,  0), normal, TurboVector2D(0, 0));
+    mesh->AddVertex(TurboVector3D(-1,  1,  0), normal, TurboVector2D(0, 1));
+    mesh->AddVertex(TurboVector3D( 1,  1,  0), normal, TurboVector2D(1, 1));
+    mesh->AddVertex(TurboVector3D( 1, -1,  0), normal, TurboVector2D(1, 0));
 
     mesh->AddTriangle(0, 1, 2);
     mesh->AddTriangle(2, 3, 0);
+
+    MeshInfo meshInfo {};
+
+    LoadMeshInfo(mesh, &meshInfo);
+
+    _spriteMeshInfo = meshInfo;
+}
+
+void OpenGLESRenderer::LoadSceneTextVertices(std::shared_ptr<ITurboSceneText> sceneText)
+{
+    auto fontName = sceneText->FontName();
+    if (fontName.empty())
+        return;
+
+    //  Font name not registered?
+    if (_sceneFonts.find(fontName) == _sceneFonts.end())
+        return;
+
+    //  Already loaded this text? unload it first
+    if (_sceneTextInfo.find(sceneText) != _sceneTextInfo.end())
+    {
+        if (!sceneText->PropertyChanged())
+            return;
+
+        auto meshInfo = _sceneTextInfo[sceneText];
+
+        if (meshInfo.VertexBufferName)
+            glDeleteBuffers(1, &meshInfo.VertexBufferName);
+
+        if (meshInfo.IndexBufferName)
+            glDeleteBuffers(1, &meshInfo.IndexBufferName);
+    }
+
+    auto font = _sceneFonts[fontName];
+    auto text = sceneText->Text();
+
+    auto mesh = font->CreateMesh(sceneText);
+
+    MeshInfo meshInfo {};
+
+    LoadMeshInfo(mesh, &meshInfo);
+
+    _sceneTextInfo[sceneText] = meshInfo;
+}
+
+void OpenGLESRenderer::LoadMeshInfo(std::shared_ptr<ITurboSceneMesh> mesh, MeshInfo *meshInfo)
+{
 
     std::vector<SHADER_VERTEX> vertexList;
     std::vector<uint16_t> indexList;
 
     LoadVertexData(mesh, &vertexList, &indexList);
 
-    MeshInfo meshInfo {};
 
     //  Load mesh vertices ---------------------------------------------------------------------------------------------
-    meshInfo.VertexCount = (GLuint)vertexList.size();
+    meshInfo->VertexCount = (GLuint)vertexList.size();
     GLsizeiptr vertexBufferSize = (GLsizeiptr)(vertexList.size() * sizeof(vertexList[0]));
     GLuint vertexBufferName;
 
@@ -482,10 +508,10 @@ void OpenGLESRenderer::LoadSceneSpriteVertices()
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertexList.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    meshInfo.VertexBufferName = vertexBufferName;
+    meshInfo->VertexBufferName = vertexBufferName;
 
     //	Load mesh indices ----------------------------------------------------------------------------------------------
-    meshInfo.IndexCount = (GLuint)indexList.size();
+    meshInfo->IndexCount = (GLuint)indexList.size();
     GLsizeiptr indexBufferSize = (GLsizeiptr)(indexList.size() * sizeof(indexList[0]));
     GLuint indexBufferName;
 
@@ -494,9 +520,7 @@ void OpenGLESRenderer::LoadSceneSpriteVertices()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, indexList.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    meshInfo.IndexBufferName = indexBufferName;
-
-    _spriteMeshInfo = meshInfo;
+    meshInfo->IndexBufferName = indexBufferName;
 }
 
 void OpenGLESRenderer::LoadVertexData(
@@ -516,9 +540,10 @@ void OpenGLESRenderer::LoadVertexData(
         shaderVertex.Normal[1]   = meshVertex.Normal.Y;
         shaderVertex.Normal[2]   = meshVertex.Normal.Z;
 
-        shaderVertex.Color[0]    = meshVertex.Color.X;
-        shaderVertex.Color[1]    = meshVertex.Color.Y;
-        shaderVertex.Color[2]    = meshVertex.Color.Z;
+        shaderVertex.Color[0]    = meshVertex.Color.R;
+        shaderVertex.Color[1]    = meshVertex.Color.G;
+        shaderVertex.Color[2]    = meshVertex.Color.B;
+        shaderVertex.Color[3]    = meshVertex.Color.A;
 
         shaderVertex.Texture[0]  = meshVertex.TextureUV.X;
         shaderVertex.Texture[1]  = meshVertex.TextureUV.Y;
@@ -548,6 +573,25 @@ void OpenGLESRenderer::LoadSceneObjectTexture(std::shared_ptr<ITurboSceneObject>
 void OpenGLESRenderer::LoadSceneSpriteTexture(std::shared_ptr<ITurboSceneSprite> sceneSprite)
 {
     LoadSceneTexture(sceneSprite->Texture());
+}
+
+void OpenGLESRenderer::LoadSceneFontTexture(std::shared_ptr<ITurboSceneText> sceneText)
+{
+    auto fontName = sceneText->FontName();
+    if (fontName.empty())
+        return;
+
+    //  Font name not registered?
+    if (_sceneFonts.find(fontName) == _sceneFonts.end())
+        return;
+
+    //  Already loaded this font texture? don't reload it.
+    if (_sceneTextureInfo.find(fontName) != _sceneTextureInfo.end())
+        return;
+
+    auto fontTexture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(fontName));
+
+    LoadSceneTexture(fontTexture);
 }
 
 void OpenGLESRenderer::LoadSceneTexture(std::shared_ptr<ITurboSceneTexture> texture)
@@ -822,6 +866,18 @@ void OpenGLESRenderer::DeleteBuffers()
         glDeleteBuffers(1, &_sceneUniformBufferName);
         _sceneUniformBufferName = 0;
     }
+
+    for (auto& entry : _sceneTextInfo)
+    {
+        MeshInfo meshInfo = entry.second;
+
+        if (meshInfo.VertexBufferName)
+            glDeleteBuffers(1, &meshInfo.VertexBufferName);
+
+        if (meshInfo.IndexBufferName)
+            glDeleteBuffers(1, &meshInfo.IndexBufferName);
+    }
+    _sceneTextInfo.clear();
 
     if (_shaderParams.program)
     {

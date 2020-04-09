@@ -108,6 +108,7 @@ add_library(Library_TurboMath
 add_library(Library_TurboScene
 		STATIC
 		${TurboFolder}/Library/TurboScene/TurboScene.cpp
+		${TurboFolder}/Library/TurboScene/TurboSceneArialFont.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneFont.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneMaterial.cpp
 		${TurboFolder}/Library/TurboScene/TurboSceneMesh.cpp
