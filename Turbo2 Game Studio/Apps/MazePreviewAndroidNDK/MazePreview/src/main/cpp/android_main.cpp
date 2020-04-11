@@ -44,6 +44,7 @@ void android_main(android_app* app)
 //    debug->Severity(TurboDebugSeverity::debugDebug);
 //    debug->CategoryEnabled(TurboDebugCategory::debugApplication, true);
 //    debug->CategoryEnabled(TurboDebugCategory::debugController, true);
+//    debug->CategoryEnabled(TurboDebugCategory::debugIOService, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
     auto renderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService));

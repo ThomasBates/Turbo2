@@ -51,8 +51,9 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
 {
     _debug->Send(debugDebug, debugApplication) << "--> Run()\n";
 
-    std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
+    auto gameState = _ioService->LoadGameState();
     game->GameState(gameState);
+
     game->Initialize();	//	Create level, create & draw static scene
 
     // loop waiting for stuff to do.
@@ -90,6 +91,13 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
 //            _audio->PlaySounds(view);
 
             //JNI_UpdateFPS();
+        }
+
+        if (_saveGameState)
+        {
+            _saveGameState = false;
+            gameState = game->GameState();
+            _ioService->SaveGameState(gameState);
         }
     }
 }
@@ -132,6 +140,7 @@ void AndroidNDKGameApplication::HandleCommand(struct android_app *app, int32_t c
             DeactivateDisplay();
             break;
         case APP_CMD_SAVE_STATE:
+            SaveGameState(app);
             break;
         case APP_CMD_STOP:
             break;
@@ -232,6 +241,11 @@ void AndroidNDKGameApplication::UpdateViewSize(android_app *app)
     _height = (float) ANativeWindow_getHeight(app->window);
 
     _updateViewSize = true;
+}
+
+void AndroidNDKGameApplication::SaveGameState(android_app *app)
+{
+    _saveGameState = true;
 }
 
 //  JNI Methods --------------------------------------------------------------------------------------------------------

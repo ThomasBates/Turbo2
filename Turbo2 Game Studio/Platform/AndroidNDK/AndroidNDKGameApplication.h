@@ -56,6 +56,7 @@ namespace Turbo
                 float _width;
                 float _height;
 				bool _updateViewSize = false;
+				bool _saveGameState;
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
                 void HandleCommand(struct android_app *app, int32_t cmd);
@@ -65,6 +66,7 @@ namespace Turbo
 				void TerminateDisplay();
 				void ReconfigureDisplay(android_app *app);
 				void UpdateViewSize(android_app *app);
+                void SaveGameState(android_app *app);
                 void TrimMemory();
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
