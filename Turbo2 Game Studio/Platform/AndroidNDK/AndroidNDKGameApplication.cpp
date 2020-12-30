@@ -21,15 +21,13 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
 	std::shared_ptr<ITurboDebug> debug,
     std::shared_ptr<ITurboViewController> controller,
 	std::shared_ptr<ITurboGameIOService> ioService,
-	std::shared_ptr<ITurboGameRenderer> renderer,
-	std::shared_ptr<ITurboGameAudio> audio
+	std::shared_ptr<ITurboGameRenderer> renderer
         ) :
     _android_app(app),
 	_debug(debug),
     _controller(controller),
 	_ioService(ioService),
-	_renderer(renderer),
-	_audio(audio)
+	_renderer(renderer)
 {
     _debug->Send(debugDebug, debugApplication) << "--> AndroidNDKGameApplication()\n";
 
@@ -84,8 +82,16 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
                 view->Size(TurboVector2D(_width, _height));
             }
 
-            _renderer->LoadView(view);
-            _renderer->RenderView(view);
+            _renderer->InitializeLoading();
+            view->Load();
+            _renderer->FinalizeLoading();
+
+            _renderer->InitializeRendering();
+            view->Render();
+            _renderer->FinalizeRendering();
+
+//            _renderer->LoadView(view);
+//            _renderer->RenderView(view);
 
 //            _audio->LoadView(view);
 //            _audio->PlaySounds(view);
@@ -185,7 +191,7 @@ void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
     if (app->window == NULL)
         return;
 
-    _renderer->UpdateDisplayInformation();
+    _renderer->Reset();
     UpdateViewSize(app);
     JNI_ShowUI();
 
@@ -222,10 +228,7 @@ void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
         return;
 
     _renderer->Reset();
-    _renderer->UpdateDisplayInformation();
-
     UpdateViewSize(app);
-
     JNI_ShowUI();
 }
 

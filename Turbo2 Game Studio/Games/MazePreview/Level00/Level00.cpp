@@ -22,7 +22,7 @@
 #include <TurboGameState.h>
 #include <TurboSceneAmbientLight.h>
 #include <TurboSceneMaterial.h>
-#include <TurboSceneSoundEffect.h>
+#include <TurboSceneSound.h>
 #include <TurboSceneSprite.h>
 #include <TurboSceneTexture.h>
 
@@ -421,7 +421,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 
 	//  Create the player
 	//_player->Light(std::shared_ptr<ITurboSceneLight>(new TurboSceneAmbientLight(TurboColor(1.0, 1.0, 1.0))));
-	//_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
+	//_player->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
 
 	//	This is easier for now.
 	_scene->LightHack(!_mazeOptions.LightsOn);
@@ -488,10 +488,10 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 //		_scene->AddSceneSprite(sprite);
 //	}
 
-	std::shared_ptr<ITurboSceneSoundEffect> entranceSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Entrance"));
-	std::shared_ptr<ITurboSceneSoundEffect> lockedSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked"));
+	std::shared_ptr<ITurboSceneSound> entranceSound = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Entrance"));
+	std::shared_ptr<ITurboSceneSound> lockedSound = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Locked"));
 
-	return;
+	//return;
 
 	if (_level01Unlocked)
 	{

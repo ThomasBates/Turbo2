@@ -13,7 +13,7 @@
 
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
-#include <TurboSceneSoundEffect.h>
+#include <TurboSceneSound.h>
 #include <TurboSceneSprite.h>
 
 using namespace Turbo::Game;
@@ -285,7 +285,7 @@ bool Level00Helper::UpdateKeys(NavigationInfo* navInfo, std::string keyHitSoundN
 			TurboVector3D keyPosition = key->Placement()->Position();
 			if ((keyPosition - playerPosition).Length() < 0.25)
 			{
-				_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect(keyHitSoundName)));
+				_player->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound(keyHitSoundName)));
 				_player->PlaySound(1);
 
 				_keys->erase(keyIterator);
@@ -329,7 +329,7 @@ bool Level00Helper::UpdateHazards(NavigationInfo* navInfo, std::string hazardHit
 			TurboVector3D hazardPosition = hazard->Placement()->Position();
 			if ((hazardPosition - playerPosition).Length() < 0.25)
 			{
-				_player->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect(hazardHitSoundName)));
+				_player->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound(hazardHitSoundName)));
 				_player->PlaySound(1);
 
 				return true;

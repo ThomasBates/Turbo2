@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+**/MazePreviewAndroidNDK/MazePreview/src/main/assets/Sounds/
+**/MazePreviewAndroidNDK/MazePreview/src/main/assets/Textures/
 
 # Build results
 [Dd]ebug/
@@ -35,6 +37,7 @@ dlldata.c
 *.ilk
 *.meta
 *.obj
+*.o
 *.pch
 *.pdb
 *.pgc

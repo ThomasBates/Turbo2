@@ -26,8 +26,8 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboSceneMaterial> Material() { return _material; }
 			virtual void Material(std::shared_ptr<ITurboSceneMaterial> material) { _material = material; }
 
-			virtual std::shared_ptr<ITurboSceneSoundEffect> HitSound() { return _hitSound; }
-			virtual void HitSound(std::shared_ptr<ITurboSceneSoundEffect> hitSound) { _hitSound = hitSound; }
+			virtual std::shared_ptr<ITurboSceneSound> HitSound() { return _hitSound; }
+			virtual void HitSound(std::shared_ptr<ITurboSceneSound> hitSound) { _hitSound = hitSound; }
 
 			virtual std::shared_ptr<ITurboSceneLight> Light() { return _light; }
 			virtual void Light(std::shared_ptr<ITurboSceneLight> light) { _light = light; }
@@ -46,7 +46,7 @@ namespace Turbo
 			SceneObjectPrimitiveType						_primitiveType;
 			std::shared_ptr<ITurboSceneMesh>				_mesh;
 			std::shared_ptr<ITurboSceneMaterial>			_material;
-			std::shared_ptr<ITurboSceneSoundEffect>			_hitSound;
+			std::shared_ptr<ITurboSceneSound>			_hitSound;
 			std::shared_ptr<ITurboSceneLight>				_light;
 			std::shared_ptr<ITurboScenePlacement>			_placement;
 			std::vector<std::shared_ptr<ITurboSceneObject>>	_childSceneObjects;

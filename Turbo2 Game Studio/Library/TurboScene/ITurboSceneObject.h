@@ -6,7 +6,7 @@
 #include <ITurboSceneMaterial.h>
 #include <ITurboSceneMesh.h>
 #include <ITurboScenePlacement.h>
-#include <ITurboSceneSoundEffect.h>
+#include <ITurboSceneSound.h>
 
 #include <TurboSceneNavigationInfo.h>
 
@@ -27,8 +27,8 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboSceneMaterial> Material() = 0;
 			virtual void Material(std::shared_ptr<ITurboSceneMaterial> material) = 0;
 
-			virtual std::shared_ptr<ITurboSceneSoundEffect> HitSound() = 0;
-			virtual void HitSound(std::shared_ptr<ITurboSceneSoundEffect> hitSound) = 0;
+			virtual std::shared_ptr<ITurboSceneSound> HitSound() = 0;
+			virtual void HitSound(std::shared_ptr<ITurboSceneSound> hitSound) = 0;
 
 			virtual std::shared_ptr<ITurboSceneLight> Light() = 0;
 			virtual void Light(std::shared_ptr<ITurboSceneLight> light) = 0;

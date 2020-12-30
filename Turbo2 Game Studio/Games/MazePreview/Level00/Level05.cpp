@@ -9,7 +9,7 @@
 
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
-#include <TurboSceneSoundEffect.h>
+#include <TurboSceneSound.h>
 
 #include <Level05.h>
 #include <Level05CubicMazeFactory.h>
@@ -160,9 +160,9 @@ void Level05::BuildScene(NavigationInfo* navInfo)
 	}
 
 
-	_maze->Cell(_invertedMouseLocation)->BackWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
-	_maze->Cell(_soundEffectsOnLocation)->BackWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
-	_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
+	_maze->Cell(_invertedMouseLocation)->BackWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
+	_maze->Cell(_soundEffectsOnLocation)->BackWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
+	_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
 
 	_sceneChanged = true;
 }

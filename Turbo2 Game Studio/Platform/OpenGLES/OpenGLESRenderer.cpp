@@ -16,6 +16,7 @@
 #include <TurboCoreHelpers.h>
 #include <TurboSceneMesh.h>
 #include <TurboSceneTexture.h>
+#include <TurboSceneArialFont.h>
 
 
 using namespace Turbo::Core;
@@ -49,86 +50,24 @@ void OpenGLESRenderer::RegisterFont(std::shared_ptr<ITurboSceneFont> font)
     _sceneFonts[font->Name()] = font;
 }
 
-void OpenGLESRenderer::UpdateDisplayInformation()
+void OpenGLESRenderer::InitializeLoading()
 {
-    if (!_resources_initialized)
+    if (!_display_updated)
     {
-        //  Give Android a chance to update its ANativeWindow to show the correct dimensions.
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        _gl_context->Init(_android_app->window);
-        _resources_initialized = true;
-    }
-    else if(_android_app->window != _gl_context->GetANativeWindow())
-    {
-        // Re-initialize ANativeWindow.
-        // On some devices, ANativeWindow is re-created when the app is resumed
-        assert(_gl_context->GetANativeWindow());
-        ReleaseViewResources();
-        _gl_context->Invalidate();
-        _gl_context->Init(_android_app->window);
-        _resources_initialized = true;
-    }
-    else
-    {
-        // initialize OpenGL ES and EGL
-        if (EGL_SUCCESS == _gl_context->Resume(_android_app->window))
-            ReleaseViewResources();
-        else
-            assert(0);
+        UpdateDisplayInformation();
+        _display_updated = true;
     }
 
-    // Initialize GL state.
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    // Note that screen size might have been changed
-    int width = _gl_context->GetScreenWidth();
-    int height = _gl_context->GetScreenHeight();
-    glViewport(0, 0, width, height);
+    if (_sceneFonts.empty())
+    {
+        RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneArialFont()));
+//        RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneConsolasFont()));
+    }
 }
 
-//bool OpenGLESRenderer::LoadViewResources(std::shared_ptr<ITurboGroupView> view)
-//{
-//    if (view == nullptr)
-//        return false;
-//
-//    ReleaseViewResources();
-//
-//    InitializeViewResources();
-//
-//    CreateSceneVertexResources(scene);
-//    CreateSceneTextureResources(scene);
-//
-//    CreateShaders();
-//
-//    _sceneResourcesLoaded = true;
-//
-//    return true;
-//}
-
-bool OpenGLESRenderer::LoadView(std::shared_ptr<ITurboView> view)
+void OpenGLESRenderer::FinalizeLoading()
 {
-    if (view == nullptr)
-        return false;
-
-    InitializeLoading();
-    view->Load();
-    FinalizeLoading();
-
-    return true;
-}
-
-bool OpenGLESRenderer::RenderView(std::shared_ptr<ITurboView> view)
-{
-    if (view == nullptr)
-        return false;
-
-    InitializeRendering();
-    view->Render();
-    FinalizeRendering();
-
-    return true;
+    CreateShaders();
 }
 
 void OpenGLESRenderer::Reset()
@@ -138,6 +77,7 @@ void OpenGLESRenderer::Reset()
     _gl_context->Invalidate();
 
     _resources_initialized = false;
+    _display_updated = false;
 }
 
 //	ITurboViewRendererAccess Methods ----------------------------------------------------------------------------------
@@ -382,6 +322,47 @@ void OpenGLESRenderer::RenderSceneMesh(
 }
 
 //	--------------------------------------------------------------------------------------------------------------------
+
+void OpenGLESRenderer::UpdateDisplayInformation()
+{
+    if (!_resources_initialized)
+    {
+        //  Give Android a chance to update its ANativeWindow to show the correct dimensions.
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        _gl_context->Init(_android_app->window);
+        _resources_initialized = true;
+    }
+    else if(_android_app->window != _gl_context->GetANativeWindow())
+    {
+        // Re-initialize ANativeWindow.
+        // On some devices, ANativeWindow is re-created when the app is resumed
+        assert(_gl_context->GetANativeWindow());
+        ReleaseViewResources();
+        _gl_context->Invalidate();
+        _gl_context->Init(_android_app->window);
+        _resources_initialized = true;
+    }
+    else
+    {
+        // initialize OpenGL ES and EGL
+        if (EGL_SUCCESS == _gl_context->Resume(_android_app->window))
+            ReleaseViewResources();
+        else
+            assert(0);
+    }
+
+    // Initialize GL state.
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    // Note that screen size might have been changed
+    int width = _gl_context->GetScreenWidth();
+    int height = _gl_context->GetScreenHeight();
+    glViewport(0, 0, width, height);
+
+    InitializeViewResources();
+}
 
 void OpenGLESRenderer::InitializeViewResources()
 {
@@ -655,7 +636,7 @@ void OpenGLESRenderer::LoadTextureData(
     std::shared_ptr<ITurboCanvas> canvas = std::shared_ptr<ITurboCanvas>(new TurboCanvasRGBA32());
     std::vector<unsigned char> fileData = _ioService->ReadData(ToWString("Textures/" + textureName + ".bmp"));
     std::shared_ptr<ITurboImage> bitmap = std::shared_ptr<ITurboImage>(new TurboBitmap(canvas.get(), fileData.data()));
-    bitmap->Draw();
+    bitmap->RenderToCanvas();
 
     auto *canvasData = (unsigned char *)canvas->Data();
     auto canvasDataSize = canvas->DataSize();
@@ -898,16 +879,6 @@ void OpenGLESRenderer::DeleteBuffers()
 }
 
 //  RenderScene  -------------------------------------------------------------------------------------------------------
-
-void OpenGLESRenderer::InitializeLoading()
-{
-    InitializeViewResources();
-}
-
-void OpenGLESRenderer::FinalizeLoading()
-{
-    CreateShaders();
-}
 
 void OpenGLESRenderer::UpdateProjectionMatrix()
 {

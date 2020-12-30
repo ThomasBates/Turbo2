@@ -38,4 +38,5 @@ private:
     std::shared_ptr<ITurboView> _directionControlView;
 
     std::shared_ptr<ITurboSceneSprite> _watermark;
+    std::shared_ptr<ITurboSceneSound> _background;
 };

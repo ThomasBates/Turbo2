@@ -11,6 +11,7 @@
 #include <TurboSceneSprite.h>
 #include <TurboSceneTexture.h>
 #include <TurboSceneView.h>
+#include <TurboSceneSound.h>
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -39,6 +40,10 @@ MazePreviewMainView::MazePreviewMainView(
 
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
+
+    _background = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Entrance"));
+    _background->PlaySound(true);
+    _background->Volume(0.10F);
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
@@ -48,6 +53,7 @@ void MazePreviewMainView::Load()
     TurboGroupView::Load();
 
     LoadSceneSprite(_watermark);
+    LoadSceneBackground(_background);
 }
 
 void MazePreviewMainView::Render()
@@ -55,6 +61,7 @@ void MazePreviewMainView::Render()
     TurboGroupView::Render();
 
     RenderSceneSprite(_watermark);
+    RenderSceneBackground(_background);
 }
 
 //	Protected Methods --------------------------------------------------------------------------------------------------

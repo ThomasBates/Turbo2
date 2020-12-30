@@ -41,7 +41,8 @@ namespace Turbo
 				debugController,
 				debugInteractions,
 				debugIOService,
-				debugRenderer
+				debugRenderer,
+				debugAudio,
 			};
 
 			inline std::string DebugCategory(TurboDebugCategory category)
@@ -54,6 +55,7 @@ namespace Turbo
 					case debugInteractions: return "Interactions";
 					case debugIOService: return "IOService";
 					case debugRenderer: return "Renderer";
+					case debugAudio: return "Audio";
 				}
 				return "Unknown Debug Category";
 			}

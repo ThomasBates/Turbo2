@@ -8,13 +8,11 @@
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
-#include <ITurboDebug.h>
-#include <ITurboControlViewModel.h>
-#include <ITurboGameIOService.h>
 #include <ITurboGameRenderer.h>
-#include <ITurboScene.h>
-#include <ITurboView.h>
 #include <ITurboViewRendererAccess.h>
+#include <ITurboDebug.h>
+#include <ITurboGameIOService.h>
+#include <ITurboSceneFont.h>
 
 #include <OpenGLESContext.h>
 #include <OpenGLESTypes.h>
@@ -44,22 +42,26 @@ namespace Turbo
                 virtual std::shared_ptr<ITurboViewRendererAccess> RendererAccess() { return std::shared_ptr<ITurboViewRendererAccess>(this); }
 
                 //	ITurboGameRenderer Methods -------------------------------------------------------------------------
-                virtual void RegisterFont(std::shared_ptr<ITurboSceneFont> font);
-                virtual void UpdateDisplayInformation();
-                virtual bool LoadView(std::shared_ptr<ITurboView> view);
-                virtual bool RenderView(std::shared_ptr<ITurboView> view);
+                virtual void InitializeLoading();
+                virtual void FinalizeLoading();
+                virtual void InitializeRendering();
+                virtual void FinalizeRendering();
                 virtual void Reset();
 
                 //	ITurboViewRendererAccess Methods -------------------------------------------------------------------
                 virtual void LoadScene(std::shared_ptr<ITurboScene> scene);
-                virtual void LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
                 virtual void LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite);
                 virtual void LoadSceneText(std::shared_ptr<ITurboSceneText> sceneText);
 
+                virtual void LoadSceneSound(std::shared_ptr<ITurboSceneSound> sceneSoundEffect) {}
+                virtual void LoadSceneBackground(std::shared_ptr<ITurboSceneSound> sceneBackground) {}
+
                 virtual void RenderScene(std::shared_ptr<ITurboScene> scene);
-                virtual void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
                 virtual void RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite);
                 virtual void RenderSceneText(std::shared_ptr<ITurboSceneText> sceneText);
+
+                virtual void RenderSceneSound(std::shared_ptr<ITurboSceneSound> sceneSoundEffect) {}
+                virtual void RenderSceneBackground(std::shared_ptr<ITurboSceneSound> sceneBackground) {}
 
             private:
                 //  Private Fields  ------------------------------------------------------------------------------------
@@ -69,17 +71,14 @@ namespace Turbo
 
                 OpenGLESContext *_gl_context;
                 bool _resources_initialized = false;
+                bool _display_updated = false;
 
                 std::map<std::string, std::shared_ptr<ITurboSceneFont>> _sceneFonts;
-
                 std::map<std::shared_ptr<ITurboSceneMesh>, MeshInfo> _sceneMeshInfo;
                 MeshInfo _spriteMeshInfo {};
                 std::map<std::shared_ptr<ITurboSceneText>, MeshInfo> _sceneTextInfo;
                 GLuint _sceneUniformBufferName;
-
                 std::map<std::string, TextureInfo> _sceneTextureInfo;
-
-                //bool _sceneResourcesLoaded;
 
                 GLuint _shaderProgram;
                 SHADER_PARAMS _shaderParams;
@@ -89,10 +88,13 @@ namespace Turbo
                 int _lightCount;
 
                 //  LoadSceneResources  --------------------------------------------------------------------------------
+                void LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
                 void LoadChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
                 void RenderChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject);
 
-                //  LoadSceneResources  --------------------------------------------------------------------------------
+                void RegisterFont(std::shared_ptr<ITurboSceneFont> font);
+                void UpdateDisplayInformation();
                 void InitializeViewResources();
                 void ReleaseViewResources();
 
@@ -113,6 +115,7 @@ namespace Turbo
                                      GLsizei *textureHeight,
                                      std::vector<unsigned char> *textureData);
 
+                //  FinalizeLoading Support Methods --------------------------------------------------------------------
                 void CreateShaders();
                 bool LoadShaders(SHADER_PARAMS *params,
                                  std::wstring vertexShaderName,
@@ -120,18 +123,12 @@ namespace Turbo
                 bool CompileShader(GLuint *shader, const GLenum type, std::wstring strFileName);
                 bool LinkProgram(const GLuint prog);
 
-                //  ReleaseSceneResources   ----------------------------------------------------------------------------
+                //  Reset Support Methods ------------------------------------------------------------------------------
                 void DeleteBuffers();
 
                 //  RenderScene ----------------------------------------------------------------------------------------
                 void UpdateProjectionMatrix();
                 void UpdateViewMatrix(std::shared_ptr<ITurboScenePlacement> cameraPlacement, bool lightHack);
-
-                void InitializeLoading();
-                void FinalizeLoading();
-
-                void InitializeRendering();
-                void FinalizeRendering();
 
                 TurboMatrix4x4 MakePerspectiveProjection(float fovAngle,
                                                          float viewportWidth,

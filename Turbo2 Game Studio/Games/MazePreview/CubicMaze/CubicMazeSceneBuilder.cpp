@@ -14,7 +14,7 @@
 #include <TurboSceneObject.h>
 #include <TurboSceneMesh.h>
 #include <TurboSceneMaterial.h>
-#include <TurboSceneSoundEffect.h>
+#include <TurboSceneSound.h>
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ void CubicMazeSceneBuilder::BuildSceneObjects(std::shared_ptr<ITurboScene> scene
 	std::shared_ptr<ITurboSceneMesh> edgeMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeEdgeMesh());
 	std::shared_ptr<ITurboSceneMesh> wallMesh = std::shared_ptr<ITurboSceneMesh>(new CubicMazeWallMesh());
 
-	_defaultSound = std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Wall"));
+	_defaultSound = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Wall"));
 
 	for (int w = 0; w <= size.W; w++)
 	for (int h = 0; h <= size.H; h++)

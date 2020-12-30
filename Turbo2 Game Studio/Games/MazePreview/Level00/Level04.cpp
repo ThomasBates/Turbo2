@@ -12,7 +12,7 @@
 
 #include <TurboGameState.h>
 #include <TurboSceneMaterial.h>
-#include <TurboSceneSoundEffect.h>
+#include <TurboSceneSound.h>
 
 using namespace Turbo::Game;
 using namespace Turbo::Math;
@@ -129,11 +129,11 @@ void Level04::BuildScene(NavigationInfo* navInfo)
 
 	if (exitLocked)
 	{
-		_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Locked")));
+		_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Locked")));
 	}
 	else
 	{
-		_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSoundEffect>(new TurboSceneSoundEffect("Exit")));
+		_maze->Cell(_exitLocation)->FrontWall.SceneObject->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
 	}
 
 	_sceneChanged = true;

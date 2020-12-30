@@ -7,7 +7,6 @@
 #include <ITurboGameApplication.h>
 #include <ITurboDebug.h>
 #include <ITurboViewController.h>
-#include <ITurboGameAudio.h>
 #include <ITurboGameIOService.h>
 #include <ITurboGameRenderer.h>
 
@@ -29,8 +28,7 @@ namespace Turbo
 					std::shared_ptr<ITurboDebug> debug,
 					std::shared_ptr<ITurboViewController> controller,
 					std::shared_ptr<ITurboGameIOService> ioService,
-					std::shared_ptr<ITurboGameRenderer> renderer,
-					std::shared_ptr<ITurboGameAudio> audio);
+					std::shared_ptr<ITurboGameRenderer> renderer);
 				virtual ~AndroidNDKGameApplication() {}
 
 				//  ITurboGameApplication Methods ----------------------------------------------------------------------
@@ -47,7 +45,6 @@ namespace Turbo
                 std::shared_ptr<ITurboViewController> _controller;
 				std::shared_ptr<ITurboGameIOService> _ioService;
 				std::shared_ptr<ITurboGameRenderer> _renderer;
-				std::shared_ptr<ITurboGameAudio> _audio;
 
 				ndk_helper::PerfMonitor _performance_monitor;
 
