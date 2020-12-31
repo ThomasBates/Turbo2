@@ -52,7 +52,7 @@ namespace Turbo
                 bool _hasFocus = false;
                 float _width;
                 float _height;
-				bool _updateViewSize = false;
+				double _updateViewSize = -1;
 				bool _saveGameState;
 
                 //  From AndroidNDKGameEngine  -----------------------------------------------------
@@ -62,7 +62,7 @@ namespace Turbo
                 void DeactivateDisplay();
 				void TerminateDisplay();
 				void ReconfigureDisplay(android_app *app);
-				void UpdateViewSize(android_app *app);
+				void UpdateViewSize(android_app *app, double delay);
                 void SaveGameState(android_app *app);
                 void TrimMemory();
 

@@ -34,10 +34,11 @@ dlldata.c
 *_i.c
 *_p.c
 *_i.h
+*.a
 *.ilk
 *.meta
-*.obj
 *.o
+*.obj
 *.pch
 *.pdb
 *.pgc

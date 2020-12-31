@@ -16,10 +16,12 @@
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
 MazePreviewMainView::MazePreviewMainView(
+        std::shared_ptr<ITurboDebug> debug,
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<MazePreviewMainViewModel> viewModel) :
         TurboGroupView(name, rendererAccess),
+        _debug(debug),
         _viewModel(viewModel)
 {
     _sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
@@ -41,9 +43,9 @@ MazePreviewMainView::MazePreviewMainView(
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
 
-    _background = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Entrance"));
-    _background->PlaySound(true);
-    _background->Volume(0.10F);
+//    _background = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Entrance"));
+//    _background->PlaySound(true);
+//    _background->Volume(0.10F);
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
@@ -53,7 +55,7 @@ void MazePreviewMainView::Load()
     TurboGroupView::Load();
 
     LoadSceneSprite(_watermark);
-    LoadSceneBackground(_background);
+    //LoadSceneBackground(_background);
 }
 
 void MazePreviewMainView::Render()
@@ -61,13 +63,15 @@ void MazePreviewMainView::Render()
     TurboGroupView::Render();
 
     RenderSceneSprite(_watermark);
-    RenderSceneBackground(_background);
+    //RenderSceneBackground(_background);
 }
 
 //	Protected Methods --------------------------------------------------------------------------------------------------
 
 void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
+    _debug->Send(debugDebug, debugView) << "MazePreviewMainView::UpdateLayout: " << size << "\n";
+
     float width = size.X;
     float height = size.Y;
 

@@ -33,12 +33,7 @@ void android_main(android_app* app)
     auto debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
     debug->Severity(TurboDebugSeverity::debugVerbose);
-//    debug->Severity(TurboDebugSeverity::debugDebug);
-
     debug->CategoryEnabled(TurboDebugCategory::debugAudio, true);
-//    debug->CategoryEnabled(TurboDebugCategory::debugApplication, true);
-//    debug->CategoryEnabled(TurboDebugCategory::debugController, true);
-//    debug->CategoryEnabled(TurboDebugCategory::debugIOService, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
 
@@ -50,7 +45,7 @@ void android_main(android_app* app)
     auto mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
 
     auto rendererAccess = renderer->RendererAccess();
-    auto mainView = std::shared_ptr<ITurboGroupView>(new MazePreviewMainView("Main View", rendererAccess, mainViewModel));
+    auto mainView = std::shared_ptr<ITurboGroupView>(new MazePreviewMainView(debug, "Main View", rendererAccess, mainViewModel));
 
     auto controller = std::shared_ptr<ITurboViewController>(new AndroidNDKViewController(app, debug, mainView));
     auto application = std::shared_ptr<ITurboGameApplication>(new AndroidNDKGameApplication(app, debug, controller, ioService, renderer));

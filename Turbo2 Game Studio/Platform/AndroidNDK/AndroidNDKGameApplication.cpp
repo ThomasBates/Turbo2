@@ -47,7 +47,7 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
 
 int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared_ptr<ITurboView> view)
 {
-    _debug->Send(debugDebug, debugApplication) << "--> Run()\n";
+    _debug->Send(debugDebug, debugApplication) << "--> AndroidNDKGameApplication::Run()\n";
 
     auto gameState = _ioService->LoadGameState();
     game->GameState(gameState);
@@ -57,28 +57,32 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
     // loop waiting for stuff to do.
     for(ever)
     {
-        _debug->Send(debugVerbose, debugApplication) << "Run: _controller->GetNavigationInfo();\n";
+        _debug->Send(debugVerbose, debugApplication) << "AndroidNDKGameApplication::Run: _controller->GetNavigationInfo();\n";
         NavigationInfo* navInfo = _controller->GetNavigationInfo();
-        _debug->Send(debugVerbose, debugApplication) << "Run: navInfo->Terminate = " << navInfo->Terminate << "\n";
+        _debug->Send(debugVerbose, debugApplication) << "AndroidNDKGameApplication::Run: navInfo->Terminate = " << navInfo->Terminate << "\n";
 
         if (navInfo->Terminate)
         {
-            _debug->Send(debugVerbose, debugApplication) << "Run: TerminateDisplay();\n";
+            _debug->Send(debugVerbose, debugApplication) << "AndroidNDKGameApplication::Run: TerminateDisplay();\n";
             TerminateDisplay();
-            _debug->Send(debugVerbose, debugApplication) << "<-- Run(): 0\n";
+            _debug->Send(debugVerbose, debugApplication) << "<-- AndroidNDKGameApplication::Run(): 0\n";
             return 0;
         }
 
-        _debug->Send(debugVerbose, debugApplication) << "Run: _hasFocus = " << _hasFocus << "\n";
+        _debug->Send(debugVerbose, debugApplication) << "AndroidNDKGameApplication::Run: _hasFocus = " << _hasFocus << "\n";
 
         if (_hasFocus)
         {
             //	Update the scene
             game->Update(navInfo);
 
-            if (_updateViewSize)
+            double currentTime = _performance_monitor.GetCurrentTime();
+            if (_updateViewSize > 0 && currentTime >= _updateViewSize)
             {
-                _updateViewSize = false;
+                _width = (float) ANativeWindow_getWidth(_android_app->window);
+                _height = (float) ANativeWindow_getHeight(_android_app->window);
+
+                _updateViewSize = -1;
                 view->Size(TurboVector2D(_width, _height));
             }
 
@@ -120,7 +124,7 @@ void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cm
 //  Process the next main command.
 void AndroidNDKGameApplication::HandleCommand(struct android_app *app, int32_t cmd)
 {
-    _debug->Send(debugDebug, debugApplication) << "HandleCommand(app, " << AppCmd(cmd) << ")\n";
+    _debug->Send(debugDebug, debugApplication) << "AndroidNDKGameApplication::HandleCommand(app, " << AppCmd(cmd) << ")\n";
 
     switch (cmd)
     {
@@ -192,7 +196,7 @@ void AndroidNDKGameApplication::InitializeDisplay(android_app *app)
         return;
 
     _renderer->Reset();
-    UpdateViewSize(app);
+    UpdateViewSize(app, 0.0f);
     JNI_ShowUI();
 
     _controller->Resume();
@@ -228,7 +232,7 @@ void AndroidNDKGameApplication::ReconfigureDisplay(android_app *app)
         return;
 
     _renderer->Reset();
-    UpdateViewSize(app);
+    UpdateViewSize(app, 0.1f);   //  add a little bit so Android has time to get its story straight.
     JNI_ShowUI();
 }
 
@@ -238,12 +242,9 @@ void AndroidNDKGameApplication::TrimMemory()
     _renderer->Reset();
 }
 
-void AndroidNDKGameApplication::UpdateViewSize(android_app *app)
+void AndroidNDKGameApplication::UpdateViewSize(android_app *app, double delay)
 {
-    _width = (float) ANativeWindow_getWidth(app->window);
-    _height = (float) ANativeWindow_getHeight(app->window);
-
-    _updateViewSize = true;
+    _updateViewSize = _performance_monitor.GetCurrentTime() + delay;
 }
 
 void AndroidNDKGameApplication::SaveGameState(android_app *app)
