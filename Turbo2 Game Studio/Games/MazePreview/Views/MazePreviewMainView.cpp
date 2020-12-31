@@ -25,8 +25,8 @@ MazePreviewMainView::MazePreviewMainView(
         _viewModel(viewModel)
 {
     _sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
-    _hud1View = std::shared_ptr<ITurboView>(new MazePreviewHUD1View("HUD1 View", rendererAccess, _viewModel->HUD1ViewModel()));
-    _hud2View = std::shared_ptr<ITurboView>(new MazePreviewHUD2View("HUD2 View", rendererAccess, _viewModel->HUD2ViewModel()));
+    _hud1View = std::shared_ptr<ITurboView>(new MazePreviewHUD1View(_debug, "HUD1 View", rendererAccess, _viewModel->HUD1ViewModel()));
+    _hud2View = std::shared_ptr<ITurboView>(new MazePreviewHUD2View(        "HUD2 View", rendererAccess, _viewModel->HUD2ViewModel()));
 
     _mainControlView = std::shared_ptr<ITurboView>(new MazePreviewMainControlView("Main Control View", rendererAccess, _viewModel->MainControlViewModel()));
     _motionControlView = std::shared_ptr<ITurboView>(new MazePreviewMotionControlView("Motion Control View", rendererAccess, _viewModel->MotionControlViewModel()));
@@ -70,7 +70,7 @@ void MazePreviewMainView::Render()
 
 void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
-    _debug->Send(debugDebug, debugView) << "MazePreviewMainView::UpdateLayout: " << size << "\n";
+    _debug->Send(debugDebug, debugView) << "MazePreviewMainView::UpdateLayout: position = " << position << ", size = " << size << "\n";
 
     float width = size.X;
     float height = size.Y;
@@ -101,6 +101,8 @@ void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D siz
         y1 = 0;
         y2 = height;
     }
+
+    _debug->Send(debugDebug, debugView) << "MazePreviewMainView::UpdateLayout: s = " << s << ", x1 = " << x1 << ", x2 = " << x2 << ", y1 = " << y1 << ", y2 = " << y2 << "\n";
 
     //  main scene (whole screen)
     _sceneView->Position(TurboVector2D(0, 0));

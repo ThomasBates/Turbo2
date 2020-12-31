@@ -13,7 +13,7 @@ namespace Turbo
 		{
 		public:
 			//  Constructors -------------------------------------------------------------------------------------------
-			TurboSceneArialFont();
+			TurboSceneArialFont(std::shared_ptr<ITurboDebug> debug);
 			virtual ~TurboSceneArialFont() {}
 		};
 	}

@@ -7,10 +7,12 @@
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
 MazePreviewHUD1View::MazePreviewHUD1View(
+        std::shared_ptr<ITurboDebug> debug,
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
         std::shared_ptr<MazePreviewHUD1ViewModel> viewModel) :
         TurboView(name, rendererAccess),
+        _debug(debug),
         _viewModel(viewModel)
 {
     _roundText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(0.0F, 0.0F, 1.0F), _viewModel->RoundText()));
@@ -38,6 +40,8 @@ void MazePreviewHUD1View::Render()
 
 void MazePreviewHUD1View::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
+    _debug->Send(debugDebug, debugView) << "MazePreviewHUD1View::UpdateLayout: position = " << position << ", size = " << size << "\n";
+
     _roundText->UseRectangle(true);
     _roundText->Rectangle(TurboRectangle(
             position.X,

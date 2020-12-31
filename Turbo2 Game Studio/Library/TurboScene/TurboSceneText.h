@@ -60,8 +60,8 @@ namespace Turbo
 			std::string _fontName;
 			float _fontSize;
 			TurboColor _color {1, 1, 1, 1};
-			SceneTextHorizontalAlignment _horizontalAlignment;
-			SceneTextVerticalAlignment _verticalAlignment;
+			SceneTextHorizontalAlignment _horizontalAlignment = SceneTextHorizontalAlignment::horizontalLeft;
+			SceneTextVerticalAlignment _verticalAlignment = SceneTextVerticalAlignment::verticalTop;
 
 			std::string _text;
 

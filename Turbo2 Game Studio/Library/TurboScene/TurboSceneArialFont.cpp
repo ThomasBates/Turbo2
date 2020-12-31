@@ -7,8 +7,8 @@ using namespace Turbo::Scene;
 
 //  Constructors -------------------------------------------------------------------------------------------------------
 
-TurboSceneArialFont::TurboSceneArialFont() :
-	TurboSceneFont("Arial")
+TurboSceneArialFont::TurboSceneArialFont(std::shared_ptr<ITurboDebug> debug) :
+	TurboSceneFont(debug, "Arial")
 {
 	SetTextureExtent(640, 360);
 

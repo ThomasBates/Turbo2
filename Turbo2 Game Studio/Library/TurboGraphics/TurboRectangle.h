@@ -26,5 +26,11 @@ namespace Turbo
 				Y2 = y2;
 			}
 		};
+
+        inline std::ostream& operator<<(std::ostream& os, const TurboRectangle& r)
+        {
+            os << "(" << r.X1 << "," << r.Y1 << ":" << r.X2 << "," << r.Y2 << ")";
+            return os;
+        }
 	}
 }

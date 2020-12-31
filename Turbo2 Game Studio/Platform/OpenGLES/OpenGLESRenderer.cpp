@@ -60,7 +60,7 @@ void OpenGLESRenderer::InitializeLoading()
 
     if (_sceneFonts.empty())
     {
-        RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneArialFont()));
+        RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneArialFont(_debug)));
 //        RegisterFont(std::shared_ptr<ITurboSceneFont>(new TurboSceneConsolasFont()));
     }
 }

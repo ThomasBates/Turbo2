@@ -18,5 +18,5 @@ AndroidNDKDebugLogCatLogger::AndroidNDKDebugLogCatLogger(std::string appName) :
 
 void AndroidNDKDebugLogCatLogger::Log(std::string severity, std::string category, std::string message)
 {
-	__android_log_print(ANDROID_LOG_DEBUG, _appName.data(), "%s - %s - %s", severity.data(), category.data(), message.data());
+	__android_log_print(ANDROID_LOG_DEBUG, _appName.data(), "TurboDebug: %s - %s - %s", severity.data(), category.data(), message.data());
 }

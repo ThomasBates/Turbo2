@@ -2,9 +2,11 @@
 
 #include <pch.h>
 
+#include <ITurboDebug.h>
 #include <ITurboSceneFont.h>
 #include <TurboRectangle.h>
 
+using namespace Turbo::Core::Debug;
 using namespace Turbo::Graphics;
 
 namespace Turbo
@@ -15,7 +17,9 @@ namespace Turbo
 		{
 		public:
 			//  Constructors -------------------------------------------------------------------------------------------
-			TurboSceneFont(std::string name);
+			TurboSceneFont(
+			    std::shared_ptr<ITurboDebug> debug,
+			    std::string name);
 			virtual ~TurboSceneFont() {}
 
 			//  ITurboSceneFont Properties -----------------------------------------------------------------------------
@@ -29,6 +33,7 @@ namespace Turbo
 			void SetCharacterExtent(char character, short left, short top, short right, short bottom);
 
 		private:
+			std::shared_ptr<ITurboDebug> _debug;
 			std::string _name;
 
 			TurboVector2D _textureSize;

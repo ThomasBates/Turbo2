@@ -33,7 +33,7 @@ void android_main(android_app* app)
     auto debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
     debug->Severity(TurboDebugSeverity::debugVerbose);
-    debug->CategoryEnabled(TurboDebugCategory::debugAudio, true);
+    debug->CategoryEnabled(TurboDebugCategory::debugView, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
 

@@ -8,8 +8,11 @@ using namespace Turbo::Scene;
 
 //  Constructors -------------------------------------------------------------------------------------------------------
 
-TurboSceneFont::TurboSceneFont(std::string name) :
-	_name(name)
+TurboSceneFont::TurboSceneFont(
+    std::shared_ptr<ITurboDebug> debug,
+    std::string name) :
+    _debug(debug),
+    _name(name)
 {
 }
 
@@ -17,6 +20,8 @@ TurboSceneFont::TurboSceneFont(std::string name) :
 
 std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITurboSceneText> sceneText)
 {
+    _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh(\"" << sceneText->Text() << "\")\n";
+
     std::vector<TurboRectangle> placementList {};
     std::vector<TurboRectangle> textureUVList {};
 
@@ -25,9 +30,15 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
 
     for (auto& c : sceneText->Text())
     {
-        if (c == '\n' || c == '\r')
+        if (c == '\n')
         {
             charPosition.Y += charSize.Y;
+            continue;
+        }
+
+        if (c == '\r')
+        {
+            charPosition.X = 0;
             continue;
         }
 
@@ -54,6 +65,8 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
             1 - extent.Y2 / _textureSize.Y
         };
 
+        _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: '" << c << "': " << placement << "\n";
+
         placementList.push_back(placement);
         textureUVList.push_back(textureUV);
 
@@ -69,16 +82,20 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
 //        2 * (fontSize) / (textRectangle.Y2 - textRectangle.Y1)
 //    };
 
+    _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: sceneText->HorizontalAlignment = " << (int)(sceneText->HorizontalAlignment()) << "\n";
+
     switch (sceneText->HorizontalAlignment())
     {
         case horizontalLeft:
         {
             float factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
+            _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case horizontalLeft: factor = " << factor << "\n";
 
             for (int i = 0; i < placementList.size(); i++)
             {
                 placementList[i].X1 = placementList[i].X1 * factor - 1;
                 placementList[i].X2 = placementList[i].X2 * factor - 1;
+                _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case horizontalLeft: " << placementList[i] << "\n";
             }
             break;
         }
@@ -94,16 +111,20 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
             break;
     }
 
+    _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: sceneText->VerticalAlignment = " << (int)(sceneText->VerticalAlignment()) << "\n";
+
     switch (sceneText->VerticalAlignment())
     {
         case verticalTop:
         {
             float factor = 2 * (fontSize) / (textRectangle.Y2 - textRectangle.Y1);
+            _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case verticalTop: factor = " << factor << "\n";
 
             for (int i = 0; i < placementList.size(); i++)
             {
                 placementList[i].Y1 = 1 - placementList[i].Y1 * factor;
                 placementList[i].Y2 = 1 - placementList[i].Y2 * factor;
+                _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case verticalTop: " << placementList[i] << "\n";
             }
             break;
         }
@@ -128,6 +149,8 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
     {
         auto placement = placementList[i];
         auto textureUV = textureUVList[i];
+
+        _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: " << placement << "\n";
 
         mesh->AddVertex(TurboVector3D(placement.X1, placement.Y2,  0), normal, color, TurboVector2D(textureUV.X1, textureUV.Y2));
         mesh->AddVertex(TurboVector3D(placement.X1, placement.Y1,  0), normal, color, TurboVector2D(textureUV.X1, textureUV.Y1));
