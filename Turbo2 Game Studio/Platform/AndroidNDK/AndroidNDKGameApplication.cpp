@@ -10,6 +10,7 @@ using namespace Turbo::Game;
 using namespace Turbo::Scene;
 using namespace Turbo::Platform::AndroidNDK;
 
+static AndroidNDKGameApplication *_application;
 
 #define HELPER_CLASS_NAME "ca/turbobutterfly/ndkhelper/NDKHelper"  // Class name of helper function
 #define ever ;;
@@ -35,7 +36,7 @@ AndroidNDKGameApplication::AndroidNDKGameApplication(
     //  JNIHelper is a singleton
     ndk_helper::JNIHelper::GetInstance()->Init(_android_app->activity, HELPER_CLASS_NAME);
 
-    _android_app->application = this;
+    _application = this;
     _android_app->onAppCmd = AndroidNDKGameApplication::HandleAppCmd;
 
     //_android_app->activity->callbacks->onConfigurationChanged = ActivityConfigurationChanged;
@@ -117,8 +118,7 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
 //  Process the next main command.
 void AndroidNDKGameApplication::HandleAppCmd(struct android_app *app, int32_t cmd)
 {
-    auto application = (AndroidNDKGameApplication*)app->application;
-    application->HandleCommand(app, cmd);
+    _application->HandleCommand(app, cmd);
 }
 
 //  Process the next main command.

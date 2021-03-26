@@ -6,6 +6,8 @@
 
 using namespace Turbo::Platform::AndroidNDK;
 
+static AndroidNDKViewController *_controller;
+
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
 AndroidNDKViewController::AndroidNDKViewController(
@@ -17,7 +19,7 @@ AndroidNDKViewController::AndroidNDKViewController(
 {
 	AddControls(view);
 
-	_android_app->controller = this;
+	_controller = this;
 	_android_app->onInputEvent = AndroidNDKViewController::HandleInputEvents;
 
 	InitializeSensors();
@@ -56,9 +58,7 @@ void AndroidNDKViewController::Resume()
  */
 int32_t AndroidNDKViewController::HandleInputEvents(android_app* app, AInputEvent* event)
 {
-	auto controller = (AndroidNDKViewController*)app->controller;
-
-	return controller->HandleInputEvent(event);
+	return _controller->HandleInputEvent(event);
 }
 
 int32_t AndroidNDKViewController::HandleInputEvent(AInputEvent *event)
