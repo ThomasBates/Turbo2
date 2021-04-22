@@ -13,11 +13,16 @@ using namespace Turbo::Game;
 
 void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo* navInfo, std::shared_ptr<ITurboSceneObject> sceneObject, bool isPlayer)
 {
+	if (navInfo == nullptr)
+		return;
+
+	if (sceneObject == nullptr)
+		return;
 
 	double deltaTime = navInfo->DeltaTime;
 	double time = navInfo->Time;
 
-	//  double moveSpeed = _moveAccelleration * deltaTime;
+	//  double moveSpeed = _moveAcceleration * deltaTime;
 
 	std::shared_ptr<ITurboScenePlacement> _placement = sceneObject->Placement();
 
@@ -52,13 +57,13 @@ void TurboGameMotionEffects::ProcessMotionEffects(NavigationInfo* navInfo, std::
 	if (navInfo->MoveLeft)	velocity -= _placement->Right() * moveSpeed;
 	if (navInfo->MoveRight)	velocity += _placement->Right() * moveSpeed;
 	if (navInfo->MoveDown)	velocity -= _placement->Up()    * moveSpeed;
-	if (navInfo->MoveUp)		velocity += _placement->Up()    * moveSpeed;
+	if (navInfo->MoveUp)	velocity += _placement->Up()    * moveSpeed;
 	if (navInfo->MoveFore)	velocity -= _placement->Back()  * moveSpeed;
 	if (navInfo->MoveBack)	velocity += _placement->Back()  * moveSpeed;
 */
 	_placement->Velocity(velocity);
 
-	//  double rotateSpeed = _rotateAccelleration * deltaTime;
+	//  double rotateSpeed = _rotateAcceleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 

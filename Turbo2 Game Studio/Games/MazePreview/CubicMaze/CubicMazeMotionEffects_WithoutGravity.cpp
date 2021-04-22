@@ -10,8 +10,8 @@ using namespace Turbo::Game;
 CubicMazeMotionEffects_WithoutGravity::CubicMazeMotionEffects_WithoutGravity()
 {
 	_baseMotionEffects = std::shared_ptr<ITurboGameMotionEffects>(new TurboGameMotionEffects(
-		cMoveAccelleration,
-		cRotateAccelleration,
+		cMoveAcceleration,
+		cRotateAcceleration,
 		cFrictionFactor,
 		cHoverFrequency,
 		cHoverMagnitude,

@@ -11,8 +11,8 @@ CubicMazeMotionEffects_WithGravity::CubicMazeMotionEffects_WithGravity(std::shar
 	_maze(maze)
 {
 	_baseMotionEffects = std::shared_ptr<ITurboGameMotionEffects>(new TurboGameMotionEffects(
-		cMoveAccelleration,
-		cRotateAccelleration,
+		cMoveAcceleration,
+		cRotateAcceleration,
 		cFrictionFactor,
 		cHoverFrequency,
 		cHoverMagnitude,

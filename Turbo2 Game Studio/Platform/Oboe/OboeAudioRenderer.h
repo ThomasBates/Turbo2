@@ -39,16 +39,9 @@ namespace Turbo
                 virtual ~OboeAudioRenderer();
 
                 //	ITurboGameRenderer Properties ----------------------------------------------------------------------
-//                virtual std::shared_ptr<ITurboViewRendererAccess> RendererAccess() { return std::shared_ptr<ITurboViewRendererAccess>(this); }
                 std::shared_ptr<ITurboViewRendererAccess> RendererAccess() override { return std::shared_ptr<ITurboViewRendererAccess>(this); }
 
                 //	ITurboGameRenderer Methods -------------------------------------------------------------------------
-//				virtual void InitializeLoading();
-//				virtual void FinalizeLoading();
-//				virtual void InitializeRendering();
-//				virtual void FinalizeRendering();
-//				virtual void Reset();
-
                 void InitializeLoading() override;
                 void FinalizeLoading() override;
                 void InitializeRendering() override;
@@ -56,20 +49,6 @@ namespace Turbo
                 void Reset() override;
 
                 //	ITurboViewRendererAccess Methods -------------------------------------------------------------------
-//                virtual void LoadScene(std::shared_ptr<ITurboScene> scene);
-//                virtual void LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite) {}
-//                virtual void LoadSceneText(std::shared_ptr<ITurboSceneText> sceneText) {}
-//
-//                virtual void LoadSceneSound(std::shared_ptr<ITurboSceneSound> sceneSound);
-//                virtual void LoadSceneBackground(std::shared_ptr<ITurboSceneSound> sceneBackground);
-//
-//                virtual void RenderScene(std::shared_ptr<ITurboScene> scene);
-//                virtual void RenderSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite) {}
-//                virtual void RenderSceneText(std::shared_ptr<ITurboSceneText> sceneText) {}
-//
-//                virtual void RenderSceneSound(std::shared_ptr<ITurboSceneSound> sceneSound);
-//                virtual void RenderSceneBackground(std::shared_ptr<ITurboSceneSound> sceneBackground);
-
                 void LoadScene(std::shared_ptr<ITurboScene> scene) override;
                 void LoadSceneSprite(std::shared_ptr<ITurboSceneSprite> sceneSprite) override {}
                 void LoadSceneText(std::shared_ptr<ITurboSceneText> sceneText) override {}
@@ -85,9 +64,6 @@ namespace Turbo
                 void RenderSceneBackground(std::shared_ptr<ITurboSceneSound> sceneBackground) override;
 
                 //  oboe::AudioStreamCallback Methods ------------------------------------------------------------------
-//                virtual DataCallbackResult onAudioReady(AudioStream *audioStream, void *audioData, int32_t numFrames);
-//                virtual void onErrorAfterClose(AudioStream *oboeStream, Result error);
-
                 DataCallbackResult onAudioReady(AudioStream *audioStream, void *audioData, int32_t numFrames) override;
                 void onErrorAfterClose(AudioStream *oboeStream, Result error) override;
 
@@ -99,39 +75,34 @@ namespace Turbo
                 std::map<std::string, std::shared_ptr<ITurboSoundCanvas>> _sceneSoundData;
                 std::list<std::shared_ptr<IOboeAudioTrack>> _audioTracks {};
 
-
-
-//                OboeAudioMixer _mixer;
-
-
-                static int constexpr kChannelCount = 2;
-                static int constexpr kSampleRate = 44100; // 48000;
-                // Wave params, these could be instance variables in order to modify at runtime
-                static float constexpr kAmplitude = 0.5f;
-                static float constexpr kFrequency = 660;
-                static float constexpr kPI = M_PI;
-                static float constexpr kTwoPi = kPI * 2;
-                static double constexpr mPhaseIncrement = kFrequency * kTwoPi / (double) kSampleRate;
-                // Keeps track of where the wave is
-//                float mPhase = 0.0;
+                int     _numCallbacks = 0;
+                double  _lastCallbackTime = 0;
+                double  _totalTime = 0;
+                double  _callbackStartTime = 0;
+                double  _callbackFinishTime = 0;
+                double  _totalDuration = 0;
+                double  _totalFrames = 0;
 
                 //	Local Support Methods --------------------------------------------------------------------------------------
                 void OpenStream();
                 void CloseStream();
 
-                std::shared_ptr<ITurboSoundCanvas> InternalLoadSceneSound(std::shared_ptr<ITurboSceneSound> sceneSound);
+                std::shared_ptr<ITurboSoundCanvas> InternalLoadSceneSound(const std::shared_ptr<ITurboSceneSound>& sceneSound);
                 std::shared_ptr<ITurboSoundCanvas> LoadSoundData(const std::string &soundName);
 
-                std::shared_ptr<ITurboSoundCanvas> FindSoundCanvas(std::shared_ptr<ITurboSceneSound> sound);
+                std::shared_ptr<ITurboSoundCanvas> FindSoundCanvas(const std::shared_ptr<ITurboSceneSound>& sound);
 
-                void LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
-                void LoadChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void LoadSceneObject(const std::shared_ptr<ITurboSceneObject>& sceneObject);
+                void LoadChildSceneObjects(const std::shared_ptr<ITurboSceneObject>& sceneObject);
 
-                void RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void RenderSceneObject(const std::shared_ptr<ITurboSceneObject>& sceneObject);
 
-                void RenderChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject);
+                void RenderChildSceneObjects(const std::shared_ptr<ITurboSceneObject>& sceneObject);
 
                 std::shared_ptr<ITurboSoundCanvas> CreateTestCanvas(float frequency, float amplitude);
+
+                void RegisterCallbackStarted(int32_t numFrames);
+                void RegisterCallbackFinished();
             };
         }
     }

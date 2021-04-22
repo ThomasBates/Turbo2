@@ -88,6 +88,7 @@ add_library(Library_TurboGame
         STATIC
         ${TurboFolder}/Library/TurboGame/TurboGameAggregateRenderer.cpp
         ${TurboFolder}/Library/TurboGame/TurboGameMotionEffects.cpp
+        ${TurboFolder}/Library/TurboGame/TurboGameNullAudioRenderer.cpp
         ${TurboFolder}/Library/TurboGame/TurboGameState.cpp
         ${TurboFolder}/Library/TurboGame/ViewModels/TurboSceneViewModel.cpp
         ${TurboFolder}/Library/TurboGame/Views/TurboSceneView.cpp

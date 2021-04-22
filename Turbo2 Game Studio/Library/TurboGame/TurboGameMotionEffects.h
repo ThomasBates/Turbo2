@@ -16,15 +16,15 @@ namespace Turbo
 		public:
 			//  Constructors & Destructors -----------------------------------------------------------------------------
 			TurboGameMotionEffects(
-				double moveAccelleration,
-				double rotateAccelleration,
+				double moveAcceleration,
+				double rotateAcceleration,
 				double frictionFactor,
 				double hoverFrequency,
 				double hoverMagnitude,
 				double gravityFactor,
 				double selfRightingSpeed) :
-//				_moveAccelleration(moveAccelleration),
-//				_rotateAccelleration(rotateAccelleration),
+//				_moveAcceleration(moveAcceleration),
+//				_rotateAcceleration(rotateAcceleration),
 				_frictionFactor(frictionFactor),
 				_hoverFrequency(hoverFrequency),
 				_hoverMagnitude(hoverMagnitude),
@@ -43,8 +43,8 @@ namespace Turbo
 				bool isPlayer);
 
 		private:
-//			double _moveAccelleration;
-//			double _rotateAccelleration;
+//			double _moveAcceleration;
+//			double _rotateAcceleration;
 			double _frictionFactor;
 			double _hoverFrequency;
 			double _hoverMagnitude;

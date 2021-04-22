@@ -18,8 +18,8 @@ Level00Player::Level00Player(Level00UserOptions* userOptions) :
 
 void Level00Player::Update(NavigationInfo* navInfo)
 {
-	const double cMoveAccelleration = 2.0f;
-//	const double cRotateAccelleration = 45.0f;
+	const double cMoveAcceleration = 2.0f;
+//	const double cRotateAcceleration = 45.0f;
 //	const double cFrictionFactor = 2.0f;
 
 //	const double cHoverFrequency = 2.0f;
@@ -34,7 +34,7 @@ void Level00Player::Update(NavigationInfo* navInfo)
 
 	double deltaTime = navInfo->DeltaTime;
 
-	double moveSpeed = cMoveAccelleration * deltaTime;
+	double moveSpeed = cMoveAcceleration * deltaTime;
 
 	TurboVector3D velocity = _placement->Velocity();
 
@@ -84,7 +84,7 @@ void Level00Player::Update(NavigationInfo* navInfo)
 
 	_placement->Velocity(velocity);
 
-//	double rotateSpeed = cRotateAccelleration * deltaTime;
+//	double rotateSpeed = cRotateAcceleration * deltaTime;
 
 	TurboVector3D angularVelocity = _placement->AngularVelocity();
 

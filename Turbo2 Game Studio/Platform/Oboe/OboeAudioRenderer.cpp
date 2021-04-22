@@ -1,6 +1,6 @@
 ﻿
 #include <pch.h>
-
+#include <perfMonitor.h>
 #include <jni.h>
 
 #include <TurboSoundFloatCanvas.h>
@@ -35,7 +35,7 @@ OboeAudioRenderer::OboeAudioRenderer(
 
 OboeAudioRenderer::~OboeAudioRenderer()
 {
-    Reset();
+    CloseStream();
 }
 
 #pragma endregion Constructors and Destructors -------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void OboeAudioRenderer::LoadScene(std::shared_ptr<ITurboScene> scene)
     }
 }
 
-void OboeAudioRenderer::LoadSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OboeAudioRenderer::LoadSceneObject(const std::shared_ptr<ITurboSceneObject>& sceneObject)
 {
     if (sceneObject == nullptr)
         return;
@@ -89,7 +89,7 @@ void OboeAudioRenderer::LoadSceneObject(std::shared_ptr<ITurboSceneObject> scene
     LoadSceneSound(sceneObject->HitSound());
 }
 
-void OboeAudioRenderer::LoadChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OboeAudioRenderer::LoadChildSceneObjects(const std::shared_ptr<ITurboSceneObject>& sceneObject)
 {
     if (sceneObject == nullptr)
         return;
@@ -124,7 +124,7 @@ void OboeAudioRenderer::RenderScene(std::shared_ptr<ITurboScene> scene)
     }
 }
 
-void OboeAudioRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OboeAudioRenderer::RenderSceneObject(const std::shared_ptr<ITurboSceneObject>& sceneObject)
 {
     if (sceneObject == nullptr)
         return;
@@ -133,7 +133,7 @@ void OboeAudioRenderer::RenderSceneObject(std::shared_ptr<ITurboSceneObject> sce
 //    RenderSceneBackground(sceneObject->HitSound());
 }
 
-void OboeAudioRenderer::RenderChildSceneObjects(std::shared_ptr<ITurboSceneObject> sceneObject)
+void OboeAudioRenderer::RenderChildSceneObjects(const std::shared_ptr<ITurboSceneObject>& sceneObject)
 {
     if (sceneObject == nullptr)
         return;
@@ -171,46 +171,26 @@ void OboeAudioRenderer::RenderSceneBackground(std::shared_ptr<ITurboSceneSound> 
 
 DataCallbackResult OboeAudioRenderer::onAudioReady(AudioStream *audioStream, void *audioData, int32_t numFrames)
 {
+    if (audioStream == nullptr)
+        return DataCallbackResult::Stop;
+    if (audioData == nullptr)
+        return DataCallbackResult::Stop;
+
+    RegisterCallbackStarted(numFrames);
+
     auto channelCount = audioStream->getChannelCount();
-
     auto outputBuffer = static_cast<float *>(audioData);
-
-
-//    for (int i = 0; i < numFrames; ++i) {
-//        float sampleValue = kAmplitude *20* sinf(mPhase);
-//        for (int j = 0; j < kChannelCount; j++) {
-//            outputBuffer[i * kChannelCount + j] = sampleValue;
-//        }
-//        mPhase += mPhaseIncrement;
-//        if (mPhase >= kTwoPi) mPhase -= kTwoPi;
-//    }
-//    return oboe::DataCallbackResult::Continue;
-
-
-
 
     // Zero out the incoming container array
     memset(outputBuffer, 0, sizeof(float) * numFrames * channelCount);
 
     if (_audioTracks.empty())
+    {
+        RegisterCallbackFinished();
         return DataCallbackResult::Continue;
+    }
 
-
-
-//    for (auto& track : _audioTracks)
-//    {
-//        track->RenderAudio(outputBuffer, numFrames);
-//        if (!track->IsPlaying())
-//            _audioTracks.remove(track);
-//        break;
-//    }
-//    return oboe::DataCallbackResult::Continue;
-
-
-
-    //_debug->Send(debugDebug, debugAudio) << "Playing " << numFrames << " frame(s) of " << _audioTracks.size() << " track(s)\n";
-
-    float mixingBuffer[kBufferSize];
+    float mixingBuffer[960 * 2 * 10];
 
     std::vector<std::shared_ptr<IOboeAudioTrack>> finishedTracks;
 
@@ -219,16 +199,6 @@ DataCallbackResult OboeAudioRenderer::onAudioReady(AudioStream *audioStream, voi
     {
         memset(mixingBuffer, 0, sizeof(float) * numFrames * channelCount);
         track->RenderAudio(mixingBuffer, numFrames);
-
-//        if (_debug->CategoryEnabled(TurboDebugCategory::debugAudio))
-//        {
-//            auto debug = new std::ostringstream[channelCount];
-//            for (int targetIndex = 0; targetIndex < numFrames; ++targetIndex)
-//                for (int channelIndex = 0; channelIndex < channelCount; ++channelIndex)
-//                    debug[channelIndex] << " " << mixingBuffer[(targetIndex * channelCount) + channelIndex];
-//            for (int channelIndex = 0; channelIndex < channelCount; ++channelIndex)
-//                _debug->Send(debugVerbose, debugAudio) << "Track" << trackIndex + 1 << ": Channel " << channelIndex + 1 << ":" << debug[channelIndex].str() << "\n";
-//        }
 
         for (int j = 0; j < numFrames * channelCount; ++j)
             outputBuffer[j] += mixingBuffer[j];
@@ -243,31 +213,21 @@ DataCallbackResult OboeAudioRenderer::onAudioReady(AudioStream *audioStream, voi
     for (int j = 0; j < numFrames * channelCount; ++j)
         outputBuffer[j] /= size;
 
-//    if (_debug->CategoryEnabled(TurboDebugCategory::debugAudio))
-//    {
-//        auto debug = new std::ostringstream[channelCount];
-//        for (int targetIndex = 0; targetIndex < numFrames; ++targetIndex)
-//            for (int channelIndex = 0; channelIndex < channelCount; ++channelIndex)
-//                debug[channelIndex] << " " << outputBuffer[(targetIndex * channelCount) + channelIndex];
-//        for (int channelIndex = 0; channelIndex < channelCount; ++channelIndex)
-//            _debug->Send(debugVerbose, debugAudio) << "Output: Channel " << channelIndex + 1 << ":" << debug[channelIndex].str() << "\n";
-//    }
-
     for (auto& finishedTrack : finishedTracks)
     {
         _audioTracks.remove(finishedTrack);
-
         _debug->Send(debugDebug, debugAudio) << "Track finished\n";
     }
     finishedTracks.clear();
 
+    RegisterCallbackFinished();
     return DataCallbackResult::Continue;
 }
 
 void OboeAudioRenderer::onErrorAfterClose(AudioStream *oboeStream, Result error)
 {
     AudioStreamCallback::onErrorAfterClose(oboeStream, error);
-    Reset();
+    CloseStream();
 }
 
 #pragma endregion AudioStreamCallback Methods --------------------------------------------------------------------------
@@ -283,7 +243,7 @@ void OboeAudioRenderer::OpenStream()
     builder.setCallback(this);
     builder.setPerformanceMode(PerformanceMode::LowLatency);
     builder.setSharingMode(SharingMode::Exclusive);
-    builder.setSampleRate(kSampleRate);
+    builder.setSampleRate(48000);
     builder.setFormat(oboe::AudioFormat::Float);
     builder.setChannelCount(oboe::ChannelCount::Stereo);
 
@@ -310,20 +270,16 @@ void OboeAudioRenderer::OpenStream()
         _debug->Send(debugError, debugAudio) << "Failed to start stream. Error: " << convertToText(result) << "\n";
         _audioStream = nullptr;
     }
-
-//    _audioTracks.push_back(std::shared_ptr<IOboeAudioTrack>(new OboeAudioTestTrack(WaveType::SinWave, _audioStream->getSampleRate(), _audioStream->getChannelCount(), 440, 0.5F)));
-//    _audioTracks.push_back(std::shared_ptr<IOboeAudioTrack>(new OboeAudioTestTrack(WaveType::SinWave, _audioStream->getSampleRate(), _audioStream->getChannelCount(), 660, 0.5F)));
-//    _audioTracks.push_back(std::shared_ptr<IOboeAudioTrack>(new OboeAudioLoopingTrack(CreateTestCanvas(440, 0.5F))));
-//    _audioTracks.push_back(std::shared_ptr<IOboeAudioTrack>(new OboeAudioLoopingTrack(CreateTestCanvas(660, 0.5F))));
-//    _audioTracks.push_back(std::shared_ptr<IOboeAudioTrack>(new OboeAudioLoopingTrack(LoadSoundData("Wall"))));
 }
 
 void OboeAudioRenderer::CloseStream()
 {
+    if (_audioStream != nullptr)
+        _audioStream->close();
     _audioStream = nullptr;
 }
 
-std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::InternalLoadSceneSound(std::shared_ptr<ITurboSceneSound> sceneSound)
+std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::InternalLoadSceneSound(const std::shared_ptr<ITurboSceneSound>& sceneSound)
 {
     if (sceneSound == nullptr)
         return nullptr;
@@ -369,7 +325,7 @@ std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::LoadSoundData(const std::s
     return canvas;
 }
 
-std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::FindSoundCanvas(std::shared_ptr<ITurboSceneSound> sound)
+std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::FindSoundCanvas(const std::shared_ptr<ITurboSceneSound>& sound)
 {
     if (sound == nullptr)
         return nullptr;
@@ -384,8 +340,6 @@ std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::FindSoundCanvas(std::share
 
     if (_audioStream == nullptr)
         return nullptr;
-
-    //return CreateTestCanvas(660, 0.5F);
 
     auto soundName = sound->Name();
 
@@ -403,25 +357,62 @@ std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::FindSoundCanvas(std::share
     return canvas;
 }
 
-std::shared_ptr<ITurboSoundCanvas> OboeAudioRenderer::CreateTestCanvas(float frequency, float amplitude)
+void OboeAudioRenderer::RegisterCallbackStarted(int32_t numFrames)
 {
-    auto sampleRate = _audioStream->getSampleRate();
-    auto channelCount = _audioStream->getChannelCount();
-    auto length = sampleRate;
-
-    auto canvas = std::shared_ptr<ITurboSoundCanvas>(new TurboSoundFloatCanvas(sampleRate, channelCount, length));
-
-    float phase = 0;
-    float phaseIncrement = frequency * kTwoPi / sampleRate;
-    for (int sampleIndex = 0; sampleIndex < length; sampleIndex++)
+    if (_debug->Severity() > TurboDebugSeverity::debugVerbose ||
+        !_debug->CategoryEnabled(TurboDebugCategory::debugAudio))
     {
-        auto sample = amplitude * sinf(phase);
-        for (int channelIndex = 0; channelIndex < channelCount; channelIndex++)
-            canvas->SetSampleAsFloat(sampleIndex, channelIndex, sample);
-        phase += phaseIncrement;
+        return;
     }
 
-    return canvas;
+    _callbackStartTime = ndk_helper::PerfMonitor::GetCurrentTime();
+    if (_lastCallbackTime == 0.0)
+        return;
+    _totalFrames += numFrames;
+}
+
+void OboeAudioRenderer::RegisterCallbackFinished()
+{
+    if (_debug->Severity() > TurboDebugSeverity::debugVerbose ||
+        !_debug->CategoryEnabled(TurboDebugCategory::debugAudio))
+    {
+        return;
+    }
+
+    if (_lastCallbackTime == 0.0)
+    {
+        _lastCallbackTime = _callbackStartTime;
+        return;
+    }
+    _callbackFinishTime = ndk_helper::PerfMonitor::GetCurrentTime();
+
+    _totalTime += _callbackStartTime - _lastCallbackTime;
+    _totalDuration += _callbackFinishTime - _callbackStartTime;
+    _numCallbacks++;
+
+    if (_totalTime >= 1.0)
+    {
+        double averageInterval = _totalTime / _numCallbacks;
+        double averageDuration = _totalDuration / _numCallbacks;
+        double averageFrames = _totalFrames * 1.0 / _numCallbacks;
+        double frameRate = _totalFrames / _totalTime;
+
+        _debug->Send(debugVerbose, debugAudio)
+                << "onAudioReady" << ": "
+                << "_numCallbacks = " << _numCallbacks << ", "
+                << "_totalTime = " << _totalTime << "s, "
+                << "average interval = " << averageInterval * 1000 << "ms, "
+                << "average duration = " << averageDuration * 1000000 << "us, "
+                << "average frames = " << averageFrames << ", "
+                << "frame rate = " << frameRate << " f/s "
+                << "\n";
+
+        _totalTime = 0;
+        _totalDuration = 0;
+        _totalFrames = 0;
+        _numCallbacks = 0;
+    }
+    _lastCallbackTime = _callbackStartTime;
 }
 
 #pragma endregion Local Support Methods --------------------------------------------------------------------------------

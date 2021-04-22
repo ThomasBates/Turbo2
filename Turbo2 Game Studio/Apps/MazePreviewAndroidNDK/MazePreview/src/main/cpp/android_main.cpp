@@ -3,6 +3,7 @@
 #include <TurboDebug.h>
 #include <TurboDebugMemoryLogger.h>
 #include <TurboGameAggregateRenderer.h>
+#include <TurboGameNullAudioRenderer.h>
 
 #include <OpenGLESRenderer.h>
 #include <OboeAudioRenderer.h>
@@ -32,13 +33,14 @@ void android_main(android_app* app)
     auto logger = std::shared_ptr<ITurboDebugLogger>(new AndroidNDKDebugLogCatLogger("Maze Preview"));
     auto debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
-    debug->Severity(TurboDebugSeverity::debugVerbose);
-    debug->CategoryEnabled(TurboDebugCategory::debugView, true);
+    debug->Severity(TurboDebugSeverity::debugDebug);
+    debug->CategoryEnabled(TurboDebugCategory::debugAudio, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
 
     auto graphicsRenderer = std::shared_ptr<ITurboGameRenderer>(new OpenGLESRenderer(app, debug, ioService));
     auto audioRenderer = std::shared_ptr<ITurboGameRenderer>(new OboeAudioRenderer(debug, ioService));
+    //auto audioRenderer = std::shared_ptr<ITurboGameRenderer>(new TurboGameNullAudioRenderer());
     auto renderer = std::shared_ptr<ITurboGameRenderer>(new TurboGameAggregateRenderer({graphicsRenderer, audioRenderer}));
 
     auto game = std::shared_ptr<ITurboGame>(new MazePreview(debug));

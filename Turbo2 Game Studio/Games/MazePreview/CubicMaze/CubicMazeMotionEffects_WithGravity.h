@@ -25,8 +25,8 @@ namespace Turbo
 				bool isPlayer);
 
 		private:
-			const double cMoveAccelleration = 2.0f;
-			const double cRotateAccelleration = 45.0f;
+			const double cMoveAcceleration = 2.0f;
+			const double cRotateAcceleration = 45.0f;
 			const double cFrictionFactor = 2.0f;
 			const double cHoverFrequency = 0.0f;
 			const double cHoverMagnitude = 0.0f;

@@ -53,14 +53,18 @@ namespace Turbo
 							if (_logger != nullptr)
 							{
 								_logger->Log(_severity, _category, _message.str());
+								_message = std::stringstream();
 							}
-							_message = std::stringstream();
 							return c;
 						}
 						else
 						{
-							int const r = _message.rdbuf()->sputc(c);
-							return r == EOF ? EOF : c;
+							if (_logger != nullptr)
+							{
+								int const r = _message.rdbuf()->sputc(c);
+								return r == EOF ? EOF : c;
+							}
+							return c;
 						}
 					}
 				}

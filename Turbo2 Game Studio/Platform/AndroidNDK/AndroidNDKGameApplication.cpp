@@ -95,12 +95,6 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
             view->Render();
             _renderer->FinalizeRendering();
 
-//            _renderer->LoadView(view);
-//            _renderer->RenderView(view);
-
-//            _audio->LoadView(view);
-//            _audio->PlaySounds(view);
-
             //JNI_UpdateFPS();
         }
 
