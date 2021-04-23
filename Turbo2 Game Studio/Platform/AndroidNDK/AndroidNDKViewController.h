@@ -3,7 +3,6 @@
 
 #include <pch.h>
 #include <android_native_app_glue.h>
-#include <perfMonitor.h>
 
 #include <ITurboViewController.h>
 #include <ITurboDebug.h>
@@ -44,14 +43,10 @@ namespace Turbo
 				std::vector<std::shared_ptr<ITurboControlView>> _controlViews;
 				bool _isRunning = false;
 
-				ndk_helper::PerfMonitor _performance_monitor;
-
 				std::map<int32_t, std::shared_ptr<ITurboControlView>> _activeControlViews;
-				std::map<int32_t, size_t> _activeIndexes;
 
 				static int32_t HandleInputEvents(android_app* app, AInputEvent* event);
 				int32_t HandleInputEvent(AInputEvent *event);
-				void 	DebugLogMotionEvent(AInputEvent *event);
 				int32_t HandleMotionEvent(AInputEvent *event);
 
 				void AddControls(std::shared_ptr<ITurboView> control);
@@ -64,10 +59,7 @@ namespace Turbo
 				void ProcessSensors(int32_t id);
 				void SuspendSensors();
 				void ResumeSensors();
-
-				void UpdatePointerIndexes(const AInputEvent *event);
-				int32_t GetPointerIndex(const AInputEvent *event, int32_t id);
-			};
+            };
 		}
 	}
 }

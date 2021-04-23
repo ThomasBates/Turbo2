@@ -1,5 +1,6 @@
 
 #include <pch.h>
+#include <perfMonitor.h>
 
 #include <AndroidNDKViewController.h>
 #include <ITurboGroupView.h>
@@ -33,7 +34,7 @@ NavigationInfo* AndroidNDKViewController::GetNavigationInfo()
 {
     ProcessEvents();
 
-    double time = _performance_monitor.GetCurrentTime();
+    double time = ndk_helper::PerfMonitor::GetCurrentTime();
     _navInfo.DeltaTime = time - _navInfo.Time;
     _navInfo.Time = time;
 
@@ -65,7 +66,6 @@ int32_t AndroidNDKViewController::HandleInputEvent(AInputEvent *event)
 {
 	if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION)
 	{
-		DebugLogMotionEvent(event);
 		return HandleMotionEvent(event);
 	}
 
@@ -77,219 +77,149 @@ int32_t AndroidNDKViewController::HandleMotionEvent(AInputEvent *event)
 	int32_t action = AMotionEvent_getAction(event);
 	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
 	size_t pointerIndex = (size_t )(action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-
-	int32_t pointerID;
-	float x;
-	float y;
-	std::shared_ptr<ITurboControlView> activeControl;
+	size_t count = AMotionEvent_getPointerCount(event);
+	int32_t pointerID = AMotionEvent_getPointerId(event, pointerIndex);
+	float x = AMotionEvent_getX(event, pointerIndex);
+	float y = AMotionEvent_getY(event, pointerIndex);
 
 	switch (actionCode)
 	{
 		//	First touch down
 		case AMOTION_EVENT_ACTION_DOWN:
-			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
-			x = AMotionEvent_getX(event, pointerIndex);
-			y = AMotionEvent_getY(event, pointerIndex);
+			_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+					<< "DOWN: "
+					<< "index = " << pointerIndex << ", "
+					<< "id = " << pointerID << ", "
+					<< "at (" << x << ", " << y << "), "
+					<< "count = " << count << "\n";
 
-			for (auto& control : _controlViews)
-            {
-				if (control->IsActive())
-				{
-					_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" is already active.\n";
+			for (auto &controlView : _controlViews)
+			{
+				if (controlView->IsActive())
 					continue;
-				}
 
-				if (!control->Contains(x, y))
-				{
-					_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" was not hit.\n";
+				if (!controlView->Contains(x, y))
 					continue;
-				}
 
-				_debug->Send(debugDebug, debugController) << "Control \"" << control->Name() << "\" was hit.\n";
-				control->IsActive(true);
-                control->CurrentPoint(x, y);
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+						<< "  Activating Control: " << controlView->Name() << "\n";
+				controlView->IsActive(true);
+				controlView->CurrentPoint(x, y);
 
-                _activeControlViews[pointerID] = control;
-                _activeIndexes[pointerID] = pointerIndex;
-            }
+				_activeControlViews[pointerID] = controlView;
+			}
 			break;
 
 		// 	Last touch up
 		case AMOTION_EVENT_ACTION_UP:
-			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
+			_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+				<< "UP: "
+				<< "index = " << pointerIndex << ", "
+				<< "id = " << pointerID << ", "
+				<< "at (" << x << ", " << y << "), "
+				<< "count = " << count << "\n";
 
 			if (_activeControlViews.find(pointerID) != _activeControlViews.end())
 			{
-                activeControl = _activeControlViews[pointerID];
-                activeControl->IsActive(false);
+                auto controlView = _activeControlViews[pointerID];
+
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+														  << "  Deactivating Control: " << controlView->Name() << "\n";
+                controlView->IsActive(false);
 
 	    		_activeControlViews.erase(pointerID);
-    			_activeIndexes.erase(pointerID);
             }
 			break;
 
 		case AMOTION_EVENT_ACTION_POINTER_DOWN:
-			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
-			x = AMotionEvent_getX(event, pointerIndex);
-			y = AMotionEvent_getY(event, pointerIndex);
+			_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+				<< "POINTER_DOWN: "
+				<< "index = " << pointerIndex << ", "
+				<< "id = " << pointerID << ", "
+				<< "at (" << x << ", " << y << "), "
+				<< "count = " << count << "\n";
 
-			for (auto& control : _controlViews)
+			for (auto& controlView : _controlViews)
 			{
-				if (control->IsActive())
+				if (controlView->IsActive())
 					continue;
 
-                if (!control->Contains(x, y))
+                if (!controlView->Contains(x, y))
                     continue;
 
-				control->IsActive(true);
-				control->CurrentPoint(x, y);
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+														  << "  Activating Control: " << controlView->Name() << "\n";
+				controlView->IsActive(true);
+				controlView->CurrentPoint(x, y);
 
-				_activeControlViews[pointerID] = control;
-				_activeIndexes[pointerID] = pointerIndex;
+				_activeControlViews[pointerID] = controlView;
 			}
-
-			UpdatePointerIndexes(event);
 			break;
 
 		case AMOTION_EVENT_ACTION_POINTER_UP:
-			pointerID = AMotionEvent_getPointerId(event, pointerIndex);
+			_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+				<< "POINTER_UP: "
+				<< "index = " << pointerIndex << ", "
+				<< "id = " << pointerID << ", "
+				<< "at (" << x << ", " << y << "), "
+				<< "count = " << count << "\n";
 
             if (_activeControlViews.find(pointerID) != _activeControlViews.end())
             {
-                activeControl = _activeControlViews[pointerID];
-                activeControl->IsActive(false);
+                auto controlView = _activeControlViews[pointerID];
+
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+														  << "  Deactivating Control: " << controlView->Name() << "\n";
+                controlView->IsActive(false);
 
                 _activeControlViews.erase(pointerID);
-                _activeIndexes.erase(pointerID);
             }
-
-			UpdatePointerIndexes(event);
 			break;
 
-	    case AMOTION_EVENT_ACTION_CANCEL:
-			for (auto& control : _controlViews)
+		case AMOTION_EVENT_ACTION_MOVE:
+			for (int index = 0; index < count; index++)
 			{
-				control->IsActive(false);
+				pointerID = AMotionEvent_getPointerId(event, index);
+				x = AMotionEvent_getX(event, index);
+				y = AMotionEvent_getY(event, index);
+
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+					<< "MOVE: "
+					<< "index = " << index << ", "
+					<< "id = " << pointerID << ", "
+					<< "at (" << x << ", " << y << "), "
+					<< "count = " << count << "\n";
+
+				if (_activeControlViews.find(pointerID) != _activeControlViews.end())
+				{
+					auto controlView = _activeControlViews[pointerID];
+
+					_debug->Send(debugDebug, debugController) << "  Updating Control: " << controlView->Name() << "\n";
+					controlView->CurrentPoint(x, y);
+				}
+			}
+			break;
+
+		case AMOTION_EVENT_ACTION_CANCEL:
+			_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+				<< "CANCEL: "
+				<< "index = " << pointerIndex << ", "
+				<< "id = " << pointerID << ", "
+				<< "count = " << count << "\n";
+
+			for (auto& controlView : _controlViews)
+			{
+				_debug->Send(debugDebug, debugController) << "AndroidNDKViewController::HandleMotionEvent: "
+					<< "  Deactivating Control: " << controlView->Name() << "\n";
+				controlView->IsActive(false);
 			}
 			_activeControlViews.clear();
-			_activeIndexes.clear();
-	        break;
-
-		case AMOTION_EVENT_ACTION_MOVE:
-			for (auto& element : _activeControlViews)
-			{
-				pointerID = element.first;
-				activeControl = element.second;
-				pointerIndex = _activeIndexes[pointerID];
-
-				x = AMotionEvent_getX(event, pointerIndex);
-				y = AMotionEvent_getY(event, pointerIndex);
-
-				activeControl->CurrentPoint(x, y);
-			}
 			break;
 
 		default:
 			break;
 	}
 	return 1;
-}
-
-void AndroidNDKViewController::UpdatePointerIndexes(const AInputEvent *event)
-{
-	_activeIndexes.clear();
-	for (auto& element : _activeControlViews)
-	{
-		int32_t pointerID = element.first;
-		int32_t pointerIndex = GetPointerIndex(event, pointerID);
-		if (pointerIndex >= 0)
-		{
-			_activeIndexes[pointerID] = (size_t)pointerIndex;
-		}
-	}
-}
-
-int32_t AndroidNDKViewController::GetPointerIndex(const AInputEvent *event, int32_t id)
-{
-	size_t count = AMotionEvent_getPointerCount(event);
-	for (size_t index = 0; index < count; ++index)
-	{
-		if (id == AMotionEvent_getPointerId(event, index))
-			return (int32_t)index;
-	}
-	return -1;
-}
-
-void AndroidNDKViewController::DebugLogMotionEvent(AInputEvent *event)
-{
-	int32_t action = AMotionEvent_getAction(event);
-	int32_t actionCode = action & AMOTION_EVENT_ACTION_MASK;
-	size_t index = (size_t)(action & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-	size_t count = AMotionEvent_getPointerCount(event);
-	int32_t pointerID;
-	float x;
-	float y;
-
-	switch (actionCode)
-	{
-		case AMOTION_EVENT_ACTION_DOWN:
-			pointerID = AMotionEvent_getPointerId(event, index);
-			x = AMotionEvent_getX(event, index);
-			y = AMotionEvent_getY(event, index);
-
-			_debug->Send(debugDebug, debugController) 	<< "DOWN: "
-														 << "index = " << index << ", "
-														 << "id = " << pointerID << ", "
-														 << "at (" << x << ", " << y << "), "
-														 << "count = " << count << ".\n";
-			break;
-
-		case AMOTION_EVENT_ACTION_UP:
-			pointerID = AMotionEvent_getPointerId(event, index);
-			x = AMotionEvent_getX(event, index);
-			y = AMotionEvent_getY(event, index);
-
-			_debug->Send(debugDebug, debugController) 	<< "UP: "
-														 << "index = " << index << ", "
-														 << "id = " << pointerID << ", "
-														 << "at (" << x << ", " << y << "), "
-														 << "count = " << count << ".\n";
-			break;
-
-		case AMOTION_EVENT_ACTION_MOVE:
-			_debug->Send(debugDebug, debugController)	<< "MOVE: "
-														 << "count = " << count << ".\n";
-			break;
-
-		case AMOTION_EVENT_ACTION_POINTER_DOWN:
-			pointerID = AMotionEvent_getPointerId(event, index);
-			x = AMotionEvent_getX(event, index);
-			y = AMotionEvent_getY(event, index);
-
-			_debug->Send(debugDebug, debugController) 	<< "POINTER_DOWN: "
-														 << "index = " << index << ", "
-														 << "id = " << pointerID << ", "
-														 << "at (" << x << ", " << y << "), "
-														 << "count = " << count << ".\n";
-			break;
-
-		case AMOTION_EVENT_ACTION_POINTER_UP:
-			pointerID = AMotionEvent_getPointerId(event, index);
-			x = AMotionEvent_getX(event, index);
-			y = AMotionEvent_getY(event, index);
-
-			_debug->Send(debugDebug, debugController) 	<< "POINTER_UP: "
-														 << "index = " << index << ", "
-														 << "id = " << pointerID << ", "
-														 << "at (" << x << ", " << y << "), "
-														 << "count = " << count << ".\n";
-			break;
-
-		default:
-			_debug->Send(debugDebug, debugController) 	<< "action = " << actionCode << ", "
-														 << "count = " << count << ".\n";
-			break;
-	}
 }
 
 //	Event Handler Methods ----------------------------------------------------------------------------------------------
@@ -391,7 +321,6 @@ void AndroidNDKViewController::AddControl(std::shared_ptr<ITurboControlView> con
 void AndroidNDKViewController::ClearControls()
 {
     _activeControlViews.clear();
-    _activeIndexes.clear();
 
     _controlViews.clear();
     _navInfo.Controls.clear();
