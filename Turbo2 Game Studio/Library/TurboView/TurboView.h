@@ -23,6 +23,9 @@ namespace Turbo
 			//	ITurboView Properties ---------------------------------------------------------------------------
 			virtual std::string Name() { return _name; }
 
+			virtual bool IsVisible() { return _isVisible; }
+			virtual void IsVisible(bool isVisible) { _isVisible = isVisible; }
+
 			virtual TurboVector2D Position() { return _position; }
 			virtual void Position(TurboVector2D position);
 
@@ -51,6 +54,7 @@ namespace Turbo
 
 		private:
 			std::string _name;
+			bool _isVisible = true;
 			std::shared_ptr<ITurboViewRendererAccess> _rendererAccess;
 
 			TurboVector2D _position = {};

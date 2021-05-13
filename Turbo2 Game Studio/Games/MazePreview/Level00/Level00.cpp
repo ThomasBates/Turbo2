@@ -153,6 +153,22 @@ void Level00::Update(NavigationInfo* navInfo)
 		//  ...
 	}
 
+	//	Check for action controls first regardless of sublevel.
+	for (auto& control: navInfo->Controls)
+	{
+		if (control->Type() == TurboGameControlType::Action)
+		{
+			if (_actionStillActive && !control->IsActive())
+				_actionStillActive = false;
+
+			if (!_actionStillActive && control->IsActive() && _actionTriggered == 0)
+			{
+				_actionTriggered = (int)control->XValue();
+				_actionStillActive = true;
+			}
+		}
+	}
+
 	if (_subLevel != nullptr)
 	{
 		_subLevel->Update(navInfo);
@@ -303,6 +319,13 @@ void Level00::Update(NavigationInfo* navInfo)
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
 	}
+}
+
+int Level00::Action()
+{
+	int result = _actionTriggered;
+	_actionTriggered = 0;
+	return result;
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------

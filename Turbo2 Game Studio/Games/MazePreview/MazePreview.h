@@ -32,6 +32,7 @@ public:
 	virtual std::shared_ptr<ITurboSceneObject> Player();
 
 	virtual bool SceneChanged() { return _sceneChanged; }
+	virtual int Action() { return _level == nullptr ? 0 : _level->Action(); }
 
 	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();

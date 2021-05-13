@@ -15,8 +15,8 @@
 
 #include <MazePreview.h>
 
-#include <MazePreviewMainViewModel.h>
-#include <MazePreviewMainView.h>
+#include <MazePreviewRootViewModel.h>
+#include <MazePreviewRootView.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Platform::AndroidNDK;
@@ -34,7 +34,7 @@ void android_main(android_app* app)
     auto debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
     debug->Severity(TurboDebugSeverity::debugDebug);
-    debug->CategoryEnabled(TurboDebugCategory::debugAudio, true);
+    debug->CategoryEnabled(TurboDebugCategory::debugController, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
 
@@ -44,13 +44,13 @@ void android_main(android_app* app)
     auto renderer = std::shared_ptr<ITurboGameRenderer>(new TurboGameAggregateRenderer({graphicsRenderer, audioRenderer}));
 
     auto game = std::shared_ptr<ITurboGame>(new MazePreview(debug));
-    auto mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
+    auto rootViewModel = std::shared_ptr<MazePreviewRootViewModel>(new MazePreviewRootViewModel(game));
 
     auto rendererAccess = renderer->RendererAccess();
-    auto mainView = std::shared_ptr<ITurboGroupView>(new MazePreviewMainView(debug, "Main View", rendererAccess, mainViewModel));
+    auto rootView = std::shared_ptr<ITurboGroupView>(new MazePreviewRootView(debug, "Root View", rendererAccess, rootViewModel));
 
-    auto controller = std::shared_ptr<ITurboViewController>(new AndroidNDKViewController(app, debug, mainView));
+    auto controller = std::shared_ptr<ITurboViewController>(new AndroidNDKViewController(app, debug, rootView));
     auto application = std::shared_ptr<ITurboGameApplication>(new AndroidNDKGameApplication(app, debug, controller, ioService, renderer));
 
-    application->Run(game, mainView);
+    application->Run(game, rootView);
 }

@@ -17,6 +17,9 @@ namespace Turbo
 			//	ITurboView Properties ----------------------------------------------------------------------------------
 			virtual std::string Name() = 0;
 
+			virtual bool IsVisible() = 0;
+			virtual void IsVisible(bool isVisible) = 0;
+
 			virtual TurboVector2D Position() = 0;
 			virtual void Position(TurboVector2D position) = 0;
 

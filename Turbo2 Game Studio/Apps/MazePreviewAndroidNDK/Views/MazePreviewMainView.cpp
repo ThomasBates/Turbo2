@@ -26,7 +26,7 @@ MazePreviewMainView::MazePreviewMainView(
 {
     _sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
     _hud1View = std::shared_ptr<ITurboView>(new MazePreviewHUD1View(_debug, "HUD1 View", rendererAccess, _viewModel->HUD1ViewModel()));
-    _hud2View = std::shared_ptr<ITurboView>(new MazePreviewHUD2View(        "HUD2 View", rendererAccess, _viewModel->HUD2ViewModel()));
+    _hud2View = std::shared_ptr<ITurboView>(new MazePreviewHUD2View(_debug, "HUD2 View", rendererAccess, _viewModel->HUD2ViewModel()));
 
     _mainControlView = std::shared_ptr<ITurboView>(new MazePreviewMainControlView("Main Control View", rendererAccess, _viewModel->MainControlViewModel()));
     _motionControlView = std::shared_ptr<ITurboView>(new MazePreviewMotionControlView("Motion Control View", rendererAccess, _viewModel->MotionControlViewModel()));

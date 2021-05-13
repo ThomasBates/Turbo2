@@ -19,6 +19,9 @@ public:
     MazePreviewMainViewModel(std::shared_ptr<ITurboGame> game);
     virtual ~MazePreviewMainViewModel() {}
 
+    //  Public Methods -------------------------------------------------------------------------------------------------
+    void Update();
+
     //  Public Properties ----------------------------------------------------------------------------------------------
     std::shared_ptr<TurboSceneViewModel> MainSceneViewModel() { return _sceneViewModel; }
     std::shared_ptr<MazePreviewHUD1ViewModel> HUD1ViewModel() { return _hud1ViewModel; }
@@ -27,6 +30,11 @@ public:
     std::shared_ptr<MazePreviewMotionControlViewModel> MotionControlViewModel() { return _motionControlViewModel; }
     std::shared_ptr<MazePreviewDirectionControlViewModel> DirectionControlViewModel() { return _directionControlViewModel; }
 
+    bool IsVisible() { return _isVisible; }
+    void IsVisible(bool isVisible) { _isVisible = isVisible; }
+    bool OpenMenuAction() { return _hud2ViewModel->OpenMenuAction(); }
+    bool OpenInfoAction() { return _hud2ViewModel->OpenInfoAction(); }
+
 private:
     std::shared_ptr<TurboSceneViewModel> _sceneViewModel;
     std::shared_ptr<MazePreviewHUD1ViewModel> _hud1ViewModel;
@@ -34,4 +42,8 @@ private:
     std::shared_ptr<MazePreviewMainControlViewModel> _mainControlViewModel;
     std::shared_ptr<MazePreviewMotionControlViewModel> _motionControlViewModel;
     std::shared_ptr<MazePreviewDirectionControlViewModel> _directionControlViewModel;
+
+    bool _isVisible;
 };
+
+

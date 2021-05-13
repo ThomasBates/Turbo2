@@ -41,6 +41,7 @@ public:
 	virtual std::shared_ptr<ITurboSceneObject> Player() { return _player; }
 
 	virtual bool SceneChanged() { return _sceneChanged; }
+	virtual int Action();
 
 	//  ITurboGameLevel Methods ----------------------------------------------------------------------------------------
 	virtual void Initialize();
@@ -56,6 +57,8 @@ private:
 	int									_subLevelIndex;
 	TurboGameLevelState					_levelState;
 	bool								_sceneChanged;
+	int 								_actionTriggered;
+	bool 								_actionStillActive;
 
 	std::shared_ptr<ICubicMazeFactory>				_mazeFactory;
 	std::shared_ptr<ICubicMazeSceneBuilder>			_sceneBuilder;

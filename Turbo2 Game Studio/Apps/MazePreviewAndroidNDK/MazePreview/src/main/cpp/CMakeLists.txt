@@ -23,12 +23,24 @@ android_ndk_import_module_native_app_glue()
 # set up common compile options
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Werror -fno-exceptions -frtti")
 
+get_filename_component(AppFolder ../../../.. ABSOLUTE)
+
 get_filename_component(TurboFolder ../../../../../.. ABSOLUTE)
 
 # now build app's shared lib
 add_library(${PROJECT_NAME}
         SHARED
         android_main.cpp
+
+        ${AppFolder}/Views/MazePreviewRootView.cpp
+        ${AppFolder}/Views/MazePreviewMainView.cpp
+        ${AppFolder}/Views/MazePreviewHUD1View.cpp
+        ${AppFolder}/Views/MazePreviewHUD2View.cpp
+        ${AppFolder}/Views/MazePreviewDirectionControlView.cpp
+        ${AppFolder}/Views/MazePreviewMainControlView.cpp
+        ${AppFolder}/Views/MazePreviewMotionControlView.cpp
+        ${AppFolder}/Views/MazePreviewMenuView.cpp
+        ${AppFolder}/Views/MazePreviewInfoView.cpp
         )
 
 add_library(Games_MazePreview
@@ -63,25 +75,26 @@ add_library(Games_MazePreview
         ${TurboFolder}/Games/MazePreview/Level00/Level05.cpp
         ${TurboFolder}/Games/MazePreview/Level00/Level05CubicMazeFactory.cpp
 
+        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewRootViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD1ViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD2ViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewDirectionControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMotionControlViewModel.cpp
-
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewMainView.cpp
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewHUD1View.cpp
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewHUD2View.cpp
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewDirectionControlView.cpp
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewMainControlView.cpp
-        ${TurboFolder}/Games/MazePreview/Views/MazePreviewMotionControlView.cpp
+        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMenuViewModel.cpp
+        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewInfoViewModel.cpp
         )
 
 add_library(Library_TurboCore
         STATIC
         ${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebug.cpp
         ${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
+        ${TurboFolder}/Library/TurboCore/TurboSystem/TurboEvent.cpp
+        ${TurboFolder}/Library/TurboCore/TurboSystem/TurboEventHandler.cpp
+        ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboNotifyPropertyChanged.cpp
+        ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboCommand.cpp
+        ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboTypedCommand.cpp
         )
 
 add_library(Library_TurboGame
@@ -118,6 +131,7 @@ add_library(Library_TurboScene
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationPadControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationSetControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationStickControl.cpp
+        ${TurboFolder}/Library/TurboScene/TurboSceneNavigationTapControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneObject.cpp
         ${TurboFolder}/Library/TurboScene/TurboScenePixelShader.cpp
         ${TurboFolder}/Library/TurboScene/TurboScenePlacement.cpp
@@ -169,15 +183,17 @@ add_library(Platform_Oboe
         )
 
 include_directories(.)
+include_directories(${AppFolder}/Views)
 
 include_directories(${TurboFolder}/Games/MazePreview)
 include_directories(${TurboFolder}/Games/MazePreview/CubicMaze)
 include_directories(${TurboFolder}/Games/MazePreview/Level00)
 include_directories(${TurboFolder}/Games/MazePreview/ViewModels)
-include_directories(${TurboFolder}/Games/MazePreview/Views)
 
 include_directories(${TurboFolder}/Library/TurboCore)
 include_directories(${TurboFolder}/Library/TurboCore/TurboDebug)
+include_directories(${TurboFolder}/Library/TurboCore/TurboPresentation)
+include_directories(${TurboFolder}/Library/TurboCore/TurboSystem)
 include_directories(${TurboFolder}/Library/TurboGame)
 include_directories(${TurboFolder}/Library/TurboGame/ViewModels)
 include_directories(${TurboFolder}/Library/TurboGame/Views)

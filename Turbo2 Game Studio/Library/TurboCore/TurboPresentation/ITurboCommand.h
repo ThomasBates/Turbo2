@@ -14,14 +14,6 @@ namespace Turbo
 				virtual bool CanExecute() = 0;
 				virtual void Execute() = 0;
 			};
-
-			template <class T>
-			class ITurboCommand
-			{
-			public:
-				virtual bool CanExecute(T parameter) = 0;
-				virtual void Execute(T parameter) = 0;
-			};
 		}
 	}
 }

@@ -30,6 +30,7 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboSceneObject> Player() = 0;
 
 			virtual bool SceneChanged() = 0;
+			virtual int Action() = 0;
 
 			//	ITurboGameLevel Methods --------------------------------------------------------------------------------
 			virtual void	Initialize() = 0;

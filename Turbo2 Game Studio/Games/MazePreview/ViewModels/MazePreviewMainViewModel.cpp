@@ -26,3 +26,8 @@ MazePreviewMainViewModel::MazePreviewMainViewModel(std::shared_ptr<ITurboGame> g
     _motionControlViewModel    = std::shared_ptr<MazePreviewMotionControlViewModel>(new MazePreviewMotionControlViewModel(forwardButtonViewModel, backwardButtonViewModel));
     _directionControlViewModel = std::shared_ptr<MazePreviewDirectionControlViewModel>(new MazePreviewDirectionControlViewModel(dpadControlViewModel));
 }
+
+void MazePreviewMainViewModel::Update()
+{
+    _hud2ViewModel->Update();
+}
