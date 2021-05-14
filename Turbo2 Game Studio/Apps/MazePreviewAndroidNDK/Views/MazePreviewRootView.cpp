@@ -4,12 +4,12 @@
 #include <MazePreviewRootView.h>
 #include <MazePreviewMainView.h>
 #include <MazePreviewMenuView.h>
-#include <MazePreviewInfoView.h>
 
 #include <TurboSceneSprite.h>
 #include <TurboSceneTexture.h>
 #include <TurboSceneView.h>
 #include <TurboSceneSound.h>
+#include <Views/TurboDialogView.h>
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
@@ -24,11 +24,8 @@ MazePreviewRootView::MazePreviewRootView(
 {
     _mainView = std::shared_ptr<ITurboView>(new MazePreviewMainView(debug, "Main View", rendererAccess, _viewModel->MainViewModel()));
     _menuView = std::shared_ptr<ITurboView>(new MazePreviewMenuView(debug, "Menu View", rendererAccess, _viewModel->MenuViewModel()));
-    _infoView = std::shared_ptr<ITurboView>(new MazePreviewInfoView(debug, "Info View", rendererAccess, _viewModel->InfoViewModel()));
-
-//    _mainView->IsVisible(true);
-//    _menuView->IsVisible(false);
-//    _infoView->IsVisible(false);
+    _infoView = std::shared_ptr<ITurboView>(new TurboDialogView(debug, "Info View", rendererAccess,
+                                                                _viewModel->InfoViewModel()));
 
     InternalAddView(_mainView);
     InternalAddView(_menuView);

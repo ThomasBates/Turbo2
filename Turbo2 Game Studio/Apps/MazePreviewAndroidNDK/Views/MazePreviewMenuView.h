@@ -4,15 +4,16 @@
 #include <pch.h>
 
 #include <ITurboDebug.h>
-#include <TurboGroupView.h>
+#include <TurboDialogView.h>
 #include <ITurboViewRendererAccess.h>
 #include <MazePreviewMenuViewModel.h>
+#include <Views/TurboToggleControlView.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 using namespace Turbo::View;
 
-class MazePreviewMenuView : public TurboGroupView
+class MazePreviewMenuView : public TurboDialogView
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
@@ -34,6 +35,11 @@ private:
     std::shared_ptr<ITurboDebug> _debug;
     std::shared_ptr<MazePreviewMenuViewModel> _viewModel;
 
-    std::shared_ptr<ITurboView> _sceneView;
-    std::shared_ptr<ITurboView> _closeControlView;
+    std::shared_ptr<ITurboSceneText> _reverseControlsText;
+    std::shared_ptr<TurboToggleControlView> _reverseControlToggleView;
+    std::shared_ptr<ITurboSceneText> _soundEffectsText;
+    std::shared_ptr<TurboToggleControlView> _soundEffectsToggleView;
+    std::shared_ptr<ITurboSceneText> _resetProgressText;
+    std::shared_ptr<ITurboSceneText> _selectRoundText;
+    std::shared_ptr<ITurboSceneText> _selectMazeText;
 };

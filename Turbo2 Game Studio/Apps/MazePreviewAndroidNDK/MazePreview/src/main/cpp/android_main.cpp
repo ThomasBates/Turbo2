@@ -33,8 +33,8 @@ void android_main(android_app* app)
     auto logger = std::shared_ptr<ITurboDebugLogger>(new AndroidNDKDebugLogCatLogger("Maze Preview"));
     auto debug = std::shared_ptr<ITurboDebug>(new TurboDebug(logger));
 
-    debug->Severity(TurboDebugSeverity::debugDebug);
-    debug->CategoryEnabled(TurboDebugCategory::debugController, true);
+    debug->Severity(TurboDebugSeverity::debugVerbose);
+    debug->CategoryEnabled(TurboDebugCategory::debugView, true);
 
     auto ioService = std::shared_ptr<ITurboGameIOService>(new AndroidNDKIOService(debug));
 

@@ -26,10 +26,8 @@ MazePreviewHUD2View::MazePreviewHUD2View(
 
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
-    _watermark->UseRectangle(true);
 
     _signageText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(1.0F, 1.0F, 0.0F), _viewModel->SignageText()));
-    _signageText->UseRectangle(true);
     _signageText->HorizontalAlignment(SceneTextHorizontalAlignment::horizontalRight);
 }
 
@@ -38,6 +36,10 @@ MazePreviewHUD2View::MazePreviewHUD2View(
 void MazePreviewHUD2View::Load()
 {
     TurboGroupView::Load();
+
+    _viewModel->Update();
+
+    _signageText->Text(_viewModel->SignageText());
 
     LoadSceneSprite(_watermark);
     LoadSceneText(_signageText);

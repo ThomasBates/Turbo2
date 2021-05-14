@@ -22,5 +22,4 @@ TurboControlViewModel::TurboControlViewModel(
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
 
     _sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
-    _sprite->UseRectangle(true);
 }

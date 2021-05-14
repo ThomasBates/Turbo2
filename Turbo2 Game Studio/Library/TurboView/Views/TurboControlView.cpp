@@ -63,7 +63,6 @@ void TurboControlView::UpdateLayout(TurboVector2D position, TurboVector2D size)
     if (sprite == nullptr)
         return;
 
-    sprite->UseRectangle(true);
     sprite->Rectangle(TurboRectangle(
             position.X,
             position.Y,

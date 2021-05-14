@@ -26,7 +26,7 @@ public:
     bool OpenMenuAction() { return _openMenuAction; }
     bool OpenInfoAction() { return _openInfoAction; }
 
-    std::string SignageText();
+    std::string SignageText() { return _signageText; }
 
 private:
     std::shared_ptr<ITurboGame> _game;

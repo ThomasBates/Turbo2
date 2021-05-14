@@ -7,7 +7,10 @@ MazePreviewRootViewModel::MazePreviewRootViewModel(const std::shared_ptr<ITurboG
 {
     _mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
     _menuViewModel = std::shared_ptr<MazePreviewMenuViewModel>(new MazePreviewMenuViewModel(game));
-    _infoViewModel = std::shared_ptr<MazePreviewInfoViewModel>(new MazePreviewInfoViewModel(game));
+    _infoViewModel = std::shared_ptr<TurboDialogViewModel>(new TurboDialogViewModel(game, false));
+
+    _infoViewModel->CaptionText("Introduction");
+    _infoViewModel->DialogText(_infoText);
 
     _mainViewModel->IsVisible(true);
     _menuViewModel->IsVisible(false);
@@ -37,7 +40,8 @@ void MazePreviewRootViewModel::Update()
     {
         _menuViewModel->Update();
 
-        if (_menuViewModel->CloseAction())
+        if (_menuViewModel->OKAction() ||
+            _menuViewModel->CancelAction())
         {
             _menuViewModel->IsVisible(false);
             _mainViewModel->IsVisible(true);
@@ -48,7 +52,7 @@ void MazePreviewRootViewModel::Update()
     {
         _infoViewModel->Update();
 
-        if (_infoViewModel->CloseAction())
+        if (_infoViewModel->OKAction())
         {
             _infoViewModel->IsVisible(false);
             _mainViewModel->IsVisible(true);

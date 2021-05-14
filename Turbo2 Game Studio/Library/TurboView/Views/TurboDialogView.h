@@ -6,22 +6,22 @@
 #include <ITurboDebug.h>
 #include <TurboGroupView.h>
 #include <ITurboViewRendererAccess.h>
-#include <MazePreviewInfoViewModel.h>
+#include <TurboDialogViewModel.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
 using namespace Turbo::View;
 
-class MazePreviewInfoView : public TurboGroupView
+class TurboDialogView : public TurboGroupView
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewInfoView(
+    TurboDialogView(
             std::shared_ptr<ITurboDebug> debug,
             std::string name,
             std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
-            std::shared_ptr<MazePreviewInfoViewModel> viewModel);
-    virtual ~MazePreviewInfoView() {}
+            std::shared_ptr<TurboDialogViewModel> viewModel);
+    virtual ~TurboDialogView() {}
 
     //	ITurboView Methods ---------------------------------------------------------------------------------------------
     virtual void Load();
@@ -32,9 +32,15 @@ protected:
 
 private:
     std::shared_ptr<ITurboDebug> _debug;
-    std::shared_ptr<MazePreviewInfoViewModel> _viewModel;
+    std::shared_ptr<TurboDialogViewModel> _viewModel;
 
     std::shared_ptr<ITurboView> _sceneView;
-    std::shared_ptr<ITurboView> _closeControlView;
-    std::shared_ptr<ITurboSceneText> _infoText;
+    std::shared_ptr<ITurboView> _okControlView;
+    std::shared_ptr<ITurboView> _cancelControlView;
+
+    std::shared_ptr<ITurboSceneText> _captionText;
+    std::shared_ptr<ITurboSceneText> _dialogText;
+
+    std::shared_ptr<ITurboSceneText> _okText;
+    std::shared_ptr<ITurboSceneText> _cancelText;
 };

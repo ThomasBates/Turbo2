@@ -24,7 +24,7 @@ namespace Turbo
 			virtual std::string Name() { return _name; }
 
 			virtual bool IsVisible() { return _isVisible; }
-			virtual void IsVisible(bool isVisible) { _isVisible = isVisible; }
+			virtual void IsVisible(bool isVisible);
 
 			virtual TurboVector2D Position() { return _position; }
 			virtual void Position(TurboVector2D position);

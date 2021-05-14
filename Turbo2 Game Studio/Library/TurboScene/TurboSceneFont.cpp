@@ -73,6 +73,9 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
         charPosition.X += charSize.X;
     }
 
+    if (placementList.empty())
+        return std::shared_ptr<ITurboSceneMesh>(new TurboSceneMesh());
+
     auto textRectangle = sceneText->Rectangle();
     auto fontSize = sceneText->FontSize();
 
@@ -84,31 +87,49 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
 
     _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: sceneText->HorizontalAlignment = " << (int)(sceneText->HorizontalAlignment()) << "\n";
 
+    float factor;
+    float offset;
+    float increment;
+
     switch (sceneText->HorizontalAlignment())
     {
         case horizontalLeft:
-        {
-            float factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
-            _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case horizontalLeft: factor = " << factor << "\n";
-
-            for (int i = 0; i < placementList.size(); i++)
-            {
-                placementList[i].X1 = placementList[i].X1 * factor - 1;
-                placementList[i].X2 = placementList[i].X2 * factor - 1;
-                _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case horizontalLeft: " << placementList[i] << "\n";
-            }
+            factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
+            offset = -1;
+            increment = 0;
             break;
-        }
         case horizontalCenter:
+            factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
+            offset = -placementList.back().X2 * factor / 2;
+            increment = 0;
             break;
         case horizontalRight:
+            factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
+            offset = 1 - placementList.back().X2 * factor;
+            increment = 0;
             break;
         case horizontalStretched:
+            factor = 2 / placementList.back().X2;
+            offset = -1;
+            increment = 0;
             break;
         case horizontalJustified:
+            factor = 2 * (fontSize) / (textRectangle.X2 - textRectangle.X1);
+            offset = -1;
+            increment = (2 - placementList.back().X2 * factor) / (placementList.size() - 1.0f);
             break;
         default:
             break;
+    }
+
+    _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: factor = " << factor << ", offset = " << offset << "\n";
+
+    for (auto & placement : placementList)
+    {
+        placement.X1 = placement.X1 * factor + offset;
+        placement.X2 = placement.X2 * factor + offset;
+        offset += increment;
+        _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: " << placement << "\n";
     }
 
     _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: sceneText->VerticalAlignment = " << (int)(sceneText->VerticalAlignment()) << "\n";
@@ -117,7 +138,7 @@ std::shared_ptr<ITurboSceneMesh> TurboSceneFont::CreateMesh(std::shared_ptr<ITur
     {
         case verticalTop:
         {
-            float factor = 2 * (fontSize) / (textRectangle.Y2 - textRectangle.Y1);
+            factor = 2 * (fontSize) / (textRectangle.Y2 - textRectangle.Y1);
             _debug->Send(debugVerbose, debugView) << "TurboSceneFont::CreateMesh: case verticalTop: factor = " << factor << "\n";
 
             for (int i = 0; i < placementList.size(); i++)

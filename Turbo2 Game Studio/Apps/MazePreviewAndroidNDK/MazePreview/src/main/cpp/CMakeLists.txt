@@ -40,7 +40,6 @@ add_library(${PROJECT_NAME}
         ${AppFolder}/Views/MazePreviewMainControlView.cpp
         ${AppFolder}/Views/MazePreviewMotionControlView.cpp
         ${AppFolder}/Views/MazePreviewMenuView.cpp
-        ${AppFolder}/Views/MazePreviewInfoView.cpp
         )
 
 add_library(Games_MazePreview
@@ -83,7 +82,6 @@ add_library(Games_MazePreview
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMotionControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMenuViewModel.cpp
-        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewInfoViewModel.cpp
         )
 
 add_library(Library_TurboCore
@@ -131,7 +129,6 @@ add_library(Library_TurboScene
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationPadControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationSetControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneNavigationStickControl.cpp
-        ${TurboFolder}/Library/TurboScene/TurboSceneNavigationTapControl.cpp
         ${TurboFolder}/Library/TurboScene/TurboSceneObject.cpp
         ${TurboFolder}/Library/TurboScene/TurboScenePixelShader.cpp
         ${TurboFolder}/Library/TurboScene/TurboScenePlacement.cpp
@@ -153,8 +150,12 @@ add_library(Library_TurboView
         STATIC
         ${TurboFolder}/Library/TurboView/TurboView.cpp
         ${TurboFolder}/Library/TurboView/ViewModels/TurboControlViewModel.cpp
-        ${TurboFolder}/Library/TurboView/Views/TurboGroupView.cpp
+        ${TurboFolder}/Library/TurboView/ViewModels/TurboDialogViewModel.cpp
+        ${TurboFolder}/Library/TurboView/ViewModels/TurboToggleControlViewModel.cpp
         ${TurboFolder}/Library/TurboView/Views/TurboControlView.cpp
+        ${TurboFolder}/Library/TurboView/Views/TurboGroupView.cpp
+        ${TurboFolder}/Library/TurboView/Views/TurboDialogView.cpp
+        ${TurboFolder}/Library/TurboView/Views/TurboToggleControlView.cpp
         )
 
 add_library(Platform_AndroidNDK

@@ -121,7 +121,6 @@ void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D siz
     _mainControlView->Size(TurboVector2D(x2 - x1, y2 - y1));
 
     // watermark
-    _watermark->UseRectangle(true);
     _watermark->Rectangle(TurboRectangle(
             x2 - s/4,
             y2 - s/4,

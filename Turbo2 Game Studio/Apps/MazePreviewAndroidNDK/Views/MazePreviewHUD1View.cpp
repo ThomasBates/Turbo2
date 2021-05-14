@@ -42,14 +42,12 @@ void MazePreviewHUD1View::UpdateLayout(TurboVector2D position, TurboVector2D siz
 {
     _debug->Send(debugDebug, debugView) << "MazePreviewHUD1View::UpdateLayout: position = " << position << ", size = " << size << "\n";
 
-    _roundText->UseRectangle(true);
     _roundText->Rectangle(TurboRectangle(
             position.X,
             position.Y,
             position.X + size.X,
             position.Y + 60));
 
-    _titleText->UseRectangle(true);
     _titleText->Rectangle(TurboRectangle(
             position.X,
             position.Y + 60,

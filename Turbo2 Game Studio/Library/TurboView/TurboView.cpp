@@ -16,6 +16,19 @@ TurboView::TurboView(std::string name,
 
 //	ITurboView Properties ---------------------------------------------------------------------------------------
 
+void TurboView::IsVisible(bool isVisible)
+{
+	if (_isVisible == isVisible)
+	{
+		return;
+	}
+
+	_isVisible = isVisible;
+
+	if (_isVisible)
+		UpdateLayout(_position, _size);
+}
+
 void TurboView::Position(TurboVector2D position)
 {
 	if (_position.X == position.X &&
@@ -25,7 +38,8 @@ void TurboView::Position(TurboVector2D position)
 	}
 
 	_position = position;
-	UpdateLayout(_position, _size);
+	if (_isVisible)
+		UpdateLayout(_position, _size);
 }
 
 void TurboView::Size(TurboVector2D size)
@@ -37,7 +51,8 @@ void TurboView::Size(TurboVector2D size)
 	}
 
 	_size = size;
-	UpdateLayout(_position, _size);
+	if (_isVisible)
+		UpdateLayout(_position, _size);
 }
 
 //	ITurboView Methods ------------------------------------------------------------------------------------------
