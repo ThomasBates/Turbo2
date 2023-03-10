@@ -115,7 +115,7 @@ void Level04::BuildScene(NavigationInfo* navInfo)
 
 	_scene = _helper->BuildScene(navInfo);
 
-	if (_mazeOptions.LevelRound == 2)
+	if (_mazeOptions.ShowSigns)
 	{
 		if (exitLocked)
 		{

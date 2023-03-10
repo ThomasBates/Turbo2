@@ -24,14 +24,13 @@ namespace Turbo
             //  Public Properties --------------------------------------------------------------------------------------
             std::shared_ptr<ITurboControlViewModel> ToggleViewModel() { return _toggleViewModel; }
 
-            bool ToggleOn() { return _toggleOn; }
-            void ToggleOn(bool toggleOn) { _toggleOn = toggleOn; }
+            bool GetValue() { return _value; }
+            void SetValue(bool value) { _value = value; }
 
         private:
             std::shared_ptr<ITurboControlViewModel> _toggleViewModel;
 
-            bool _toggleOn = false;
-            bool _lastToggleButtonActive = false;
+            bool _value = false;
         };
     }
 }

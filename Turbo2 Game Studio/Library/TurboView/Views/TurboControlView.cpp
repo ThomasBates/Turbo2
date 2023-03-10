@@ -2,6 +2,8 @@
 #include <pch.h>
 
 #include <TurboControlView.h>
+#include <TurboSceneSprite.h>
+#include <TurboSceneTexture.h>
 
 using namespace Turbo::View;
 
@@ -10,30 +12,38 @@ using namespace Turbo::View;
 TurboControlView::TurboControlView(
         std::string name,
         std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
-        std::shared_ptr<ITurboControlViewModel> controlViewModel) :
+        std::shared_ptr<ITurboControlViewModel> controlViewModel,
+        std::string textureName) :
         TurboView(name, rendererAccess),
         _controlViewModel(std::move(controlViewModel))
 {
+    if (textureName.empty())
+    {
+        _sprite = nullptr;
+        return;
+    }
+
+    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture(textureName));
+
+    _sprite = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
 
 void TurboControlView::Load()
 {
-    auto sprite = _controlViewModel->Sprite();
-    if (sprite == nullptr)
+    if (_sprite == nullptr)
         return;
 
-    LoadSceneSprite(sprite);
+    LoadSceneSprite(_sprite);
 }
 
 void TurboControlView::Render()
 {
-    auto sprite = _controlViewModel->Sprite();
-    if (sprite == nullptr)
+    if (_sprite == nullptr)
         return;
 
-    RenderSceneSprite(sprite);
+    RenderSceneSprite(_sprite);
 }
 
 //	ITurboControlView Properties ---------------------------------------------------------------------------------------
@@ -59,13 +69,12 @@ void TurboControlView::CurrentPoint(float x, float y, float z)
 
 void TurboControlView::UpdateLayout(TurboVector2D position, TurboVector2D size)
 {
-    auto sprite = _controlViewModel->Sprite();
-    if (sprite == nullptr)
+    if (_sprite == nullptr)
         return;
 
-    sprite->Rectangle(TurboRectangle(
-            position.X,
-            position.Y,
-            position.X + size.X,
-            position.Y + size.Y));
+    _sprite->Rectangle(TurboRectangle(
+             position.X,
+             position.Y,
+             position.X + size.X,
+             position.Y + size.Y));
 }

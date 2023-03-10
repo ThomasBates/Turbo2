@@ -29,6 +29,7 @@ public:
     bool InfoViewVisible() { return _infoViewModel->IsVisible(); }
 
 private:
+    std::shared_ptr<ITurboGame> _game;
     std::shared_ptr<MazePreviewMainViewModel> _mainViewModel;
     std::shared_ptr<MazePreviewMenuViewModel> _menuViewModel;
     std::shared_ptr<TurboDialogViewModel> _infoViewModel;

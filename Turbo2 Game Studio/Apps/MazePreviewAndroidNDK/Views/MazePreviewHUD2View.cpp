@@ -18,8 +18,8 @@ MazePreviewHUD2View::MazePreviewHUD2View(
         _debug(debug),
         _viewModel(viewModel)
 {
-    _menuControlView = std::shared_ptr<ITurboView>(new TurboControlView("Menu Button View", rendererAccess, _viewModel->MenuViewModel()));
-    _infoControlView = std::shared_ptr<ITurboView>(new TurboControlView("Info Button View", rendererAccess, _viewModel->InfoViewModel()));
+    _menuControlView = std::shared_ptr<ITurboView>(new TurboControlView("Menu Button View", rendererAccess, _viewModel->MenuViewModel(), "MenuButton"));
+    _infoControlView = std::shared_ptr<ITurboView>(new TurboControlView("Info Button View", rendererAccess, _viewModel->InfoViewModel(), "InfoButton"));
 
     InternalAddView(_menuControlView);
     InternalAddView(_infoControlView);

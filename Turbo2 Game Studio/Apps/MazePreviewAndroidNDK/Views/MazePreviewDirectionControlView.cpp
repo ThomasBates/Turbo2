@@ -13,7 +13,7 @@ MazePreviewDirectionControlView::MazePreviewDirectionControlView(
         TurboGroupView(name, rendererAccess),
         _viewModel(std::move(viewModel))
 {
-    _directionControlView = std::shared_ptr<ITurboView>(new TurboControlView("Direction Control View", rendererAccess, _viewModel->DirectionViewModel()));
+    _directionControlView = std::shared_ptr<ITurboView>(new TurboControlView("Direction Control View", rendererAccess, _viewModel->DirectionViewModel(), "DPadControl"));
 
     AddView(_directionControlView);
 }

@@ -13,7 +13,7 @@ TurboToggleControlView::TurboToggleControlView(
         TurboGroupView(name, rendererAccess),
         _viewModel(viewModel)
 {
-    _toggleControlView = std::shared_ptr<ITurboView>(new TurboControlView("Toggle Button View", rendererAccess, _viewModel->ToggleViewModel()));
+    _toggleControlView = std::shared_ptr<ITurboView>(new TurboControlView("Toggle Button View", rendererAccess, _viewModel->ToggleViewModel(), ""));
     InternalAddView(_toggleControlView);
 
     _toggleOffTexture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("ToggleOff"));
@@ -27,7 +27,7 @@ void TurboToggleControlView::Load()
 
     _viewModel->Update();
 
-    if (_viewModel->ToggleOn())
+    if (_viewModel->GetValue())
         _toggleSprite->Texture(_toggleOnTexture);
     else
         _toggleSprite->Texture(_toggleOffTexture);

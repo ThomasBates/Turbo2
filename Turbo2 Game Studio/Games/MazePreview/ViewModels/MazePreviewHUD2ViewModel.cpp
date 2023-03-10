@@ -11,17 +11,14 @@ MazePreviewHUD2ViewModel::MazePreviewHUD2ViewModel(std::shared_ptr<ITurboGame> g
     auto menuButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Action, 1, 0, 0));
     auto infoButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Action, 2, 0, 0));
 
-    _menuViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(menuButton, "MenuButton"));
-    _infoViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(infoButton, "InfoButton"));
+    _openMenuViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(menuButton));
+    _openInfoViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(infoButton));
 }
 
 void MazePreviewHUD2ViewModel::Update()
 {
-    _openMenuAction = !_lastMenuButtonActive && _menuViewModel->IsActive();
-    _lastMenuButtonActive = _menuViewModel->IsActive();
-
-    _openInfoAction = !_lastInfoButtonActive && _infoViewModel->IsActive();
-    _lastInfoButtonActive = _infoViewModel->IsActive();
+    _openMenuAction = _openMenuViewModel->IsActivated();
+    _openInfoAction = _openInfoViewModel->IsActivated();
 
     _signage = std::string("Welcome"); // _game->Signage();
     _signageText = _signage + " ";

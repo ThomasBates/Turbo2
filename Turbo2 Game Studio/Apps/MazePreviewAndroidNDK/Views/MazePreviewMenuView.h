@@ -7,6 +7,7 @@
 #include <TurboDialogView.h>
 #include <ITurboViewRendererAccess.h>
 #include <MazePreviewMenuViewModel.h>
+#include <Views/TurboSpinnerControlView.h>
 #include <Views/TurboToggleControlView.h>
 
 using namespace Turbo::Core::Debug;
@@ -36,10 +37,14 @@ private:
     std::shared_ptr<MazePreviewMenuViewModel> _viewModel;
 
     std::shared_ptr<ITurboSceneText> _reverseControlsText;
-    std::shared_ptr<TurboToggleControlView> _reverseControlToggleView;
     std::shared_ptr<ITurboSceneText> _soundEffectsText;
-    std::shared_ptr<TurboToggleControlView> _soundEffectsToggleView;
-    std::shared_ptr<ITurboSceneText> _resetProgressText;
     std::shared_ptr<ITurboSceneText> _selectRoundText;
-    std::shared_ptr<ITurboSceneText> _selectMazeText;
+    std::shared_ptr<ITurboSceneText> _selectLevelText;
+    std::shared_ptr<ITurboSceneText> _resetProgressText;
+
+    std::shared_ptr<TurboToggleControlView> _reverseControlToggleView;
+    std::shared_ptr<TurboToggleControlView> _soundEffectsToggleView;
+    std::shared_ptr<TurboSpinnerControlView> _selectRoundSpinnerView;
+    std::shared_ptr<TurboSpinnerControlView> _selectLevelSpinnerView;
+    std::shared_ptr<TurboToggleControlView> _resetProgressToggleView;
 };

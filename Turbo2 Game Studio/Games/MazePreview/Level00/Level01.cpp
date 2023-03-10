@@ -115,7 +115,7 @@ void Level01::BuildScene(NavigationInfo* navInfo)
 
 	_scene = _helper->BuildScene(navInfo);
 
-	if (_mazeOptions.LevelRound == 1)
+	if (_mazeOptions.ShowSigns)
 	{
 		_helper->CreateSign(_scene, _entranceLocation, CubicMazeCellWallSide::Back, "Level01Text00");
 		_helper->CreateSign(_scene, _exitLocation, CubicMazeCellWallSide::Front, "Level01Text01");

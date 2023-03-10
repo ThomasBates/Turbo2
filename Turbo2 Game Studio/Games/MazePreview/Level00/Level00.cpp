@@ -61,11 +61,10 @@ std::shared_ptr<ITurboGameState> Level00::GameState()
 		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
 	}
 
-	gameState->SaveInteger("Level00.LevelRound", _mazeOptions.LevelRound);
-
-	gameState->SaveBoolean("Level00.Level02Unlocked", _level02Unlocked);
-	gameState->SaveBoolean("Level00.Level03Unlocked", _level03Unlocked);
-	gameState->SaveBoolean("Level00.Level04Unlocked", _level04Unlocked);
+	gameState->SaveInteger("Game.UnlockedRound", _gameOptions.UnlockedRound);
+	gameState->SaveInteger("Game.UnlockedLevel", _gameOptions.UnlockedLevel);
+	gameState->SaveInteger("Game.CurrentRound", _gameOptions.CurrentRound);
+	gameState->SaveInteger("Game.CurrentLevel", _gameOptions.CurrentLevel);
 
 	return gameState;
 }
@@ -79,16 +78,45 @@ void Level00::GameState(std::shared_ptr<ITurboGameState> gameState)
 		return;
 	}
 
-	_mazeOptions.LevelRound = gameState->LoadInteger("Level00.LevelRound", 1);
-	if (_mazeOptions.LevelRound < 1)
-	{
-		_mazeOptions.LevelRound = 1;
-	}
-	
-	_level01Unlocked = true;
-	_level02Unlocked = gameState->LoadBoolean("Level00.Level02Unlocked", false);
-	_level03Unlocked = gameState->LoadBoolean("Level00.Level03Unlocked", false);
-	_level04Unlocked = gameState->LoadBoolean("Level00.Level04Unlocked", false);
+	int unlockedRound = gameState->LoadInteger("Game.UnlockedRound", 1);
+	int unlockedLevel = gameState->LoadInteger("Game.UnlockedLevel", 1);
+	int currentRound = gameState->LoadInteger("Game.CurrentRound", 1);
+	int currentLevel = gameState->LoadInteger("Game.CurrentLevel", 1);
+
+	if (unlockedRound < 1)
+		unlockedRound = 1;
+
+	if (currentRound < 1)
+		currentRound = 1;
+
+	if (currentRound > unlockedRound)
+		currentRound = unlockedRound;
+
+	if (unlockedLevel < 1)
+		unlockedLevel = 1;
+
+	if (unlockedLevel > 4)
+		unlockedLevel = 4;
+
+	if (currentLevel < 1)
+		currentLevel = 1;
+
+	if (currentLevel > 4)
+		currentLevel = 4;
+
+	if (currentRound == unlockedRound && currentLevel > unlockedLevel)
+		currentLevel = unlockedLevel;
+
+	_gameOptions.OptionsChanged =
+			_gameOptions.UnlockedRound != unlockedRound ||
+			_gameOptions.UnlockedLevel != unlockedLevel ||
+			_gameOptions.CurrentRound != currentRound ||
+			_gameOptions.CurrentLevel != currentLevel;
+
+	_gameOptions.UnlockedRound = unlockedRound;
+	_gameOptions.UnlockedLevel = unlockedLevel;
+	_gameOptions.CurrentRound = currentRound;
+	_gameOptions.CurrentLevel = currentLevel;
 
 	if (_subLevel != nullptr)
 	{
@@ -121,9 +149,9 @@ void Level00::Initialize()
 		&_mazeOptions, NULL, NULL));
 
 	//_mazeOptions.LevelRound = 1;
-	_previewMazeOptions.LevelRound = _mazeOptions.LevelRound + 1;
+	//_previewMazeOptions.LevelRound = _mazeOptions.LevelRound + 1;
 	UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
-	UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
+	//UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
 
 //	//	Build the scene.
 //	BuildScene();
@@ -169,7 +197,40 @@ void Level00::Update(NavigationInfo* navInfo)
 		}
 	}
 
-	if (_subLevel != nullptr)
+	if (_subLevel == nullptr)
+	{
+		if (_gameOptions.OptionsChanged)
+		{
+			_gameOptions.OptionsChanged = false;
+			UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
+			BuildScene(navInfo);
+
+			_player->Placement()->Reset();
+
+			//	Send player back to just outside the entrance to the failed level.
+			switch (_gameOptions.CurrentLevel)
+			{
+				case 1:
+					_player->Placement()->Move(0, 0, -6);
+					break;
+				case 2:
+					_player->Placement()->Move(6, 0, -14);
+					_player->Placement()->RotateY(-90);
+					break;
+				case 3:
+					_player->Placement()->Move(14, -4, -8);
+					_player->Placement()->RotateY(-180);
+					break;
+				case 4:
+					_player->Placement()->Move(8, 0, 0);
+					_player->Placement()->RotateY(-270);
+					break;
+			}
+
+			_sceneChanged = true;
+		}
+	}
+	else
 	{
 		_subLevel->Update(navInfo);
 
@@ -222,28 +283,38 @@ void Level00::Update(NavigationInfo* navInfo)
 				{
 					case 1:
 						_player->Placement()->Move(1, dY, -10);
-						_level02Unlocked = true;
+						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 2)
+							_gameOptions.UnlockedLevel = 2;
 						break;
 
 					case 2:
 						_player->Placement()->Move(10, dY, -9);
-						_level03Unlocked = true;
+						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 3)
+							_gameOptions.UnlockedLevel = 3;
 						break;
 
 					case 3:
 						_player->Placement()->Move(9, dY, 0);
-						_level04Unlocked = true;
+						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 4)
+							_gameOptions.UnlockedLevel = 4;
 						break;
 
 					case 4:
 						_player->Placement()->Move(0, dY, -1);
-						_level02Unlocked = false;
-						_level03Unlocked = false;
-						_level04Unlocked = false;
-						_mazeOptions.LevelRound++;
-						_previewMazeOptions.LevelRound++;
+						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound)
+						{
+							_gameOptions.UnlockedRound++;
+							_gameOptions.UnlockedLevel = 1;
+						}
+						_gameOptions.CurrentRound++;
+						_gameOptions.CurrentLevel = 1;
+						//_level02Unlocked = false;
+						//_level03Unlocked = false;
+						//_level04Unlocked = false;
+						//_gameOptions.LevelRound++;
+						//_previewMazeOptions.LevelRound++;
 						UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
-						UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
+						//UpdateMazeOptions(&_previewSceneBuilder, &_previewMazeOptions);
 						break;
 
 					case 5:
@@ -303,7 +374,7 @@ void Level00::Update(NavigationInfo* navInfo)
 
 		case 4:
 			_player->Placement()->Move(-1, 0, 0);
-			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _previewSceneBuilder, _previewMazeOptions));
+			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _sceneBuilder, _mazeOptions));
 			break;
 
 		case 5:
@@ -333,11 +404,12 @@ int Level00::Action()
 
 void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBuilder, Level00MazeOptions* mazeOptions)
 {
-	switch (mazeOptions->LevelRound)
+	switch (_gameOptions.CurrentRound)
 	{
 		case 1:
 			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Laboratory());
 			mazeOptions->MazeSize = 3;
+			mazeOptions->ShowSigns = true;
 			mazeOptions->KeyCount = 0;
 			mazeOptions->RequiredKeyCount = 0;
 			mazeOptions->HazardCount = 0;
@@ -349,6 +421,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 		case 2:
 			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
 			mazeOptions->MazeSize = 3;
+			mazeOptions->ShowSigns = false;
 			mazeOptions->KeyCount = 1;
 			mazeOptions->RequiredKeyCount = 1;
 			mazeOptions->HazardCount = 0;
@@ -360,6 +433,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 		case 3:
 			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
 			mazeOptions->MazeSize = 3;
+			mazeOptions->ShowSigns = false;
 			mazeOptions->KeyCount = 2;
 			mazeOptions->RequiredKeyCount = 1;
 			mazeOptions->HazardCount = 1;
@@ -369,7 +443,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 			break;
 
 		default:
-			if ((mazeOptions->LevelRound % 2) == 0)
+			if ((_gameOptions.CurrentRound % 2) == 0)
 			{
 				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
 			}
@@ -378,9 +452,10 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
 			}
 			mazeOptions->MazeSize = 3;
-			mazeOptions->KeyCount = mazeOptions->LevelRound - 2;
-			mazeOptions->RequiredKeyCount = mazeOptions->LevelRound - 2;
-			mazeOptions->HazardCount = mazeOptions->LevelRound - 2;
+			mazeOptions->ShowSigns = false;
+			mazeOptions->KeyCount = _gameOptions.CurrentRound - 2;
+			mazeOptions->RequiredKeyCount = _gameOptions.CurrentRound - 2;
+			mazeOptions->HazardCount = _gameOptions.CurrentRound - 2;
 			mazeOptions->MovingKeys = true;
 			mazeOptions->MovingHazards = true;
 			mazeOptions->LightsOn = false;
@@ -391,7 +466,7 @@ void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBu
 
 void Level00::BuildScene(NavigationInfo* navInfo)
 {
-	if (_level01Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 1)
 	{
 		_maze->Cell(0, 0, 4)->FrontWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(0, 0, 4)->FrontWall.PortalIndex = 1;
@@ -402,7 +477,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(0, 0, 4)->FrontWall.PortalIndex = 0;
 	}
 
-	if (_level02Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 2)
 	{
 		_maze->Cell(4, 0, 7)->RightWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(4, 0, 7)->RightWall.PortalIndex = 2;
@@ -413,7 +488,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(4, 0, 7)->RightWall.PortalIndex = 0;
 	}
 
-	if (_level03Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 3)
 	{
 		_maze->Cell(7, 2, 3)->BackWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(7, 2, 3)->BackWall.PortalIndex = 3;
@@ -424,7 +499,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(7, 2, 3)->BackWall.PortalIndex = 0;
 	}
 
-	if (_level04Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 4)
 	{
 		_maze->Cell(3, 0, 0)->LeftWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(3, 0, 0)->LeftWall.PortalIndex = 4;
@@ -450,29 +525,29 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 	_scene->LightHack(!_mazeOptions.LightsOn);
 
 
-	if (_mazeOptions.LevelRound == 1)
+	if (_gameOptions.CurrentRound == 1)
 	{
 		_helper->CreateSign(_scene, CubicMazeLocation(4, 0, 3), CubicMazeCellWallSide::Front, "Level00Text00");
 
-		if (_level01Unlocked)
+		if (_gameOptions.UnlockedRound > 1 || _gameOptions.UnlockedLevel >= 1)
 		{
 			_helper->CreateSign(_scene, CubicMazeLocation(0, 0, 4), CubicMazeCellWallSide::Left, "Level00Text01");
 		}
 
-		if (_level02Unlocked)
+		if (_gameOptions.UnlockedRound > 1 || _gameOptions.UnlockedLevel >= 2)
 		{
 			_helper->CreateSign(_scene, CubicMazeLocation(4, 0, 7), CubicMazeCellWallSide::Front, "Level00Text02");
 		}
 
-		if (_level03Unlocked)
+		if (_gameOptions.UnlockedRound > 1 || _gameOptions.UnlockedLevel >= 3)
 		{
 			_helper->CreateSign(_scene, CubicMazeLocation(7, 2, 3), CubicMazeCellWallSide::Right, "Level00Text03");
 		}
 	}
 
-	if (_level04Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 4)
 	{
-		switch (_mazeOptions.LevelRound)
+		switch (_gameOptions.CurrentRound)
 		{
 		case 1:
 			_helper->CreateSign(_scene, CubicMazeLocation(3, 0, 0), CubicMazeCellWallSide::Back, "Level00Text04R1");
@@ -516,7 +591,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 
 	//return;
 
-	if (_level01Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 1)
 	{
 		//_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(entranceSound);
 		CubicMazeCell *cell = _maze->Cell(0,0,4);
@@ -529,7 +604,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_level02Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 2)
 	{
 		_maze->Cell(4, 0, 7)->RightWall.SceneObject->HitSound(entranceSound);
 	}
@@ -538,7 +613,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(4, 0, 7)->RightWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_level03Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 3)
 	{
 		_maze->Cell(7, 2, 3)->BackWall.SceneObject->HitSound(entranceSound);
 	}
@@ -547,7 +622,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(7, 2, 3)->BackWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_level04Unlocked)
+	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 4)
 	{
 		_maze->Cell(3, 0, 0)->LeftWall.SceneObject->HitSound(entranceSound);
 	}

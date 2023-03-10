@@ -14,7 +14,7 @@ std::string MazePreviewHUD1ViewModel::RoundText()
     if (_checkRound)
     {
         auto state = _game->GameState();
-        auto round = state->LoadString("Level00.LevelRound", "1");
+        auto round = state->LoadString("Game.CurrentRound", "1");
         _roundText = " Round " + round;
     }
     return _roundText;

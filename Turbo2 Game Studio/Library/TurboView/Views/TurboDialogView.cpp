@@ -8,8 +8,10 @@
 #include <MazePreviewMotionControlView.h>
 #include <MazePreviewDirectionControlView.h>
 
-#include <TurboSceneView.h>
+#include <TurboSceneSprite.h>
 #include <TurboSceneText.h>
+#include <TurboSceneTexture.h>
+#include <TurboSceneView.h>
 #include <Views/TurboControlView.h>
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
@@ -23,17 +25,20 @@ TurboDialogView::TurboDialogView(
         _debug(debug),
         _viewModel(viewModel)
 {
-    _sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
-    InternalAddView(_sceneView);
+    //_sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
+    //InternalAddView(_sceneView);
 
-    _okControlView = std::shared_ptr<ITurboView>(new TurboControlView("OK Button View", rendererAccess, _viewModel->OKViewModel()));
+    auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("LaboratoryWall"));
+    _background = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
+
+    _okControlView = std::shared_ptr<ITurboView>(new TurboControlView("OK Button View", rendererAccess, _viewModel->OKViewModel(), "TextButton"));
     InternalAddView(_okControlView);
     _okText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 120, TurboColor(0.3F, 0.3F, 0.3F), "OK"));
     _okText->HorizontalAlignment(SceneTextHorizontalAlignment::horizontalCenter);
 
     if (_viewModel->ShowCancel())
     {
-        _cancelControlView = std::shared_ptr<ITurboView>(new TurboControlView("Cancel Button View", rendererAccess, _viewModel->CancelViewModel()));
+        _cancelControlView = std::shared_ptr<ITurboView>(new TurboControlView("Cancel Button View", rendererAccess, _viewModel->CancelViewModel(), "TextButton"));
         InternalAddView(_cancelControlView);
         _cancelText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 120, TurboColor(0.3F, 0.3F, 0.3F), "Cancel"));
         _cancelText->HorizontalAlignment(SceneTextHorizontalAlignment::horizontalCenter);
@@ -49,6 +54,8 @@ TurboDialogView::TurboDialogView(
 
 void TurboDialogView::Load()
 {
+    LoadSceneSprite(_background);
+
     TurboGroupView::Load();
 
     _captionText->Text(_viewModel->CaptionText());
@@ -64,6 +71,8 @@ void TurboDialogView::Load()
 
 void TurboDialogView::Render()
 {
+    RenderSceneSprite(_background);
+
     TurboGroupView::Render();
 
     RenderSceneText(_captionText);
@@ -81,8 +90,14 @@ void TurboDialogView::UpdateLayout(TurboVector2D position, TurboVector2D size)
     _debug->Send(debugDebug, debugView) << "TurboDialogView::UpdateLayout: position = " << position << ", size = " << size << "\n";
 
     //  main scene (whole screen)
-    _sceneView->Position(position);
-    _sceneView->Size(size);
+    //_sceneView->Position(position);
+    //_sceneView->Size(size);
+
+    _background->Rectangle(TurboRectangle(
+            position.X,
+            position.Y,
+            position.X + size.X,
+            position.Y + size.Y));
 
     float width = (size.X < size.Y) ? size.X / 8 : size.Y / 8;
 

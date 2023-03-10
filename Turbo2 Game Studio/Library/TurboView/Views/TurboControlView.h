@@ -19,7 +19,8 @@ namespace Turbo
             TurboControlView(
                     std::string name,
                     std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
-                    std::shared_ptr<ITurboControlViewModel> controlViewModel);
+                    std::shared_ptr<ITurboControlViewModel> controlViewModel,
+                    std::string textureName = "");
             virtual ~TurboControlView(){}
 
             //	ITurboView Methods -------------------------------------------------------------------------------------
@@ -31,6 +32,7 @@ namespace Turbo
             virtual void IsActive(bool isActive);
 
             virtual std::shared_ptr<ITurboControlViewModel> ControlViewModel() { return _controlViewModel; }
+            virtual std::shared_ptr<ITurboSceneSprite> Sprite() { return _sprite; }
 
             //	ITurboControlView Methods ------------------------------------------------------------------------------
             virtual void CurrentPoint(float x, float y, float z);
@@ -40,6 +42,7 @@ namespace Turbo
 
         private:
             std::shared_ptr<ITurboControlViewModel> _controlViewModel;
+            std::shared_ptr<ITurboSceneSprite> _sprite;
         };
     }
 }

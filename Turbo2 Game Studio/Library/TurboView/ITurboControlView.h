@@ -20,6 +20,7 @@ namespace Turbo
 			virtual void IsActive(bool isActive) = 0;
 
             virtual std::shared_ptr<ITurboControlViewModel> ControlViewModel() = 0;
+			virtual std::shared_ptr<ITurboSceneSprite> Sprite() = 0;
 
 			//	ITurboControlView Methods ------------------------------------------------------------------------------
 			virtual void CurrentPoint(float x, float y, float z = 0) = 0;

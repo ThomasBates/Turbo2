@@ -20,8 +20,8 @@ public:
     void Update();
 
     //  Public Properties ----------------------------------------------------------------------------------------------
-    std::shared_ptr<ITurboControlViewModel> MenuViewModel() { return _menuViewModel; }
-    std::shared_ptr<ITurboControlViewModel> InfoViewModel() { return _infoViewModel; }
+    std::shared_ptr<ITurboControlViewModel> MenuViewModel() { return _openMenuViewModel; }
+    std::shared_ptr<ITurboControlViewModel> InfoViewModel() { return _openInfoViewModel; }
 
     bool OpenMenuAction() { return _openMenuAction; }
     bool OpenInfoAction() { return _openInfoAction; }
@@ -31,11 +31,9 @@ public:
 private:
     std::shared_ptr<ITurboGame> _game;
 
-    std::shared_ptr<ITurboControlViewModel> _menuViewModel;
-    std::shared_ptr<ITurboControlViewModel> _infoViewModel;
+    std::shared_ptr<ITurboControlViewModel> _openMenuViewModel;
+    std::shared_ptr<ITurboControlViewModel> _openInfoViewModel;
 
-    bool _lastMenuButtonActive;
-    bool _lastInfoButtonActive;
     bool _openMenuAction;
     bool _openInfoAction;
 

@@ -3,7 +3,7 @@
 
 #include <MazePreviewRootViewModel.h>
 
-MazePreviewRootViewModel::MazePreviewRootViewModel(const std::shared_ptr<ITurboGame>& game)
+MazePreviewRootViewModel::MazePreviewRootViewModel(const std::shared_ptr<ITurboGame>& game) : _game(game)
 {
     _mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
     _menuViewModel = std::shared_ptr<MazePreviewMenuViewModel>(new MazePreviewMenuViewModel(game));

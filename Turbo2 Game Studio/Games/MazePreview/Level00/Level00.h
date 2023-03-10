@@ -62,19 +62,20 @@ private:
 
 	std::shared_ptr<ICubicMazeFactory>				_mazeFactory;
 	std::shared_ptr<ICubicMazeSceneBuilder>			_sceneBuilder;
-	std::shared_ptr<ICubicMazeSceneBuilder>			_previewSceneBuilder;
+	//std::shared_ptr<ICubicMazeSceneBuilder>			_previewSceneBuilder;
 	std::shared_ptr<ITurboGameMotionEffects>		_motionEffects;
 	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
 	std::shared_ptr<Level00Helper>					_helper;
 	std::shared_ptr<ITurboGameState>				_gameState;
+	Level00GameOptions								_gameOptions;
 	Level00MazeOptions								_mazeOptions;
-	Level00MazeOptions								_previewMazeOptions;
+	//Level00MazeOptions								_previewMazeOptions;
 	Level00UserOptions*								_userOptions;
 
-	bool	_level01Unlocked = true;
-	bool	_level02Unlocked = false;
-	bool	_level03Unlocked = false;
-	bool	_level04Unlocked = false;
+//	bool	_level01Unlocked = true;
+//	bool	_level02Unlocked = false;
+//	bool	_level03Unlocked = false;
+//	bool	_level04Unlocked = false;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBuilder, Level00MazeOptions* mazeOptions);

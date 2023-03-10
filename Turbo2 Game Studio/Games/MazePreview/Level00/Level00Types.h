@@ -3,10 +3,20 @@
 
 #include <pch.h>
 
+struct Level00GameOptions
+{
+	bool 	OptionsChanged;
+	int		UnlockedRound;
+	int		UnlockedLevel;
+	int		CurrentRound;
+	int 	CurrentLevel;
+};
+
 struct Level00MazeOptions
 {
-	int		LevelRound;
+//	int		LevelRound;
 	int		MazeSize;
+	bool 	ShowSigns;
 	int		KeyCount;
 	int		RequiredKeyCount;
 	int		HazardCount;
@@ -14,7 +24,6 @@ struct Level00MazeOptions
 	bool	MovingHazards;
 	bool	LightsOn;
 };
-
 
 struct Level00UserOptions
 {

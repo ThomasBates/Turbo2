@@ -34,7 +34,9 @@ private:
     std::shared_ptr<ITurboDebug> _debug;
     std::shared_ptr<TurboDialogViewModel> _viewModel;
 
-    std::shared_ptr<ITurboView> _sceneView;
+    std::shared_ptr<ITurboSceneSprite> _background;
+
+    //std::shared_ptr<ITurboView> _sceneView;
     std::shared_ptr<ITurboView> _okControlView;
     std::shared_ptr<ITurboView> _cancelControlView;
 

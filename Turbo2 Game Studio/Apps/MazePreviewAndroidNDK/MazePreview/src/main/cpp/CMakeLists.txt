@@ -151,10 +151,12 @@ add_library(Library_TurboView
         ${TurboFolder}/Library/TurboView/TurboView.cpp
         ${TurboFolder}/Library/TurboView/ViewModels/TurboControlViewModel.cpp
         ${TurboFolder}/Library/TurboView/ViewModels/TurboDialogViewModel.cpp
+        ${TurboFolder}/Library/TurboView/ViewModels/TurboSpinnerControlViewModel.cpp
         ${TurboFolder}/Library/TurboView/ViewModels/TurboToggleControlViewModel.cpp
         ${TurboFolder}/Library/TurboView/Views/TurboControlView.cpp
         ${TurboFolder}/Library/TurboView/Views/TurboGroupView.cpp
         ${TurboFolder}/Library/TurboView/Views/TurboDialogView.cpp
+        ${TurboFolder}/Library/TurboView/Views/TurboSpinnerControlView.cpp
         ${TurboFolder}/Library/TurboView/Views/TurboToggleControlView.cpp
         )
 

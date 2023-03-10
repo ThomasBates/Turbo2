@@ -13,25 +13,21 @@ TurboDialogViewModel::TurboDialogViewModel(std::shared_ptr<ITurboGame> game, boo
     _sceneViewModel = std::shared_ptr<TurboSceneViewModel>(new TurboSceneViewModel(game));
 
     auto okButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Action, 1, 0, 0));
-    _okViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(okButton, "TextButton"));
+    _okViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(okButton));
 
     if (_showCancel)
     {
         auto cancelButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Action, 2, 0, 0));
-        _cancelViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(cancelButton, "TextButton"));
+        _cancelViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(cancelButton));
     }
 }
 
 void TurboDialogViewModel::Update()
 {
-    _okAction = !_lastOKButtonActive && _okViewModel->IsActive();
-    _lastOKButtonActive = _okViewModel->IsActive();
+    _okAction = _okViewModel->IsActivated();
 
     if (_showCancel)
-    {
-        _cancelAction = !_lastCancelButtonActive && _cancelViewModel->IsActive();
-        _lastCancelButtonActive = _cancelViewModel->IsActive();
-    }
+        _cancelAction = _cancelViewModel->IsActivated();
 
     if (_okAction)
         DoCustomSaveData();

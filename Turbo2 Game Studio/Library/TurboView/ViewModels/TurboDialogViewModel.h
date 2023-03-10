@@ -57,8 +57,6 @@ private:
     std::string _dialogText;
 
     bool _isVisible;
-    bool _lastOKButtonActive;
     bool _okAction;
-    bool _lastCancelButtonActive;
     bool _cancelAction;
 };
