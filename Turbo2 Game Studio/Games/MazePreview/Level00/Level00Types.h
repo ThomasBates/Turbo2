@@ -14,9 +14,7 @@ struct Level00GameOptions
 
 struct Level00MazeOptions
 {
-//	int		LevelRound;
 	int		MazeSize;
-	bool 	ShowSigns;
 	int		KeyCount;
 	int		RequiredKeyCount;
 	int		HazardCount;

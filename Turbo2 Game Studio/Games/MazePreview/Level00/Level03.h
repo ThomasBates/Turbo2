@@ -39,6 +39,8 @@ public:
 	virtual std::shared_ptr<ITurboScene> Scene() { return _scene; }
 	virtual std::shared_ptr<ITurboSceneObject> Player() { return _player; }
 
+	virtual std::string GetSignage(){ return _signage; }
+
 	virtual bool SceneChanged() { return _sceneChanged; }
 	virtual int Action() { return 0; }
 
@@ -70,6 +72,8 @@ private:
 
 	CubicMazeLocation								_entranceLocation;
 	CubicMazeLocation								_exitLocation;
+
+	std::string                      				_signage;
 
 	//	Local Methods --------------------------------------------------------------------------------------------------
 	void BuildScene(NavigationInfo* navInfo);

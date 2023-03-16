@@ -20,6 +20,5 @@ void MazePreviewHUD2ViewModel::Update()
     _openMenuAction = _openMenuViewModel->IsActivated();
     _openInfoAction = _openInfoViewModel->IsActivated();
 
-    _signage = std::string("Welcome"); // _game->Signage();
-    _signageText = _signage + " ";
+    _signageText = _game->GetSignage();
 }

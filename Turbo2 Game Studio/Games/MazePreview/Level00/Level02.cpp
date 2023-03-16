@@ -98,6 +98,9 @@ void Level02::Update(NavigationInfo* navInfo)
 	{
 		BuildScene(navInfo);
 	}
+
+	//  Update signage based on the player's location.
+	_signage = _helper->GetSignage(_player);
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
@@ -119,6 +122,12 @@ void Level02::BuildScene(NavigationInfo* navInfo)
 	}
 
 	_scene = _helper->BuildScene(navInfo);
+
+	_helper->ClearSignage();
+	if (_mazeOptions.KeyCount == 0)
+	{
+		_helper->AddSignage(0, 0, -4, "You have to go\ndown two levels\nto find the exit.");
+	}
 
 	if (exitLocked)
 	{

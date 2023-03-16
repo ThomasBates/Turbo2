@@ -35,4 +35,6 @@ private:
 
     std::shared_ptr<ITurboSceneText> _roundText;
     std::shared_ptr<ITurboSceneText> _titleText;
+    std::shared_ptr<ITurboSceneText> _keysText;
+    std::shared_ptr<ITurboSceneText> _hazardText;
 };

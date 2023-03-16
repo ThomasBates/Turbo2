@@ -29,6 +29,8 @@ namespace Turbo
 			virtual std::shared_ptr<ITurboScene> Scene() = 0;
 			virtual std::shared_ptr<ITurboSceneObject> Player() = 0;
 
+			virtual std::string GetSignage() = 0;
+
 			virtual bool SceneChanged() = 0;
 			virtual int Action() = 0;
 

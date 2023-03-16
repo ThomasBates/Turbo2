@@ -50,6 +50,9 @@ public:
 	std::shared_ptr<ITurboScene> BuildScene(NavigationInfo* navInfo);
 
 	void CreateSign(std::shared_ptr<ITurboScene> scene, CubicMazeLocation signLocation, CubicMazeCellWallSide wallSide, std::string signTextureName);
+	void ClearSignage();
+	void AddSignage(float x, float y, float z, std::string signage);
+	std::string GetSignage(std::shared_ptr<ITurboSceneObject> player);
 
 	bool Update(NavigationInfo* navInfo, TurboGameLevelState* levelState);
 	bool UpdateKeys(NavigationInfo* navInfo, std::string keyHitSoundName, bool doHitTest);
@@ -65,6 +68,7 @@ private:
 	Level00MazeOptions*									_mazeOptions;
 	std::vector<std::shared_ptr<ITurboSceneObject>>*	_keys;
 	std::vector<std::shared_ptr<ITurboSceneObject>>*	_hazards;
+	std::vector<std::tuple<TurboVector3D,std::string>>	_signageMap;
 
 	double		_failTime;
 

@@ -71,8 +71,6 @@ add_library(Games_MazePreview
         ${TurboFolder}/Games/MazePreview/Level00/Level02.cpp
         ${TurboFolder}/Games/MazePreview/Level00/Level03.cpp
         ${TurboFolder}/Games/MazePreview/Level00/Level04.cpp
-        ${TurboFolder}/Games/MazePreview/Level00/Level05.cpp
-        ${TurboFolder}/Games/MazePreview/Level00/Level05CubicMazeFactory.cpp
 
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewRootViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp

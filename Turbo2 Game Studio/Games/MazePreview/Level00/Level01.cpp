@@ -93,6 +93,9 @@ void Level01::Update(NavigationInfo* navInfo)
 	{
 		BuildScene(navInfo);
 	}
+
+	//  Update signage based on the player's location.
+	_signage = _helper->GetSignage(_player);
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
@@ -115,10 +118,22 @@ void Level01::BuildScene(NavigationInfo* navInfo)
 
 	_scene = _helper->BuildScene(navInfo);
 
-	if (_mazeOptions.ShowSigns)
+	_helper->ClearSignage();
+	if (_mazeOptions.KeyCount == 0)
 	{
-		_helper->CreateSign(_scene, _entranceLocation, CubicMazeCellWallSide::Back, "Level01Text00");
-		_helper->CreateSign(_scene, _exitLocation, CubicMazeCellWallSide::Front, "Level01Text01");
+		_helper->AddSignage(0, 0, 0, "Find the exit.");
+		_helper->AddSignage(4, 0, -4, "You found the exit.\n\nA blue portal like this one\nis the exit from the maze.\n\nWhen you exit the maze,\nthe next maze will be unlocked.");
+	}
+	else if (_mazeOptions.KeyCount == 1)
+	{
+		if (exitLocked)
+		{
+			_helper->AddSignage(4, 0, -4, "The exit is locked.\n\nYou must find\nthe key\nto unlock it.");
+		}
+		else
+		{
+			_helper->AddSignage(4, 0, -4, "The exit is unlocked.\n\nYou must have\nfound the key.\n\nGood job!");
+		}
 	}
 
 	if (exitLocked)

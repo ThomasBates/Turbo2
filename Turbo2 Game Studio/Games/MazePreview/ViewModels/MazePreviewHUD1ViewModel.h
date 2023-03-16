@@ -17,6 +17,8 @@ public:
     //  Public Properties ----------------------------------------------------------------------------------------------
     std::string TitleText();
     std::string RoundText();
+    std::string KeysText();
+    std::string HazardText();
 
 private:
     std::shared_ptr<ITurboGame> _game;
@@ -24,4 +26,6 @@ private:
     std::string _roundText;
     std::string _title;
     std::string _titleText;
+    std::string _keysText;
+    std::string _hazardText;
 };

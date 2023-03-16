@@ -93,6 +93,9 @@ void Level03::Update(NavigationInfo* navInfo)
 	{
 		BuildScene(navInfo);
 	}
+
+	//  Update signage based on the player's location.
+	_signage = _helper->GetSignage(_player);
 }
 
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
@@ -114,6 +117,12 @@ void Level03::BuildScene(NavigationInfo* navInfo)
 	}
 
 	_scene = _helper->BuildScene(navInfo);
+
+	_helper->ClearSignage();
+	if (_mazeOptions.KeyCount == 0)
+	{
+		_helper->AddSignage(4, -4, -4, "You can look and go\nup and down\nas well as\nleft and right,\nforward and backward.");
+	}
 
 	if (exitLocked)
 	{

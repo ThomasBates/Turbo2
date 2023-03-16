@@ -37,6 +37,5 @@ private:
     bool _openMenuAction;
     bool _openInfoAction;
 
-    std::string _signage;
     std::string _signageText;
 };

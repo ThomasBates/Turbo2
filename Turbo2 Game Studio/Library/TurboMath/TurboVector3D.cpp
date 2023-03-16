@@ -23,14 +23,19 @@ TurboVector3D::TurboVector3D( float x, float y, float z )
 
 //	TurboVector3D Methods ----------------------------------------------------------------------------------------------
 
-float TurboVector3D::Length()
+float TurboVector3D::Length() const
 {
-	return (float)sqrt(X*X + Y*Y + Z*Z);
+	return sqrt(X*X + Y*Y + Z*Z);
 }
 
-TurboVector3D TurboVector3D::Normalize()
+TurboVector3D TurboVector3D::Normalize() const
 {
 	return *this / Length();
+}
+
+float TurboVector3D::LengthSquared() const
+{
+	return X*X + Y*Y + Z*Z;
 }
 
 //	TurboVector3D Operators --------------------------------------------------------------------------------------------

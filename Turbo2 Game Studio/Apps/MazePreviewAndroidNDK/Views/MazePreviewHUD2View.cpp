@@ -27,8 +27,8 @@ MazePreviewHUD2View::MazePreviewHUD2View(
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
 
-    _signageText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(1.0F, 1.0F, 0.0F), _viewModel->SignageText()));
-    _signageText->HorizontalAlignment(SceneTextHorizontalAlignment::horizontalRight);
+    _signageText = std::shared_ptr<ITurboSceneText>(new TurboSceneText("Arial", 60, TurboColor(0.3F, 0.3F, 0.3F), _viewModel->SignageText()));
+    _signageText->HorizontalAlignment(SceneTextHorizontalAlignment::horizontalStretched);
 }
 
 //	ITurboView Methods -------------------------------------------------------------------------------------------------
@@ -60,23 +60,23 @@ void MazePreviewHUD2View::UpdateLayout(TurboVector2D position, TurboVector2D siz
     float width = size.X * 0.25f;
     float height = size.Y * 0.25f;
 
-    _infoControlView->Position(TurboVector2D(position.X + width, position.Y));
-    _infoControlView->Size(TurboVector2D(width, height));
+    // watermark
+    _watermark->Rectangle(TurboRectangle(
+            position.X + width * 1,
+            position.Y,
+            position.X + width * 2,
+            position.Y + height));
 
     _menuControlView->Position(TurboVector2D(position.X + width * 2, position.Y));
     _menuControlView->Size(TurboVector2D(width, height));
 
-    // watermark
-    _watermark->Rectangle(TurboRectangle(
-            position.X + width * 3,
-            position.Y,
-            position.X + width * 4,
-            position.Y + height));
+    _infoControlView->Position(TurboVector2D(position.X + width * 3, position.Y));
+    _infoControlView->Size(TurboVector2D(width, height));
 
     // signage
     _signageText->Rectangle(TurboRectangle(
             position.X,
             position.Y + height,
-            position.X + size.X,
+            position.X + size.X - _signageText->FontSize() / 4,
             position.Y + size.Y));
 }

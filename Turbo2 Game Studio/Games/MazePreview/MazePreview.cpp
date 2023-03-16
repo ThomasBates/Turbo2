@@ -174,6 +174,18 @@ std::shared_ptr<ITurboSceneObject> MazePreview::Player()
 	return _player;
 }
 
+
+std::string MazePreview::GetSignage()
+{
+	if (_level == nullptr)
+	{
+		return "Welcome!";
+	}
+
+	return _level->GetSignage();
+}
+
+
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 
@@ -205,7 +217,7 @@ void MazePreview::Update(NavigationInfo* navInfo)
 		}
 
 		//_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
-		_level = std::shared_ptr<ITurboGameLevel>(new Level00(_debug, _player, &_userOptions));
+		_level = std::shared_ptr<ITurboGameLevel>(new Level00(_debug, _player));
 		_level->GameState(_gameState);
 		_level->Initialize();
 		_sceneChanged = true;

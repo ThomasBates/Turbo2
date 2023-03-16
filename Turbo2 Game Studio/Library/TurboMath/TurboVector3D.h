@@ -18,8 +18,9 @@ namespace Turbo
 			TurboVector3D(float x, float y, float z);
 
 			//	TurboVector3D Methods ----------------------------------------------------------------------------------
-			float Length();
-			TurboVector3D Normalize();
+			float Length() const;
+			TurboVector3D Normalize() const;
+			float LengthSquared() const;
 
 			//	TurboVector3D Operators --------------------------------------------------------------------------------
 			TurboVector3D operator-() const;

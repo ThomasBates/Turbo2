@@ -183,6 +183,35 @@ void Level00Helper::CreateSign(std::shared_ptr<ITurboScene> scene, CubicMazeLoca
 
 }
 
+void Level00Helper::ClearSignage()
+{
+	_signageMap.clear();
+}
+
+void Level00Helper::AddSignage(float x, float y, float z, std::string signage)
+{
+	_signageMap.emplace_back(TurboVector3D(x, y, z), signage);
+}
+
+std::string Level00Helper::GetSignage(std::shared_ptr<ITurboSceneObject> player)
+{
+	std::string result = "";
+	auto playerPosition = _player->Placement()->Position();
+	for (auto &entry : _signageMap)
+	{
+		auto signagePosition = std::get<0>(entry);
+		auto signageVector = signagePosition - playerPosition;
+		float distance2 = signageVector.LengthSquared();
+		if (distance2 < 4)
+		{
+			result = std::get<1>(entry);
+			break;
+		}
+	}
+
+	return result;
+}
+
 bool Level00Helper::Update(NavigationInfo* navInfo, TurboGameLevelState* levelState)
 {
 	bool rebuildScene = false;

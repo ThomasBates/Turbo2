@@ -31,3 +31,18 @@ std::string MazePreviewHUD1ViewModel::TitleText()
     }
     return _titleText;
 }
+
+std::string MazePreviewHUD1ViewModel::KeysText()
+{
+    if (_title == "Mezzanine")
+        return "";
+    return " #/# keys";
+}
+
+std::string MazePreviewHUD1ViewModel::HazardText()
+{
+    if (_title == "Mezzanine")
+        return "";
+    return " # hazards";
+}
+

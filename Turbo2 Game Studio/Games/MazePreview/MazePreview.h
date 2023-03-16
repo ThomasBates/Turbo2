@@ -31,6 +31,8 @@ public:
 	virtual std::shared_ptr<ITurboScene> Scene();
 	virtual std::shared_ptr<ITurboSceneObject> Player();
 
+	virtual std::string GetSignage();
+
 	virtual bool SceneChanged() { return _sceneChanged; }
 	virtual int Action() { return _level == nullptr ? 0 : _level->Action(); }
 
