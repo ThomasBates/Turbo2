@@ -50,14 +50,14 @@ void Turbo::Platform::Windows10::Windows10Platform::Render()
 
 void Turbo::Platform::Windows10::Windows10Platform::SaveState()
 {
-	std::shared_ptr<ITurboGameState> gameState = _game->GameState();
-	SaveGameState(gameState);
+//	std::shared_ptr<ITurboGameState> gameState = _game->GameState();
+//	SaveGameState(gameState);
 }
 
 void Turbo::Platform::Windows10::Windows10Platform::LoadState()
 {
-	std::shared_ptr<ITurboGameState> gameState = LoadGameState();
-	_game->GameState(gameState);
+//	std::shared_ptr<ITurboGameState> gameState = LoadGameState();
+//	_game->GameState(gameState);
 }
 
 void Turbo::Platform::Windows10::Windows10Platform::Finalize()

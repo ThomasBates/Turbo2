@@ -11,7 +11,7 @@
 #include <ICubicMazeSceneBuilder.h>
 
 #include <CubicMaze.h>
-#include <Level00Types.h>
+#include <MazeOptions.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -28,7 +28,7 @@ public:
 		std::shared_ptr<ITurboGameMotionEffects> motionEffects,
 		std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
 		std::shared_ptr<ICubicMazeObjectInteractions> objectInteractions,
-		Level00MazeOptions* mazeOptions,
+		std::shared_ptr<MazeOptions> mazeOptions,
 		std::vector<std::shared_ptr<ITurboSceneObject>>* keys,
 		std::vector<std::shared_ptr<ITurboSceneObject>>* hazards) :
 
@@ -65,7 +65,7 @@ private:
 	std::shared_ptr<ITurboGameMotionEffects>			_motionEffects;
 	std::shared_ptr<ICubicMazeSceneBuilder>				_sceneBuilder;
 	std::shared_ptr<ICubicMazeObjectInteractions>		_objectInteractions;
-	Level00MazeOptions*									_mazeOptions;
+	std::shared_ptr<MazeOptions>						_mazeOptions;
 	std::vector<std::shared_ptr<ITurboSceneObject>>*	_keys;
 	std::vector<std::shared_ptr<ITurboSceneObject>>*	_hazards;
 	std::vector<std::tuple<TurboVector3D,std::string>>	_signageMap;

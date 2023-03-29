@@ -25,6 +25,7 @@ void AndroidNDKIOService::SaveGameState(std::shared_ptr<ITurboGameState> gameSta
 	if (gameState == nullptr)
 		return;
 
+
     auto dir = JNIHelper::GetInstance()->GetExternalFilesDir() + "/" + _gameStateFileName;
 
 	std::ofstream outFile(dir.data(), std::ios::out);

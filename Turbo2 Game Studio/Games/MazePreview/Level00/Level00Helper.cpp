@@ -33,7 +33,7 @@ void Level00Helper::CreateKeys(CubicMazeLocation* firstKeyLocation, std::string 
 	}
 
 	_keys->clear();
-	for (int i = 0; i < _mazeOptions->KeyCount; i++)
+	for (int i = 0; i < _mazeOptions->KeyCount()->GetValue(); i++)
 	{
 		std::shared_ptr<ITurboSceneObject> key = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
 			std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
@@ -51,7 +51,7 @@ void Level00Helper::CreateKeys(CubicMazeLocation* firstKeyLocation, std::string 
 
 		key->Placement()->AngularVelocity(RandomAngularVelocity());
 
-		if (_mazeOptions->MovingKeys)
+		if (_mazeOptions->MovingKeys()->GetValue())
 		{
 			key->Placement()->Velocity(RandomDirection());
 		}
@@ -66,7 +66,7 @@ void Level00Helper::CreateHazards(CubicMazeLocation* firstHazardLocation, std::s
 	}
 
 	_hazards->clear();
-	for (int i = 0; i < _mazeOptions->HazardCount; i++)
+	for (int i = 0; i < _mazeOptions->HazardCount()->GetValue(); i++)
 	{
 		std::shared_ptr<ITurboSceneObject> hazard = std::shared_ptr<ITurboSceneObject>(new CubicMazeSceneObject(
 			std::shared_ptr<ITurboSceneMesh>(new CubicMazeCornerMesh()),
@@ -84,7 +84,7 @@ void Level00Helper::CreateHazards(CubicMazeLocation* firstHazardLocation, std::s
 
 		hazard->Placement()->AngularVelocity(RandomAngularVelocity());
 
-		if (_mazeOptions->MovingHazards)
+		if (_mazeOptions->MovingHazards()->GetValue())
 		{
 			hazard->Placement()->Velocity(RandomDirection());
 		}
@@ -101,7 +101,7 @@ std::shared_ptr<ITurboScene> Level00Helper::BuildScene(NavigationInfo* navInfo)
 	scene->CameraPlacement(_player->Placement());
 
 	//	This is easier for now.
-	scene->LightHack(!_mazeOptions->LightsOn);
+	scene->LightHack(!_mazeOptions->LightsOn()->GetValue());
 
 	if (_keys != NULL)
 	{
@@ -298,7 +298,7 @@ bool Level00Helper::UpdateKeys(NavigationInfo* navInfo, std::string keyHitSoundN
 
 		key->Placement()->Rotate(key->Placement()->AngularVelocity() * navInfo->DeltaTime);
 
-		if (_mazeOptions->MovingKeys)
+		if (_mazeOptions->MovingKeys()->GetValue())
 		{
 			key->Placement()->Velocity(key->Placement()->Velocity().Normalize());
 
@@ -342,7 +342,7 @@ bool Level00Helper::UpdateHazards(NavigationInfo* navInfo, std::string hazardHit
 	{
 		hazard->Placement()->Rotate(hazard->Placement()->AngularVelocity() * navInfo->DeltaTime);
 
-		if (_mazeOptions->MovingHazards)
+		if (_mazeOptions->MovingHazards()->GetValue())
 		{
 			hazard->Placement()->Velocity(hazard->Placement()->Velocity().Normalize());
 

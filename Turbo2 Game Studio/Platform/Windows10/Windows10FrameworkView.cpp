@@ -98,8 +98,8 @@ void Windows10FrameworkView::Load(String^ entryPoint)
 {
 	_controller = std::shared_ptr<ITurboGameController>(new Windows10GameController());
 
-	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
-	_game->GameState(gameState);
+//	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
+//	_game->GameState(gameState);
 
 	_game->Initialize();	//	Create level, create & draw static scene
 }
@@ -165,8 +165,8 @@ void Windows10FrameworkView::OnSuspending(Object^ sender, SuspendingEventArgs^ a
 		// Process lifetime management may terminate suspended apps at any time, so it is
 		// good practice to save any state that will allow the app to restart where it left off.
 
-		std::shared_ptr<ITurboGameState> gameState = _game->GameState();
-		_ioService->SaveGameState(gameState);
+//		std::shared_ptr<ITurboGameState> gameState = _game->GameState();
+//		_ioService->SaveGameState(gameState);
 
 		// If your application uses video memory allocations that are easy to re-create,
 		// consider releasing that memory to make it available to other applications.
@@ -182,8 +182,8 @@ void Windows10FrameworkView::OnResuming(Object^ sender, Object^ args)
 	// and state are persisted when resuming from suspend. Note that this event
 	// does not occur if the app was previously terminated.
 
-	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
-	_game->GameState(gameState);
+//	std::shared_ptr<ITurboGameState> gameState = _ioService->LoadGameState();
+//	_game->GameState(gameState);
 }
 
 //	Window event handlers ----------------------------------------------------------------------------------------------

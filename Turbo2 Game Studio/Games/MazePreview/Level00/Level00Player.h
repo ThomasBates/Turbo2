@@ -5,7 +5,7 @@
 #include <ITurboSceneObject.h>
 //#include <TurboSceneTypes.h>
 #include <TurboSceneNavigationInfo.h>
-#include <Level00Types.h>
+#include <UserOptions.h>
 
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
@@ -13,7 +13,7 @@ using namespace Turbo::Scene;
 class Level00Player : public ITurboSceneObject
 {
 public:
-	Level00Player(Level00UserOptions* userOptions);
+	Level00Player(std::shared_ptr<UserOptions>  userOptions);
 	virtual ~Level00Player(){}
 
 	//  ITurboSceneObject Properties -----------------------------------------------------------------------------------
@@ -44,11 +44,9 @@ public:
 
 private:
 	std::shared_ptr<ITurboSceneMesh>				_mesh;
-	std::shared_ptr<ITurboSceneSound>			_hitSound;
+	std::shared_ptr<ITurboSceneSound>				_hitSound;
 	std::shared_ptr<ITurboScenePlacement>			_placement;
 	std::shared_ptr<ITurboSceneLight>				_light;
 	std::vector<std::shared_ptr<ITurboSceneObject>> _childSceneObjects;
-	Level00UserOptions*								_userOptions;
-
-	//NavigationInfo _lastNavInfo;
+	std::shared_ptr<UserOptions>			_userOptions;
 };

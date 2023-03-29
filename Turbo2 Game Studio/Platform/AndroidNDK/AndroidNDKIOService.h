@@ -24,9 +24,6 @@ namespace Turbo
 				virtual ~AndroidNDKIOService() {};
 
 				//	ITurboGameIOService Methods ------------------------------------------------------------------------
-				virtual void SaveGameState(std::shared_ptr<ITurboGameState> gameState);
-				virtual std::shared_ptr<ITurboGameState> LoadGameState();
-
 				virtual std::wstring GetFullPath(std::wstring filename);
 				virtual std::vector<unsigned char> ReadData(const std::wstring &filename);
 				virtual int WriteData(const std::wstring &filename, std::vector<unsigned char> fileData);
@@ -36,7 +33,10 @@ namespace Turbo
 
                 const std::string _gameStateFileName = "GameState.txt";
 
-                std::string SanitizeStringValue(std::string value);
+				virtual void SaveGameState(std::shared_ptr<ITurboGameState> gameState);
+				virtual std::shared_ptr<ITurboGameState> LoadGameState();
+
+				std::string SanitizeStringValue(std::string value);
                 std::string RestoreStringValue(std::string value);
                 void ReplaceAll(std::string &str, const std::string &from, const std::string &to);
             };

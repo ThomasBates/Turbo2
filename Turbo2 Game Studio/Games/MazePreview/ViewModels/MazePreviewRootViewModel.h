@@ -6,6 +6,7 @@
 #include <MazePreviewMainViewModel.h>
 #include <MazePreviewMenuViewModel.h>
 #include <ViewModels/TurboDialogViewModel.h>
+#include <MazePreviewGameState.h>
 
 using namespace Turbo::Game;
 
@@ -13,7 +14,7 @@ class MazePreviewRootViewModel
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewRootViewModel(const std::shared_ptr<ITurboGame>& game);
+    MazePreviewRootViewModel(const std::shared_ptr<ITurboGame>& game, std::shared_ptr<MazePreviewGameState>  gameState);
     virtual ~MazePreviewRootViewModel() {}
 
     //  Public Methods -------------------------------------------------------------------------------------------------
@@ -30,6 +31,8 @@ public:
 
 private:
     std::shared_ptr<ITurboGame> _game;
+    std::shared_ptr<MazePreviewGameState> _gameState;
+
     std::shared_ptr<MazePreviewMainViewModel> _mainViewModel;
     std::shared_ptr<MazePreviewMenuViewModel> _menuViewModel;
     std::shared_ptr<TurboDialogViewModel> _infoViewModel;

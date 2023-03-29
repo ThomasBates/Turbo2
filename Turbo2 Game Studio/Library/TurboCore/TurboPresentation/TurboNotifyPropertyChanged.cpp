@@ -8,7 +8,7 @@ using namespace Turbo::Core::Presentation;
 
 TurboNotifyPropertyChanged::TurboNotifyPropertyChanged()
 {
-    _onPropertyChanged = std::shared_ptr<TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>>(new TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>());
+    _onPropertyChanged = std::shared_ptr<ITurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>>(new TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>());
 }
 
 void TurboNotifyPropertyChanged::NotifyPropertyChanged(std::string propertyName)

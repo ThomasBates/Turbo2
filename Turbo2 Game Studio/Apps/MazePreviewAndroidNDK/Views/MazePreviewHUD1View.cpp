@@ -30,6 +30,15 @@ void MazePreviewHUD1View::Load()
     _keysText->Text(_viewModel->KeysText());
     _hazardText->Text(_viewModel->HazardText());
 
+    if (_viewModel->IsUnlocked())
+    {
+        _keysText->Color(TurboColor(0.0F, 0.5F, 1.0F));
+    }
+    else
+    {
+        _keysText->Color(TurboColor(1.0F, 0.5F, 0.0F));
+    }
+
     LoadSceneText(_roundText);
     LoadSceneText(_titleText);
     LoadSceneText(_keysText);
@@ -51,25 +60,25 @@ void MazePreviewHUD1View::UpdateLayout(TurboVector2D position, TurboVector2D siz
     _debug->Send(debugDebug, debugView) << "MazePreviewHUD1View::UpdateLayout: position = " << position << ", size = " << size << "\n";
 
     _roundText->Rectangle(TurboRectangle(
-            position.X,
-            position.Y,
+            position.X + 15,
+            position.Y + 0,
             position.X + size.X,
             position.Y + 60));
 
     _titleText->Rectangle(TurboRectangle(
-            position.X,
+            position.X + 15,
             position.Y + 60,
             position.X + size.X,
             position.Y + 120));
 
     _keysText->Rectangle(TurboRectangle(
-            position.X,
+            position.X + 15,
             position.Y + 180,
             position.X + size.X,
             position.Y + 240));
 
     _hazardText->Rectangle(TurboRectangle(
-            position.X,
+            position.X + 15,
             position.Y + 240,
             position.X + size.X,
             position.Y + 300));

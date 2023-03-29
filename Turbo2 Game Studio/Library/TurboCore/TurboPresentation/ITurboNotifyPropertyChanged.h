@@ -16,7 +16,7 @@ namespace Turbo
 			public:
 				//  virtual event NotifyPropertyChanged
 				//virtual std::vector<std::string> GetChangedProperties() = 0;
-				virtual std::shared_ptr<TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> OnPropertyChanged() = 0;
+				virtual std::shared_ptr<ITurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> OnPropertyChanged() = 0;
 			};
 		}
 	}

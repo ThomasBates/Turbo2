@@ -50,8 +50,8 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
 {
     _debug->Send(debugDebug, debugApplication) << "--> AndroidNDKGameApplication::Run()\n";
 
-    auto gameState = _ioService->LoadGameState();
-    game->GameState(gameState);
+//    auto gameState = _ioService->LoadGameState();
+//    game->GameState(gameState);
 
     game->Initialize();	//	Create level, create & draw static scene
 
@@ -101,8 +101,8 @@ int AndroidNDKGameApplication::Run(std::shared_ptr<ITurboGame> game, std::shared
         if (_saveGameState)
         {
             _saveGameState = false;
-            gameState = game->GameState();
-            _ioService->SaveGameState(gameState);
+//            gameState = game->GameState();
+//            _ioService->SaveGameState(gameState);
         }
     }
 }

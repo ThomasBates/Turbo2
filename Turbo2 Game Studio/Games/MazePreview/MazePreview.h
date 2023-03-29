@@ -6,7 +6,7 @@
 #include <ITurboDebug.h>
 #include <ITurboGame.h>
 #include <ITurboGameLevel.h>
-#include <Level00Types.h>
+#include <MazePreviewGameState.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -16,14 +16,11 @@ class MazePreview : public ITurboGame
 {
 public:
 	//  Constructors and Destructors -----------------------------------------------------------------------------------
-	MazePreview(std::shared_ptr<ITurboDebug> debug);
+	MazePreview(std::shared_ptr<ITurboDebug> debug, std::shared_ptr<MazePreviewGameState> gameState);
 	virtual ~MazePreview() {}
 
 	//  ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return _level == nullptr ? "Maze Preview" : _level->Title(); }
-
-	virtual std::shared_ptr<ITurboGameState> GameState();
-	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);
 
 	virtual TurboGameLevelState LevelState() { return _levelState; }
 	virtual void LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
@@ -43,10 +40,10 @@ public:
 
 private:
 	std::shared_ptr<ITurboDebug> _debug;
+	std::shared_ptr<MazePreviewGameState> _gameState;
+
 	std::shared_ptr<ITurboSceneObject> _player;
 	std::shared_ptr<ITurboGameLevel> _level = nullptr;
-	std::shared_ptr<ITurboGameState> _gameState;
 	bool _sceneChanged = false;
-	TurboGameLevelState _levelState;
-	Level00UserOptions _userOptions = {false, true};
+	TurboGameLevelState _levelState = TurboGameLevelState::Initializing;
 };

@@ -3,10 +3,16 @@
 
 #include <MazePreviewRootViewModel.h>
 
-MazePreviewRootViewModel::MazePreviewRootViewModel(const std::shared_ptr<ITurboGame>& game) : _game(game)
+#include <utility>
+
+MazePreviewRootViewModel::MazePreviewRootViewModel(
+    const std::shared_ptr<ITurboGame>& game,
+    std::shared_ptr<MazePreviewGameState> gameState) :
+        _game(game),
+        _gameState(std::move(gameState))
 {
-    _mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game));
-    _menuViewModel = std::shared_ptr<MazePreviewMenuViewModel>(new MazePreviewMenuViewModel(game));
+    _mainViewModel = std::shared_ptr<MazePreviewMainViewModel>(new MazePreviewMainViewModel(game, _gameState));
+    _menuViewModel = std::shared_ptr<MazePreviewMenuViewModel>(new MazePreviewMenuViewModel(game, _gameState));
     _infoViewModel = std::shared_ptr<TurboDialogViewModel>(new TurboDialogViewModel(game, false));
 
     _infoViewModel->CaptionText("Introduction");

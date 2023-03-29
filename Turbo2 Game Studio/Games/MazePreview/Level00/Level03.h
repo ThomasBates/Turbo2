@@ -10,7 +10,6 @@
 #include <ICubicMazeFactory.h>
 
 #include <Level00Helper.h>
-#include <Level00Types.h>
 
 using namespace Turbo::Core::Debug;
 using namespace Turbo::Game;
@@ -24,14 +23,11 @@ public:
 	Level03(std::shared_ptr<ITurboDebug> debug,
 		std::shared_ptr<ITurboSceneObject> player,
 		std::shared_ptr<ICubicMazeSceneBuilder> sceneBuilder,
-		Level00MazeOptions mazeOptions);
+		std::shared_ptr<MazeOptions> mazeOptions);
 	virtual ~Level03(){}
 
 	//	ITurboGameLevel Properties -------------------------------------------------------------------------------------
 	virtual std::string Title() { return "Maze 3"; }
-
-	virtual std::shared_ptr<ITurboGameState> GameState();
-	virtual void GameState(std::shared_ptr<ITurboGameState> gameState);
 
 	virtual TurboGameLevelState LevelState() { return _levelState; }
 	virtual void LevelState(TurboGameLevelState levelState) { _levelState = levelState; }
@@ -57,18 +53,17 @@ private:
 	std::shared_ptr<ITurboGameMotionEffects>		_motionEffects;
 	std::shared_ptr<ICubicMazeObjectInteractions>	_objectInteractions;
 	std::shared_ptr<Level00Helper>					_helper;
-	Level00MazeOptions								_mazeOptions;
+	std::shared_ptr<MazeOptions>					_mazeOptions;
 
 	//	Property Fields ------------------------------------------------------------------------------------------------
 	TurboGameLevelState								_levelState;
 	std::shared_ptr<ITurboScene>					_scene;
 	std::shared_ptr<ITurboSceneObject>				_player;
-	bool											_sceneChanged;
+	bool											_sceneChanged = false;
 
 	std::shared_ptr<CubicMaze>						_maze;
 	std::vector<std::shared_ptr<ITurboSceneObject>>	_keys;
 	std::vector<std::shared_ptr<ITurboSceneObject>>	_hazards;
-//	bool											_exitUnlocked;
 
 	CubicMazeLocation								_entranceLocation;
 	CubicMazeLocation								_exitLocation;

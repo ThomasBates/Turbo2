@@ -18,13 +18,13 @@ namespace Turbo
 
 				//  virtual event NotifyPropertyChanged
 				//virtual std::vector<std::string> GetChangedProperties() = 0;
-				virtual std::shared_ptr<TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> OnPropertyChanged() { return _onPropertyChanged; }
+				virtual std::shared_ptr<ITurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> OnPropertyChanged() { return _onPropertyChanged; }
 
 			protected:
 				void NotifyPropertyChanged(std::string propertyName);
 
 			private:
-				std::shared_ptr<TurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> _onPropertyChanged;
+				std::shared_ptr<ITurboEvent<std::shared_ptr<TurboPropertyChangedEventArgs>>> _onPropertyChanged;
 			};
 		}
 	}

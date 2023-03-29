@@ -16,7 +16,7 @@ class MazePreviewMainViewModel
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewMainViewModel(std::shared_ptr<ITurboGame> game);
+    MazePreviewMainViewModel(const std::shared_ptr<ITurboGame>& game, std::shared_ptr<MazePreviewGameState> gameState);
     virtual ~MazePreviewMainViewModel() {}
 
     //  Public Methods -------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ private:
     std::shared_ptr<MazePreviewMotionControlViewModel> _motionControlViewModel;
     std::shared_ptr<MazePreviewDirectionControlViewModel> _directionControlViewModel;
 
-    bool _isVisible;
+    bool _isVisible = false;
 };
 
 

@@ -16,10 +16,19 @@ namespace Turbo
 			public:
                 typedef void (TReceiver::*EventHandlerCallback)(void*, TArgs);
 
-			    TurboEventHandler(TReceiver *receiver, EventHandlerCallback eventHandlerCallback);
+			    TurboEventHandler(TReceiver *receiver, EventHandlerCallback eventHandlerCallback) :
+						_receiver(receiver),
+						_eventHandlerCallback(eventHandlerCallback)
+				{
+				}
 			    virtual ~TurboEventHandler(){}
 
-				virtual void PublishEvent(void *sender, TArgs args);
+				virtual void PublishEvent(void *sender, TArgs args)
+				{
+					if (_receiver != nullptr && _eventHandlerCallback != nullptr)
+						(_receiver->*_eventHandlerCallback)(sender, args);
+				}
+
 
 			private:
 			    TReceiver *_receiver;

@@ -6,6 +6,7 @@
 #include <TurboSceneViewModel.h>
 #include <TurboSpinnerControlViewModel.h>
 #include <TurboToggleControlViewModel.h>
+#include <MazePreviewGameState.h>
 #include <MazePreviewHUD1ViewModel.h>
 #include <MazePreviewHUD2ViewModel.h>
 #include <MazePreviewMainControlViewModel.h>
@@ -19,7 +20,7 @@ class MazePreviewMenuViewModel : public TurboDialogViewModel
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewMenuViewModel(std::shared_ptr<ITurboGame> game);
+    MazePreviewMenuViewModel(const std::shared_ptr<ITurboGame>& game, std::shared_ptr<MazePreviewGameState> gameState);
     virtual ~MazePreviewMenuViewModel() {}
 
     //  Public Methods -------------------------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ protected:
 
 private:
     std::shared_ptr<ITurboGame> _game;
-    std::shared_ptr<ITurboGameState> _gameState;
+    std::shared_ptr<MazePreviewGameState> _gameState;
 
     std::shared_ptr<TurboToggleControlViewModel> _reverseControlViewModel;
     std::shared_ptr<TurboToggleControlViewModel> _soundEffectsViewModel;
@@ -52,9 +53,4 @@ private:
     int _selectedRound = 1;
     int _selectedLevel = 1;
     bool _resetProgress = false;
-
-    bool _originalControlsReversed = false;
-    bool _originalSoundEffectsOn = true;
-    int _originalSelectedRound = 1;
-    int _originalSelectedLevel = 1;
 };

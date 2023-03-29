@@ -19,6 +19,7 @@
 #include <CubicMazeSignMesh.h>
 
 #include <TurboCoreHelpers.h>
+#include <TurboEventHandler.h>
 #include <TurboGameState.h>
 #include <TurboSceneAmbientLight.h>
 #include <TurboSceneMaterial.h>
@@ -34,94 +35,24 @@ using namespace Turbo::Scene;
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
 Level00::Level00(
-	std::shared_ptr<ITurboDebug> debug, 
+	std::shared_ptr<ITurboDebug> debug,
+	std::shared_ptr<MazePreviewGameState> gameState,
 	std::shared_ptr<ITurboSceneObject> player) :
-	_debug(debug),
-	_player(player)
+	_debug(std::move(debug)),
+	_gameState(std::move(gameState)),
+	_player(std::move(player))
 {
 	_mazeFactory = std::shared_ptr<ICubicMazeFactory>(new Level00CubicMazeFactory());
 	_objectInteractions = std::shared_ptr<ICubicMazeObjectInteractions>(new CubicMazeObjectInteractions(_debug));
+
+	_mazeOptions = _gameState->Maze();
+
+	_gameState->Game()->OnValueChanged()->Subscribe(std::shared_ptr<ITurboEventHandler<std::shared_ptr<TurboConfigValueChangedEventArgs>>>(
+			new TurboEventHandler<Level00, std::shared_ptr<TurboConfigValueChangedEventArgs>>(this, &Level00::GameOptionsOnValueChanged)));
 }
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
-
-std::shared_ptr<ITurboGameState> Level00::GameState()
-{
-	std::shared_ptr<ITurboGameState> gameState = nullptr;
-
-	if (_subLevel != nullptr)
-	{
-		gameState = _subLevel->GameState();
-	}
-
-	if (gameState == nullptr)
-	{
-		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
-	}
-
-	gameState->SaveInteger("Game.UnlockedRound", _gameOptions.UnlockedRound);
-	gameState->SaveInteger("Game.UnlockedLevel", _gameOptions.UnlockedLevel);
-	gameState->SaveInteger("Game.CurrentRound", _gameOptions.CurrentRound);
-	gameState->SaveInteger("Game.CurrentLevel", _gameOptions.CurrentLevel);
-
-	return gameState;
-}
-
-void Level00::GameState(std::shared_ptr<ITurboGameState> gameState)
-{
-	_gameState = gameState;
-
-	if (gameState == nullptr)
-	{
-		return;
-	}
-
-	int unlockedRound = gameState->LoadInteger("Game.UnlockedRound", 1);
-	int unlockedLevel = gameState->LoadInteger("Game.UnlockedLevel", 1);
-	int currentRound = gameState->LoadInteger("Game.CurrentRound", 1);
-	int currentLevel = gameState->LoadInteger("Game.CurrentLevel", 1);
-
-	if (unlockedRound < 1)
-		unlockedRound = 1;
-
-	if (currentRound < 1)
-		currentRound = 1;
-
-	if (currentRound > unlockedRound)
-		currentRound = unlockedRound;
-
-	if (unlockedLevel < 1)
-		unlockedLevel = 1;
-
-	if (unlockedLevel > 4)
-		unlockedLevel = 4;
-
-	if (currentLevel < 1)
-		currentLevel = 1;
-
-	if (currentLevel > 4)
-		currentLevel = 4;
-
-	if (currentRound == unlockedRound && currentLevel > unlockedLevel)
-		currentLevel = unlockedLevel;
-
-	_gameOptions.OptionsChanged =
-			_gameOptions.UnlockedRound != unlockedRound ||
-			_gameOptions.UnlockedLevel != unlockedLevel ||
-			_gameOptions.CurrentRound != currentRound ||
-			_gameOptions.CurrentLevel != currentLevel;
-
-	_gameOptions.UnlockedRound = unlockedRound;
-	_gameOptions.UnlockedLevel = unlockedLevel;
-	_gameOptions.CurrentRound = currentRound;
-	_gameOptions.CurrentLevel = currentLevel;
-
-	if (_subLevel != nullptr)
-	{
-		_subLevel->GameState(gameState);
-	}
-}
 
 std::shared_ptr<ITurboScene> Level00::Scene()
 {
@@ -157,9 +88,9 @@ void Level00::Initialize()
 
 	_helper = std::shared_ptr<Level00Helper>(new Level00Helper(
 		_player, _maze, _motionEffects, _sceneBuilder, _objectInteractions,
-		&_mazeOptions, NULL, NULL));
+		_mazeOptions, nullptr, nullptr));
 
-	UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
+	UpdateMazeOptions(_gameState->Game()->CurrentRound()->GetValue());
 }
 
 void Level00::Update(NavigationInfo* navInfo)
@@ -169,7 +100,7 @@ void Level00::Update(NavigationInfo* navInfo)
 	if (_scene == nullptr)
 	{
 		//	Build the scene.
-		BuildScene(navInfo);
+		BuildScene();
 
 		//	Place the player
 		_player->Placement()->Reset();
@@ -197,16 +128,17 @@ void Level00::Update(NavigationInfo* navInfo)
 
 	if (_subLevel == nullptr)
 	{
-		if (_gameOptions.OptionsChanged)
+		if (_gameOptionsChanged)
 		{
-			_gameOptions.OptionsChanged = false;
-			UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
-			BuildScene(navInfo);
+			ValidateGameOptions();
+			_gameOptionsChanged = false;
+			UpdateMazeOptions(_gameState->Game()->CurrentRound()->GetValue());
+			BuildScene();
 
 			_player->Placement()->Reset();
 
 			//	Place player in view of the entrance to the current level.
-			switch (_gameOptions.CurrentLevel)
+			switch (_gameState->Game()->CurrentLevel()->GetValue())
 			{
 				case 1:
 					_player->Placement()->Move(0, 0, -6);
@@ -265,7 +197,7 @@ void Level00::Update(NavigationInfo* navInfo)
 				_subLevel->Finalize();
 				_subLevel = nullptr;
 				_subLevelIndex = 0;
-				BuildScene(navInfo);
+				BuildScene();
 				_sceneChanged = true;
 				break;
 
@@ -277,46 +209,59 @@ void Level00::Update(NavigationInfo* navInfo)
 				double toY = round(fromY * 0.5) * 2.0;
 				double dY = toY - fromY;
 
+				_gameState->Game()->BeginBatch();
+				int unlockedRound = _gameState->Game()->UnlockedRound()->GetValue();
+				int unlockedLevel = _gameState->Game()->UnlockedLevel()->GetValue();
+				int currentRound = _gameState->Game()->CurrentRound()->GetValue();
+				int currentLevel = _gameState->Game()->CurrentLevel()->GetValue();
+
 				switch (_subLevelIndex)
 				{
 					case 1:
 						_player->Placement()->Move(1, dY, -10);
-						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 2)
-							_gameOptions.UnlockedLevel = 2;
-						_gameOptions.CurrentLevel++;
+						if (currentRound == unlockedRound && unlockedLevel < 2)
+							unlockedLevel = 2;
+						currentLevel++;
 						break;
 
 					case 2:
 						_player->Placement()->Move(10, dY, -9);
-						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 3)
-							_gameOptions.UnlockedLevel = 3;
-						_gameOptions.CurrentLevel++;
+						if (currentRound == unlockedRound && unlockedLevel < 3)
+							unlockedLevel = 3;
+						currentLevel++;
 						break;
 
 					case 3:
 						_player->Placement()->Move(9, dY, 0);
-						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound && _gameOptions.UnlockedLevel < 4)
-							_gameOptions.UnlockedLevel = 4;
-						_gameOptions.CurrentLevel++;
+						if (currentRound == unlockedRound && unlockedLevel < 4)
+							unlockedLevel = 4;
+						currentLevel++;
 						break;
 
 					case 4:
 						_player->Placement()->Move(0, dY, -1);
-						if (_gameOptions.CurrentRound == _gameOptions.UnlockedRound)
+						if (currentRound == unlockedRound)
 						{
-							_gameOptions.UnlockedRound++;
-							_gameOptions.UnlockedLevel = 1;
+							unlockedRound++;
+							unlockedLevel = 1;
 						}
-						_gameOptions.CurrentRound++;
-						_gameOptions.CurrentLevel = 1;
-						UpdateMazeOptions(&_sceneBuilder, &_mazeOptions);
+						currentRound++;
+						currentLevel = 1;
+						UpdateMazeOptions(currentRound);
 						break;
 				}
+
+				_gameState->Game()->UnlockedRound()->SetValue(unlockedRound);
+				_gameState->Game()->UnlockedLevel()->SetValue(unlockedLevel);
+				_gameState->Game()->CurrentRound()->SetValue(currentRound);
+				_gameState->Game()->CurrentLevel()->SetValue(currentLevel);
+				_gameState->Game()->EndBatch();
+				_gameOptionsChanged = false;
 
 				_subLevel->Finalize();
 				_subLevel = nullptr;
 				_subLevelIndex = 0;
-				BuildScene(navInfo);
+				BuildScene();
 				_sceneChanged = true;
 				break;
 		}
@@ -367,11 +312,14 @@ void Level00::Update(NavigationInfo* navInfo)
 			_player->Placement()->Move(-1, 0, 0);
 			_subLevel = std::shared_ptr<ITurboGameLevel>(new Level04(_debug, _player, _sceneBuilder, _mazeOptions));
 			break;
+
+		default:
+			break;
 	}
 
 	if (_subLevel != nullptr)
 	{
-		_subLevel->GameState(_gameState);
+		//_subLevel->GameState(_gameState);
 		_subLevel->Initialize();
 		_subLevelIndex = portalIndex;
 		_sceneChanged = true;
@@ -388,73 +336,125 @@ int Level00::Action()
 //  ITurboGameLevel Methods --------------------------------------------------------------------------------------------
 //  Local Methods ------------------------------------------------------------------------------------------------------
 
-void Level00::UpdateMazeOptions(std::shared_ptr<ICubicMazeSceneBuilder>* sceneBuilder, Level00MazeOptions* mazeOptions)
+void Level00::GameOptionsOnValueChanged(void *sender, std::shared_ptr<TurboConfigValueChangedEventArgs> args)
 {
-	switch (_gameOptions.CurrentRound)
+	_gameOptionsChanged = true;
+}
+
+void Level00::ValidateGameOptions()
+{
+	_gameState->Game()->BeginBatch();
+	int unlockedRound = _gameState->Game()->UnlockedRound()->GetValue();
+	int unlockedLevel = _gameState->Game()->UnlockedLevel()->GetValue();
+	int currentRound = _gameState->Game()->CurrentRound()->GetValue();
+	int currentLevel = _gameState->Game()->CurrentLevel()->GetValue();
+
+	if (unlockedRound < 1)
+		unlockedRound = 1;
+
+	if (currentRound < 1)
+		currentRound = 1;
+
+	if (currentRound > unlockedRound)
+		currentRound = unlockedRound;
+
+	if (unlockedLevel < 1)
+		unlockedLevel = 1;
+
+	if (unlockedLevel > 4)
+		unlockedLevel = 4;
+
+	if (currentLevel < 1)
+		currentLevel = 1;
+
+	if (currentLevel > 4)
+		currentLevel = 4;
+
+	if (currentRound == unlockedRound && currentLevel > unlockedLevel)
+		currentLevel = unlockedLevel;
+
+	_gameState->Game()->UnlockedRound()->SetValue(unlockedRound);
+	_gameState->Game()->UnlockedLevel()->SetValue(unlockedLevel);
+	_gameState->Game()->CurrentRound()->SetValue(currentRound);
+	_gameState->Game()->CurrentLevel()->SetValue(currentLevel);
+	_gameState->Game()->EndBatch();
+}
+
+void Level00::UpdateMazeOptions(int currentRound)
+{
+	_mazeOptions->BeginBatch();
+
+	switch (currentRound)
 	{
 		case 1:
-			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Laboratory());
-			mazeOptions->MazeSize = 3;
-			mazeOptions->KeyCount = 0;
-			mazeOptions->RequiredKeyCount = 0;
-			mazeOptions->HazardCount = 0;
-			mazeOptions->MovingKeys = false;
-			mazeOptions->MovingHazards = false;
-			mazeOptions->LightsOn = true;
+			_sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Laboratory());
+			_mazeOptions->MazeSize()->SetValue(3);
+			_mazeOptions->KeyCount()->SetValue(0);
+			_mazeOptions->RequiredKeyCount()->SetValue(0);
+			_mazeOptions->HazardCount()->SetValue(0);
+			_mazeOptions->MovingKeys()->SetValue(false);
+			_mazeOptions->MovingHazards()->SetValue(false);
+			_mazeOptions->LightsOn()->SetValue(true);
 			break;
 
 		case 2:
-			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
-			mazeOptions->MazeSize = 3;
-			mazeOptions->KeyCount = 1;
-			mazeOptions->RequiredKeyCount = 1;
-			mazeOptions->HazardCount = 0;
-			mazeOptions->MovingKeys = false;
-			mazeOptions->MovingHazards = false;
-			mazeOptions->LightsOn = true;
+			_sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
+			_mazeOptions->MazeSize()->SetValue(3);
+			_mazeOptions->KeyCount()->SetValue(1);
+			_mazeOptions->RequiredKeyCount()->SetValue(1);
+			_mazeOptions->HazardCount()->SetValue(0);
+			_mazeOptions->MovingKeys()->SetValue(false);
+			_mazeOptions->MovingHazards()->SetValue(false);
+			_mazeOptions->LightsOn()->SetValue(true);
 			break;
 
 		case 3:
-			*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
-			mazeOptions->MazeSize = 3;
-			mazeOptions->KeyCount = 2;
-			mazeOptions->RequiredKeyCount = 1;
-			mazeOptions->HazardCount = 1;
-			mazeOptions->MovingKeys = true;
-			mazeOptions->MovingHazards = false;
-			mazeOptions->LightsOn = true;
+			_sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
+			_mazeOptions->MazeSize()->SetValue(3);
+			_mazeOptions->KeyCount()->SetValue(2);
+			_mazeOptions->RequiredKeyCount()->SetValue(1);
+			_mazeOptions->HazardCount()->SetValue(1);
+			_mazeOptions->MovingKeys()->SetValue(true);
+			_mazeOptions->MovingHazards()->SetValue(false);
+			_mazeOptions->LightsOn()->SetValue(true);
 			break;
 
 		default:
-			if ((_gameOptions.CurrentRound % 2) == 0)
+			if ((currentRound % 2) == 0)
 			{
-				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
+				_sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Castle());
 			}
 			else
 			{
-				*sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
+				_sceneBuilder = std::shared_ptr<ICubicMazeSceneBuilder>(new CubicMazeSceneBuilder_Metal());
 			}
-			mazeOptions->MazeSize = 3;
-			mazeOptions->KeyCount = _gameOptions.CurrentRound - 2;
-			mazeOptions->RequiredKeyCount = _gameOptions.CurrentRound - 2;
-			mazeOptions->HazardCount = _gameOptions.CurrentRound - 2;
-			mazeOptions->MovingKeys = true;
-			mazeOptions->MovingHazards = true;
-			mazeOptions->LightsOn = false;
+			_mazeOptions->MazeSize()->SetValue(3);
+			_mazeOptions->KeyCount()->SetValue(currentRound - 2);
+			_mazeOptions->RequiredKeyCount()->SetValue(currentRound - 2);
+			_mazeOptions->HazardCount()->SetValue(currentRound - 2);
+			_mazeOptions->MovingKeys()->SetValue(true);
+			_mazeOptions->MovingHazards()->SetValue(true);
+			_mazeOptions->LightsOn()->SetValue(false);
 			break;
 	}
+
+	_mazeOptions->EndBatch();
 }
 
-void Level00::BuildScene(NavigationInfo* navInfo)
+void Level00::BuildScene()
 {
 	_helper->ClearSignage();
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 1)
+	int unlockedRound = _gameState->Game()->UnlockedRound()->GetValue();
+	int unlockedLevel = _gameState->Game()->UnlockedLevel()->GetValue();
+	int currentRound = _gameState->Game()->CurrentRound()->GetValue();
+
+	if (currentRound < unlockedRound || unlockedLevel >= 1)
 	{
 		_maze->Cell(0, 0, 4)->FrontWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(0, 0, 4)->FrontWall.PortalIndex = 1;
 
-		switch (_gameOptions.CurrentRound)
+		switch (currentRound)
 		{
 			case 1:
 				_helper->AddSignage(0, 0, -7, "A green portal\nlike this one\nis an entrance\nto a maze.\n\nGo on in.");
@@ -469,7 +469,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 				_helper->AddSignage(0, 0, -7, "For each maze\nin this round,\nyou need both keys.\nThe hazards are\nharder to avoid.");
 				break;
 			default:
-				_helper->AddSignage(0, 0, -7, string_format("{} keys.\n{} hazards.", _gameOptions.CurrentRound - 2, _gameOptions.CurrentRound - 2));
+				_helper->AddSignage(0, 0, -7, string_format("{} keys.\n{} hazards.", currentRound - 2, currentRound - 2));
 				break;
 		}
 	}
@@ -478,16 +478,16 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(0, 0, 4)->FrontWall.Type = CubicMazeCellWallType::EntranceLocked;
 		_maze->Cell(0, 0, 4)->FrontWall.PortalIndex = 0;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(0, 0, -7, "This maze has not\nbeen unlocked.");
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 2)
+	if (currentRound < unlockedRound || unlockedLevel >= 2)
 	{
 		_maze->Cell(4, 0, 7)->RightWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(4, 0, 7)->RightWall.PortalIndex = 2;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(7, 0, -14, "This is a harder maze.\n\nYou have to go\ndown two levels\nto find the exit.");
 	}
 	else
@@ -495,16 +495,16 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(4, 0, 7)->RightWall.Type = CubicMazeCellWallType::EntranceLocked;
 		_maze->Cell(4, 0, 7)->RightWall.PortalIndex = 0;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(7, 0, -14, "This maze has not\nbeen unlocked.");
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 3)
+	if (currentRound < unlockedRound || unlockedLevel >= 3)
 	{
 		_maze->Cell(7, 2, 3)->BackWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(7, 2, 3)->BackWall.PortalIndex = 3;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(14, -4, -7, "Now we're getting\nto the fun part.\n\nThe exit is two\nlevels up, and\n   ...   \nwell, you'll see.");
 	}
 	else
@@ -512,16 +512,16 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(7, 2, 3)->BackWall.Type = CubicMazeCellWallType::EntranceLocked;
 		_maze->Cell(7, 2, 3)->BackWall.PortalIndex = 0;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(14, -4, -7, "This maze has not\nbeen unlocked.");
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 4)
+	if (currentRound < unlockedRound || unlockedLevel >= 4)
 	{
 		_maze->Cell(3, 0, 0)->LeftWall.Type = CubicMazeCellWallType::Entrance;
 		_maze->Cell(3, 0, 0)->LeftWall.PortalIndex = 4;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(7, 0, 0, "Another fun maze.");
 	}
 	else
@@ -529,7 +529,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(3, 0, 0)->LeftWall.Type = CubicMazeCellWallType::EntranceLocked;
 		_maze->Cell(3, 0, 0)->LeftWall.PortalIndex = 0;
 
-		if (_gameOptions.CurrentRound == 1)
+		if (currentRound == 1)
 			_helper->AddSignage(7, 0, 0, "This maze has not\nbeen unlocked.");
 	}
 
@@ -542,7 +542,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 	//_player->HitSound(std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Exit")));
 
 	//	This is easier for now.
-	_scene->LightHack(!_mazeOptions.LightsOn);
+	_scene->LightHack(!_mazeOptions->LightsOn()->GetValue());
 
 	//	This looks like it could be combined with setting the portals, above,
 	//	but that needs to be done before _sceneBuilder->BuildScene(_maze);
@@ -550,7 +550,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 	std::shared_ptr<ITurboSceneSound> entranceSound = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Entrance"));
 	std::shared_ptr<ITurboSceneSound> lockedSound = std::shared_ptr<ITurboSceneSound>(new TurboSceneSound("Locked"));
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 1)
+	if (currentRound < unlockedRound || unlockedLevel >= 1)
 	{
 		_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(entranceSound);
 	}
@@ -559,7 +559,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(0, 0, 4)->FrontWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 2)
+	if (currentRound < unlockedRound || unlockedLevel >= 2)
 	{
 		_maze->Cell(4, 0, 7)->RightWall.SceneObject->HitSound(entranceSound);
 	}
@@ -568,7 +568,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(4, 0, 7)->RightWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 3)
+	if (currentRound < unlockedRound || unlockedLevel >= 3)
 	{
 		_maze->Cell(7, 2, 3)->BackWall.SceneObject->HitSound(entranceSound);
 	}
@@ -577,7 +577,7 @@ void Level00::BuildScene(NavigationInfo* navInfo)
 		_maze->Cell(7, 2, 3)->BackWall.SceneObject->HitSound(lockedSound);
 	}
 
-	if (_gameOptions.CurrentRound < _gameOptions.UnlockedRound || _gameOptions.UnlockedLevel >= 4)
+	if (currentRound < unlockedRound || unlockedLevel >= 4)
 	{
 		_maze->Cell(3, 0, 0)->LeftWall.SceneObject->HitSound(entranceSound);
 	}

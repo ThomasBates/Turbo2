@@ -7,11 +7,13 @@
 
 #include <Level00Player.h>
 
+#include <utility>
+
 using namespace Turbo::Math;
 using namespace Turbo::Scene;
 
-Level00Player::Level00Player(Level00UserOptions* userOptions) :
-	_userOptions(userOptions)
+Level00Player::Level00Player(std::shared_ptr<UserOptions>  userOptions) :
+	_userOptions(std::move(userOptions))
 {
 	_placement = std::shared_ptr<ITurboScenePlacement>(new TurboScenePlacement());
 }
@@ -76,8 +78,8 @@ void Level00Player::Update(NavigationInfo* navInfo)
 		if ((control->Type() == TurboGameControlType::Move) &&
 			(control->IsActive()))
 		{
-			velocity += _placement->Back()  * moveSpeed * control->YValue();
-			velocity += _placement->Right() * moveSpeed * control->XValue();
+			velocity += _placement->Back()  * (float)moveSpeed * control->YValue();
+			velocity += _placement->Right() * (float)moveSpeed * control->XValue();
 		}
 	}
 
@@ -94,11 +96,11 @@ void Level00Player::Update(NavigationInfo* navInfo)
 		if ((control->Type() == TurboGameControlType::Look) &&
 			(control->IsActive()))
 		{
-			double dx = control->XValue();
-			double dy = control->YValue();
+			float dx = control->XValue();
+			float dy = control->YValue();
 
-			angularVelocity.X = dy / deltaTime;
-			angularVelocity.Y = dx / deltaTime;
+			angularVelocity.X = dy / (float)deltaTime;
+			angularVelocity.Y = dx / (float)deltaTime;
 		}
 	}
 
@@ -173,7 +175,7 @@ void Level00Player::PlaySound(float volume)
 		return;
 	}
 
-	if (!_userOptions->SoundEffectsOn)
+	if (!_userOptions->SoundEffectsOn()->GetValue())
 	{
 		return;
 	}

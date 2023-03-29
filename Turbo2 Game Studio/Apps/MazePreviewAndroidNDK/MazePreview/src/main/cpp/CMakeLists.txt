@@ -45,6 +45,8 @@ add_library(${PROJECT_NAME}
 add_library(Games_MazePreview
         STATIC
         ${TurboFolder}/Games/MazePreview/MazePreview.cpp
+        ${TurboFolder}/Games/MazePreview/MazePreviewGameState.cpp
+        ${TurboFolder}/Games/MazePreview/UserOptions.cpp
 
         ${TurboFolder}/Games/MazePreview/CubicMaze/CubicMaze.cpp
         ${TurboFolder}/Games/MazePreview/CubicMaze/CubicMazeCornerMesh.cpp
@@ -71,6 +73,8 @@ add_library(Games_MazePreview
         ${TurboFolder}/Games/MazePreview/Level00/Level02.cpp
         ${TurboFolder}/Games/MazePreview/Level00/Level03.cpp
         ${TurboFolder}/Games/MazePreview/Level00/Level04.cpp
+        ${TurboFolder}/Games/MazePreview/Level00/GameOptions.cpp
+        ${TurboFolder}/Games/MazePreview/Level00/MazeOptions.cpp
 
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewRootViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp
@@ -84,10 +88,12 @@ add_library(Games_MazePreview
 
 add_library(Library_TurboCore
         STATIC
+        ${TurboFolder}/Library/TurboCore/TurboConfig/TurboConfigGroup.cpp
+        ${TurboFolder}/Library/TurboCore/TurboConfig/TurboConfigMemoryProvider.cpp
+        ${TurboFolder}/Library/TurboCore/TurboConfig/TurboConfigBoolItem.cpp
+        ${TurboFolder}/Library/TurboCore/TurboConfig/TurboConfigTypedItem.cpp
         ${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebug.cpp
         ${TurboFolder}/Library/TurboCore/TurboDebug/TurboDebugMemoryLogger.cpp
-        ${TurboFolder}/Library/TurboCore/TurboSystem/TurboEvent.cpp
-        ${TurboFolder}/Library/TurboCore/TurboSystem/TurboEventHandler.cpp
         ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboNotifyPropertyChanged.cpp
         ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboCommand.cpp
         ${TurboFolder}/Library/TurboCore/TurboPresentation/TurboTypedCommand.cpp
@@ -160,6 +166,7 @@ add_library(Library_TurboView
 
 add_library(Platform_AndroidNDK
         STATIC
+        ${TurboFolder}/Platform/AndroidNDK/AndroidNDKConfigProvider.cpp
         ${TurboFolder}/Platform/AndroidNDK/AndroidNDKDebugLogCatLogger.cpp
         ${TurboFolder}/Platform/AndroidNDK/AndroidNDKGameApplication.cpp
         ${TurboFolder}/Platform/AndroidNDK/AndroidNDKIOService.cpp
@@ -192,6 +199,7 @@ include_directories(${TurboFolder}/Games/MazePreview/Level00)
 include_directories(${TurboFolder}/Games/MazePreview/ViewModels)
 
 include_directories(${TurboFolder}/Library/TurboCore)
+include_directories(${TurboFolder}/Library/TurboCore/TurboConfig)
 include_directories(${TurboFolder}/Library/TurboCore/TurboDebug)
 include_directories(${TurboFolder}/Library/TurboCore/TurboPresentation)
 include_directories(${TurboFolder}/Library/TurboCore/TurboSystem)

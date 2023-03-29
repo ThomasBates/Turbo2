@@ -10,6 +10,8 @@
 #include <Level00.h>
 #include <Level00Player.h>
 
+#include <utility>
+
 //	2017-06-07
 //	TODO:	portal sound only when portalling.
 //	TODO:	Numbered Levels
@@ -103,61 +105,14 @@
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 
-MazePreview::MazePreview(std::shared_ptr<ITurboDebug> debug) :
-	_debug(debug)
+MazePreview::MazePreview(std::shared_ptr<ITurboDebug> debug, std::shared_ptr<MazePreviewGameState> gameState) :
+	_debug(std::move(debug)),
+	_gameState(std::move(gameState))
 {
 }
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------
 //  ITurboGameLevel Properties -----------------------------------------------------------------------------------------
-
-std::shared_ptr<ITurboGameState> MazePreview::GameState()
-{
-	std::shared_ptr<ITurboGameState> gameState = nullptr;
-
-	if (_level != nullptr)
-	{
-		gameState = _level->GameState();
-	}
-
-	if (gameState == nullptr)
-	{
-		gameState = _gameState;
-	}
-
-	if (gameState == nullptr)
-	{
-		gameState = std::shared_ptr<ITurboGameState>(new TurboGameState());
-	}
-
-	gameState->SaveString("MazePreview.ProgramInfo", "project info");
-
-	gameState->SaveBoolean("User.InvertedMouse", _userOptions.InvertedMouse);
-	gameState->SaveBoolean("User.SoundEffectsOn", _userOptions.SoundEffectsOn);
-
-	return gameState;
-}
-
-void MazePreview::GameState(std::shared_ptr<ITurboGameState> gameState)
-{
-	_gameState = gameState;
-
-	if (gameState == nullptr)
-	{
-		return;
-	}
-
-	gameState->LoadString("MazePreview.ProgramInfo", "");
-
-	_userOptions.InvertedMouse = gameState->LoadBoolean("User.InvertedMouse", false);
-	_userOptions.SoundEffectsOn = gameState->LoadBoolean("User.SoundEffectsOn", true);
-
-
-	if (_level != nullptr)
-	{
-		_level->GameState(gameState);
-	}
-}
 
 std::shared_ptr<ITurboScene> MazePreview::Scene()
 {
@@ -191,7 +146,7 @@ std::string MazePreview::GetSignage()
 
 void MazePreview::Initialize()
 {
-	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player(&_userOptions));
+	_player = std::shared_ptr<ITurboSceneObject>(new Level00Player(_gameState->User()));
 }
 
 void MazePreview::Finalize()
@@ -217,8 +172,7 @@ void MazePreview::Update(NavigationInfo* navInfo)
 		}
 
 		//_userOptions.InvertedMouse = !_userOptions.InvertedMouse;
-		_level = std::shared_ptr<ITurboGameLevel>(new Level00(_debug, _player));
-		_level->GameState(_gameState);
+		_level = std::shared_ptr<ITurboGameLevel>(new Level00(_debug, _gameState, _player));
 		_level->Initialize();
 		_sceneChanged = true;
 	}

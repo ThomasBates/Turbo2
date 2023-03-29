@@ -4,6 +4,7 @@
 #include <pch.h>
 
 #include <ITurboGame.h>
+#include <MazePreviewGameState.h>
 
 using namespace Turbo::Game;
 
@@ -11,21 +12,30 @@ class MazePreviewHUD1ViewModel
 {
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
-    MazePreviewHUD1ViewModel(std::shared_ptr<ITurboGame> game);
+    MazePreviewHUD1ViewModel(std::shared_ptr<ITurboGame> game, std::shared_ptr<MazePreviewGameState> gameState);
     virtual ~MazePreviewHUD1ViewModel() {}
 
     //  Public Properties ----------------------------------------------------------------------------------------------
-    std::string TitleText();
     std::string RoundText();
+    std::string TitleText();
     std::string KeysText();
     std::string HazardText();
+    bool IsUnlocked() { return _isUnlocked; }
+
+    //  Event Handlers -------------------------------------------------------------------------------------------------
+    void GameStateOnValueChanged(void *sender, std::shared_ptr<TurboConfigValueChangedEventArgs> args);
 
 private:
     std::shared_ptr<ITurboGame> _game;
-    bool _checkRound = true;
-    std::string _roundText;
+    std::shared_ptr<MazePreviewGameState> _gameState;
+
+    std::shared_ptr<ITurboConfigTypedItem<int>> _currentRound;
+    std::shared_ptr<ITurboConfigTypedItem<int>> _requiredKeyCount;
+    std::shared_ptr<ITurboConfigTypedItem<int>> _foundKeyCount;
+    std::shared_ptr<ITurboConfigTypedItem<int>> _hazardCount;
+
     std::string _title;
-    std::string _titleText;
-    std::string _keysText;
-    std::string _hazardText;
+    bool _isUnlocked = false;
+
+    void UpdateFields();
 };

@@ -7,9 +7,12 @@
 #include <TurboControlViewModel.h>
 #include <TurboSceneNavigationButtonControl.h>
 
-MazePreviewMenuViewModel::MazePreviewMenuViewModel(std::shared_ptr<ITurboGame> game) :
-    TurboDialogViewModel(game, true),
-    _game(game)
+MazePreviewMenuViewModel::MazePreviewMenuViewModel(
+    const std::shared_ptr<ITurboGame>& game,
+    std::shared_ptr<MazePreviewGameState> gameState) :
+        TurboDialogViewModel(game, true),
+        _game(game),
+        _gameState(std::move(gameState))
 {
     TurboDialogViewModel::CaptionText("Options Menu");
 
@@ -40,12 +43,12 @@ void MazePreviewMenuViewModel::DoCustomLoadData()
 {
     TurboDialogViewModel::DoCustomLoadData();
 
-    _gameState = _game->GameState();
+    _gameState->BeginBatch();
 
-    _controlsReversed = _gameState->LoadBoolean("User.InvertedMouse", false);
-    _soundEffectsOn = _gameState->LoadBoolean("User.SoundEffectsOn", true);
-    _selectedRound = _gameState->LoadInteger("Game.CurrentRound", 1);
-    _selectedLevel = _gameState->LoadInteger("Game.CurrentLevel", 1);
+    _controlsReversed = _gameState->User()->InvertedMouse()->GetValue();
+    _soundEffectsOn = _gameState->User()->SoundEffectsOn()->GetValue();
+    _selectedRound = _gameState->Game()->CurrentRound()->GetValue();
+    _selectedLevel = _gameState->Game()->CurrentLevel()->GetValue();
 
     _reverseControlViewModel->SetValue(_controlsReversed);
     _soundEffectsViewModel->SetValue(_soundEffectsOn);
@@ -53,51 +56,32 @@ void MazePreviewMenuViewModel::DoCustomLoadData()
     _selectLevelViewModel->SetValue(_selectedLevel);
     _resetProgressViewModel->SetValue(false);
 
-    _originalControlsReversed = _controlsReversed;
-    _originalSoundEffectsOn = _soundEffectsOn;
-    _originalSelectedRound = _selectedRound;
-    _originalSelectedLevel = _selectedLevel;
-
-    int unlockedRound = _gameState->LoadInteger("Game.UnlockedRound", 1);
+    int unlockedRound = _gameState->Game()->UnlockedRound()->GetValue();
     _selectRoundViewModel->SetMaxValue(unlockedRound);
+
+    _gameState->EndBatch();
 }
 
 void MazePreviewMenuViewModel::DoCustomSaveData()
 {
     TurboDialogViewModel::DoCustomSaveData();
 
-    auto stateChanged = false;
-    if (_originalControlsReversed != _controlsReversed)
-    {
-        _gameState->SaveBoolean("User.InvertedMouse", _controlsReversed);
-        stateChanged = true;
-    }
-    if (_originalSoundEffectsOn != _soundEffectsOn)
-    {
-        _gameState->SaveBoolean("User.SoundEffectsOn", _soundEffectsOn);
-        stateChanged = true;
-    }
-    if (_originalSelectedRound != _selectedRound)
-    {
-        _gameState->SaveInteger("Game.CurrentRound", _selectedRound);
-        stateChanged = true;
-    }
-    if (_originalSelectedLevel != _selectedLevel)
-    {
-        _gameState->SaveInteger("Game.CurrentLevel", _selectedLevel);
-        stateChanged = true;
-    }
+    _gameState->BeginBatch();
+
+    _gameState->User()->InvertedMouse()->SetValue(_controlsReversed);
+    _gameState->User()->SoundEffectsOn()->SetValue(_soundEffectsOn);
+    _gameState->Game()->CurrentRound()->SetValue(_selectedRound);
+    _gameState->Game()->CurrentLevel()->SetValue(_selectedLevel);
+
     if (_resetProgress)
     {
-        _gameState->SaveInteger("Game.UnlockedRound", 1);
-        _gameState->SaveInteger("Game.UnlockedLevel", 1);
-        _gameState->SaveInteger("Game.CurrentRound", 1);
-        _gameState->SaveInteger("Game.CurrentLevel", 1);
-        stateChanged = true;
+        _gameState->Game()->UnlockedRound()->SetValue(1);
+        _gameState->Game()->UnlockedLevel()->SetValue(1);
+        _gameState->Game()->CurrentRound()->SetValue(1);
+        _gameState->Game()->CurrentLevel()->SetValue(1);
     }
 
-    if (stateChanged)
-        _game->GameState(_gameState);
+    _gameState->EndBatch();
 }
 
 void MazePreviewMenuViewModel::DoCustomUndoChanges()

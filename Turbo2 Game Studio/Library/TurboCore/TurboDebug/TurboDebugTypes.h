@@ -38,6 +38,7 @@ namespace Turbo
 			{
 				debugApplication,
 				debugStartup,
+				debugConfig,
 				debugController,
 				debugInteractions,
 				debugIOService,
@@ -52,6 +53,7 @@ namespace Turbo
 				{
 					case debugApplication: return "Application";
 					case debugStartup: return "Startup";
+					case debugConfig: return "Config";
 					case debugController: return "Controller";
 					case debugInteractions: return "Interactions";
 					case debugIOService: return "IOService";
