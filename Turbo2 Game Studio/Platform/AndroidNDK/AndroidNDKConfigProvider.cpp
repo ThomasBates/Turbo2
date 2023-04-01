@@ -1,8 +1,6 @@
 
 #include <pch.h>
 
-#include <utility>
-
 #include <AndroidNDKConfigProvider.h>
 #include <TurboCoreHelpers.h>
 #include <TurboGameState.h>

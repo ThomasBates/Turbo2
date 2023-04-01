@@ -3,8 +3,6 @@
 
 #include <MazePreviewRootViewModel.h>
 
-#include <utility>
-
 MazePreviewRootViewModel::MazePreviewRootViewModel(
     const std::shared_ptr<ITurboGame>& game,
     std::shared_ptr<MazePreviewGameState> gameState) :

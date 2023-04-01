@@ -19,7 +19,7 @@ public:
     MazePreviewMainView(
             std::shared_ptr<ITurboDebug> debug,
             std::string name,
-            std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
+            const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
             std::shared_ptr<MazePreviewMainViewModel> viewModel);
     virtual ~MazePreviewMainView() {}
 
@@ -39,6 +39,7 @@ private:
     std::shared_ptr<ITurboView> _hud2View;
     std::shared_ptr<ITurboView> _mainControlView;
     std::shared_ptr<ITurboView> _motionControlView;
+    std::shared_ptr<ITurboView> _strafeControlView;
     std::shared_ptr<ITurboView> _directionControlView;
 
     std::shared_ptr<ITurboSceneSprite> _watermark;

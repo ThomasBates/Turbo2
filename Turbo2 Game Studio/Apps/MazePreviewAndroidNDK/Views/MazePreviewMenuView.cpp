@@ -2,27 +2,16 @@
 #include <pch.h>
 
 #include <MazePreviewMenuView.h>
-#include <MazePreviewHUD1View.h>
-#include <MazePreviewHUD2View.h>
-#include <MazePreviewMainControlView.h>
-#include <MazePreviewMotionControlView.h>
-#include <MazePreviewDirectionControlView.h>
-
-#include <TurboSceneSprite.h>
-#include <TurboSceneTexture.h>
-#include <TurboSceneView.h>
-#include <TurboSceneSound.h>
-#include <Views/TurboControlView.h>
 #include <TurboSceneText.h>
 
 //	Constructors and Destructors ---------------------------------------------------------------------------------------
 
 MazePreviewMenuView::MazePreviewMenuView(
-        std::shared_ptr<ITurboDebug> debug,
+        const std::shared_ptr<ITurboDebug>& debug,
         std::string name,
-        std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
-        std::shared_ptr<MazePreviewMenuViewModel> viewModel) :
-        TurboDialogView(debug, name, rendererAccess, viewModel),
+        const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
+        const std::shared_ptr<MazePreviewMenuViewModel>& viewModel) :
+        TurboDialogView(debug, std::move(name), rendererAccess, viewModel),
         _debug(debug),
         _viewModel(viewModel)
 {

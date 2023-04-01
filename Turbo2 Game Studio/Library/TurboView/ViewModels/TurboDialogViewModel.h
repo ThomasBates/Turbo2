@@ -3,14 +3,12 @@
 
 #include <pch.h>
 
+#include <ITurboGame.h>
+#include <ITurboControlViewModel.h>
 #include <TurboSceneViewModel.h>
-#include <MazePreviewHUD1ViewModel.h>
-#include <MazePreviewHUD2ViewModel.h>
-#include <MazePreviewMainControlViewModel.h>
-#include <MazePreviewMotionControlViewModel.h>
-#include <MazePreviewDirectionControlViewModel.h>
 
 using namespace Turbo::Game;
+using namespace Turbo::View;
 
 class TurboDialogViewModel
 {
@@ -23,7 +21,7 @@ public:
     virtual void Update();
 
     //  Public Properties ----------------------------------------------------------------------------------------------
-    std::shared_ptr<TurboSceneViewModel> MainSceneViewModel() { return _sceneViewModel; }
+    //std::shared_ptr<TurboSceneViewModel> MainSceneViewModel() { return _sceneViewModel; }
     std::shared_ptr<ITurboControlViewModel> OKViewModel() { return _okViewModel; }
     std::shared_ptr<ITurboControlViewModel> CancelViewModel() { return _cancelViewModel; }
 
@@ -49,7 +47,7 @@ protected:
 private:
     bool _showCancel;
 
-    std::shared_ptr<TurboSceneViewModel> _sceneViewModel;
+    //std::shared_ptr<TurboSceneViewModel> _sceneViewModel;
     std::shared_ptr<ITurboControlViewModel> _okViewModel;
     std::shared_ptr<ITurboControlViewModel> _cancelViewModel;
 

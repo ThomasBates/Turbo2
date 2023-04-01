@@ -15,7 +15,8 @@ namespace Turbo
             //  Constructors & Destructors -----------------------------------------------------------------------------
             TurboSceneNavigationPadControl(
                     TurboGameControlType type,
-                    float scale = 1.0F);
+                    float scale = 1.0F,
+                    bool upMeansUp = false);
             virtual ~TurboSceneNavigationPadControl(){}
 
             //  ITurboSceneNavigationControl Properties  ---------------------------------------------------------------
@@ -24,7 +25,7 @@ namespace Turbo
             virtual void IsActive(bool isActive);
             virtual float XValue();
             virtual float YValue();
-            virtual float ZValue() { return 0.0f; }
+            virtual float ZValue();
 
             //  ITurboSceneNavigationControl Methods  ------------------------------------------------------------------
             virtual void CurrentPoint(float x, float y, float z);
@@ -32,6 +33,7 @@ namespace Turbo
         private:
             TurboGameControlType _type;
             float _scale = 1.0f;
+            bool _upMeansUp = false;
 
             bool _isActive = false;
             bool _firstPoint = false;

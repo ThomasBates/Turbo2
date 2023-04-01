@@ -7,11 +7,6 @@
 #include <TurboSpinnerControlViewModel.h>
 #include <TurboToggleControlViewModel.h>
 #include <MazePreviewGameState.h>
-#include <MazePreviewHUD1ViewModel.h>
-#include <MazePreviewHUD2ViewModel.h>
-#include <MazePreviewMainControlViewModel.h>
-#include <MazePreviewMotionControlViewModel.h>
-#include <MazePreviewDirectionControlViewModel.h>
 #include <ViewModels/TurboDialogViewModel.h>
 
 using namespace Turbo::Game;

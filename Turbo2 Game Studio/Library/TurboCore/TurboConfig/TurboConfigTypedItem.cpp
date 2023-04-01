@@ -3,8 +3,6 @@
 
 #include <TurboConfigTypedItem.h>
 
-#include <utility>
-
 using namespace Turbo::Core::Config;
 
 //  Constructors and Destructors ---------------------------------------------------------------------------------------

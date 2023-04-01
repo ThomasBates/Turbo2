@@ -36,8 +36,6 @@ add_library(${PROJECT_NAME}
         ${AppFolder}/Views/MazePreviewMainView.cpp
         ${AppFolder}/Views/MazePreviewHUD1View.cpp
         ${AppFolder}/Views/MazePreviewHUD2View.cpp
-        ${AppFolder}/Views/MazePreviewDirectionControlView.cpp
-        ${AppFolder}/Views/MazePreviewMainControlView.cpp
         ${AppFolder}/Views/MazePreviewMotionControlView.cpp
         ${AppFolder}/Views/MazePreviewMenuView.cpp
         )
@@ -80,8 +78,6 @@ add_library(Games_MazePreview
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD1ViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewHUD2ViewModel.cpp
-        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewDirectionControlViewModel.cpp
-        ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMainControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMotionControlViewModel.cpp
         ${TurboFolder}/Games/MazePreview/ViewModels/MazePreviewMenuViewModel.cpp
         )

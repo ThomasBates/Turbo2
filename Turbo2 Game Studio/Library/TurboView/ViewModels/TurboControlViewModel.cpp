@@ -7,7 +7,7 @@ using namespace Turbo::Scene;
 using namespace Turbo::View;
 
 TurboControlViewModel::TurboControlViewModel(std::shared_ptr <ITurboSceneNavigationControl> control) :
-        _control(control)
+        _control(std::move(control))
 {
 }
 

@@ -19,7 +19,7 @@ public:
     TurboDialogView(
             std::shared_ptr<ITurboDebug> debug,
             std::string name,
-            std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
+            const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
             std::shared_ptr<TurboDialogViewModel> viewModel);
     virtual ~TurboDialogView() {}
 

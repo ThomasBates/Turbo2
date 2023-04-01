@@ -2,11 +2,6 @@
 #include <pch.h>
 
 #include <TurboDialogView.h>
-#include <MazePreviewHUD1View.h>
-#include <MazePreviewHUD2View.h>
-#include <MazePreviewMainControlView.h>
-#include <MazePreviewMotionControlView.h>
-#include <MazePreviewDirectionControlView.h>
 
 #include <TurboSceneSprite.h>
 #include <TurboSceneText.h>
@@ -19,11 +14,11 @@
 TurboDialogView::TurboDialogView(
         std::shared_ptr<ITurboDebug> debug,
         std::string name,
-        std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
+        const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
         std::shared_ptr<TurboDialogViewModel> viewModel) :
-        TurboGroupView(name, rendererAccess),
-        _debug(debug),
-        _viewModel(viewModel)
+        TurboGroupView(std::move(name), rendererAccess),
+        _debug(std::move(debug)),
+        _viewModel(std::move(viewModel))
 {
     //_sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
     //InternalAddView(_sceneView);

@@ -9,9 +9,11 @@ using namespace Turbo::Scene;
 
 TurboSceneNavigationPadControl::TurboSceneNavigationPadControl(
         TurboGameControlType type,
-        float scale) :
+        float scale,
+        bool upMeansUp) :
         _type(type),
-        _scale(scale)
+        _scale(scale),
+        _upMeansUp(upMeansUp)
 {
 }
 
@@ -36,10 +38,24 @@ float TurboSceneNavigationPadControl::XValue()
 
 float TurboSceneNavigationPadControl::YValue()
 {
+    if (_upMeansUp)
+        return 0;
+
     float yValue = (_Y - _lastY) * _scale;
 
     _lastY = _Y;
     return yValue;
+}
+
+float TurboSceneNavigationPadControl::ZValue()
+{
+    if (!_upMeansUp)
+        return 0;
+
+    float yValue = (_Y - _lastY) * _scale;
+
+    _lastY = _Y;
+    return -yValue;
 }
 
 //  ITurboSceneNavigationControl Methods -------------------------------------------------------------------------------

@@ -4,10 +4,9 @@
 #include <MazePreviewMainView.h>
 #include <MazePreviewHUD1View.h>
 #include <MazePreviewHUD2View.h>
-#include <MazePreviewMainControlView.h>
 #include <MazePreviewMotionControlView.h>
-#include <MazePreviewDirectionControlView.h>
 
+#include <TurboControlView.h>
 #include <TurboSceneSprite.h>
 #include <TurboSceneTexture.h>
 #include <TurboSceneView.h>
@@ -18,27 +17,29 @@
 MazePreviewMainView::MazePreviewMainView(
         std::shared_ptr<ITurboDebug> debug,
         std::string name,
-        std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
+        const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
         std::shared_ptr<MazePreviewMainViewModel> viewModel) :
-        TurboGroupView(name, rendererAccess),
-        _debug(debug),
-        _viewModel(viewModel)
+        TurboGroupView(std::move(name), rendererAccess),
+        _debug(std::move(debug)),
+        _viewModel(std::move(viewModel))
 {
     _sceneView = std::shared_ptr<ITurboView>(new TurboSceneView("Main Scene View", rendererAccess, _viewModel->MainSceneViewModel()));
     _hud1View = std::shared_ptr<ITurboView>(new MazePreviewHUD1View(_debug, "HUD1 View", rendererAccess, _viewModel->HUD1ViewModel()));
     _hud2View = std::shared_ptr<ITurboView>(new MazePreviewHUD2View(_debug, "HUD2 View", rendererAccess, _viewModel->HUD2ViewModel()));
 
-    _mainControlView = std::shared_ptr<ITurboView>(new MazePreviewMainControlView("Main Control View", rendererAccess, _viewModel->MainControlViewModel()));
+    _mainControlView = std::shared_ptr<ITurboView>(new TurboControlView("Main Control View", rendererAccess, _viewModel->MainControlViewModel()));
     _motionControlView = std::shared_ptr<ITurboView>(new MazePreviewMotionControlView("Motion Control View", rendererAccess, _viewModel->MotionControlViewModel()));
-    _directionControlView = std::shared_ptr<ITurboView>(new MazePreviewDirectionControlView("Direction Control View", rendererAccess, _viewModel->DirectionControlViewModel()));
+    _strafeControlView = std::shared_ptr<ITurboView>(new TurboControlView("Strafe Control View", rendererAccess, _viewModel->GetStrafeControlViewModel(), "DPadControl"));
+    _directionControlView = std::shared_ptr<ITurboView>(new TurboControlView("Direction Control View", rendererAccess, _viewModel->DirectionControlViewModel(), "DPadControl"));
 
     AddView(_sceneView);
     AddView(_hud1View);
     AddView(_hud2View);
 
-    AddView(_mainControlView);
     AddView(_motionControlView);
+    AddView(_strafeControlView);
     AddView(_directionControlView);
+    AddView(_mainControlView);
 
     auto texture = std::shared_ptr<ITurboSceneTexture>(new TurboSceneTexture("Watermark"));
     _watermark = std::shared_ptr<ITurboSceneSprite>(new TurboSceneSprite(texture));
@@ -134,4 +135,15 @@ void MazePreviewMainView::UpdateLayout(TurboVector2D position, TurboVector2D siz
     // bottom right
     _directionControlView->Position(TurboVector2D(width - s, height - s));
     _directionControlView->Size(TurboVector2D(s, s));
+
+    // extra
+    if (width < height)
+    {
+        _strafeControlView->Position(TurboVector2D(0,height - 2 * s));
+    }
+    else
+    {
+        _strafeControlView->Position(TurboVector2D(s,height - s));
+    }
+    _strafeControlView->Size(TurboVector2D(s, s));
 }

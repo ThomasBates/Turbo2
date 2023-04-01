@@ -10,7 +10,7 @@
 TurboDialogViewModel::TurboDialogViewModel(std::shared_ptr<ITurboGame> game, bool showCancel) :
         _showCancel(showCancel)
 {
-    _sceneViewModel = std::shared_ptr<TurboSceneViewModel>(new TurboSceneViewModel(game));
+    //_sceneViewModel = std::shared_ptr<TurboSceneViewModel>(new TurboSceneViewModel(game));
 
     auto okButton = std::shared_ptr<ITurboSceneNavigationControl>(new TurboSceneNavigationButtonControl(TurboGameControlType::Action, 1, 0, 0));
     _okViewModel = std::shared_ptr<ITurboControlViewModel>(new TurboControlViewModel(okButton));

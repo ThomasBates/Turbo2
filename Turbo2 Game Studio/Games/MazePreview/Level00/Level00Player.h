@@ -48,5 +48,5 @@ private:
 	std::shared_ptr<ITurboScenePlacement>			_placement;
 	std::shared_ptr<ITurboSceneLight>				_light;
 	std::vector<std::shared_ptr<ITurboSceneObject>> _childSceneObjects;
-	std::shared_ptr<UserOptions>			_userOptions;
+	std::shared_ptr<UserOptions>					_userOptions;
 };

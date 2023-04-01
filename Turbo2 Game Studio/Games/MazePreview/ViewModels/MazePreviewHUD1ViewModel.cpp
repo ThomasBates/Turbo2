@@ -4,9 +4,6 @@
 #include <MazePreviewHUD1ViewModel.h>
 #include <TurboEventHandler.h>
 
-#include <utility>
-
-
 MazePreviewHUD1ViewModel::MazePreviewHUD1ViewModel(std::shared_ptr<ITurboGame> game, std::shared_ptr<MazePreviewGameState> gameState) :
     _game(std::move(game)),
     _gameState(std::move(gameState))

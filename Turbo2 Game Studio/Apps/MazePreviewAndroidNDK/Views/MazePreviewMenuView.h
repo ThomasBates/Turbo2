@@ -19,10 +19,10 @@ class MazePreviewMenuView : public TurboDialogView
 public:
     //  Constructors and Destructors -----------------------------------------------------------------------------------
     MazePreviewMenuView(
-            std::shared_ptr<ITurboDebug> debug,
+            const std::shared_ptr<ITurboDebug>& debug,
             std::string name,
-            std::shared_ptr<ITurboViewRendererAccess> rendererAccess,
-            std::shared_ptr<MazePreviewMenuViewModel> viewModel);
+            const std::shared_ptr<ITurboViewRendererAccess>& rendererAccess,
+            const std::shared_ptr<MazePreviewMenuViewModel>& viewModel);
     virtual ~MazePreviewMenuView() {}
 
     //	ITurboView Methods ---------------------------------------------------------------------------------------------
