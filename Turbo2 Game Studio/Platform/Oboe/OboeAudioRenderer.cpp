@@ -390,6 +390,14 @@ void OboeAudioRenderer::RegisterCallbackFinished()
     _totalDuration += _callbackFinishTime - _callbackStartTime;
     _numCallbacks++;
 
+    if (_callbackFinishTime - _callbackStartTime > 10e-6)
+    {
+        _debug->Send(debugVerbose, debugAudio)
+                << "onAudioReady" << ": "
+                << "this duration = " << (_callbackFinishTime - _callbackStartTime) * 1000000 << "us, "
+                << "\n";
+    }
+
     if (_totalTime >= 1.0)
     {
         double averageInterval = _totalTime / _numCallbacks;

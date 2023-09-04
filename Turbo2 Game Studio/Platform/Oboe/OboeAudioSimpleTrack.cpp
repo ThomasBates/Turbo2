@@ -45,8 +45,11 @@ void OboeAudioSimpleTrack::RenderAudio(float *targetData, int32_t targetFrames)
             targetData[(targetIndex * channelCount) + channelIndex] = _canvas->GetSampleAsFloat(_sourceIndex, channelIndex);
 
         if (++_sourceIndex >= sourceFrames)
+        {
             _isPlaying = false;
             //_sourceIndex = 0;
+            break;
+        }
     }
     return;
 

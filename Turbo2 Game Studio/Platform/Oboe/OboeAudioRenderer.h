@@ -99,8 +99,6 @@ namespace Turbo
 
                 void RenderChildSceneObjects(const std::shared_ptr<ITurboSceneObject>& sceneObject);
 
-                std::shared_ptr<ITurboSoundCanvas> CreateTestCanvas(float frequency, float amplitude);
-
                 void RegisterCallbackStarted(int32_t numFrames);
                 void RegisterCallbackFinished();
             };
